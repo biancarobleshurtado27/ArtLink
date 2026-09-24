@@ -1,0 +1,47 @@
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import AppLayout from '../layouts/AppLayout'
+import PlaceholderPage from '../pages/PlaceholderPage'
+import HomePage from '../pages/HomePage'
+import NotFoundPage from '../pages/NotFoundPage'
+import { LoginPage, RegisterPage } from '../pages/AuthPages'
+import ProtectedRoute from './ProtectedRoute'
+import { ROLES } from '../utils/roles'
+
+const page = (title) => <PlaceholderPage title={title} description="Esta vista está lista para recibir su primera iteración funcional." />
+
+export default function AppRouter() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route element={<AppLayout />}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/explorar" element={page('Explorar artistas')} />
+          <Route path="/artista/:id" element={page('Perfil del artista')} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/registro" element={<RegisterPage />} />
+
+          <Route element={<ProtectedRoute allowedRoles={[ROLES.CLIENT, ROLES.ARTIST, ROLES.ADMIN]} />}>
+            <Route path="/solicitudes" element={page('Mis solicitudes')} />
+            <Route path="/mensajes" element={page('Mensajes')} />
+          </Route>
+          <Route element={<ProtectedRoute allowedRoles={[ROLES.CLIENT]} />}>
+            <Route path="/solicitudes/nueva/:artistId" element={page('Nueva solicitud')} />
+          </Route>
+          <Route element={<ProtectedRoute allowedRoles={[ROLES.ARTIST]} />}>
+            <Route path="/artista/panel" element={page('Panel del artista')} />
+            <Route path="/artista/portafolio" element={page('Mi portafolio')} />
+            <Route path="/artista/comisiones" element={page('Mis comisiones')} />
+          </Route>
+          <Route element={<ProtectedRoute allowedRoles={[ROLES.ADMIN]} />}>
+            <Route path="/admin" element={page('Panel de administración')} />
+            <Route path="/admin/usuarios" element={page('Administrar usuarios')} />
+            <Route path="/admin/artistas" element={page('Administrar artistas')} />
+            <Route path="/admin/categorias" element={page('Administrar categorías')} />
+            <Route path="/admin/solicitudes" element={page('Administrar solicitudes')} />
+          </Route>
+          <Route path="*" element={<NotFoundPage />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  )
+}
