@@ -4,6 +4,7 @@ import PlaceholderPage from '../pages/PlaceholderPage'
 import HomePage from '../pages/HomePage'
 import ExplorePage from '../pages/ExplorePage'
 import NotFoundPage from '../pages/NotFoundPage'
+import AccessDeniedPage from '../pages/AccessDeniedPage'
 import { LoginPage, RegisterPage } from '../pages/AuthPages'
 import ProtectedRoute from './ProtectedRoute'
 import { ROLES } from '../utils/roles'
@@ -20,9 +21,12 @@ export default function AppRouter() {
           <Route path="/artista/:id" element={page('Perfil del artista')} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/registro" element={<RegisterPage />} />
+          <Route path="/acceso-denegado" element={<AccessDeniedPage />} />
           <Route path="/como-funciona" element={page('Cómo funciona')} />
           <Route path="/para-artistas" element={page('Para artistas')} />
-          <Route path="/perfil" element={page('Mi perfil')} />
+          <Route element={<ProtectedRoute allowedRoles={[ROLES.CLIENT, ROLES.ARTIST, ROLES.ADMIN]} />}>
+            <Route path="/perfil" element={page('Mi perfil')} />
+          </Route>
 
           <Route element={<ProtectedRoute allowedRoles={[ROLES.CLIENT, ROLES.ARTIST, ROLES.ADMIN]} />}>
             <Route path="/solicitudes" element={page('Mis solicitudes')} />
