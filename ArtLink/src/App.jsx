@@ -1,11 +1,14 @@
 import { AuthProvider } from './context/AuthContext'
+import { DisplayPreferencesProvider } from './context/DisplayPreferencesContext'
 import AppRouter from './routes/AppRouter'
 
 function App() {
   return (
-    <AuthProvider>
-      <AppRouter />
-    </AuthProvider>
+    <DisplayPreferencesProvider>
+      <AuthProvider>
+        <AppRouter />
+      </AuthProvider>
+    </DisplayPreferencesProvider>
   )
 }
 

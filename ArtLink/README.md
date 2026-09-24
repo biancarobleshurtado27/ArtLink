@@ -93,3 +93,4 @@ npm run build
 - **Tipografía:** `Epilogue` para títulos, `Plus Jakarta Sans` para interfaz y `Space Grotesk` para badges. Las variables globales están en `src/styles/visual.css`.
 - **Responsive:** desde 48rem se muestra la navegación móvil con menú compacto y barra inferior; en escritorio se muestra la navegación completa. Las tarjetas pasan de tres columnas a dos y luego a una.
 - **Accesibilidad:** navegación semántica, nombres accesibles para iconos, foco visible, labels asociados y estados con `role="status"` o `role="alert"`.
+- **Preferencias:** el tema claro/oscuro y el tamaño de texto normal/grande/extra grande se guardan en `localStorage` con las claves `artlink_theme` y `artlink_text_size`.

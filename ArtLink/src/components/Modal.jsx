@@ -3,13 +3,24 @@ import { X } from 'lucide-react'
 
 export default function Modal({ open, title, onClose, children }) {
   const closeButtonRef = useRef(null)
+  const previousFocusRef = useRef(null)
 
   useEffect(() => {
     if (!open) return undefined
+    previousFocusRef.current = document.activeElement
     closeButtonRef.current?.focus()
-    const handleKeyDown = (event) => { if (event.key === 'Escape') onClose() }
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') onClose()
+      if (event.key !== 'Tab') return
+      const focusable = event.currentTarget.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')
+      if (!focusable.length) return
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus() }
+      if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus() }
+    }
     document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
+    return () => { document.removeEventListener('keydown', handleKeyDown); previousFocusRef.current?.focus() }
   }, [open, onClose])
 
   if (!open) return null

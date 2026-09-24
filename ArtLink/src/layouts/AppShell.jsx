@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { Link, NavLink, Outlet } from 'react-router-dom'
-import { Home, Menu, MessageCircle, Palette, Search, UserRound, X } from 'lucide-react'
+import { Home, Menu, MessageCircle, Moon, Palette, Search, Sun, UserRound, X } from 'lucide-react'
 import useAuth from '../hooks/useAuth'
 import Footer from '../components/Footer'
 import Button from '../components/Button'
 import AssistantWidget from '../components/AssistantWidget'
+import useDisplayPreferences from '../hooks/useDisplayPreferences'
 
 const desktopLinks = [
   { to: '/explorar', label: 'Explorar artistas' },
@@ -22,9 +23,11 @@ const mobileLinks = [
 export default function AppShell() {
   const [menuOpen, setMenuOpen] = useState(false)
   const { user, logout } = useAuth()
+  const { theme, textSize, setTheme, setTextSize } = useDisplayPreferences()
 
   return (
     <div className="app-shell">
+      <a className="skip-link" href="#main-content">Saltar al contenido principal</a>
       <header className="site-header">
         <Link className="brand" to="/" onClick={() => setMenuOpen(false)} aria-label="ArtLink, inicio">
           <span className="brand-mark" aria-hidden="true"><Palette size={21} /></span>
@@ -37,9 +40,10 @@ export default function AppShell() {
           {desktopLinks.map((link) => <NavLink key={link.to} to={link.to} onClick={() => setMenuOpen(false)}>{link.label}</NavLink>)}
           {user ? <NavLink to="/solicitudes" onClick={() => setMenuOpen(false)}>Mis solicitudes</NavLink> : <NavLink to="/login" onClick={() => setMenuOpen(false)}>Iniciar sesión</NavLink>}
           {user ? <Button variant="outline" onClick={() => { logout(); setMenuOpen(false) }}>Cerrar sesión</Button> : <Link className="button button-primary button-small" to="/registro" onClick={() => setMenuOpen(false)}>Crear perfil</Link>}
+          <div className="display-controls" aria-label="Preferencias de visualización"><button className="display-control" type="button" onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')} aria-label={theme === 'light' ? 'Activar tema oscuro' : 'Activar tema claro'} title={theme === 'light' ? 'Tema oscuro' : 'Tema claro'}>{theme === 'light' ? <Moon size={18} aria-hidden="true" /> : <Sun size={18} aria-hidden="true" />}</button><label htmlFor="text-size" className="sr-only">Tamaño del texto</label><select id="text-size" className="text-size-select" value={textSize} onChange={(event) => setTextSize(event.target.value)} aria-label="Tamaño del texto"><option value="normal">Texto normal</option><option value="large">Texto grande</option><option value="x-large">Texto extra grande</option></select></div>
         </nav>
       </header>
-      <main className="main-content"><Outlet /></main>
+      <main id="main-content" className="main-content"><Outlet /></main>
       <Footer />
       <AssistantWidget />
       <nav className="bottom-navigation" aria-label="Navegación móvil">
