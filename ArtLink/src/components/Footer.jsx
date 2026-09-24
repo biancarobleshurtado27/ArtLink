@@ -1,5 +1,69 @@
+import { Palette } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
+const categoryLinks = [
+  'Ilustración 2D',
+  'Modelado 3D',
+  'Animación',
+  'Pixel Art',
+  'Emotes',
+].map((name) => ({ name, to: `/explorar?discipline=${encodeURIComponent(name)}` }))
+
+const communityLinks = [
+  { label: 'Cómo funciona', to: '/como-funciona' },
+  { label: 'Para artistas', to: '/para-artistas' },
+  { label: 'Explorar directorio', to: '/explorar' },
+]
+
+const supportLinks = [
+  { label: 'Centro de ayuda', to: '/ayuda' },
+  { label: 'Términos del servicio', to: '/terminos' },
+  { label: 'Política de privacidad', to: '/privacidad' },
+  { label: 'Contacto', to: '/contacto' },
+]
+
 export default function Footer() {
-  return <footer className="site-footer"><div className="footer-inner"><Link className="brand" to="/"><span className="brand-mark" aria-hidden="true">✦</span>ArtLink</Link><p>Portafolios que conectan.</p><div className="footer-links"><Link to="/explorar">Explorar</Link><Link to="/registro">Crear perfil</Link></div></div><small>Hecho para artistas digitales y sus próximas historias.</small></footer>
+  return (
+    <footer className="site-footer">
+      <div className="footer-grid">
+        <div className="footer-brand-col">
+          <Link className="brand" to="/" aria-label="ArtLink, pie de página">
+            <span className="brand-mark" aria-hidden="true"><Palette size={18} /></span>
+            <span className="brand-text">
+              <strong>ArtLink</strong>
+              <small>Conecta tu arte</small>
+            </span>
+          </Link>
+          <p className="footer-blurb">
+            ArtLink centraliza portafolios, precios y disponibilidad de artistas digitales para que una buena idea encuentre a su creador sin perderse en el camino.
+          </p>
+        </div>
+        <nav className="footer-col" aria-label="Categorías de arte">
+          <h3>Categorías de arte</h3>
+          <ul>
+            {categoryLinks.map(({ name, to }) => (
+              <li key={name}><Link to={to}>{name}</Link></li>
+            ))}
+          </ul>
+        </nav>
+        <nav className="footer-col" aria-label="Comunidad">
+          <h3>Comunidad</h3>
+          <ul>
+            {communityLinks.map(({ label, to }) => (
+              <li key={label}><Link to={to}>{label}</Link></li>
+            ))}
+          </ul>
+        </nav>
+        <nav className="footer-col" aria-label="Soporte">
+          <h3>Soporte</h3>
+          <ul>
+            {supportLinks.map(({ label, to }) => (
+              <li key={label}><Link to={to}>{label}</Link></li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+      <small className="footer-note">Hecho para artistas digitales y sus próximas historias. Prototipo académico ArtLink.</small>
+    </footer>
+  )
 }

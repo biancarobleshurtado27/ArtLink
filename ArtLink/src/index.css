@@ -1,34 +1,52 @@
+/* Base global de ArtLink: reset, tipografía y foco. Los tokens viven en styles/tokens.css */
 :root {
-  --ink: #172121;
-  --muted: #5c6a68;
-  --surface: #fffdf8;
-  --background: #f3efe7;
-  --border: #d8d1c5;
-  --accent: #c54b32;
-  --accent-dark: #913522;
-  --sans: 'Avenir Next', 'Segoe UI', sans-serif;
-  --heading: Georgia, 'Times New Roman', serif;
-  color: var(--ink);
-  background: var(--background);
-  font: 16px/1.5 var(--sans);
+  color: var(--ink, #1e192b);
+  background: var(--cream, #fffdf8);
+  font: 16px/1.5 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
 }
 
+html {
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
+  min-width: 320px;
 }
 
 #root { min-height: 100svh; }
 
-h1, h2 {
-  font-family: var(--heading);
-  font-weight: 700;
-  line-height: 1.1;
+h1, h2, h3, h4 {
+  font-family: 'Epilogue', 'Segoe UI', sans-serif;
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -.02em;
+  margin: 0;
 }
 
-h1 { font-size: clamp(2.4rem, 7vw, 4.8rem); margin: 0 0 1rem; }
-h2 { font-size: 1.8rem; margin: 0 0 0.75rem; }
+h1 { font-size: clamp(2.2rem, 6vw, 4.2rem); }
+h2 { font-size: 1.7rem; }
 p { margin: 0 0 1rem; }
-a:focus-visible, button:focus-visible { outline: 3px solid #e6a400; outline-offset: 3px; }
+
+a, button, input, select, textarea {
+  font-family: inherit;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: var(--focus-ring, 3px solid #8b5cf6);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}

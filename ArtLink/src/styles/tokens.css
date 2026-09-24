@@ -1,1 +1,63 @@
-/* Reserved for design tokens shared by future feature modules. */
+/*
+ * ArtLink design tokens
+ * Paleta de galería pastel: violeta, rosa, menta y amarillo sobre crema.
+ */
+:root {
+  /* Colores base (paleta obligatoria) */
+  --violet: #8B5CF6;
+  --violet-dark: #5D35C7;
+  --violet-deep: #45208F;
+  --violet-soft: #DDD0FF;
+  --rose: #F472B6;
+  --rose-soft: #FFD2E7;
+  --mint: #2DD4BF;
+  --mint-soft: #BFF7EA;
+  --yellow: #FEF08A;
+  --ink: #1E192B;
+  --cream: #FFFDF8;
+  --lilac: #F3EEFF;
+  --paper: #FFFFFF;
+  --muted: #6D657B;
+  --line: #DDD4E8;
+
+  /* Tipografías */
+  --font-heading: 'Epilogue', sans-serif;
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
+  --font-badge: 'Space Grotesk', sans-serif;
+  --heading: var(--font-heading);
+  --sans: var(--font-sans);
+  --badge: var(--font-badge);
+
+  /* Sombras */
+  --shadow-firm: 5px 6px 0 var(--ink);
+  --shadow-soft: 3px 4px 0 rgba(30, 25, 43, .15);
+  --shadow-lift: 0 10px 30px rgba(30, 25, 43, .14);
+  --shadow: var(--shadow-firm);
+
+  /* Bordes */
+  --border-strong: 2px solid var(--ink);
+  --border-line: 1.5px solid var(--line);
+  --radius-sm: .35rem;
+  --radius: .6rem;
+  --radius-lg: 1rem;
+  --radius-pill: 999px;
+
+  /* Espaciado */
+  --space-1: .5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2rem;
+  --space-5: 3rem;
+  --space-6: 4rem;
+  --space-7: 6rem;
+
+  /* Contenedores */
+  --container: 82rem;
+  --container-wide: 90rem;
+  --container-narrow: 46rem;
+
+  /* Interacción */
+  --focus-ring: 3px solid var(--violet);
+  --transition: transform .2s, box-shadow .2s, background-color .2s, border-color .2s;
+  color-scheme: light;
+}

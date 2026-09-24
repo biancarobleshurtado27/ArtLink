@@ -1,6 +1,6 @@
 import { ArrowRight, Check, Sparkles } from 'lucide-react'
 import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import ArtistCard from '../components/ArtistCard'
 import EmptyState from '../components/EmptyState'
 import ErrorState from '../components/ErrorState'
@@ -14,6 +14,7 @@ const demoMetrics = ['+2,400 artistas', '100% información centralizada', '4.9/5
 
 export default function HomePage() {
   const [query, setQuery] = useState('')
+  const navigate = useNavigate()
   const { artists, loading: artistsLoading, error: artistsError } = useArtists()
   const { categories, loading: categoriesLoading } = useCategories()
   const featuredArtists = useMemo(() => artists.filter((artist) => artist.verified).slice(0, 3), [artists])
@@ -43,7 +44,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-      <section className="home-search-section" aria-labelledby="search-title"><SectionHeading eyebrow="Busca sin perder la chispa" title="Tu próximo descubrimiento está a un filtro de distancia" /><SearchBar value={query} onChange={setQuery} onSubmit={() => { window.location.href = `/explorar${query ? `?q=${encodeURIComponent(query)}` : ''}` }} placeholder="Busca por nombre, estilo o disciplina" /><div className="category-chips" aria-label="Categorías populares">{categoriesLoading ? <span className="chip-placeholder">Cargando categorías...</span> : categories.filter((category) => ['ilustracion-2d', 'modelado-3d', 'animacion', 'pixel-art', 'emotes'].includes(category.slug)).map((category) => <Link className="category-chip" key={category.id} to={`/explorar?discipline=${encodeURIComponent(category.name)}`}>{category.name}<ArrowRight size={14} aria-hidden="true" /></Link>)}</div></section>
+      <section className="home-search-section" aria-labelledby="search-title"><SectionHeading eyebrow="Busca sin perder la chispa" title="Tu próximo descubrimiento está a un filtro de distancia" /><SearchBar value={query} onChange={setQuery} onSubmit={() => navigate(`/explorar${query ? `?q=${encodeURIComponent(query)}` : ''}`)} placeholder="Busca por nombre, estilo o disciplina" /><div className="category-chips" aria-label="Categorías populares">{categoriesLoading ? <span className="chip-placeholder">Cargando categorías...</span> : categories.filter((category) => ['ilustracion-2d', 'modelado-3d', 'animacion', 'pixel-art', 'emotes'].includes(category.slug)).map((category) => <Link className="category-chip" key={category.id} to={`/explorar?discipline=${encodeURIComponent(category.name)}`}>{category.name}<ArrowRight size={14} aria-hidden="true" /></Link>)}</div></section>
       <section className="metrics-strip" aria-label="Métricas demostrativas de ArtLink">{demoMetrics.map((metric) => <div className="metric" key={metric}><strong>{metric}</strong><span>Dato demostrativo</span></div>)}</section>
       <section aria-labelledby="featured-title">
         <SectionHeading eyebrow="La selección de hoy" title="Personas que hacen cosas bonitas" description="Tres universos creativos para empezar a explorar." action={<Link className="button button-outline button-small" to="/explorar">Ver todos <ArrowRight size={15} aria-hidden="true" /></Link>} />

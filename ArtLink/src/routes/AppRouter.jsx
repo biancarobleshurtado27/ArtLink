@@ -1,8 +1,11 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import AppLayout from '../layouts/AppLayout'
-import PlaceholderPage from '../pages/PlaceholderPage'
 import HomePage from '../pages/HomePage'
 import ExplorePage from '../pages/ExplorePage'
+import ComoFuncionaPage from '../pages/ComoFuncionaPage'
+import ParaArtistasPage from '../pages/ParaArtistasPage'
+import ProfilePage from '../pages/ProfilePage'
+import LegalPage from '../pages/LegalPage'
 import NotFoundPage from '../pages/NotFoundPage'
 import AccessDeniedPage from '../pages/AccessDeniedPage'
 import ArtistProfilePage from '../pages/ArtistProfilePage'
@@ -16,8 +19,6 @@ import ProtectedRoute from './ProtectedRoute'
 import RoleRoute from './RoleRoute'
 import { ROLES } from '../utils/roles'
 
-const page = (title) => <PlaceholderPage title={title} description="Esta vista está lista para recibir su primera iteración funcional." />
-
 export default function AppRouter() {
   return (
     <BrowserRouter>
@@ -25,14 +26,18 @@ export default function AppRouter() {
         <Route element={<AppLayout />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/explorar" element={<ExplorePage />} />
+          <Route path="/como-funciona" element={<ComoFuncionaPage />} />
+          <Route path="/para-artistas" element={<ParaArtistasPage />} />
           <Route path="/artista/:id" element={<ArtistProfilePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/registro" element={<RegisterPage />} />
+          <Route path="/ayuda" element={<LegalPage />} />
+          <Route path="/terminos" element={<LegalPage />} />
+          <Route path="/privacidad" element={<LegalPage />} />
+          <Route path="/contacto" element={<LegalPage />} />
           <Route path="/acceso-denegado" element={<AccessDeniedPage />} />
-          <Route path="/como-funciona" element={page('Cómo funciona')} />
-          <Route path="/para-artistas" element={page('Para artistas')} />
           <Route element={<ProtectedRoute allowedRoles={[ROLES.CLIENT, ROLES.ARTIST, ROLES.ADMIN]} />}>
-            <Route path="/perfil" element={page('Mi perfil')} />
+            <Route path="/perfil" element={<ProfilePage />} />
           </Route>
 
           <Route element={<ProtectedRoute allowedRoles={[ROLES.CLIENT, ROLES.ARTIST, ROLES.ADMIN]} />}>

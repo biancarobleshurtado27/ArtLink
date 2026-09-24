@@ -1,86 +1,43 @@
+/* Estructura del shell. Los componentes visuales y tokens viven en styles/ */
 .app-shell {
   min-height: 100svh;
   display: flex;
   flex-direction: column;
-}
-
-.site-header {
-  align-items: center;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  justify-content: space-between;
-  padding: 1rem clamp(1rem, 4vw, 4rem);
-}
-
-.brand {
-  color: var(--ink);
-  font-family: var(--heading);
-  font-size: 1.35rem;
-  font-weight: 800;
-  text-decoration: none;
-}
-
-.site-nav {
-  display: flex;
-  gap: 1rem;
-}
-
-.site-nav a,
-.button-link {
-  color: var(--ink);
-  text-decoration: none;
-}
-
-.site-nav a:hover,
-.site-nav a:focus-visible,
-.button-link:hover,
-.button-link:focus-visible {
-  color: var(--accent);
+  overflow-x: clip;
+  position: relative;
 }
 
 .main-content {
   flex: 1;
   margin: 0 auto;
-  max-width: 70rem;
-  padding: clamp(2rem, 6vw, 6rem) 1rem;
-  width: calc(100% - 2rem);
+  max-width: var(--container-wide, 90rem);
+  padding: clamp(2rem, 5vw, 5rem) clamp(1rem, 5vw, 5rem) 6rem;
+  width: 100%;
 }
 
+/* Página informativa genérica (reemplazo del antiguo placeholder) */
 .placeholder {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
+  background: var(--paper, #fff);
+  border: var(--border-strong, 2px solid var(--ink));
+  border-radius: var(--radius, .6rem);
+  box-shadow: var(--shadow-soft, 3px 4px 0 rgba(30, 25, 43, .15));
   margin: 0 auto;
-  max-width: 42rem;
+  max-width: 46rem;
   padding: clamp(1.5rem, 5vw, 3rem);
 }
 
-.placeholder p { color: var(--muted); }
+.placeholder p { color: var(--muted, #6d657b); }
 
-.button {
-  background: var(--accent);
-  border: 0;
-  border-radius: 0.35rem;
-  color: white;
-  cursor: pointer;
-  display: inline-block;
-  font: inherit;
-  margin-top: 1.5rem;
-  padding: 0.7rem 1rem;
+/* Enlace para volver a la página anterior (listas de recursos) */
+.back-link {
+  align-items: center;
+  color: var(--violet-dark, #5d35c7);
+  display: inline-flex;
+  font-size: .8rem;
+  font-weight: 600;
+  gap: .35rem;
+  margin-bottom: 1.5rem;
   text-decoration: none;
 }
 
-.button:hover,
-.button:focus-visible { background: var(--accent-dark); }
-
-.site-footer {
-  border-top: 1px solid var(--border);
-  color: var(--muted);
-  padding: 1rem;
-  text-align: center;
-}
-
-@media (max-width: 40rem) {
-  .site-header { align-items: flex-start; flex-direction: column; gap: 0.75rem; }
-  .site-nav { flex-wrap: wrap; gap: 0.75rem; }
-}
+.back-link:hover { text-decoration: underline; }
