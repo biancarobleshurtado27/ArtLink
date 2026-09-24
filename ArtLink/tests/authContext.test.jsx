@@ -17,4 +17,10 @@ describe('AuthContext', () => {
     expect(result.current.user).toBeNull()
     expect(localStorage.getItem(SESSION_STORAGE_KEY)).toBeNull()
   })
+
+  it('restores a previously persisted session on mount', () => {
+    localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify({ id: 'user-2', name: 'Restored', role: 'artista' }))
+    const { result } = renderHook(() => useAuth(), { wrapper })
+    expect(result.current.user).toEqual({ id: 'user-2', name: 'Restored', role: 'artista' })
+  })
 })

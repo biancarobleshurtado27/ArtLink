@@ -71,6 +71,26 @@ npm run test:run
 npm run build
 ```
 
+También puedes ejecutar las pruebas una sola vez o en modo watch:
+
+```bash
+npm run test:once
+npm run test:watch
+```
+
+### Cobertura de pruebas
+
+- `artistFilters.test.js`: filtrado por nombre, disciplina, estilo, precio, disponibilidad y ordenamiento.
+- `ArtistCard.test.jsx`: nombre, precio base y disponibilidad visible en tarjetas.
+- `AuthPages.test.jsx`: labels, tipo email, campos requeridos y error accesible de login.
+- `NewRequestPage.test.jsx`: campos requeridos y aceptación de términos de solicitudes.
+- `authContext.test.jsx`: persistencia, restauración y eliminación de sesión.
+- `Routes.test.jsx`: redirección sin sesión y bloqueo por rol mediante `RoleRoute`.
+- `httpService.test.js`: contrato de servicio Axios mockeado sin JSON Server.
+- `adminCrud.test.jsx`: estados de carga, datos exitosos y error del CRUD.
+- `aiService.test.js`: respuesta IA válida, fallback determinista y fallback ante fallo del endpoint.
+- `App.test.jsx` y `displayPreferences.test.jsx`: shell, navegación y preferencias visuales persistidas.
+
 ## Estructura principal
 
 - `src/components`: componentes reutilizables.

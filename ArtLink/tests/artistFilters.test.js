@@ -12,6 +12,10 @@ describe('artist directory filters', () => {
     expect(filterArtists(artists, { query: 'sofi', availability: 'open' })).toHaveLength(0)
   })
 
+  it('filters by discipline and style', () => {
+    expect(filterArtists(artists, { query: '', discipline: 'Retrato', style: 'Anime' })).toEqual([artists[1]])
+  })
+
   it('sorts by price and rating without mutating the source', () => {
     expect(sortArtists(artists, 'price').map((artist) => artist.displayName)).toEqual(['Mateo Ríos', 'Sofía Nakamura'])
     expect(sortArtists(artists, 'rating').map((artist) => artist.displayName)).toEqual(['Mateo Ríos', 'Sofía Nakamura'])

@@ -13,6 +13,7 @@ import MessagesPage from '../pages/MessagesPage'
 import { AdminDashboardPage, AdminResourcePage } from '../pages/AdminPages'
 import { LoginPage, RegisterPage } from '../pages/AuthPages'
 import ProtectedRoute from './ProtectedRoute'
+import RoleRoute from './RoleRoute'
 import { ROLES } from '../utils/roles'
 
 const page = (title) => <PlaceholderPage title={title} description="Esta vista está lista para recibir su primera iteración funcional." />
@@ -46,7 +47,7 @@ export default function AppRouter() {
             <Route path="/artista/portafolio" element={<ArtistPanelPage />} />
             <Route path="/artista/comisiones" element={<ArtistPanelPage />} />
           </Route>
-          <Route element={<ProtectedRoute allowedRoles={[ROLES.ADMIN]} />}>
+          <Route element={<RoleRoute allowedRoles={[ROLES.ADMIN]} />}>
             <Route path="/admin" element={<AdminDashboardPage />} />
             <Route path="/admin/usuarios" element={<AdminResourcePage resource="usuarios" />} />
             <Route path="/admin/artistas" element={<AdminResourcePage resource="artistas" />} />

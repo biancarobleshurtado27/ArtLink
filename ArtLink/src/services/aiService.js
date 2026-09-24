@@ -65,7 +65,8 @@ export async function interpretNeed(input) {
     const { data } = await axios.post(apiUrl, { prompt }, { headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' } })
     return parsePayload(data)
   } catch (error) {
-    throw new Error(`No pudimos interpretar tu necesidad: ${error.response?.data?.message || error.message}`, { cause: error })
+    const fallback = fallbackResponse(text)
+    return { ...fallback, explanation: `Modo demostración: el servicio de IA no respondió (${error.response?.data?.message || error.message}). La sugerencia es orientativa y se generó localmente.`, mode: 'demo-fallback' }
   }
 }
 
