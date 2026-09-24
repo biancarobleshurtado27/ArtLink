@@ -1,17 +1,23 @@
-import { Filter, Heart, RotateCcw, SlidersHorizontal } from 'lucide-react'
+import { Filter, Heart, RotateCcw, Search, SlidersHorizontal } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import ArtistCard from '../components/ArtistCard'
 import EmptyState from '../components/EmptyState'
 import ErrorState from '../components/ErrorState'
 import LoadingState from '../components/LoadingState'
-import SearchBar from '../components/SearchBar'
 import SectionHeading from '../components/SectionHeading'
 import useArtists from '../hooks/useArtists'
 import useFavorites from '../hooks/useFavorites'
 import { filterArtists, getArtistOptions, sortArtists } from '../utils/artistFilters'
 
-const defaultFilters = { query: '', discipline: '', style: '', availability: '', maxPrice: '', sort: 'relevance' }
+const defaultFilters = {
+  query: '',
+  discipline: '',
+  style: '',
+  availability: '',
+  maxPrice: '',
+  sort: 'relevance',
+}
 
 export default function ExplorePage() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -28,9 +34,10 @@ export default function ExplorePage() {
     sort: searchParams.get('sort') || 'relevance',
   }))
 
+  /* Debounce del campo de búsqueda → actualiza filtros y URL */
   useEffect(() => {
-    const timeout = window.setTimeout(() => {
-      setFilters((current) => ({ ...current, query: queryInput }))
+    const timer = window.setTimeout(() => {
+      setFilters((f) => ({ ...f, query: queryInput }))
       setSearchParams((current) => {
         const next = new URLSearchParams(current)
         if (queryInput) next.set('q', queryInput)
@@ -38,21 +45,17 @@ export default function ExplorePage() {
         return next
       }, { replace: true })
     }, 350)
-    return () => window.clearTimeout(timeout)
+    return () => window.clearTimeout(timer)
   }, [queryInput, setSearchParams])
 
-  function updateUrl(changes) {
-    const next = new URLSearchParams(searchParams)
-    Object.entries(changes).forEach(([key, value]) => {
-      if (value) next.set(key, value)
-      else next.delete(key)
-    })
-    setSearchParams(next, { replace: true })
-  }
-
   function updateFilter(name, value) {
-    setFilters((current) => ({ ...current, [name]: value }))
-    updateUrl({ [name]: value })
+    setFilters((f) => ({ ...f, [name]: value }))
+    setSearchParams((current) => {
+      const next = new URLSearchParams(current)
+      if (value) next.set(name, value)
+      else next.delete(name)
+      return next
+    }, { replace: true })
   }
 
   function resetFilters() {
@@ -62,54 +65,144 @@ export default function ExplorePage() {
     setSearchParams({}, { replace: true })
   }
 
-  const availableArtists = onlyFavorites ? artists.filter((artist) => favorites.ids.includes(artist.id)) : artists
-  const visibleArtists = useMemo(() => sortArtists(filterArtists(availableArtists, filters), filters.sort), [availableArtists, filters])
+  const pool = onlyFavorites
+    ? artists.filter((a) => favorites.ids.includes(a.id))
+    : artists
+
+  const visibleArtists = useMemo(
+    () => sortArtists(filterArtists(pool, filters), filters.sort),
+    [pool, filters],
+  )
+
   const disciplines = useMemo(() => getArtistOptions(artists, 'disciplines'), [artists])
   const styles = useMemo(() => getArtistOptions(artists, 'styles'), [artists])
 
+  const hasActiveFilters =
+    filters.query || filters.discipline || filters.style || filters.availability || filters.maxPrice || onlyFavorites
+
   return (
     <section className="directory-page" aria-labelledby="explore-title">
-      <SectionHeading eyebrow="Directorio creativo" title="Encuentra a tu próxima colaboración" description="Busca por nombre, estilo o disciplina y guarda tus artistas favoritos." />
-      <SearchBar value={queryInput} onChange={setQueryInput} placeholder="Busca por nombre o username" />
+      <SectionHeading
+        eyebrow="Directorio creativo"
+        title="Encuentra a tu próxima colaboración"
+        description="Busca por nombre, estilo o disciplina y guarda tus artistas favoritos."
+      />
+
+      {/* Barra de búsqueda principal */}
+      <form
+        className="search-row explore-search"
+        role="search"
+        aria-label="Buscar artistas"
+        onSubmit={(e) => e.preventDefault()}
+      >
+        <label className="search-bar" htmlFor="explore-search-input">
+          <Search size={19} aria-hidden="true" />
+          <span className="sr-only">Buscar artistas</span>
+          <input
+            id="explore-search-input"
+            type="search"
+            value={queryInput}
+            onChange={(e) => setQueryInput(e.target.value)}
+            placeholder="Busca por nombre o username"
+          />
+        </label>
+      </form>
+
       <div className="directory-layout">
+        {/* ── Sidebar de filtros ── */}
         <aside className="filter-panel" aria-label="Filtros del directorio">
           <div className="filter-heading">
             <h2><SlidersHorizontal size={19} aria-hidden="true" /> Filtrar</h2>
-            <button className="reset-button" type="button" onClick={resetFilters}><RotateCcw size={14} aria-hidden="true" /> Limpiar</button>
+            {hasActiveFilters && (
+              <button className="reset-button" type="button" onClick={resetFilters}>
+                <RotateCcw size={14} aria-hidden="true" /> Limpiar
+              </button>
+            )}
           </div>
-          <label>Disciplina
-            <select value={filters.discipline} onChange={(event) => updateFilter('discipline', event.target.value)}>
+
+          <label htmlFor="filter-discipline">
+            Disciplina
+            <select
+              id="filter-discipline"
+              value={filters.discipline}
+              onChange={(e) => updateFilter('discipline', e.target.value)}
+            >
               <option value="">Todas</option>
-              {disciplines.map((option) => <option key={option} value={option}>{option}</option>)}
+              {disciplines.map((d) => <option key={d} value={d}>{d}</option>)}
             </select>
           </label>
-          <label>Estilo
-            <select value={filters.style} onChange={(event) => updateFilter('style', event.target.value)}>
+
+          <label htmlFor="filter-style">
+            Estilo
+            <select
+              id="filter-style"
+              value={filters.style}
+              onChange={(e) => updateFilter('style', e.target.value)}
+            >
               <option value="">Todos</option>
-              {styles.map((option) => <option key={option} value={option}>{option}</option>)}
+              {styles.map((s) => <option key={s} value={s}>{s}</option>)}
             </select>
           </label>
-          <label>Disponibilidad
-            <select value={filters.availability} onChange={(event) => updateFilter('availability', event.target.value)}>
+
+          <label htmlFor="filter-availability">
+            Disponibilidad
+            <select
+              id="filter-availability"
+              value={filters.availability}
+              onChange={(e) => updateFilter('availability', e.target.value)}
+            >
               <option value="">Cualquiera</option>
-              <option value="open">Disponible</option>
+              <option value="open">Disponible ahora</option>
               <option value="waitlist">Lista de espera</option>
               <option value="closed">Agenda cerrada</option>
             </select>
           </label>
-          <label>Precio base máximo
-            <input type="number" min="0" step="10" placeholder="Sin límite" value={filters.maxPrice} onChange={(event) => updateFilter('maxPrice', event.target.value)} />
+
+          <label htmlFor="filter-price">
+            Precio base máximo (USD)
+            <input
+              id="filter-price"
+              type="number"
+              min="0"
+              step="10"
+              placeholder="Sin límite"
+              value={filters.maxPrice}
+              onChange={(e) => updateFilter('maxPrice', e.target.value)}
+            />
           </label>
         </aside>
+
+        {/* ── Resultados ── */}
         <div className="directory-results">
           <div className="results-toolbar">
-            <p>{loading ? 'Buscando artistas...' : `${visibleArtists.length} artistas encontrados`}</p>
+            <p aria-live="polite" aria-atomic="true">
+              {loading
+                ? 'Buscando artistas...'
+                : `${visibleArtists.length} artista${visibleArtists.length !== 1 ? 's' : ''} encontrado${visibleArtists.length !== 1 ? 's' : ''}`}
+            </p>
             <div className="results-toolbar-actions">
-              <button className={`filter-button favorites-filter ${onlyFavorites ? 'is-active' : ''}`} type="button" aria-pressed={onlyFavorites} onClick={() => setOnlyFavorites((value) => !value)}>
-                <Heart size={16} fill={onlyFavorites ? 'currentColor' : 'none'} aria-hidden="true" /> Guardados ({favorites.count})
+              <button
+                className={`filter-button favorites-filter ${onlyFavorites ? 'is-active' : ''}`}
+                type="button"
+                aria-pressed={onlyFavorites}
+                onClick={() => setOnlyFavorites((v) => !v)}
+              >
+                <Heart
+                  size={16}
+                  fill={onlyFavorites ? 'currentColor' : 'none'}
+                  aria-hidden="true"
+                />
+                Guardados ({favorites.count})
               </button>
-              <label className="sort-select"><Filter size={16} aria-hidden="true" /><span className="sr-only">Ordenar resultados</span>
-                <select value={filters.sort} onChange={(event) => updateFilter('sort', event.target.value)}>
+
+              <label className="sort-select" htmlFor="sort-select">
+                <Filter size={16} aria-hidden="true" />
+                <span className="sr-only">Ordenar resultados</span>
+                <select
+                  id="sort-select"
+                  value={filters.sort}
+                  onChange={(e) => updateFilter('sort', e.target.value)}
+                >
                   <option value="relevance">Más relevantes</option>
                   <option value="price">Precio más bajo</option>
                   <option value="rating">Mejor calificación</option>
@@ -117,14 +210,22 @@ export default function ExplorePage() {
               </label>
             </div>
           </div>
+
           {loading && <LoadingState label="Trayendo portafolios desde ArtLink" />}
+
           {error && <ErrorState message={error.message} onRetry={reload} />}
+
           {!loading && !error && visibleArtists.length === 0 && (
             <EmptyState
               title={onlyFavorites ? 'No tienes favoritos con estos filtros' : 'No encontramos ese match'}
-              description={onlyFavorites ? 'Quita el filtro “Guardados” para ver todo el directorio.' : 'Prueba con otro estilo, disponibilidad o rango de precio.'}
+              description={
+                onlyFavorites
+                  ? 'Quita el filtro "Guardados" para ver todo el directorio.'
+                  : 'Prueba con otro estilo, disponibilidad o rango de precio.'
+              }
             />
           )}
+
           {!loading && !error && visibleArtists.length > 0 && (
             <div className="artist-grid directory-grid">
               {visibleArtists.map((artist) => (
