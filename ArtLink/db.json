@@ -1,9 +1,141 @@
 {
-  "users": [],
-  "artists": [],
-  "categories": [],
-  "portfolios": [],
-  "commissions": [],
-  "requests": [],
-  "messages": []
+  "users": [
+    {
+      "id": "user-client-001",
+      "name": "Lucía Fernández",
+      "email": "lucia@artlink.demo",
+      "passwordDemo": "cliente123",
+      "role": "cliente",
+      "avatar": "https://i.pravatar.cc/150?img=47",
+      "createdAt": "2026-01-15T10:00:00.000Z",
+      "active": true
+    },
+    {
+      "id": "user-artist-001",
+      "name": "Mateo Ríos",
+      "email": "mateo@artlink.demo",
+      "passwordDemo": "artista123",
+      "role": "artista",
+      "avatar": "https://i.pravatar.cc/150?img=12",
+      "createdAt": "2025-10-02T09:30:00.000Z",
+      "active": true
+    },
+    {
+      "id": "user-artist-002",
+      "name": "Sofía Nakamura",
+      "email": "sofia@artlink.demo",
+      "passwordDemo": "artista123",
+      "role": "artista",
+      "avatar": "https://i.pravatar.cc/150?img=32",
+      "createdAt": "2025-11-20T14:15:00.000Z",
+      "active": true
+    },
+    {
+      "id": "user-artist-003",
+      "name": "Diego Álvarez",
+      "email": "diego@artlink.demo",
+      "passwordDemo": "artista123",
+      "role": "artista",
+      "avatar": "https://i.pravatar.cc/150?img=68",
+      "createdAt": "2026-02-08T11:45:00.000Z",
+      "active": true
+    },
+    {
+      "id": "user-admin-001",
+      "name": "Ana Torres",
+      "email": "ana@artlink.demo",
+      "passwordDemo": "admin123",
+      "role": "administrador",
+      "avatar": "https://i.pravatar.cc/150?img=5",
+      "createdAt": "2025-09-01T08:00:00.000Z",
+      "active": true
+    }
+  ],
+  "artistProfiles": [
+    {
+      "id": "artist-001",
+      "userId": "user-artist-001",
+      "displayName": "Mateo Ríos",
+      "username": "mateorios",
+      "bio": "Ilustrador editorial especializado en mundos narrativos y personajes expresivos.",
+      "disciplines": ["Ilustración", "Concept art"],
+      "styles": ["Editorial", "Fantástico", "Colorido"],
+      "location": "Bogotá, Colombia",
+      "availability": "open",
+      "slots": 4,
+      "rating": 4.9,
+      "verified": true,
+      "basePrice": 80,
+      "socialLinks": { "instagram": "https://instagram.com/mateorios", "behance": "https://behance.net/mateorios" }
+    },
+    {
+      "id": "artist-002",
+      "userId": "user-artist-002",
+      "displayName": "Sofía Nakamura",
+      "username": "sofinaka",
+      "bio": "Diseñadora de personajes y retratos digitales con una paleta suave y cinematográfica.",
+      "disciplines": ["Retrato", "Diseño de personajes"],
+      "styles": ["Anime", "Cinematográfico", "Suave"],
+      "location": "Ciudad de México, México",
+      "availability": "waitlist",
+      "slots": 0,
+      "rating": 4.8,
+      "verified": true,
+      "basePrice": 120,
+      "socialLinks": { "instagram": "https://instagram.com/sofinaka", "artstation": "https://artstation.com/sofinaka" }
+    },
+    {
+      "id": "artist-003",
+      "userId": "user-artist-003",
+      "displayName": "Diego Álvarez",
+      "username": "diegoalvarez3d",
+      "bio": "Artista 3D enfocado en producto, arquitectura y escenas para marcas independientes.",
+      "disciplines": ["Arte 3D", "Render", "Motion"],
+      "styles": ["Minimalista", "Realista", "Producto"],
+      "location": "Valencia, España",
+      "availability": "closed",
+      "slots": 0,
+      "rating": 4.6,
+      "verified": false,
+      "basePrice": 200,
+      "socialLinks": { "behance": "https://behance.net/diegoalvarez3d" }
+    }
+  ],
+  "portfolioItems": [
+    { "id": "portfolio-001", "artistId": "artist-001", "title": "La guardiana del bosque", "image": "https://picsum.photos/seed/forest-guardian/900/700", "category": "Ilustración", "description": "Personaje editorial para una novela juvenil.", "featured": true },
+    { "id": "portfolio-002", "artistId": "artist-001", "title": "Mapa de las islas flotantes", "image": "https://picsum.photos/seed/floating-islands/900/700", "category": "Concept art", "description": "Mapa ilustrado de un universo de fantasía.", "featured": true },
+    { "id": "portfolio-003", "artistId": "artist-002", "title": "Retrato de invierno", "image": "https://picsum.photos/seed/winter-portrait/900/700", "category": "Retrato", "description": "Retrato digital con iluminación cinematográfica.", "featured": true },
+    { "id": "portfolio-004", "artistId": "artist-002", "title": "Nina, exploradora lunar", "image": "https://picsum.photos/seed/lunar-explorer/900/700", "category": "Diseño de personajes", "description": "Hoja de personaje para una aventura espacial.", "featured": false },
+    { "id": "portfolio-005", "artistId": "artist-003", "title": "Lámpara Forma", "image": "https://picsum.photos/seed/form-lamp/900/700", "category": "Arte 3D", "description": "Visualización de producto para una colección de diseño.", "featured": true },
+    { "id": "portfolio-006", "artistId": "artist-003", "title": "Estudio de hormigón", "image": "https://picsum.photos/seed/concrete-study/900/700", "category": "Render", "description": "Escena arquitectónica de estilo minimalista.", "featured": false }
+  ],
+  "commissions": [
+    { "id": "commission-001", "artistId": "artist-001", "title": "Retrato ilustrado", "description": "Retrato de una persona o personaje con fondo sencillo.", "category": "Ilustración", "price": 80, "deliveryDays": 7, "revisions": 2, "status": "active", "terms": "Uso personal incluido; uso comercial se cotiza aparte." },
+    { "id": "commission-002", "artistId": "artist-001", "title": "Personaje de fantasía", "description": "Diseño de personaje de cuerpo completo con accesorios.", "category": "Concept art", "price": 180, "deliveryDays": 14, "revisions": 2, "status": "active", "terms": "Se entrega archivo PNG de alta resolución y boceto aprobado." },
+    { "id": "commission-003", "artistId": "artist-002", "title": "Avatar estilizado", "description": "Avatar cuadrado para redes sociales o comunidades online.", "category": "Retrato", "price": 120, "deliveryDays": 10, "revisions": 1, "status": "active", "terms": "Una persona o personaje por encargo." },
+    { "id": "commission-004", "artistId": "artist-002", "title": "Hoja de personaje", "description": "Vista frontal, lateral y tres expresiones del personaje.", "category": "Diseño de personajes", "price": 260, "deliveryDays": 21, "revisions": 2, "status": "paused", "terms": "Disponible nuevamente al abrir nuevos cupos." },
+    { "id": "commission-005", "artistId": "artist-003", "title": "Render de producto", "description": "Render 3D de producto con iluminación de estudio.", "category": "Arte 3D", "price": 300, "deliveryDays": 18, "revisions": 1, "status": "paused", "terms": "El cliente debe proporcionar modelos o referencias técnicas." },
+    { "id": "commission-006", "artistId": "artist-003", "title": "Escena arquitectónica", "description": "Una escena exterior o interior con composición final.", "category": "Render", "price": 500, "deliveryDays": 30, "revisions": 2, "status": "paused", "terms": "La disponibilidad se confirma antes de iniciar el proyecto." }
+  ],
+  "categories": [
+    { "id": "category-001", "name": "Ilustración", "slug": "ilustracion", "color": "#C54B32" },
+    { "id": "category-002", "name": "Concept art", "slug": "concept-art", "color": "#2B6F77" },
+    { "id": "category-003", "name": "Retrato", "slug": "retrato", "color": "#B9823B" },
+    { "id": "category-004", "name": "Diseño de personajes", "slug": "diseno-personajes", "color": "#7562A6" },
+    { "id": "category-005", "name": "Arte 3D", "slug": "arte-3d", "color": "#3F7770" },
+    { "id": "category-006", "name": "Render", "slug": "render", "color": "#A45D74" }
+  ],
+  "requests": [
+    { "id": "request-001", "clientId": "user-client-001", "artistId": "artist-001", "commissionId": "commission-001", "description": "Necesito un retrato de mi personaje para mi perfil de escritora.", "budget": 90, "desiredDate": "2026-10-15", "references": ["https://picsum.photos/seed/reference-one/600/400"], "status": "in_progress", "createdAt": "2026-09-18T12:00:00.000Z" },
+    { "id": "request-002", "clientId": "user-client-001", "artistId": "artist-002", "commissionId": "commission-003", "description": "Me gustaría un avatar con una estética nocturna y tonos azules.", "budget": 120, "desiredDate": "2026-11-01", "references": [], "status": "pending", "createdAt": "2026-09-20T16:30:00.000Z" },
+    { "id": "request-003", "clientId": "user-client-001", "artistId": "artist-001", "commissionId": "commission-002", "description": "Consulta inicial para una protagonista de fantasía.", "budget": 180, "desiredDate": "2026-12-10", "references": [], "status": "completed", "createdAt": "2026-08-02T09:15:00.000Z" },
+    { "id": "request-004", "clientId": "user-client-001", "artistId": "artist-003", "commissionId": "commission-005", "description": "Quiero consultar disponibilidad para renderizar un objeto de cerámica.", "budget": 300, "desiredDate": "2026-12-20", "references": ["https://picsum.photos/seed/ceramic-object/600/400"], "status": "rejected", "createdAt": "2026-08-25T18:45:00.000Z" }
+  ],
+  "messages": [
+    { "id": "message-001", "requestId": "request-001", "senderId": "user-client-001", "receiverId": "user-artist-001", "body": "¡Hola! Te comparto la idea general del personaje.", "read": true, "createdAt": "2026-09-18T12:05:00.000Z" },
+    { "id": "message-002", "requestId": "request-001", "senderId": "user-artist-001", "receiverId": "user-client-001", "body": "Gracias, recibí la referencia. En breve te envío el primer boceto.", "read": true, "createdAt": "2026-09-18T14:20:00.000Z" },
+    { "id": "message-003", "requestId": "request-002", "senderId": "user-client-001", "receiverId": "user-artist-002", "body": "¿Podrías usar una expresión más serena?", "read": false, "createdAt": "2026-09-20T17:00:00.000Z" },
+    { "id": "message-004", "requestId": "request-003", "senderId": "user-artist-001", "receiverId": "user-client-001", "body": "El proyecto quedó entregado. Gracias por confiar en mi trabajo.", "read": true, "createdAt": "2026-08-16T10:30:00.000Z" },
+    { "id": "message-005", "requestId": "request-004", "senderId": "user-artist-003", "receiverId": "user-client-001", "body": "Ahora mismo tengo la agenda cerrada, pero puedes unirte a la lista de espera.", "read": true, "createdAt": "2026-08-26T08:10:00.000Z" }
+  ]
 }

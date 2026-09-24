@@ -33,6 +33,18 @@ npm run server
 
 La API simulada quedará disponible en `http://localhost:3000` y leerá `db.json`.
 
+El cliente Axios usa esa URL por defecto. Para cambiarla, crea un archivo `.env` en `ArtLink/`:
+
+```bash
+VITE_API_URL=http://localhost:3000
+```
+
+También puedes iniciar JSON Server directamente con:
+
+```bash
+npx json-server --watch db.json --port 3000
+```
+
 En otra terminal inicia Vite:
 
 ```bash
