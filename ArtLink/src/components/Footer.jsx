@@ -63,7 +63,9 @@ export default function Footer() {
           </ul>
         </nav>
       </div>
-      <small className="footer-note">Hecho para artistas digitales y sus próximas historias. Prototipo académico ArtLink.</small>
+      <div className="footer-bottom">
+        <small className="footer-note">Hecho para artistas digitales y sus próximas historias. Prototipo académico ArtLink.</small>
+      </div>
     </footer>
   )
 }
