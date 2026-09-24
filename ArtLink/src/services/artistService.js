@@ -17,7 +17,14 @@ export async function getArtists(params = {}) {
   } catch (error) { throw getServiceError(error, resource) }
 }
 export async function getArtistById(id) {
-  try { return (await apiClient.get(`/artistProfiles/${id}`)).data } catch (error) { throw getServiceError(error, resource) }
+  try {
+    const [{ data: profile }, { data: users }] = await Promise.all([
+      apiClient.get(`/artistProfiles/${id}`),
+      apiClient.get('/users'),
+    ])
+    const user = users.find((candidate) => candidate.id === profile.userId)
+    return { ...profile, avatar: user?.avatar || '', name: user?.name || profile.displayName }
+  } catch (error) { throw getServiceError(error, resource) }
 }
 export async function getArtistByUserId(userId) {
   try { return (await apiClient.get('/artistProfiles', { params: { userId } })).data } catch (error) { throw getServiceError(error, resource) }
