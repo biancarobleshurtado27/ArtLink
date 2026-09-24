@@ -1,8 +1,12 @@
-export default function SectionHeading({ eyebrow, title }) {
+export default function SectionHeading({ eyebrow, title, description, action }) {
   return (
-    <>
-      {eyebrow && <p>{eyebrow}</p>}
-      <h1>{title}</h1>
-    </>
+    <div className="section-heading">
+      <div>
+        {eyebrow && <p className="eyebrow">{eyebrow}</p>}
+        <h2>{title}</h2>
+        {description && <p className="section-description">{description}</p>}
+      </div>
+      {action}
+    </div>
   )
 }

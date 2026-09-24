@@ -75,3 +75,11 @@ npm run build
 - `src/styles`: tokens y estilos compartidos.
 - `tests`: pruebas con Vitest y React Testing Library.
 - `db.json`: fuente de datos para JSON Server.
+
+## Guía visual
+
+- **Dirección:** galería pastel viva con composición editorial y detalles scrapbook. Las tarjetas usan borde oscuro, sombra firme y pequeñas inclinaciones para sentirse como recortes de papel.
+- **Color:** violeta para acciones y foco, rosa para acentos, menta para estados positivos, amarillo para llamadas secundarias y tinta para texto/bordes. Los fondos crema y lila mantienen contraste y respiración.
+- **Tipografía:** `Epilogue` para títulos, `Plus Jakarta Sans` para interfaz y `Space Grotesk` para badges. Las variables globales están en `src/styles/visual.css`.
+- **Responsive:** desde 48rem se muestra la navegación móvil con menú compacto y barra inferior; en escritorio se muestra la navegación completa. Las tarjetas pasan de tres columnas a dos y luego a una.
+- **Accesibilidad:** navegación semántica, nombres accesibles para iconos, foco visible, labels asociados y estados con `role="status"` o `role="alert"`.

@@ -19,6 +19,9 @@ export default function AppRouter() {
           <Route path="/artista/:id" element={page('Perfil del artista')} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/registro" element={<RegisterPage />} />
+          <Route path="/como-funciona" element={page('Cómo funciona')} />
+          <Route path="/para-artistas" element={page('Para artistas')} />
+          <Route path="/perfil" element={page('Mi perfil')} />
 
           <Route element={<ProtectedRoute allowedRoles={[ROLES.CLIENT, ROLES.ARTIST, ROLES.ADMIN]} />}>
             <Route path="/solicitudes" element={page('Mis solicitudes')} />

@@ -15,6 +15,6 @@ describe('ArtLink base shell', () => {
     )
 
     expect(screen.getByRole('link', { name: 'ArtLink' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Explorar' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Explorar artistas' })).toBeInTheDocument()
   })
 })
