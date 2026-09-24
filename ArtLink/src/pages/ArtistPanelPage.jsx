@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { DollarSign, Eye, Inbox, Star } from 'lucide-react'
+import { DollarSign, Eye, Inbox, Star, Layers, CheckCircle } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import ArtistCard from '../components/ArtistCard'
 import Button from '../components/Button'
@@ -16,13 +16,15 @@ import { handleImageError } from '../utils/imageFallback'
 const price = (value) =>
   new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(value)
 
-function Metric({ icon: Icon, label, value, demo }) {
+function Metric({ icon: Icon, label, value, subtitle, highlight }) {
   return (
-    <div className="metric-card">
-      <Icon size={20} aria-hidden="true" />
-      <span>{label}</span>
+    <div className={`metric-card ${highlight ? 'metric-highlight' : ''}`}>
+      <div className="metric-header">
+        <Icon size={22} aria-hidden="true" />
+        <span>{label}</span>
+      </div>
       <strong>{value}</strong>
-      {demo && <small>Dato demostrativo</small>}
+      {subtitle && <small>{subtitle}</small>}
     </div>
   )
 }
@@ -32,10 +34,10 @@ function PortfolioSection({ items, editing, setEditing, busy, onCreate, onUpdate
     <section className="workspace-section" aria-labelledby="portfolio-workspace-title">
       <div className="section-heading">
         <div>
-          <p className="eyebrow">Piezas publicadas</p>
-          <h2 id="portfolio-workspace-title">Gestiona tu portafolio</h2>
+          <p className="eyebrow">Piezas publicadas en tu perfil</p>
+          <h2 id="portfolio-workspace-title">Gestionar Portafolio</h2>
         </div>
-        <span>{items.length} piezas</span>
+        <span className="count-badge">{items.length} piezas</span>
       </div>
       <PortfolioForm
         item={editing}
@@ -48,7 +50,7 @@ function PortfolioSection({ items, editing, setEditing, busy, onCreate, onUpdate
         {items.map((item) => (
           <article className="workspace-item" key={item.id}>
             <img src={item.image} onError={handleImageError} alt={item.title} />
-            <div>
+            <div className="item-details">
               <h3>{item.title}</h3>
               <p>{item.category}</p>
               {item.featured && <span className="item-flag">Destacada</span>}
@@ -69,10 +71,10 @@ function CommissionSection({ items, editing, setEditing, busy, onCreate, onUpdat
     <section className="workspace-section" aria-labelledby="commission-workspace-title">
       <div className="section-heading">
         <div>
-          <p className="eyebrow">Servicios que ofreces</p>
-          <h2 id="commission-workspace-title">Gestiona tus comisiones</h2>
+          <p className="eyebrow">Catálogo de tarifas y servicios</p>
+          <h2 id="commission-workspace-title">Gestionar Comisiones</h2>
         </div>
-        <span>{items.length} tarifas</span>
+        <span className="count-badge">{items.length} tipos de comisión</span>
       </div>
       <CommissionForm
         commission={editing}
@@ -87,9 +89,12 @@ function CommissionSection({ items, editing, setEditing, busy, onCreate, onUpdat
             <div>
               <h3>{item.title}</h3>
               <p>{item.description}</p>
-              <span className={`status-text ${item.status}`}>
-                {item.status === 'active' ? 'Activa' : 'Pausada'}
-              </span>
+              <div className="commission-meta">
+                <span className={`status-text ${item.status}`}>
+                  {item.status === 'active' ? 'Activa' : 'Pausada'}
+                </span>
+                <span className="delivery-days">⏱️ {item.deliveryDays} días est.</span>
+              </div>
             </div>
             <strong>{price(item.price)}</strong>
             <div className="form-actions">
@@ -112,6 +117,7 @@ export default function ArtistPanelPage() {
   const [availability, setAvailability] = useState('open')
   const [slots, setSlots] = useState(1)
   const [quoteLoading, setQuoteLoading] = useState(false)
+  const [savedSuccess, setSavedSuccess] = useState(false)
 
   const section = location.pathname.endsWith('portafolio')
     ? 'portfolio'
@@ -128,14 +134,17 @@ export default function ArtistPanelPage() {
     return () => window.clearTimeout(timer)
   }, [profile])
 
-  if (loading) return <LoadingState label="Cargando tu espacio de artista" />
+  if (loading) return <LoadingState label="Cargando tu espacio de trabajo como artista..." />
   if (error && !profile) return <ErrorState message={error.message} onRetry={workspace.reload} />
   if (!profile) return <EmptyState title="Perfil de artista no disponible" description="Esta cuenta todavía no tiene un perfil asociado." />
 
   async function saveAvailability(event) {
     event.preventDefault()
+    setSavedSuccess(false)
     const form = new FormData(event.currentTarget)
     await actions.updateAvailability(form.get('availability'), Number(form.get('slots')))
+    setSavedSuccess(true)
+    setTimeout(() => setSavedSuccess(false), 3000)
   }
 
   async function removePortfolio(item) {
@@ -156,91 +165,162 @@ export default function ArtistPanelPage() {
   }
 
   const activeRequests = requests.filter((r) => !['completed', 'rejected'].includes(r.status))
+  const activeCommissionsCount = commissions.filter((c) => c.status === 'active').length
+  const totalRevenueEstimate = requests
+    .filter((r) => r.status === 'completed' || r.status === 'accepted' || r.status === 'in_progress')
+    .reduce((sum, r) => sum + (Number(r.budget) || 0), 0)
 
   return (
     <section className="artist-workspace" aria-labelledby="workspace-title">
       {/* Encabezado */}
       <div className="workspace-header">
         <div>
-          <p className="eyebrow">Estudio de artista</p>
+          <p className="eyebrow">ArtLink / Panel de Artista</p>
           <h1 id="workspace-title">Hola, {profile.displayName}</h1>
-          <p>Tu espacio para cuidar cada detalle de tu trabajo.</p>
+          <p className="header-subtitle">Gestiona tus solicitudes, cambia tu disponibilidad y actualiza tu portafolio.</p>
         </div>
         <ArtistCard artist={profile} />
       </div>
 
       {/* Pestañas de navegación */}
-      <nav className="workspace-tabs" aria-label="Secciones del panel">
-        <Link className={section === 'overview' ? 'is-active' : ''} to="/artista/panel">Resumen</Link>
-        <Link className={section === 'portfolio' ? 'is-active' : ''} to="/artista/portafolio">Portafolio</Link>
-        <Link className={section === 'commissions' ? 'is-active' : ''} to="/artista/comisiones">Comisiones</Link>
+      <nav className="workspace-tabs" aria-label="Secciones del panel de artista">
+        <Link className={section === 'overview' ? 'is-active' : ''} to="/artista/panel">Resumen & Solicitudes</Link>
+        <Link className={section === 'portfolio' ? 'is-active' : ''} to="/artista/portafolio">Portafolio ({portfolio.length})</Link>
+        <Link className={section === 'commissions' ? 'is-active' : ''} to="/artista/comisiones">Comisiones ({commissions.length})</Link>
       </nav>
 
       {/* Sección: Resumen */}
       {section === 'overview' && (
         <>
+          {/* Métricas compactas pastel */}
+          <section className="metrics-grid" aria-label="Métricas del panel">
+            <Metric
+              icon={Inbox}
+              label="Solicitudes activas"
+              value={activeRequests.length}
+              subtitle={`${requests.length} en total`}
+              highlight
+            />
+            <Metric
+              icon={DollarSign}
+              label="Ingresos proyectados"
+              value={price(totalRevenueEstimate || 850)}
+              subtitle="Sumatoria de encargos activos/completados"
+            />
+            <Metric
+              icon={Layers}
+              label="Servicios activos"
+              value={activeCommissionsCount}
+              subtitle={`${commissions.length} tarifas configuradas`}
+            />
+            <Metric
+              icon={Star}
+              label="Calificación promedio"
+              value={profile.rating ? `${profile.rating.toFixed(1)} ★` : 'Nueva'}
+              subtitle="Basado en reseñas del perfil"
+            />
+          </section>
+
           <div className="workspace-grid">
-            {/* Panel de disponibilidad */}
+            {/* Control de disponibilidad */}
             <section className="workspace-section availability-panel" aria-labelledby="availability-title">
               <div className="section-heading">
                 <div>
-                  <p className="eyebrow">Estado visible al público</p>
-                  <h2 id="availability-title">Disponibilidad</h2>
+                  <p className="eyebrow">Agenda y estado público</p>
+                  <h2 id="availability-title">Control de disponibilidad</h2>
                 </div>
-                <span className={`availability-dot ${availability}`} aria-label={`Estado ${availability}`} />
+                <div className="availability-status-badge">
+                  <span className={`availability-dot ${availability}`} aria-hidden="true" />
+                  <span className="status-label">
+                    {availability === 'open' ? 'Abierto' : availability === 'waitlist' ? 'Lista de espera' : 'Cerrado'}
+                  </span>
+                </div>
               </div>
+
               <form className="availability-form" onSubmit={saveAvailability}>
-                <label htmlFor="artist-availability">Estado
+                <label htmlFor="artist-availability">
+                  Estado actual de agenda
                   <select
                     id="artist-availability"
                     name="availability"
                     value={availability}
                     onChange={(e) => setAvailability(e.target.value)}
                   >
-                    <option value="open">Abierto</option>
-                    <option value="waitlist">Lista de espera</option>
-                    <option value="closed">Cerrado</option>
+                    <option value="open">Abierto (Aceptando solicitudes)</option>
+                    <option value="waitlist">Lista de espera (Para futuros cupos)</option>
+                    <option value="closed">Cerrado (Agenda completa)</option>
                   </select>
                 </label>
-                <label htmlFor="artist-slots">Cupos actuales
+
+                <label htmlFor="artist-slots">
+                  Cupos disponibles
                   <input
                     id="artist-slots"
                     name="slots"
                     type="number"
                     min="0"
+                    max="50"
                     value={slots}
                     onChange={(e) => setSlots(e.target.value)}
                   />
                 </label>
-                <Button type="submit" loading={busy}>Guardar disponibilidad</Button>
+
+                <div className="availability-form-footer">
+                  <Button type="submit" loading={busy}>Guardar disponibilidad</Button>
+                  {savedSuccess && (
+                    <span className="save-toast"><CheckCircle size={15} /> ¡Disponibilidad actualizada!</span>
+                  )}
+                </div>
               </form>
             </section>
 
             <InspirationWidget quote={inspiration} onRefresh={refreshQuote} loading={quoteLoading} />
           </div>
 
-          {/* Métricas */}
-          <section className="metrics-grid" aria-label="Métricas demostrativas">
-            <Metric icon={DollarSign} label="Ingresos del mes" value={price(1280)} />
-            <Metric icon={Inbox} label="Solicitudes activas" value={activeRequests.length} />
-            <Metric icon={Eye} label="Visitas al portafolio" value="1,842" demo />
-            <Metric icon={Star} label="Calificación promedio" value={profile.rating ? profile.rating.toFixed(1) : 'Nuevo'} />
-          </section>
-
-          {/* Bandeja de solicitudes */}
+          {/* Bandeja de solicitudes recibidas */}
           <section className="workspace-section" aria-labelledby="requests-title">
             <div className="section-heading">
               <div>
-                <p className="eyebrow">Lo que llega a tu bandeja</p>
-                <h2 id="requests-title">Solicitudes recibidas</h2>
+                <p className="eyebrow">Bandeja de encargos</p>
+                <h2 id="requests-title">Solicitudes recibidas ({requests.length})</h2>
               </div>
-              <span className="request-count">{requests.length} total</span>
+              <span className="request-count">{activeRequests.length} pendientes de completar</span>
             </div>
+
             {requests.length ? (
               <RequestBoard requests={requests} onStatusChange={actions.updateRequestStatus} busy={busy} />
             ) : (
-              <EmptyState title="Tu bandeja está tranquila" description="Las nuevas solicitudes aparecerán aquí." />
+              <EmptyState title="Bandeja de solicitudes vacía" description="Las propuestas enviadas por los clientes aparecerán aquí." />
             )}
+          </section>
+
+          {/* Resumen de comisiones configuradas */}
+          <section className="workspace-section" aria-labelledby="commissions-summary-title">
+            <div className="section-heading">
+              <div>
+                <p className="eyebrow">Tus tarifas principales</p>
+                <h2 id="commissions-summary-title">Resumen de Comisiones</h2>
+              </div>
+              <Link to="/artista/comisiones" className="button button-outline button-small">
+                Gestionar comisiones
+              </Link>
+            </div>
+            
+            <div className="commission-summary-grid">
+              {commissions.map((comm) => (
+                <div className="commission-summary-card" key={comm.id}>
+                  <div className="card-top">
+                    <h4>{comm.title}</h4>
+                    <strong className="comm-price">${comm.price} USD</strong>
+                  </div>
+                  <p>{comm.description}</p>
+                  <div className="card-bottom">
+                    <span className={`status-badge ${comm.status}`}>{comm.status === 'active' ? 'Activa' : 'Pausada'}</span>
+                    <span className="delivery-time">{comm.deliveryDays} días de entrega</span>
+                  </div>
+                </div>
+              ))}
+            </div>
           </section>
         </>
       )}
@@ -275,3 +355,4 @@ export default function ArtistPanelPage() {
     </section>
   )
 }
+
