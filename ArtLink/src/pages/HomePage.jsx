@@ -1,26 +1,35 @@
-import { ArrowRight, Sparkles } from 'lucide-react'
+import { ArrowRight, Check, Sparkles } from 'lucide-react'
+import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import ArtistCard from '../components/ArtistCard'
+import AssistantWidget from '../components/AssistantWidget'
+import EmptyState from '../components/EmptyState'
+import ErrorState from '../components/ErrorState'
+import LoadingState from '../components/LoadingState'
+import SearchBar from '../components/SearchBar'
 import SectionHeading from '../components/SectionHeading'
+import useArtists from '../hooks/useArtists'
+import useCategories from '../hooks/useCategories'
 
-const featuredArtists = [
-  { id: 'artist-001', displayName: 'Mateo Ríos', username: 'mateorios', bio: 'Ilustrador editorial especializado en mundos narrativos y personajes expresivos.', location: 'Bogotá, Colombia', availability: 'open', rating: 4.9, verified: true, styles: ['Editorial', 'Fantástico', 'Colorido'], avatar: 'https://i.pravatar.cc/150?img=12' },
-  { id: 'artist-002', displayName: 'Sofía Nakamura', username: 'sofinaka', bio: 'Diseñadora de personajes y retratos digitales con una paleta suave y cinematográfica.', location: 'Ciudad de México, México', availability: 'waitlist', rating: 4.8, verified: true, styles: ['Anime', 'Cinematográfico', 'Suave'], avatar: 'https://i.pravatar.cc/150?img=32' },
-  { id: 'artist-003', displayName: 'Diego Álvarez', username: 'diegoalvarez3d', bio: 'Artista 3D enfocado en producto, arquitectura y escenas para marcas independientes.', location: 'Valencia, España', availability: 'closed', rating: 4.6, verified: false, styles: ['Minimalista', 'Realista', 'Producto'], avatar: 'https://i.pravatar.cc/150?img=68' },
-]
+const demoMetrics = ['+2,400 artistas', '100% información centralizada', '4.9/5 satisfacción']
 
 export default function HomePage() {
+  const [query, setQuery] = useState('')
+  const { artists, loading: artistsLoading, error: artistsError } = useArtists()
+  const { categories, loading: categoriesLoading } = useCategories()
+  const featuredArtists = useMemo(() => artists.filter((artist) => artist.verified).slice(0, 3), [artists])
+
   return (
     <>
       <section className="hero" aria-labelledby="hero-title">
         <div className="hero-copy">
           <span className="sticker hero-sticker"><Sparkles size={13} aria-hidden="true" /> Hecho a mano</span>
           <p className="eyebrow">Un lugar para hacer clic con tu próxima idea</p>
-          <h1 id="hero-title">Encuentra arte que <em>se siente tuyo.</em></h1>
-          <p className="hero-description">Descubre artistas digitales, explora sus mundos y convierte una buena idea en algo que puedas guardar para siempre.</p>
+          <h1 id="hero-title">Encuentra el arte que <em>imaginas.</em></h1>
+          <p className="hero-description">ArtLink centraliza artistas, portafolios, precios y disponibilidad para que puedas pasar de una idea a una colaboración sin perderte en el camino.</p>
           <div className="hero-actions">
             <Link className="button button-primary" to="/explorar">Explorar artistas <ArrowRight size={17} aria-hidden="true" /></Link>
-            <Link className="button button-secondary" to="/registro">Quiero crear</Link>
+            <Link className="button button-secondary" to="/registro">Crear perfil</Link>
           </div>
         </div>
         <div className="hero-art" aria-label="Presentación de ArtLink">
@@ -35,12 +44,15 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      <section className="home-search-section" aria-labelledby="search-title"><SectionHeading eyebrow="Busca sin perder la chispa" title="Tu próximo descubrimiento está a un filtro de distancia" /><SearchBar value={query} onChange={setQuery} onSubmit={() => { window.location.href = `/explorar${query ? `?q=${encodeURIComponent(query)}` : ''}` }} placeholder="Busca por nombre, estilo o disciplina" /><div className="category-chips" aria-label="Categorías populares">{categoriesLoading ? <span className="chip-placeholder">Cargando categorías...</span> : categories.filter((category) => ['ilustracion-2d', 'modelado-3d', 'animacion', 'pixel-art', 'emotes'].includes(category.slug)).map((category) => <Link className="category-chip" key={category.id} to={`/explorar?discipline=${encodeURIComponent(category.name)}`}>{category.name}<ArrowRight size={14} aria-hidden="true" /></Link>)}</div></section>
+      <section className="metrics-strip" aria-label="Métricas demostrativas de ArtLink">{demoMetrics.map((metric) => <div className="metric" key={metric}><strong>{metric}</strong><span>Dato demostrativo</span></div>)}</section>
       <section aria-labelledby="featured-title">
         <SectionHeading eyebrow="La selección de hoy" title="Personas que hacen cosas bonitas" description="Tres universos creativos para empezar a explorar." action={<Link className="button button-outline button-small" to="/explorar">Ver todos <ArrowRight size={15} aria-hidden="true" /></Link>} />
-        <div className="artist-grid">
-          {featuredArtists.map((artist) => <ArtistCard artist={artist} key={artist.id} />)}
-        </div>
+        {artistsLoading && <LoadingState label="Cargando artistas destacados" />}{artistsError && <ErrorState message={artistsError.message} />}{!artistsLoading && !artistsError && featuredArtists.length === 0 && <EmptyState title="Pronto habrá artistas destacados" description="Inicia JSON Server para cargar el directorio demo." />}{!artistsLoading && !artistsError && featuredArtists.length > 0 && <div className="artist-grid">{featuredArtists.map((artist) => <ArtistCard artist={artist} key={artist.id} />)}</div>}
       </section>
+      <section className="artist-space-section" aria-labelledby="space-title"><div className="space-copy"><p className="eyebrow">Más que un perfil</p><h2 id="space-title">Así luce el espacio de un artista en ArtLink</h2><p>Un solo lugar para contar quién eres, mostrar tu trabajo, definir tus precios y avisar cuándo tienes un hueco en la agenda.</p><ul><li><Check size={17} aria-hidden="true" /> Portafolio ordenado por disciplinas</li><li><Check size={17} aria-hidden="true" /> Comisiones con precios y entregas claras</li><li><Check size={17} aria-hidden="true" /> Disponibilidad visible para cada cliente</li></ul><Link className="button button-primary" to="/registro">Crear mi espacio <ArrowRight size={17} aria-hidden="true" /></Link></div><div className="space-preview" aria-label="Vista previa de un perfil de artista"><div className="preview-tape" /><div className="preview-avatar" /><span className="preview-line preview-line-long" /><span className="preview-line" /><div className="preview-blocks"><span /><span /><span /></div></div></section>
+      <section className="final-cta" aria-labelledby="cta-title"><span className="sticker">Tu próxima colaboración está aquí</span><h2 id="cta-title">Haz espacio para las buenas ideas.</h2><div><Link className="button button-primary" to="/registro">Crear perfil</Link><Link className="button button-secondary" to="/explorar">Explorar artistas</Link></div></section>
+      <AssistantWidget />
     </>
   )
 }

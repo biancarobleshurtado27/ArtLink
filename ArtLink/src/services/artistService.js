@@ -3,7 +3,18 @@ import apiClient, { getServiceError } from './apiClient'
 const resource = 'perfiles de artistas'
 
 export async function getArtists(params = {}) {
-  try { return (await apiClient.get('/artistProfiles', { params })).data } catch (error) { throw getServiceError(error, resource) }
+  try {
+    const [{ data: profiles }, { data: users }] = await Promise.all([
+      apiClient.get('/artistProfiles', { params }),
+      apiClient.get('/users'),
+    ])
+    const usersById = new Map(users.map((user) => [user.id, user]))
+    return profiles.map((profile) => ({
+      ...profile,
+      avatar: usersById.get(profile.userId)?.avatar || '',
+      name: usersById.get(profile.userId)?.name || profile.displayName,
+    }))
+  } catch (error) { throw getServiceError(error, resource) }
 }
 export async function getArtistById(id) {
   try { return (await apiClient.get(`/artistProfiles/${id}`)).data } catch (error) { throw getServiceError(error, resource) }

@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import AppLayout from '../layouts/AppLayout'
 import PlaceholderPage from '../pages/PlaceholderPage'
 import HomePage from '../pages/HomePage'
+import ExplorePage from '../pages/ExplorePage'
 import NotFoundPage from '../pages/NotFoundPage'
 import { LoginPage, RegisterPage } from '../pages/AuthPages'
 import ProtectedRoute from './ProtectedRoute'
@@ -15,7 +16,7 @@ export default function AppRouter() {
       <Routes>
         <Route element={<AppLayout />}>
           <Route path="/" element={<HomePage />} />
-          <Route path="/explorar" element={page('Explorar artistas')} />
+          <Route path="/explorar" element={<ExplorePage />} />
           <Route path="/artista/:id" element={page('Perfil del artista')} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/registro" element={<RegisterPage />} />

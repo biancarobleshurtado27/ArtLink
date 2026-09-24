@@ -58,7 +58,7 @@
       "displayName": "Mateo Ríos",
       "username": "mateorios",
       "bio": "Ilustrador editorial especializado en mundos narrativos y personajes expresivos.",
-      "disciplines": ["Ilustración", "Concept art"],
+      "disciplines": ["Ilustración", "Ilustración 2D", "Concept art"],
       "styles": ["Editorial", "Fantástico", "Colorido"],
       "location": "Bogotá, Colombia",
       "availability": "open",
@@ -90,7 +90,7 @@
       "displayName": "Diego Álvarez",
       "username": "diegoalvarez3d",
       "bio": "Artista 3D enfocado en producto, arquitectura y escenas para marcas independientes.",
-      "disciplines": ["Arte 3D", "Render", "Motion"],
+      "disciplines": ["Arte 3D", "Modelado 3D", "Render", "Motion"],
       "styles": ["Minimalista", "Realista", "Producto"],
       "location": "Valencia, España",
       "availability": "closed",
@@ -118,12 +118,16 @@
     { "id": "commission-006", "artistId": "artist-003", "title": "Escena arquitectónica", "description": "Una escena exterior o interior con composición final.", "category": "Render", "price": 500, "deliveryDays": 30, "revisions": 2, "status": "paused", "terms": "La disponibilidad se confirma antes de iniciar el proyecto." }
   ],
   "categories": [
-    { "id": "category-001", "name": "Ilustración", "slug": "ilustracion", "color": "#C54B32" },
+    { "id": "category-001", "name": "Ilustración 2D", "slug": "ilustracion-2d", "color": "#C54B32" },
     { "id": "category-002", "name": "Concept art", "slug": "concept-art", "color": "#2B6F77" },
     { "id": "category-003", "name": "Retrato", "slug": "retrato", "color": "#B9823B" },
     { "id": "category-004", "name": "Diseño de personajes", "slug": "diseno-personajes", "color": "#7562A6" },
     { "id": "category-005", "name": "Arte 3D", "slug": "arte-3d", "color": "#3F7770" },
-    { "id": "category-006", "name": "Render", "slug": "render", "color": "#A45D74" }
+    { "id": "category-006", "name": "Render", "slug": "render", "color": "#A45D74" },
+    { "id": "category-007", "name": "Modelado 3D", "slug": "modelado-3d", "color": "#3F7770" },
+    { "id": "category-008", "name": "Animación", "slug": "animacion", "color": "#F472B6" },
+    { "id": "category-009", "name": "Pixel Art", "slug": "pixel-art", "color": "#FEF08A" },
+    { "id": "category-010", "name": "Emotes", "slug": "emotes", "color": "#8B5CF6" }
   ],
   "requests": [
     { "id": "request-001", "clientId": "user-client-001", "artistId": "artist-001", "commissionId": "commission-001", "description": "Necesito un retrato de mi personaje para mi perfil de escritora.", "budget": 90, "desiredDate": "2026-10-15", "references": ["https://picsum.photos/seed/reference-one/600/400"], "status": "in_progress", "createdAt": "2026-09-18T12:00:00.000Z" },
