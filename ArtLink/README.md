@@ -37,6 +37,10 @@ El cliente Axios usa esa URL por defecto. Para cambiarla, crea un archivo `.env`
 
 ```bash
 VITE_API_URL=http://localhost:3000
+
+# Asistente ArtLink (opcional; usar un proxy/backend propio para no exponer secretos en producción)
+VITE_AI_API_URL=
+VITE_AI_API_KEY=
 ```
 
 También puedes iniciar JSON Server directamente con:
@@ -44,6 +48,12 @@ También puedes iniciar JSON Server directamente con:
 ```bash
 npx json-server --watch db.json --port 3000
 ```
+
+## Asistente ArtLink
+
+El asistente usa `VITE_AI_API_URL` y `VITE_AI_API_KEY` únicamente cuando ambas variables están configuradas. En desarrollo académico, si faltan, funciona en **modo demostración** con reglas locales deterministas para interpretar disciplina, estilo, presupuesto y disponibilidad. Las recomendaciones son orientativas: el asistente no compra, reserva ni ejecuta operaciones externas.
+
+Puedes copiar `.env.example` como `.env` y completar las variables solo mediante un endpoint/proxy autorizado. No incluyas claves reales en el repositorio.
 
 En otra terminal inicia Vite:
 

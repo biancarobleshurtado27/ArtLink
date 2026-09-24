@@ -2,7 +2,6 @@ import { ArrowRight, Check, Sparkles } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import ArtistCard from '../components/ArtistCard'
-import AssistantWidget from '../components/AssistantWidget'
 import EmptyState from '../components/EmptyState'
 import ErrorState from '../components/ErrorState'
 import LoadingState from '../components/LoadingState'
@@ -52,7 +51,6 @@ export default function HomePage() {
       </section>
       <section className="artist-space-section" aria-labelledby="space-title"><div className="space-copy"><p className="eyebrow">Más que un perfil</p><h2 id="space-title">Así luce el espacio de un artista en ArtLink</h2><p>Un solo lugar para contar quién eres, mostrar tu trabajo, definir tus precios y avisar cuándo tienes un hueco en la agenda.</p><ul><li><Check size={17} aria-hidden="true" /> Portafolio ordenado por disciplinas</li><li><Check size={17} aria-hidden="true" /> Comisiones con precios y entregas claras</li><li><Check size={17} aria-hidden="true" /> Disponibilidad visible para cada cliente</li></ul><Link className="button button-primary" to="/registro">Crear mi espacio <ArrowRight size={17} aria-hidden="true" /></Link></div><div className="space-preview" aria-label="Vista previa de un perfil de artista"><div className="preview-tape" /><div className="preview-avatar" /><span className="preview-line preview-line-long" /><span className="preview-line" /><div className="preview-blocks"><span /><span /><span /></div></div></section>
       <section className="final-cta" aria-labelledby="cta-title"><span className="sticker">Tu próxima colaboración está aquí</span><h2 id="cta-title">Haz espacio para las buenas ideas.</h2><div><Link className="button button-primary" to="/registro">Crear perfil</Link><Link className="button button-secondary" to="/explorar">Explorar artistas</Link></div></section>
-      <AssistantWidget />
     </>
   )
 }

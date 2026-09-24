@@ -4,6 +4,7 @@ import { Home, Menu, MessageCircle, Palette, Search, UserRound, X } from 'lucide
 import useAuth from '../hooks/useAuth'
 import Footer from '../components/Footer'
 import Button from '../components/Button'
+import AssistantWidget from '../components/AssistantWidget'
 
 const desktopLinks = [
   { to: '/explorar', label: 'Explorar artistas' },
@@ -40,6 +41,7 @@ export default function AppShell() {
       </header>
       <main className="main-content"><Outlet /></main>
       <Footer />
+      <AssistantWidget />
       <nav className="bottom-navigation" aria-label="Navegación móvil">
         {mobileLinks.map(({ to, label, icon: Icon }) => <NavLink key={to} to={to} className={({ isActive }) => isActive ? 'is-active' : ''}><Icon size={19} aria-hidden="true" /><span>{label}</span></NavLink>)}
       </nav>
