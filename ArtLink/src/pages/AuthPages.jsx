@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { ArrowRight, Briefcase, CheckCircle2, LogIn, Palette, UserPlus } from 'lucide-react'
+import logoArtLink from '../assets/logo-artlink.png'
 import { ROLES } from '../utils/roles'
 import useAuth from '../hooks/useAuth'
 
@@ -49,6 +50,15 @@ export function LoginPage() {
   return (
     <section className="auth-page" aria-labelledby="login-title">
       <div className="auth-card paper-card">
+        <div className="auth-brand-badge">
+          <Link to="/" className="auth-brand-link" aria-label="Ir al inicio de ArtLink">
+            <img src={logoArtLink} alt="Logo de ArtLink" className="auth-logo" />
+            <span className="brand-text">
+              <strong>ArtLink</strong>
+              <small>Conecta tu arte</small>
+            </span>
+          </Link>
+        </div>
         <p className="eyebrow">ArtLink / acceso</p>
         <h1 id="login-title">Iniciar sesión</h1>
         <p className="auth-subtitle">Usa una cuenta de prueba de JSON Server para entrar.</p>
@@ -119,6 +129,15 @@ export function RegisterPage() {
   return (
     <section className="auth-page" aria-labelledby="register-title">
       <div className="auth-card paper-card">
+        <div className="auth-brand-badge">
+          <Link to="/" className="auth-brand-link" aria-label="Ir al inicio de ArtLink">
+            <img src={logoArtLink} alt="Logo de ArtLink" className="auth-logo" />
+            <span className="brand-text">
+              <strong>ArtLink</strong>
+              <small>Conecta tu arte</small>
+            </span>
+          </Link>
+        </div>
         <p className="eyebrow">ArtLink / acceso</p>
         <h1 id="register-title">Crear cuenta</h1>
         <p className="auth-subtitle">Regístrate como cliente o artista. Si vienes desde “Para artistas”, el rol ya viene elegido.</p>

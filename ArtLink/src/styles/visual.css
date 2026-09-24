@@ -1,22 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Epilogue:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600&family=Space+Grotesk:wght@700&display=swap');
 
-:root[data-theme='dark'] {
-
-  :root[data-theme='dark'] .error-state, :root[data-theme='dark'] .form-error { background: #3A2030; color: #FFD8E8; }
-  :root[data-theme='dark'] .button-primary { color: #171320; }
-  --ink: #F9F5FF;
-  --muted: #D2C9E1;
-  --cream: #171320;
-  --lilac: #29213A;
-  --paper: #211B2D;
-  --line: #524765;
-  --violet-dark: #BBA1FF;
-  --shadow-soft: 3px 4px 0 rgba(0, 0, 0, .55);
-  color-scheme: dark;
-}
-
-:root[data-text-size='large'] { font-size: 112.5%; }
-:root[data-text-size='x-large'] { font-size: 125%; }
+/* El tema oscuro y las escalas de texto viven en styles/tokens.css */
 
 * { box-sizing: border-box; }
 html { overflow-x: hidden; scroll-behavior: smooth; }
@@ -41,7 +25,8 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px
 .mobile-menu-button { background: transparent; border: 0; color: var(--ink); display: none; padding: .4rem; }
 .skip-link { background: var(--yellow); border: 2px solid var(--ink); color: var(--ink); left: 1rem; padding: .65rem .8rem; position: absolute; top: -5rem; z-index: 40; }.skip-link:focus { top: 1rem; }
 .display-controls { align-items: center; display: flex; gap: .35rem; }.display-control { align-items: center; background: transparent; border: 2px solid transparent; color: var(--ink); cursor: pointer; display: inline-flex; justify-content: center; min-height: 44px; min-width: 44px; padding: .45rem; }.text-size-select { background: var(--paper); border: 1.5px solid var(--ink); border-radius: .3rem; color: var(--ink); min-height: 44px; padding: .4rem; }
-.main-content { margin: 0 auto; max-width: 90rem; padding: clamp(2rem, 5vw, 5rem) clamp(1rem, 5vw, 5rem) 6rem; width: 100%; }
+.main-content { flex: 1; padding: clamp(2rem, 5vw, 5rem) clamp(1rem, 5vw, 5rem) 6rem; position: relative; width: 100%; }
+.page-container { margin: 0 auto; max-width: var(--container-wide, 90rem); width: 100%; }
 
 .button { align-items: center; border: 2px solid var(--ink); border-radius: .45rem; cursor: pointer; display: inline-flex; font-family: var(--sans); font-size: .85rem; font-weight: 600; gap: .5rem; justify-content: center; padding: .75rem 1.1rem; text-decoration: none; transition: transform .2s, box-shadow .2s; }
 .button, button, select, input, textarea { min-height: 44px; }

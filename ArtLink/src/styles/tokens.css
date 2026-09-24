@@ -1,9 +1,13 @@
 /*
- * ArtLink design tokens
- * Paleta de galería pastel: violeta, rosa, menta y amarillo sobre crema.
+ * ArtLink — Design tokens
+ * Sistema visual centralizado del anteproyecto: paleta de galería pastel,
+ * tipografías, sombras, bordes, espaciado, contenedores y tema oscuro.
+ * Todas las hojas de estilos consumen estas variables; nada más define
+ * colores crudos salvo excepciones puntuales de contraste en styles/system.css.
  */
+
 :root {
-  /* Colores base (paleta obligatoria) */
+  /* Paleta obligatoria del anteproyecto */
   --violet: #8B5CF6;
   --violet-dark: #5D35C7;
   --violet-deep: #45208F;
@@ -20,7 +24,26 @@
   --muted: #6D657B;
   --line: #DDD4E8;
 
-  /* Tipografías */
+  /* Roles semánticos */
+  --bg: var(--cream);
+  --surface: var(--paper);
+  --surface-soft: var(--lilac);
+  --text: var(--ink);
+  --text-muted: var(--muted);
+  --focus-color: var(--violet);
+
+  /* Estados (fondo fijo pastel + texto de alto contraste) */
+  --success-bg: var(--mint-soft);
+  --success-text: #0F3A33;
+  --warning-bg: var(--yellow);
+  --warning-text: #4A3B00;
+  --danger-bg: var(--rose-soft);
+  --danger-text: #8A1B4F;
+  --info-bg: var(--violet-soft);
+  --info-text: #3B1E8A;
+
+  /* Tipografías: Epilogue (títulos/logotipo), Plus Jakarta Sans (texto y
+     formularios) y Space Grotesk (etiquetas y badges). */
   --font-heading: 'Epilogue', sans-serif;
   --font-sans: 'Plus Jakarta Sans', sans-serif;
   --font-badge: 'Space Grotesk', sans-serif;
@@ -34,7 +57,7 @@
   --shadow-lift: 0 10px 30px rgba(30, 25, 43, .14);
   --shadow: var(--shadow-firm);
 
-  /* Bordes */
+  /* Bordes y radios */
   --border-strong: 2px solid var(--ink);
   --border-line: 1.5px solid var(--line);
   --radius-sm: .35rem;
@@ -56,8 +79,35 @@
   --container-wide: 90rem;
   --container-narrow: 46rem;
 
-  /* Interacción */
-  --focus-ring: 3px solid var(--violet);
+  /* Interacción y accesibilidad */
+  --focus-ring: 3px solid var(--focus-color);
   --transition: transform .2s, box-shadow .2s, background-color .2s, border-color .2s;
   color-scheme: light;
 }
+
+/* Tema oscuro: fondo oscuro con acentos pastel. Centralizado aquí para que
+   toda la aplicación comparta exactamente la misma anatomía del tema. */
+:root[data-theme='dark'] {
+  --bg: #171320;
+  --cream: #171320;
+  --lilac: #29213A;
+  --paper: #211B2D;
+  --line: #524765;
+  --ink: #F9F5FF;
+  --muted: #D2C9E1;
+  --violet-dark: #BBA1FF;
+
+  --surface: var(--paper);
+  --surface-soft: var(--lilac);
+  --text: var(--ink);
+  --text-muted: var(--muted);
+  --focus-color: var(--yellow);
+
+  --shadow-firm: 5px 6px 0 var(--ink);
+  --shadow-soft: 3px 4px 0 rgba(0, 0, 0, .55);
+  color-scheme: dark;
+}
+
+/* Escalas accesibles de tamaño de texto (solo cambia la raíz rem) */
+:root[data-text-size='large'] { font-size: 112.5%; }
+:root[data-text-size='x-large'] { font-size: 125%; }

@@ -1,9 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink, Outlet } from 'react-router-dom'
-import { ChevronDown, Home, Info, LayoutDashboard, LogOut, Menu, MessageCircle, Moon, Palette, Search, Sun, UserPlus, UserRound, X } from 'lucide-react'
+import { ChevronDown, Home, Info, LayoutDashboard, LogOut, Menu, MessageCircle, Moon, Search, Sun, UserPlus, UserRound, X } from 'lucide-react'
+import logoArtLink from '../assets/logo-artlink.png'
 import useAuth from '../hooks/useAuth'
 import Footer from '../components/Footer'
 import AssistantWidget from '../components/AssistantWidget'
+import PageContainer from '../components/PageContainer'
+import BottomNavigation from '../components/BottomNavigation'
 import useDisplayPreferences from '../hooks/useDisplayPreferences'
 import { ROLES, roleLabels } from '../utils/roles'
 
@@ -68,7 +71,7 @@ export default function AppShell() {
       <a className="skip-link" href="#main-content">Saltar al contenido principal</a>
       <header className="site-header">
         <Link className="brand" to="/" aria-label="ArtLink" onClick={closeMenus}>
-          <span className="brand-mark" aria-hidden="true"><Palette size={21} /></span>
+          <img src={logoArtLink} alt="Logo de ArtLink" className="brand-logo" />
           <span className="brand-text">
             <strong>ArtLink</strong>
             <small>Conecta tu arte</small>
@@ -85,6 +88,13 @@ export default function AppShell() {
           {menuOpen ? <X size={22} aria-hidden="true" /> : <Menu size={22} aria-hidden="true" />}
         </button>
         <nav id="main-menu" className={`desktop-nav ${menuOpen ? 'is-open' : ''}`} aria-label="Navegación principal">
+          <div className="mobile-nav-brand" aria-hidden="true">
+            <img src={logoArtLink} alt="Logo de ArtLink" className="brand-logo mobile-nav-brand-logo" />
+            <span className="brand-text">
+              <strong>ArtLink</strong>
+              <small>Conecta tu arte</small>
+            </span>
+          </div>
           {desktopLinks.map((link) => (
             <NavLink
               key={link.to}
@@ -156,16 +166,12 @@ export default function AppShell() {
           </div>
         </nav>
       </header>
-      <main id="main-content" className="main-content"><Outlet /></main>
+      <main id="main-content" className="main-content">
+        <PageContainer><Outlet /></PageContainer>
+      </main>
       <Footer />
       <AssistantWidget />
-      <nav className="bottom-navigation" aria-label="Navegación móvil">
-        {mobileNavLinks.map(({ to, label, icon: Icon }) => (
-          <NavLink key={to} to={to} className={({ isActive }) => (isActive ? 'is-active' : '')}>
-            <Icon size={19} aria-hidden="true" /><span>{label}</span>
-          </NavLink>
-        ))}
-      </nav>
+      <BottomNavigation links={mobileNavLinks} />
     </div>
   )
 }

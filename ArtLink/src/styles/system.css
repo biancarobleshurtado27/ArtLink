@@ -1,0 +1,708 @@
+/*
+ * ArtLink — Capa visual de sistema
+ * Última hoja de estilos (se carga al final en main.jsx). Centraliza el
+ * refinamiento compartido de la interfaz: foco visible, botones, badges,
+ * tarjetas scrapbook, cabecera, navegación, formularios, tablas, alertas,
+ * estados y puntos de quiebre responsive.
+ * La paleta y las tipografías viven en styles/tokens.css.
+ */
+
+/* ==========================================================================
+   1. Foco visible accesible
+   ========================================================================== */
+:where(a, button, [role='button'], input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.skip-link:focus { outline: var(--focus-ring); }
+
+/* ==========================================================================
+   2. Cabecera (AppShell) y Logo de ArtLink
+   ========================================================================== */
+.site-header {
+  background: rgba(255, 253, 248, .94);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-bottom: 2px solid var(--ink);
+  box-shadow: 0 4px 0 rgba(30, 25, 43, .04);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+:root[data-theme='dark'] .site-header { background: rgba(23, 19, 32, .94); }
+
+.brand {
+  align-items: center;
+  color: var(--ink);
+  display: inline-flex;
+  font-family: var(--heading);
+  gap: .75rem;
+  text-decoration: none;
+}
+
+.brand-logo {
+  background: transparent;
+  display: block;
+  flex-shrink: 0;
+  height: 2.85rem;
+  max-width: 4.8rem;
+  object-fit: contain;
+  transition: transform .25s cubic-bezier(.34, 1.56, .64, 1);
+  width: auto;
+}
+
+.brand:hover .brand-logo {
+  transform: scale(1.08) rotate(-4deg);
+}
+
+.brand-text {
+  display: inline-flex;
+  flex-direction: column;
+  line-height: 1.15;
+  text-align: left;
+}
+
+.brand-text strong {
+  color: var(--ink);
+  font-family: var(--heading);
+  font-size: 1.4rem;
+  font-weight: 900;
+  letter-spacing: -.03em;
+}
+
+.brand-text small {
+  color: var(--violet-dark);
+  font-family: var(--badge);
+  font-size: .6rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+:root[data-theme='dark'] .brand-text small {
+  color: var(--mint);
+}
+
+.mobile-nav-brand {
+  align-items: center;
+  border-bottom: 2px dashed var(--line);
+  display: none;
+  gap: .65rem;
+  margin-bottom: .8rem;
+  padding-bottom: .75rem;
+  width: 100%;
+}
+
+.mobile-nav-brand-logo {
+  height: 2.5rem;
+  max-width: 4rem;
+  object-fit: contain;
+}
+
+@media (max-width: 48rem) {
+  .mobile-nav-brand {
+    display: flex;
+  }
+  .brand-logo {
+    height: 2.35rem;
+  }
+}
+
+.desktop-nav { flex-wrap: wrap; }
+.desktop-nav a { position: relative; }
+.desktop-nav a:hover { color: var(--violet-dark); }
+.desktop-nav a.active,
+.desktop-nav a[aria-current='page'] {
+  color: var(--violet-dark);
+}
+
+.desktop-nav a.active::after,
+.desktop-nav a[aria-current='page']::after {
+  background: var(--rose);
+  border-radius: var(--radius-pill);
+  bottom: -.45rem;
+  content: '';
+  height: 3px;
+  left: .2rem;
+  position: absolute;
+  right: .2rem;
+}
+
+.display-control:hover,
+.mobile-menu-button:hover { color: var(--violet-dark); }
+
+/* ==========================================================================
+   3. Navegación inferior (BottomNavigation)
+   ========================================================================== */
+.bottom-navigation a { transition: color .2s; }
+.bottom-navigation a:hover { color: var(--violet-dark); }
+.bottom-navigation a.is-active span {
+  background: var(--surface-soft);
+  border-radius: var(--radius-pill);
+  padding: .15rem .55rem;
+}
+
+.bottom-nav-logo {
+  background: transparent;
+  display: block;
+  height: 1.7rem;
+  max-width: 2.6rem;
+  object-fit: contain;
+  transition: transform .2s ease;
+  width: auto;
+}
+
+.bottom-navigation a.is-active .bottom-nav-logo {
+  transform: scale(1.15);
+  filter: drop-shadow(0 2px 4px rgba(139, 92, 246, .35));
+}
+
+@media (max-width: 30rem) {
+  .bottom-nav-logo {
+    height: 1.5rem;
+  }
+}
+
+/* ==========================================================================
+   Logo en Footer y Auth (Login / Registro)
+   ========================================================================== */
+.footer-logo {
+  background: transparent;
+  display: block;
+  flex-shrink: 0;
+  height: 2.85rem;
+  max-width: 4.8rem;
+  object-fit: contain;
+  transition: transform .25s cubic-bezier(.34, 1.56, .64, 1);
+  width: auto;
+}
+
+.footer-brand:hover .footer-logo {
+  transform: scale(1.08) rotate(-4deg);
+}
+
+.auth-brand-badge {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.35rem;
+}
+
+.auth-brand-link {
+  align-items: center;
+  background: var(--surface-soft);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius);
+  box-shadow: 3px 3px 0 var(--ink);
+  color: var(--ink);
+  display: inline-flex;
+  gap: .75rem;
+  padding: .5rem .95rem .5rem .6rem;
+  text-decoration: none;
+  transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease;
+}
+
+.auth-brand-link:hover {
+  background: var(--yellow);
+  box-shadow: 4px 4px 0 var(--ink);
+  transform: translate(-2px, -2px);
+}
+
+.auth-logo {
+  background: transparent;
+  display: block;
+  height: 3.3rem;
+  max-width: 5.4rem;
+  object-fit: contain;
+  transition: transform .25s cubic-bezier(.34, 1.56, .64, 1);
+  width: auto;
+}
+
+.auth-brand-link:hover .auth-logo {
+  transform: scale(1.08) rotate(-4deg);
+}
+
+@media (max-width: 30rem) {
+  .auth-logo {
+    height: 2.6rem;
+  }
+}
+
+/* ==========================================================================
+   4. Botones (showcases de variantes primaria, secundaria, outline, ghost)
+   ========================================================================== */
+.button {
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-sm);
+  box-shadow: 3px 3px 0 var(--ink);
+  font-family: var(--sans);
+  font-weight: 700;
+  transition: transform .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+
+.button:hover:not(:disabled) {
+  box-shadow: 5px 5px 0 var(--ink);
+  transform: translate(-2px, -2px);
+}
+
+.button-primary {
+  background: var(--violet);
+  color: #FFFFFF;
+}
+
+.button-primary:hover:not(:disabled) {
+  background: var(--violet-dark);
+  color: #FFFFFF;
+}
+
+.button-secondary,
+.button-secondary:hover:not(:disabled) {
+  background: var(--yellow);
+  color: var(--ink);
+}
+
+.button-outline:hover:not(:disabled) {
+  background: var(--surface-soft);
+}
+
+.button-ghost,
+a.button-ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--violet-dark);
+}
+.button-ghost:hover {
+  background: var(--surface-soft);
+  box-shadow: none;
+  color: var(--violet-deep);
+  transform: none;
+}
+
+.button-sm { min-height: 2.4rem; padding: .5rem .85rem; }
+
+.button:hover[disabled],
+.button:hover:disabled {
+  box-shadow: none;
+  opacity: .55;
+  transform: none;
+}
+.button:disabled { cursor: not-allowed; opacity: .55; }
+
+.button:active { box-shadow: none; transform: translate(1px, 1px); }
+
+/* Botón de estado "deshabilitado" renderizado como span (sin handler) */
+.button-disabled,
+.button-disabled:hover {
+  background: #E8E3EA;
+  border-color: #9A929F;
+  box-shadow: none;
+  color: #6D657B;
+  cursor: not-allowed;
+  transform: none;
+}
+
+:root[data-theme='dark'] .button-primary { color: #171320; }
+:root[data-theme='dark'] .button-ghost { color: var(--yellow); }
+:root[data-theme='dark'] .button-ghost:hover { background: var(--lilac); color: var(--yellow); }
+:root[data-theme='dark'] .button-disabled,
+:root[data-theme='dark'] .button-disabled:hover { background: #332C3F; border-color: #6B6275; color: #B4AAC0; }
+
+.filter-button { min-height: 44px; }
+
+.icon-button:hover { color: var(--violet-dark); }
+
+/* ==========================================================================
+   5. Badges (disponibilidad, verificación, estado y categoría)
+   ========================================================================== */
+.badge { text-transform: uppercase; }
+
+.badge-violet,
+.badge-info { background: var(--violet-soft); color: #3B1E8A; }
+.badge-mint,
+.badge-success { background: var(--mint); color: #10211E; }
+.badge-open,
+.badge-active,
+.badge-completed { background: var(--mint-soft); color: #0F3A33; }
+.badge-waitlist,
+.badge-pending,
+.badge-warning { background: var(--yellow); color: #4A3B00; }
+.badge-closed,
+.badge-rejected,
+.badge-danger,
+.badge-rose { background: var(--rose-soft); color: #8A1B4F; }
+.badge-yellow { background: var(--yellow); color: #4A3B00; }
+
+.badge-neutral { background: var(--lilac); border-color: var(--line); color: var(--text-muted); }
+.badge-soft { color: var(--muted); }
+
+:root[data-theme='dark'] .badge-soft { color: var(--muted); }
+
+/* ==========================================================================
+   6. Tarjetas (PaperCard / ScrapbookCard con cinta y sticker opcionales)
+   ========================================================================== */
+.paper-card { border-radius: var(--radius); }
+
+/* Cinta decorativa superior (uso sutil y coherente, no aleatorio) */
+.paper-card--tape::before,
+.artist-card-media::before {
+  background: var(--yellow);
+  border: 1.5px solid var(--ink);
+  content: '';
+  height: 1.1rem;
+  left: 50%;
+  opacity: .92;
+  position: absolute;
+  top: -.55rem;
+  transform: translateX(-50%) rotate(-3deg);
+  width: 3.6rem;
+  z-index: 1;
+}
+
+/* Sticker decorativo en la esquina superior derecha */
+.paper-card--sticker::after {
+  background: var(--rose);
+  border: 1.5px solid var(--ink);
+  border-radius: 50%;
+  box-shadow: 2px 2px 0 var(--ink);
+  content: '';
+  height: 1.15rem;
+  position: absolute;
+  right: -.45rem;
+  top: -.45rem;
+  width: 1.15rem;
+  transform: rotate(12deg);
+  z-index: 2;
+}
+
+/* ==========================================================================
+   7. ArtistCard (imagen, avatar, nombre, disciplinas, precio, rating,
+      disponibilidad y botón "Ver perfil")
+   ========================================================================== */
+.artist-card { padding: 1.25rem; }
+
+.artist-card-media {
+  align-items: center;
+  background: var(--surface-soft);
+  background-image:
+    radial-gradient(circle at 22% 32%, rgba(139, 92, 246, .2) 0 3px, transparent 4px),
+    radial-gradient(circle at 78% 66%, rgba(244, 114, 182, .18) 0 3px, transparent 4px),
+    radial-gradient(circle at 48% 20%, rgba(45, 212, 191, .16) 0 3px, transparent 4px);
+  background-size: 26px 26px, 30px 30px, 22px 22px;
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-sm);
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+  min-height: 6.75rem;
+  overflow: hidden;
+  position: relative;
+}
+
+.artist-card-img {
+  height: 100%;
+  inset: 0;
+  object-fit: cover;
+  position: absolute;
+  width: 100%;
+}
+
+.artist-card-initial {
+  align-items: center;
+  background: var(--rose);
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  box-shadow: 2px 2px 0 var(--ink);
+  color: #FDE9F3;
+  display: flex;
+  font-family: var(--heading);
+  font-size: 1.9rem;
+  font-weight: 900;
+  height: 4.2rem;
+  justify-content: center;
+  position: relative;
+  transform: rotate(-6deg);
+  width: 4.2rem;
+  z-index: 1;
+}
+
+.artist-card-body { display: flex; flex-direction: column; gap: .55rem; }
+.artist-card-top { align-items: flex-start; display: flex; gap: .75rem; justify-content: space-between; }
+.artist-name-row { align-items: center; display: flex; flex-wrap: wrap; gap: .45rem; min-width: 0; }
+.artist-name-row h3 { font-size: 1.18rem; }
+.artist-handle { color: var(--violet-dark); font-size: .78rem; font-weight: 600; margin: 0; }
+.artist-bio { min-height: 2.4rem; margin: 0; }
+.discipline-row { display: flex; flex-wrap: wrap; gap: .35rem; }
+
+/* Botón "Ver perfil": pastilla visible en toda la tarjeta */
+.artist-card .card-link {
+  align-items: center;
+  background: var(--violet);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-sm);
+  box-shadow: 3px 3px 0 var(--ink);
+  color: #FFFFFF;
+  display: flex;
+  font-size: .8rem;
+  font-weight: 700;
+  gap: .4rem;
+  height: auto;
+  justify-content: center;
+  margin-top: 1rem;
+  padding: .65rem 1rem;
+  position: static;
+  text-decoration: none;
+  width: 100%;
+}
+.artist-card .card-link:hover {
+  background: var(--violet-dark);
+  box-shadow: 4px 4px 0 var(--ink);
+  transform: translate(-2px, -2px);
+}
+
+/* ==========================================================================
+   8. Encabezados de sección (SectionHeading)
+   ========================================================================== */
+.section-heading { position: relative; }
+.section-heading .eyebrow {
+  align-items: center;
+  display: inline-flex;
+  gap: .45rem;
+  margin-bottom: .8rem;
+}
+.section-heading .eyebrow::before {
+  background: var(--rose);
+  border: 1.5px solid var(--ink);
+  border-radius: 50%;
+  content: '';
+  height: .55rem;
+  transform: rotate(-8deg);
+  width: .55rem;
+}
+.section-heading h2 { margin: 0; }
+.section-description { color: var(--text-muted); }
+
+/* ==========================================================================
+   9. Formularios y controles
+   ========================================================================== */
+input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='color']),
+select,
+textarea {
+  background: var(--surface);
+  border: 2px solid var(--line);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font: inherit;
+}
+input:not([type='checkbox']):not([type='radio']):not([type='color']):hover,
+select:hover,
+textarea:hover { border-color: var(--violet-soft); }
+
+select { cursor: pointer; }
+
+label { font-family: var(--sans); }
+
+/* ==========================================================================
+   10. Tablas (tablero de solicitudes y CRUD administrativo)
+   ========================================================================== */
+.admin-table-wrap,
+.mock-panel-table-wrap { overflow-x: auto; }
+
+.admin-table {
+  border-collapse: collapse;
+  min-width: 44rem;
+  width: 100%;
+}
+.admin-table th,
+.admin-table td {
+  border-bottom: 1px solid var(--line);
+  font-size: .78rem;
+  padding: .8rem .55rem;
+  text-align: left;
+}
+.admin-table thead th {
+  color: var(--text-muted);
+  font-family: var(--badge);
+  font-size: .64rem;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+.admin-table tbody tr:hover,
+.request-table tbody tr:hover { background: var(--surface-soft); }
+
+.request-table tbody tr:nth-child(even) { background: rgba(243, 238, 255, .45); }
+.request-table tbody th { color: var(--text); }
+
+.admin-toolbar {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .8rem;
+  justify-content: space-between;
+  margin-bottom: 1.2rem;
+}
+.admin-toolbar label { display: grid; font-size: .75rem; font-weight: 600; gap: .35rem; }
+.admin-toolbar input { max-width: 18rem; width: 100%; }
+
+.admin-form {
+  background: var(--surface-soft);
+  border: 2px dashed var(--violet);
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 1.2rem;
+}
+.admin-form label { display: grid; font-size: .75rem; font-weight: 600; gap: .35rem; }
+
+.pagination {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  justify-content: center;
+  margin-top: 1.2rem;
+}
+.pagination .button { box-shadow: none; }
+
+/* ==========================================================================
+   11. Alertas y mensajes de estado
+   ========================================================================== */
+.success-message {
+  background: var(--success-bg);
+  border: 1.5px solid var(--success-text);
+  border-radius: var(--radius-sm);
+  color: var(--success-text);
+  font-size: .8rem;
+  padding: .75rem .9rem;
+}
+.form-error {
+  background: var(--danger-bg);
+  border: 1.5px solid var(--danger-text);
+  border-left-width: 4px;
+  color: var(--danger-text);
+  font-weight: 500;
+}
+
+:root[data-theme='dark'] .success-message { background: #10322A; border-color: #BFF7EA; color: #BFF7EA; }
+:root[data-theme='dark'] .form-error,
+:root[data-theme='dark'] .error-state { background: #3A2030; border-color: #E1699F; color: #FFD8E8; }
+
+/* ==========================================================================
+   12. Estados vacíos, de carga y de error
+   ========================================================================== */
+.state-panel { box-shadow: var(--shadow-soft); }
+
+.empty-state svg,
+.error-state svg {
+  background: var(--info-bg);
+  border: 1.5px solid var(--ink);
+  border-radius: 50%;
+  box-sizing: content-box;
+  height: 2.4rem;
+  padding: .45rem;
+  width: 2.4rem;
+}
+.error-state svg { background: var(--danger-bg); }
+
+.loading-dots { letter-spacing: .3rem; }
+.loading-dots + p { font-family: var(--badge); text-transform: uppercase; letter-spacing: .04em; }
+
+:root[data-theme='dark'] .empty-state svg { background: var(--lilac); }
+:root[data-theme='dark'] .error-state svg { background: #3A2030; }
+
+/* ==========================================================================
+   13. Asistente flotante (FloatingAssistantButton)
+   ========================================================================== */
+.assistant-trigger {
+  border-radius: var(--radius-pill);
+  font-family: var(--badge);
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  min-height: 3.1rem;
+  padding: .65rem 1rem;
+  position: relative;
+  text-transform: uppercase;
+}
+.assistant-trigger:hover {
+  background: var(--violet-dark);
+  box-shadow: 4px 4px 0 var(--ink);
+  transform: translate(-2px, -2px);
+}
+.assistant-trigger::after {
+  background: var(--rose);
+  border: 1.5px solid var(--ink);
+  border-radius: 50%;
+  content: '';
+  height: .85rem;
+  position: absolute;
+  right: -.35rem;
+  top: -.35rem;
+  width: .85rem;
+}
+.assistant-dialog,
+.assistant-panel { border-radius: var(--radius); }
+
+/* ==========================================================================
+   14. Pie de página (Footer)
+   ========================================================================== */
+.site-footer a,
+.site-footer .brand { box-sizing: border-box; min-height: 44px; }
+.footer-col a { display: inline-flex; align-items: center; }
+.footer-col h3 { position: relative; padding-left: .7rem; }
+.footer-col h3::before {
+  background: var(--rose);
+  border: 1.5px solid var(--ink);
+  border-radius: var(--radius-pill);
+  bottom: .1rem;
+  content: '';
+  left: 0;
+  position: absolute;
+  top: .1rem;
+  width: .3rem;
+}
+
+/* ==========================================================================
+   15. Detalles varios
+   ========================================================================== */
+.modal { border-radius: var(--radius); }
+.portfolio-grid { grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr)); }
+.admin-metrics { grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); }
+.workspace-items-grid { grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr)); }
+
+/* ==========================================================================
+   16. Responsive: 375 px (una columna), 768 px (dos columnas),
+       1280 px+ (tres o cuatro columnas)
+   ========================================================================== */
+@media (max-width: 30rem) {
+  .main-content { padding-left: 1rem; padding-right: 1rem; }
+  .artist-grid,
+  .directory-grid,
+  .portfolio-grid,
+  .commission-grid,
+  .workspace-grid,
+  .metrics-grid,
+  .admin-metrics,
+  .metrics-strip { grid-template-columns: 1fr; }
+  .profile-content { gap: 1.5rem; grid-template-columns: 1fr; }
+  .profile-action { text-align: left; }
+  .private-request-card { grid-template-columns: 1fr; align-items: start; }
+  .request-table,
+  .admin-table { min-width: 40rem; }
+  .hero-note { max-width: 100%; }
+  .section-heading { align-items: flex-start; flex-direction: column; gap: .8rem; }
+}
+
+@media (max-width: 48rem) {
+  .footer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .workspace-items-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (min-width: 80rem) {
+  .main-content { padding-top: clamp(3rem, 6vw, 6rem); }
+  .artist-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .directory-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .directory-layout { grid-template-columns: 18rem minmax(0, 1fr); }
+  .metrics-strip { grid-template-columns: repeat(3, 1fr); }
+  .workspace-items-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}

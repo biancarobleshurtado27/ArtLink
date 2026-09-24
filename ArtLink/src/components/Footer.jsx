@@ -1,5 +1,5 @@
-import { Palette } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import logoArtLink from '../assets/logo-artlink.png'
 
 const categoryLinks = [
   'Ilustración 2D',
@@ -27,8 +27,8 @@ export default function Footer() {
     <footer className="site-footer">
       <div className="footer-grid">
         <div className="footer-brand-col">
-          <Link className="brand" to="/" aria-label="ArtLink, pie de página">
-            <span className="brand-mark" aria-hidden="true"><Palette size={18} /></span>
+          <Link className="brand footer-brand" to="/" aria-label="ArtLink, pie de página">
+            <img src={logoArtLink} alt="Logo de ArtLink" className="brand-logo footer-logo" />
             <span className="brand-text">
               <strong>ArtLink</strong>
               <small>Conecta tu arte</small>
