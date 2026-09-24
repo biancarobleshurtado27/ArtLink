@@ -8,6 +8,9 @@ import AccessDeniedPage from '../pages/AccessDeniedPage'
 import ArtistProfilePage from '../pages/ArtistProfilePage'
 import ArtistPanelPage from '../pages/ArtistPanelPage'
 import NewRequestPage from '../pages/NewRequestPage'
+import PrivateRequestsPage from '../pages/PrivateRequestsPage'
+import MessagesPage from '../pages/MessagesPage'
+import { AdminDashboardPage, AdminResourcePage } from '../pages/AdminPages'
 import { LoginPage, RegisterPage } from '../pages/AuthPages'
 import ProtectedRoute from './ProtectedRoute'
 import { ROLES } from '../utils/roles'
@@ -32,8 +35,8 @@ export default function AppRouter() {
           </Route>
 
           <Route element={<ProtectedRoute allowedRoles={[ROLES.CLIENT, ROLES.ARTIST, ROLES.ADMIN]} />}>
-            <Route path="/solicitudes" element={page('Mis solicitudes')} />
-            <Route path="/mensajes" element={page('Mensajes')} />
+            <Route path="/solicitudes" element={<PrivateRequestsPage />} />
+            <Route path="/mensajes" element={<MessagesPage />} />
           </Route>
           <Route element={<ProtectedRoute allowedRoles={[ROLES.CLIENT]} />}>
             <Route path="/solicitudes/nueva/:artistId" element={<NewRequestPage />} />
@@ -44,11 +47,11 @@ export default function AppRouter() {
             <Route path="/artista/comisiones" element={<ArtistPanelPage />} />
           </Route>
           <Route element={<ProtectedRoute allowedRoles={[ROLES.ADMIN]} />}>
-            <Route path="/admin" element={page('Panel de administración')} />
-            <Route path="/admin/usuarios" element={page('Administrar usuarios')} />
-            <Route path="/admin/artistas" element={page('Administrar artistas')} />
-            <Route path="/admin/categorias" element={page('Administrar categorías')} />
-            <Route path="/admin/solicitudes" element={page('Administrar solicitudes')} />
+            <Route path="/admin" element={<AdminDashboardPage />} />
+            <Route path="/admin/usuarios" element={<AdminResourcePage resource="usuarios" />} />
+            <Route path="/admin/artistas" element={<AdminResourcePage resource="artistas" />} />
+            <Route path="/admin/categorias" element={<AdminResourcePage resource="categorias" />} />
+            <Route path="/admin/solicitudes" element={<AdminResourcePage resource="solicitudes" />} />
           </Route>
           <Route path="*" element={<NotFoundPage />} />
         </Route>
