@@ -6,6 +6,7 @@ import ExplorePage from '../pages/ExplorePage'
 import NotFoundPage from '../pages/NotFoundPage'
 import AccessDeniedPage from '../pages/AccessDeniedPage'
 import ArtistProfilePage from '../pages/ArtistProfilePage'
+import ArtistPanelPage from '../pages/ArtistPanelPage'
 import NewRequestPage from '../pages/NewRequestPage'
 import { LoginPage, RegisterPage } from '../pages/AuthPages'
 import ProtectedRoute from './ProtectedRoute'
@@ -38,9 +39,9 @@ export default function AppRouter() {
             <Route path="/solicitudes/nueva/:artistId" element={<NewRequestPage />} />
           </Route>
           <Route element={<ProtectedRoute allowedRoles={[ROLES.ARTIST]} />}>
-            <Route path="/artista/panel" element={page('Panel del artista')} />
-            <Route path="/artista/portafolio" element={page('Mi portafolio')} />
-            <Route path="/artista/comisiones" element={page('Mis comisiones')} />
+            <Route path="/artista/panel" element={<ArtistPanelPage />} />
+            <Route path="/artista/portafolio" element={<ArtistPanelPage />} />
+            <Route path="/artista/comisiones" element={<ArtistPanelPage />} />
           </Route>
           <Route element={<ProtectedRoute allowedRoles={[ROLES.ADMIN]} />}>
             <Route path="/admin" element={page('Panel de administración')} />
