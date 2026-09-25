@@ -1,8 +1,9 @@
-import { ArrowRight, Check, Sparkles, TrendingUp, Users, Zap } from 'lucide-react'
+import { ArrowRight, Check, TrendingUp, Users, Zap } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import ArtistCard from '../components/ArtistCard'
 import AssistantWidget from '../components/AssistantWidget'
+import DecorativeStar from '../components/DecorativeStar'
 import EmptyState from '../components/EmptyState'
 import ErrorState from '../components/ErrorState'
 import LoadingState from '../components/LoadingState'
@@ -43,9 +44,18 @@ export default function HomePage() {
       {/* ── 1. HERO ──────────────────────────────────────────── */}
       <section className="hero" aria-labelledby="hero-title">
         <div className="hero-copy">
-          <span className="sticker hero-sticker">
-            <Sparkles size={13} aria-hidden="true" /> Hecho a mano
-          </span>
+          <div className="promo-stickers-row" aria-label="Novedades y garantías">
+            <span className="sticker sticker-yellow">
+              <DecorativeStar size={13} color="#1E192B" /> Edición Primavera 2026
+            </span>
+            <span className="sticker sticker-purple">
+              <DecorativeStar size={13} color="#1E192B" /> Galería viva de creadores · Comisiones seguras
+            </span>
+            <span className="sticker sticker-pink">
+              <DecorativeStar size={13} color="#1E192B" /> 100% Protegido
+            </span>
+          </div>
+
           <p className="eyebrow">Un lugar para hacer clic con tu próxima idea</p>
           <h1 id="hero-title">
             Encuentra el arte que <em>imaginas.</em>
@@ -71,7 +81,11 @@ export default function HomePage() {
             <p>Portafolios reales, comisiones claras y conexiones creativas sin ruido.</p>
             <div className="hero-note-footer">
               <span>artistas independientes</span>
-              <span aria-hidden="true">✦ ✦ ✦</span>
+              <span aria-hidden="true" style={{ display: 'inline-flex', gap: '0.2rem' }}>
+                <DecorativeStar size={12} color="#8B5CF6" />
+                <DecorativeStar size={12} color="#8B5CF6" />
+                <DecorativeStar size={12} color="#8B5CF6" />
+              </span>
             </div>
           </div>
         </div>
@@ -189,7 +203,9 @@ export default function HomePage() {
 
       {/* ── 6. CTA FINAL ─────────────────────────────────────── */}
       <section className="final-cta" aria-labelledby="cta-title">
-        <span className="sticker">Tu próxima colaboración está aquí</span>
+        <span className="sticker">
+          <DecorativeStar size={12} color="#1E192B" /> Tu próxima colaboración está aquí
+        </span>
         <h2 id="cta-title">Haz espacio para las buenas ideas.</h2>
         <div>
           <Link className="button button-primary" to="/registro">Crear perfil</Link>

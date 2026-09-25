@@ -66,11 +66,7 @@ export default function AppShell() {
       <header className="site-header" ref={headerRef}>
         <div className="site-header-inner">
           <Link className="brand" to="/" aria-label="ArtLink" onClick={closeMenus}>
-            <img src={logoArtLink} alt="Logo de ArtLink" className="brand-logo" />
-            <span className="brand-text">
-              <strong>ArtLink</strong>
-              <small>Conecta tu arte</small>
-            </span>
+            <img src={logoArtLink} alt="ArtLink Logo" className="brand-logo" />
           </Link>
 
           <div className="header-mobile-controls">

@@ -8,8 +8,10 @@ import {
   ArrowRight,
   Star,
   BadgeCheck,
+  CheckCircle2,
 } from 'lucide-react'
 import ArtistCard from '../components/ArtistCard'
+import DecorativeStar from '../components/DecorativeStar'
 import EmptyState from '../components/EmptyState'
 import ErrorState from '../components/ErrorState'
 import LoadingState from '../components/LoadingState'
@@ -102,13 +104,20 @@ export default function ExplorePage() {
       {/* ── 1. HERO BANNER DE EXPLORAR ── */}
       <header className="explore-hero" aria-labelledby="explore-title">
         <div className="explore-hero-stickers">
-          <span className="sticker sticker-yellow">⚡ Edición Primavera 2026</span>
-          <span className="sticker sticker-purple">✦ Galería viva de creadores · Comisiones seguras</span>
-          <span className="sticker sticker-pink">✦ 100% Protegida</span>
+          <span className="sticker sticker-yellow">
+            <DecorativeStar size={13} color="#1E192B" /> Edición Primavera 2026
+          </span>
+          <span className="sticker sticker-purple">
+            <DecorativeStar size={13} color="#1E192B" /> Galería viva de creadores · Comisiones seguras
+          </span>
+          <span className="sticker sticker-pink">
+            <DecorativeStar size={13} color="#1E192B" /> 100% Protegida
+          </span>
         </div>
 
         <h1 id="explore-title" className="explore-hero-title">
-          Encuentra el arte que <em className="hero-gradient">imaginas</em> ✦
+          Encuentra el arte que <em className="hero-gradient">imaginas</em>{' '}
+          <DecorativeStar size={24} color="#8B5CF6" />
         </h1>
         <p className="explore-hero-subtitle">
           Descubre artistas digitales únicos en ilustración, 3D, animación y pixel art.
@@ -126,7 +135,9 @@ export default function ExplorePage() {
             <span className="metric-label">Fondos en custodia</span>
           </div>
           <div className="explore-metric-card metric-violet">
-            <strong className="metric-number">★ 4.9 / 5</strong>
+            <strong className="metric-number">
+              <Star size={16} fill="currentColor" color="#1E192B" inline /> 4.9 / 5
+            </strong>
             <span className="metric-label">Satisfacción cliente</span>
           </div>
         </div>
@@ -159,7 +170,9 @@ export default function ExplorePage() {
 
         {/* Fila de Pills de Estilos rápidos */}
         <div className="explore-style-pills-row">
-          <span className="style-pills-label">⚡ ESTILOS:</span>
+          <span className="style-pills-label">
+            <DecorativeStar size={13} color="#8B5CF6" /> ESTILOS:
+          </span>
           <div className="style-pills-list">
             {STYLE_PILLS.map((pill) => {
               const isActive = pill.styleValue !== undefined
@@ -176,7 +189,7 @@ export default function ExplorePage() {
                     if (pill.availabilityValue !== undefined) updateFilter('availability', pill.availabilityValue)
                   }}
                 >
-                  ✦ {pill.label}
+                  <DecorativeStar size={11} color="currentColor" /> {pill.label}
                 </button>
               )
             })}
@@ -203,7 +216,9 @@ export default function ExplorePage() {
       <section className="explore-catalogue-section" aria-labelledby="catalogue-title">
         <div className="catalogue-heading-bar">
           <div>
-            <span className="sticker sticker-pink-small">⚡ Colección Seleccionada / CREADORES EN BASE 150</span>
+            <span className="sticker sticker-pink-small">
+              <DecorativeStar size={11} color="#1E192B" /> Colección Seleccionada / CREADORES EN BASE 150
+            </span>
             <h2 id="catalogue-title" className="catalogue-title">Creadores listos para tu encargo</h2>
           </div>
 
@@ -338,7 +353,9 @@ export default function ExplorePage() {
       {/* ── 4. SECCIÓN DESTACADA: ESPACIO DE UN ARTISTA EN ARTLINK ── */}
       <section className="featured-space-showcase" aria-labelledby="showcase-title">
         <div className="showcase-header">
-          <span className="sticker sticker-mint">⚡ Experiencia Transparente</span>
+          <span className="sticker sticker-mint">
+            <DecorativeStar size={13} color="#1E192B" /> Experiencia Transparente
+          </span>
           <h2 id="showcase-title">Así luce el espacio de un artista en ArtLink</h2>
           <p>
             Sin tarifas ocultas, con tiempos de entrega claros y comunicación directa en cada etapa del boceto al arte final.
@@ -348,8 +365,11 @@ export default function ExplorePage() {
         {/* Card Mockup de Sofía Chen */}
         <div className="showcase-profile-card paper-card">
           <div className="showcase-banner-bar">
-            <span className="showcase-tag-top">✦ PERFIL DESTACADO DE LA SEMANA ✦</span>
-            <span className="badge badge-mint showcase-status-badge">● DISPONIBLE AHORA</span>
+            <span className="showcase-tag-top">
+              <DecorativeStar size={12} color="#8B5CF6" /> PERFIL DESTACADO DE LA SEMANA{' '}
+              <DecorativeStar size={12} color="#8B5CF6" />
+            </span>
+            <span className="badge badge-mint showcase-status-badge">DISPONIBLE AHORA</span>
           </div>
 
           <div className="showcase-profile-header">
@@ -374,10 +394,10 @@ export default function ExplorePage() {
 
             <div className="showcase-actions">
               <button type="button" className="button button-outline button-small">
-                ♡ Guardar
+                <Heart size={14} aria-hidden="true" /> Guardar
               </button>
               <Link to="/artista/artist-1" className="button button-primary button-small">
-                Solicitar comisión ⚡
+                Solicitar comisión <ArrowRight size={14} aria-hidden="true" />
               </Link>
             </div>
           </div>
@@ -387,7 +407,9 @@ export default function ExplorePage() {
             <div className="showcase-samples-col">
               <div className="samples-header">
                 <strong>Muestras recientes</strong>
-                <span className="sticker sticker-yellow-small">† Impreso</span>
+                <span className="sticker sticker-yellow-small">
+                  <CheckCircle2 size={12} aria-hidden="true" /> Impreso
+                </span>
                 <Link to="/artista/artist-1" className="samples-more-link">Ver galería completa (14) →</Link>
               </div>
               <div className="samples-grid">
@@ -407,8 +429,12 @@ export default function ExplorePage() {
             {/* Derecha: Tarifario & Entregables */}
             <div className="showcase-rates-col">
               <div className="rates-header">
-                <strong>⚡ Tarifario & Entregables</strong>
-                <span className="text-mint-small">✦ Disponibilidad real</span>
+                <strong>
+                  <DecorativeStar size={14} color="#8B5CF6" /> Tarifario & Entregables
+                </strong>
+                <span className="text-mint-small">
+                  <DecorativeStar size={11} color="#0F5C4F" /> Disponibilidad real
+                </span>
               </div>
               <ul className="rates-list">
                 <li className="rate-item">
@@ -434,7 +460,7 @@ export default function ExplorePage() {
                 </li>
               </ul>
               <p className="rates-footnote">
-                ✦ Estimación en días laborales tras aprobar el boceto inicial.
+                Estimación en días laborales tras aprobar el boceto inicial.
               </p>
             </div>
           </div>
@@ -443,7 +469,9 @@ export default function ExplorePage() {
 
       {/* ── 5. BANNER INFERIOR PARA CREADORES ── */}
       <section className="explore-bottom-cta paper-card" aria-labelledby="cta-seller-title">
-        <span className="sticker sticker-purple">⚡ ¿Eres ilustrador o modelador?</span>
+        <span className="sticker sticker-purple">
+          <DecorativeStar size={13} color="#1E192B" /> ¿Eres ilustrador o modelador?
+        </span>
         <h2 id="cta-seller-title">Abre tu vitrina y gestiona tus comisiones sin desorden</h2>
         <p>
           Automatiza tarifas de espacio, recibe pagos internacionales protegidos y presenta tus tarifas con la calidad de tu propio cuaderno de bocetos.
