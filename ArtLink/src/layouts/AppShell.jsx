@@ -68,12 +68,12 @@ export default function AppShell() {
 
       <header className="site-header" ref={headerRef}>
         <div className="site-header-inner">
-          {/* 1. Logo de ArtLink a la izquierda */}
+          {/* Logo de ArtLink */}
           <Link className="brand" to="/" aria-label="ArtLink" onClick={closeMenus}>
             <img src={logoArtLink} alt="Logo de ArtLink" className="brand-logo" />
           </Link>
 
-          {/* 2. Navegación limpia horizontal en escritorio */}
+          {/* Navegación Principal */}
           <nav id="main-menu" className={`desktop-nav ${menuOpen ? 'is-open' : ''}`} aria-label="Navegación principal">
             <div className="mobile-nav-brand" aria-hidden="true">
               <img src={logoArtLink} alt="Logo de ArtLink" className="brand-logo mobile-nav-brand-logo" />
@@ -83,7 +83,7 @@ export default function AppShell() {
               </span>
             </div>
 
-            {/* Enlaces principales en el centro/junto al logo */}
+            {/* Enlaces principales compartiendo la clase .nav-pill */}
             <div className="nav-links-capsule">
               {desktopLinks.map((link) => (
                 <NavLink
@@ -91,14 +91,14 @@ export default function AppShell() {
                   to={link.to}
                   aria-label={link.accessibleLabel || link.label}
                   onClick={closeMenus}
-                  className={({ isActive }) => (isActive ? 'nav-link-item active' : 'nav-link-item')}
+                  className={({ isActive }) => (isActive ? 'nav-pill active' : 'nav-pill')}
                 >
                   {link.label}
                 </NavLink>
               ))}
             </div>
 
-            {/* 3. Acciones alineadas a la derecha */}
+            {/* Acciones del navbar alineadas a la derecha */}
             <div className="nav-actions-group">
               {user ? (
                 <div className="user-area" ref={userAreaRef}>
@@ -154,10 +154,12 @@ export default function AppShell() {
                 </div>
               ) : (
                 <div className="auth-nav-group">
-                  <NavLink to="/login" className="nav-login" onClick={closeMenus}>Iniciar sesión</NavLink>
-                  <Link className="button button-primary button-small button-pill-artist" to="/registro?role=artist" onClick={closeMenus}>
+                  <NavLink to="/login" className="nav-pill nav-pill-login" onClick={closeMenus}>
+                    Iniciar sesión
+                  </NavLink>
+                  <NavLink to="/registro?role=artist" className="nav-pill nav-pill-join" onClick={closeMenus}>
                     Unirse
-                  </Link>
+                  </NavLink>
                   <Link to="/perfil" className="header-user-avatar-btn" aria-label="Mi cuenta" onClick={closeMenus}>
                     <User size={18} aria-hidden="true" />
                   </Link>
