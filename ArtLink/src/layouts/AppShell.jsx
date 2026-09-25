@@ -1,19 +1,19 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, NavLink, Outlet } from 'react-router-dom'
-import { ChevronDown, Home, LayoutDashboard, LogOut, Menu, MessageCircle, Moon, Search, Sliders, Sun, UserRound, X } from 'lucide-react'
+import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { ChevronDown, Home, LayoutDashboard, LogOut, Menu, MessageCircle, Search, Send, Sliders, User, UserRound, X } from 'lucide-react'
 import logoArtLink from '../assets/logo-artlink.png'
 import useAuth from '../hooks/useAuth'
 import Footer from '../components/Footer'
 import AssistantWidget from '../components/AssistantWidget'
 import PageContainer from '../components/PageContainer'
 import BottomNavigation from '../components/BottomNavigation'
-import useDisplayPreferences from '../hooks/useDisplayPreferences'
-import { ROLES, roleLabels } from '../utils/roles'
+import { ROLES } from '../utils/roles'
 
 const desktopLinks = [
   { to: '/explorar', label: 'Explorar', accessibleLabel: 'Explorar artistas' },
   { to: '/como-funciona', label: 'Cómo funciona' },
   { to: '/para-artistas', label: 'Para artistas' },
+  { to: '/solicitudes', label: 'Comisiones' },
 ]
 
 const mobileLinks = [
@@ -26,8 +26,9 @@ const mobileLinks = [
 export default function AppShell() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [userMenuOpen, setUserMenuOpen] = useState(false)
+  const [headerSearchQuery, setHeaderSearchQuery] = useState('')
   const { user, logout } = useAuth()
-  const { theme, textSize, setTheme, setTextSize } = useDisplayPreferences()
+  const navigate = useNavigate()
   const userAreaRef = useRef(null)
   const headerRef = useRef(null)
 
@@ -61,6 +62,14 @@ export default function AppShell() {
     }
   }, [userMenuOpen, menuOpen])
 
+  function handleHeaderSearchSubmit(e) {
+    e.preventDefault()
+    if (headerSearchQuery.trim()) {
+      navigate(`/explorar?q=${encodeURIComponent(headerSearchQuery.trim())}`)
+      closeMenus()
+    }
+  }
+
   const userName = user?.name || user?.email?.split('@')[0] || 'Usuario'
   const initials = userName.split(' ').map((part) => part[0]).slice(0, 2).join('').toUpperCase()
 
@@ -70,12 +79,12 @@ export default function AppShell() {
 
       <header className="site-header" ref={headerRef}>
         <div className="site-header-inner">
-          {/* Zona 1: Logotipo */}
+          {/* Logotipo ArtLink limpio sin sticker Scrapbook */}
           <Link className="brand" to="/" aria-label="ArtLink" onClick={closeMenus}>
             <img src={logoArtLink} alt="Logo de ArtLink" className="brand-logo" />
           </Link>
 
-          {/* Zona 2: Navegación principal */}
+          {/* Navegación principal */}
           <nav id="main-menu" className={`desktop-nav ${menuOpen ? 'is-open' : ''}`} aria-label="Navegación principal">
             <div className="mobile-nav-brand" aria-hidden="true">
               <img src={logoArtLink} alt="Logo de ArtLink" className="brand-logo mobile-nav-brand-logo" />
@@ -85,21 +94,37 @@ export default function AppShell() {
               </span>
             </div>
 
-            <div className="nav-links-group">
+            {/* Cápsula de enlaces alargada */}
+            <div className="nav-links-capsule">
               {desktopLinks.map((link) => (
                 <NavLink
                   key={link.to}
                   to={link.to}
                   aria-label={link.accessibleLabel || link.label}
                   onClick={closeMenus}
-                  className={({ isActive }) => (isActive ? 'active' : '')}
+                  className={({ isActive }) => (isActive ? 'nav-link-item active' : 'nav-link-item')}
                 >
                   {link.label}
                 </NavLink>
               ))}
             </div>
 
-            {/* Zona 3: Acciones de usuario & Preferencias de visualización */}
+            {/* Buscador Integrado con botón enviar en el extremo derecho */}
+            <form className="header-search-form" onSubmit={handleHeaderSearchSubmit}>
+              <Search size={15} className="header-search-icon" aria-hidden="true" />
+              <input
+                type="text"
+                placeholder="Buscar creadores, estilos..."
+                value={headerSearchQuery}
+                onChange={(e) => setHeaderSearchQuery(e.target.value)}
+                aria-label="Buscar creadores o estilos"
+              />
+              <button type="submit" className="header-search-submit-btn" aria-label="Enviar búsqueda" title="Enviar información">
+                <Send size={13} aria-hidden="true" />
+              </button>
+            </form>
+
+            {/* Acciones de la derecha */}
             <div className="nav-actions-group">
               {user ? (
                 <div className="user-area" ref={userAreaRef}>
@@ -112,10 +137,12 @@ export default function AppShell() {
                     aria-label={`Cuenta de ${userName}`}
                     onClick={() => setUserMenuOpen((open) => !open)}
                   >
-                    <span className="avatar avatar-small avatar-fallback" aria-hidden="true">{initials}</span>
+                    <span className="avatar avatar-small avatar-fallback avatar-purple">{initials}</span>
                     <span className="user-chip-text">
                       <strong>{userName}</strong>
-                      <small>{roleLabels[user.role] || user.role}</small>
+                      <small className="user-chip-status">
+                        <span className="status-dot-mint" /> Disponible
+                      </small>
                     </span>
                     <ChevronDown size={15} aria-hidden="true" className="user-chip-caret" />
                   </button>
@@ -154,47 +181,19 @@ export default function AppShell() {
               ) : (
                 <div className="auth-nav-group">
                   <NavLink to="/login" className="nav-login" onClick={closeMenus}>Iniciar sesión</NavLink>
-                  <Link className="button button-primary button-small" to="/registro" onClick={closeMenus}>Crear perfil</Link>
+                  <Link className="button button-primary button-small button-pill-artist" to="/registro?role=artist" onClick={closeMenus}>
+                    + Unirse como artista
+                  </Link>
+                  <Link to="/perfil" className="header-user-avatar-btn" aria-label="Mi cuenta" onClick={closeMenus}>
+                    <User size={18} aria-hidden="true" />
+                  </Link>
                 </div>
               )}
-
-              <div className="display-controls" aria-label="Preferencias de visualización">
-                <button
-                  className="display-control theme-toggle-desktop"
-                  type="button"
-                  onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-                  aria-label={theme === 'light' ? 'Activar tema oscuro' : 'Activar tema claro'}
-                  title={theme === 'light' ? 'Tema oscuro' : 'Tema claro'}
-                >
-                  {theme === 'light' ? <Moon size={18} aria-hidden="true" /> : <Sun size={18} aria-hidden="true" />}
-                </button>
-                <label htmlFor="text-size" className="sr-only">Tamaño del texto</label>
-                <select
-                  id="text-size"
-                  className="text-size-select"
-                  value={textSize}
-                  onChange={(event) => setTextSize(event.target.value)}
-                  aria-label="Tamaño del texto"
-                >
-                  <option value="normal">Texto normal</option>
-                  <option value="large">Texto grande</option>
-                  <option value="x-large">Texto extra grande</option>
-                </select>
-              </div>
             </div>
           </nav>
 
-          {/* Controles de cabecera en vista móvil */}
+          {/* Controles en vista móvil */}
           <div className="header-mobile-controls">
-            <button
-              className="display-control theme-toggle-compact"
-              type="button"
-              onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-              aria-label={theme === 'light' ? 'Activar tema oscuro' : 'Activar tema claro'}
-              title={theme === 'light' ? 'Tema oscuro' : 'Tema claro'}
-            >
-              {theme === 'light' ? <Moon size={18} aria-hidden="true" /> : <Sun size={18} aria-hidden="true" />}
-            </button>
             <button
               className="mobile-menu-button"
               type="button"

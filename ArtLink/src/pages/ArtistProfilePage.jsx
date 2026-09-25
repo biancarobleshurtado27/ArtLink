@@ -1,38 +1,54 @@
-import { ArrowLeft, BadgeCheck, ExternalLink, MapPin, Star } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import { ArrowLeft, BadgeCheck, Clock, ExternalLink, MapPin, Sparkles } from 'lucide-react'
 import AvailabilityBadge from '../components/AvailabilityBadge'
 import Badge from '../components/Badge'
 import Card from '../components/Card'
 import ErrorState from '../components/ErrorState'
 import LoadingState from '../components/LoadingState'
 import Modal from '../components/Modal'
+import StarRating from '../components/StarRating'
+import DecorativeStar from '../components/DecorativeStar'
 import useArtistProfile from '../hooks/useArtistProfile'
+import useAuth from '../hooks/useAuth'
 import { handleImageError } from '../utils/imageFallback'
 
-const commissionStatus = { active: 'Disponible', paused: 'Pausada' }
+const commissionStatusLabels = {
+  active: 'Disponible',
+  paused: 'Pausada',
+  closed: 'Cerrada',
+}
 
 export default function ArtistProfilePage() {
   const { id } = useParams()
   const { profile, portfolio, commissions, loading, error } = useArtistProfile(id)
+  const { user } = useAuth()
   const [selectedWork, setSelectedWork] = useState(null)
 
-  if (loading) return <LoadingState label="Cargando perfil del artista" />
-  if (error || !profile) return <ErrorState message={error?.message || 'No encontramos este artista.'} />
+  if (loading) return <LoadingState label="Cargando perfil del artista..." />
+  if (error || !profile) return <ErrorState message={error?.message || 'No encontramos el perfil de este artista.'} />
+
+  // Comprobar si el usuario actual es este mismo artista
+  const isSelf = Boolean(
+    user && (
+      user.id === profile.userId ||
+      user.id === profile.id ||
+      (user.email && user.email === profile.userEmail) ||
+      (user.username && user.username === profile.username)
+    )
+  )
 
   const isClosed = profile.availability === 'closed'
   const isWaitlist = profile.availability === 'waitlist'
-  const activeCommissions = commissions.filter((c) => c.status === 'active')
 
   return (
     <div className="artist-profile-page">
-      {/* ── Portada ── */}
+      {/* ── 1. PORTADA Y ENCABEZADO ── */}
       <section className="profile-cover" aria-label={`Portada de ${profile.displayName}`}>
         <div className="profile-cover-shape" />
         <div className="profile-cover-dots" aria-hidden="true" />
       </section>
 
-      {/* ── Encabezado (avatar + nombre + acción) ── */}
       <section className="profile-header">
         <div className="profile-avatar-wrap">
           <img
@@ -42,7 +58,7 @@ export default function ArtistProfilePage() {
             alt={`Avatar de ${profile.displayName}`}
           />
           {profile.verified && (
-            <span className="profile-verified-badge" aria-label="Artista verificado">
+            <span className="profile-verified-badge" aria-label="Artista verificado" title="Cuenta verificada">
               <BadgeCheck size={18} aria-hidden="true" />
             </span>
           )}
@@ -56,49 +72,64 @@ export default function ArtistProfilePage() {
             </div>
             {profile.verified && <Badge tone="mint">Verificado</Badge>}
           </div>
-          <div className="profile-meta">
-            <span><MapPin size={15} aria-hidden="true" />{profile.location}</span>
-            <span>
-              <Star size={15} fill="currentColor" color="var(--violet)" aria-hidden="true" />
-              {profile.rating?.toFixed(1)} / 5
-            </span>
+
+          <div className="profile-meta" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', flexWrap: 'wrap', marginTop: '0.5rem' }}>
+            <span><MapPin size={15} aria-hidden="true" /> {profile.location}</span>
+            <StarRating value={profile.rating} size={16} label={`${profile.rating?.toFixed(1)} de 5 estrellas`} />
             <AvailabilityBadge status={profile.availability} />
           </div>
         </div>
 
-        <div className="profile-action">
-          {isClosed ? (
+        {/* ── BOTONES DE ACCIÓN PRINCIPALES ── */}
+        <div className="profile-action" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', minWidth: '13rem' }}>
+          {isSelf ? (
             <>
-              <span className="button button-primary button-disabled" aria-disabled="true">
+              <button className="button button-secondary button-disabled" type="button" disabled aria-disabled="true">
+                Este es tu perfil
+              </button>
+              <p className="action-help" style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>
+                No puedes solicitarte comisiones a ti mismo.
+              </p>
+            </>
+          ) : isClosed ? (
+            <>
+              <button className="button button-primary button-disabled" type="button" disabled aria-disabled="true">
                 Solicitudes cerradas
-              </span>
-              <p className="action-help">La agenda está cerrada por ahora. Vuelve más adelante.</p>
+              </button>
+              <p className="action-help" style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>
+                La agenda del artista está temporalmente cerrada.
+              </p>
             </>
           ) : (
             <>
               <Link className="button button-primary" to={`/solicitudes/nueva/${profile.id}`}>
+                <Sparkles size={16} aria-hidden="true" />
                 {isWaitlist ? 'Solicitar lista de espera' : 'Solicitar comisión'}
               </Link>
               {isWaitlist && (
-                <p className="action-help">Te avisaremos cuando haya un cupo disponible.</p>
+                <p className="action-help" style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>
+                  Te avisaremos automáticamente cuando se abra un cupo.
+                </p>
               )}
             </>
           )}
-          <Link className="back-link" to="/explorar" style={{ marginTop: '.6rem' }}>
+
+          <Link className="back-link" to="/explorar" style={{ marginTop: '0.4rem', fontSize: '0.85rem' }}>
             <ArrowLeft size={15} aria-hidden="true" /> Volver al directorio
           </Link>
         </div>
       </section>
 
-      {/* ── Contenido principal + sidebar ── */}
+      {/* ── 2. CONTENIDO PRINCIPAL Y SIDEBAR ── */}
       <div className="profile-content">
-        {/* Main */}
         <div className="profile-main">
-
-          {/* Bio */}
+          {/* Biografía y Etiquetas */}
           <section className="profile-section" aria-labelledby="about-title">
-            <h2 id="about-title">Sobre {profile.displayName}</h2>
+            <h2 id="about-title" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+              <DecorativeStar size={16} color="#8B5CF6" aria-hidden="true" /> Sobre {profile.displayName}
+            </h2>
             <p className="profile-bio-text">{profile.bio}</p>
+
             <div className="profile-tags">
               <div>
                 <h3>Disciplinas</h3>
@@ -108,36 +139,44 @@ export default function ArtistProfilePage() {
                   ))}
                 </div>
               </div>
-              <div>
-                <h3>Estilos</h3>
-                <div className="tag-row">
-                  {profile.styles.map((s) => (
-                    <Badge key={s} tone="soft">{s}</Badge>
+
+              {profile.styles?.length > 0 && (
+                <div>
+                  <h3>Estilos visuales</h3>
+                  <div className="tag-row">
+                    {profile.styles.map((s) => (
+                      <Badge key={s} tone="soft">{s}</Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {profile.socialLinks && Object.keys(profile.socialLinks).length > 0 && (
+              <div className="social-links" style={{ marginTop: '1.2rem' }}>
+                <h3>Redes y Enlaces</h3>
+                <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap', marginTop: '0.4rem' }}>
+                  {Object.entries(profile.socialLinks).map(([network, url]) => (
+                    <a href={url} target="_blank" rel="noreferrer" key={network} className="button button-small button-outline">
+                      <ExternalLink size={13} aria-hidden="true" /> {network}
+                    </a>
                   ))}
                 </div>
-              </div>
-            </div>
-            {Object.keys(profile.socialLinks || {}).length > 0 && (
-              <div className="social-links">
-                <h3>Encuéntrale también en</h3>
-                {Object.entries(profile.socialLinks).map(([network, url]) => (
-                  <a href={url} target="_blank" rel="noreferrer" key={network}>
-                    <ExternalLink size={14} aria-hidden="true" />
-                    {network}
-                  </a>
-                ))}
               </div>
             )}
           </section>
 
-          {/* Portafolio */}
+          {/* Galería de Portafolio Responsive */}
           <section className="profile-section" aria-labelledby="portfolio-title">
-            <div className="profile-section-heading">
-              <h2 id="portfolio-title">Portafolio</h2>
-              <span>{portfolio.length} proyecto{portfolio.length !== 1 ? 's' : ''}</span>
+            <div className="profile-section-heading" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h2 id="portfolio-title" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <DecorativeStar size={16} color="#8B5CF6" aria-hidden="true" /> Portafolio
+              </h2>
+              <span className="badge badge-soft">{portfolio.length} piezas</span>
             </div>
+
             {portfolio.length === 0 ? (
-              <p className="profile-empty-note">Este artista aún no ha publicado piezas.</p>
+              <p className="profile-empty-note">Este artista aún no ha publicado piezas en su portafolio.</p>
             ) : (
               <div className="portfolio-grid">
                 {portfolio.map((item) => (
@@ -161,120 +200,133 @@ export default function ArtistProfilePage() {
             )}
           </section>
 
-          {/* Comisiones */}
+          {/* Tarifas y Opciones de Comisión */}
           <section className="profile-section" aria-labelledby="commissions-title">
-            <h2 id="commissions-title">Comisiones</h2>
+            <h2 id="commissions-title" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+              <DecorativeStar size={16} color="#8B5CF6" aria-hidden="true" /> Paquetes de Comisión
+            </h2>
+
             {commissions.length === 0 ? (
-              <p className="profile-empty-note">Aún no hay tarifas publicadas.</p>
+              <p className="profile-empty-note">Este artista no tiene paquetes públicos creados.</p>
             ) : (
               <div className="commission-grid">
-                {commissions.map((commission) => (
-                  <Card className="commission-card" key={commission.id}>
-                    <div className="commission-card-heading">
-                      <h3>{commission.title}</h3>
-                      <Badge tone={commission.status === 'active' ? 'open' : 'soft'}>
-                        {commissionStatus[commission.status] || commission.status}
-                      </Badge>
-                    </div>
-                    <p>{commission.description}</p>
-                    <strong className="commission-price">${commission.price} USD</strong>
-                    <dl className="commission-details">
-                      <div>
-                        <dt>Entrega</dt>
-                        <dd>{commission.deliveryDays} días</dd>
+                {commissions.map((commission) => {
+                  const canOrderThis = !isSelf && !isClosed && commission.status === 'active'
+
+                  return (
+                    <Card className="commission-card" key={commission.id}>
+                      <div className="commission-card-heading" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                        <h3>{commission.title}</h3>
+                        <Badge tone={commission.status === 'active' ? 'open' : 'soft'}>
+                          {commissionStatusLabels[commission.status] || commission.status}
+                        </Badge>
                       </div>
-                      <div>
-                        <dt>Revisiones</dt>
-                        <dd>{commission.revisions}</dd>
+
+                      <p>{commission.description}</p>
+                      <strong className="commission-price">${commission.price} USD</strong>
+
+                      <dl className="commission-details">
+                        <div>
+                          <dt>Entrega estimada</dt>
+                          <dd><Clock size={13} inline /> {commission.deliveryDays} días</dd>
+                        </div>
+                        <div>
+                          <dt>Revisiones incluidas</dt>
+                          <dd>{commission.revisions}</dd>
+                        </div>
+                      </dl>
+
+                      {commission.terms && (
+                        <details style={{ marginTop: '0.5rem', fontSize: '0.85rem' }}>
+                          <summary style={{ cursor: 'pointer', fontWeight: 600 }}>Ver términos de este paquete</summary>
+                          <p style={{ marginTop: '0.3rem', color: 'var(--muted)' }}>{commission.terms}</p>
+                        </details>
+                      )}
+
+                      <div style={{ marginTop: '1rem' }}>
+                        {canOrderThis ? (
+                          <Link
+                            className="button button-small button-primary button-full-width"
+                            to={`/solicitudes/nueva/${profile.id}?commissionId=${commission.id}`}
+                          >
+                            Solicitar este paquete
+                          </Link>
+                        ) : isSelf ? (
+                          <span className="button button-small button-disabled button-full-width" aria-disabled="true">
+                            Tu propio paquete
+                          </span>
+                        ) : (
+                          <span className="button button-small button-disabled button-full-width" aria-disabled="true">
+                            No disponible
+                          </span>
+                        )}
                       </div>
-                    </dl>
-                    {commission.terms && (
-                      <details>
-                        <summary>Ver términos</summary>
-                        <p>{commission.terms}</p>
-                      </details>
-                    )}
-                    {commission.status === 'active' && !isClosed ? (
-                      <Link
-                        className="button button-small button-primary"
-                        to={`/solicitudes/nueva/${profile.id}?commissionId=${commission.id}`}
-                      >
-                        Solicitar esta comisión
-                      </Link>
-                    ) : (
-                      <span className="button button-small button-disabled" aria-disabled="true">
-                        No disponible
-                      </span>
-                    )}
-                  </Card>
-                ))}
+                    </Card>
+                  )
+                })}
               </div>
             )}
           </section>
         </div>
 
-        {/* Sidebar */}
+        {/* Sidebar Lateral */}
         <aside className="profile-aside">
-          {/* Disponibilidad */}
           <Card>
-            <h2>Disponibilidad</h2>
+            <h2 style={{ fontSize: '1.1rem', marginBottom: '0.5rem' }}>Estado de Agenda</h2>
             <AvailabilityBadge status={profile.availability} />
-            <p style={{ marginTop: '.65rem' }}>
+            <p style={{ marginTop: '0.65rem', fontSize: '0.9rem' }}>
               {profile.availability === 'open'
-                ? `${profile.slots} cupo${profile.slots !== 1 ? 's' : ''} disponible${profile.slots !== 1 ? 's' : ''} ahora mismo.`
+                ? `${profile.slots || 1} cupo(s) disponible(s) actualmente.`
                 : isWaitlist
-                ? 'Puedes unirte a la lista de espera.'
-                : 'La agenda está temporalmente cerrada.'}
+                ? 'Puedes anotarte en la lista de espera.'
+                : 'La agenda está cerrada temporalmente.'}
             </p>
-            {!isClosed && (
+
+            {!isSelf && !isClosed && (
               <Link
-                className="button button-primary"
+                className="button button-primary button-full-width"
                 to={`/solicitudes/nueva/${profile.id}`}
-                style={{ marginTop: '.85rem', width: '100%', justifyContent: 'center' }}
+                style={{ marginTop: '0.85rem' }}
               >
-                {isWaitlist ? 'Entrar a lista de espera' : 'Solicitar comisión'}
+                {isWaitlist ? 'Unirse a lista de espera' : 'Solicitar comisión'}
               </Link>
             )}
           </Card>
 
-          {/* Precio base */}
           <Card>
-            <h2>Desde</h2>
-            <strong className="profile-price">${profile.basePrice} USD</strong>
-            <p>Precio base orientativo. El importe final se confirma al enviar la solicitud.</p>
+            <h2 style={{ fontSize: '1.1rem', marginBottom: '0.5rem' }}>Tarifa Base</h2>
+            <strong className="profile-price" style={{ fontSize: '1.6rem', color: 'var(--violet-dark)' }}>
+              Desde ${profile.basePrice} USD
+            </strong>
+            <p style={{ fontSize: '0.85rem', color: 'var(--muted)', marginTop: '0.3rem' }}>
+              El costo final puede variar según los detalles específicos de tu encargo.
+            </p>
           </Card>
-
-          {/* Comisiones activas (resumen rápido) */}
-          {activeCommissions.length > 0 && (
-            <Card>
-              <h2>Tarifas activas</h2>
-              <ul className="sidebar-commission-list">
-                {activeCommissions.slice(0, 4).map((c) => (
-                  <li key={c.id}>
-                    <span className="sidebar-commission-name">{c.title}</span>
-                    <span className="sidebar-commission-price">${c.price}</span>
-                  </li>
-                ))}
-              </ul>
-            </Card>
-          )}
         </aside>
       </div>
 
-      {/* Modal de portafolio */}
+      {/* Modal accesible para ver obra ampliada */}
       <Modal
         open={Boolean(selectedWork)}
-        title={selectedWork?.title}
+        title={selectedWork?.title || 'Detalle del portafolio'}
         onClose={() => setSelectedWork(null)}
       >
-        <img
-          className="portfolio-modal-image"
-          src={selectedWork?.image}
-          alt={selectedWork?.title || ''}
-        />
-        {selectedWork?.description && <p style={{ marginTop: '1rem', color: 'var(--muted)' }}>{selectedWork.description}</p>}
-        {selectedWork?.category && (
-          <Badge tone="violet" style={{ marginTop: '.5rem' }}>{selectedWork.category}</Badge>
+        {selectedWork && (
+          <div>
+            <img
+              className="portfolio-modal-image"
+              src={selectedWork.image}
+              onError={handleImageError}
+              alt={selectedWork.title || ''}
+              style={{ width: '100%', maxHeight: '70vh', objectFit: 'contain', borderRadius: '0.5rem' }}
+            />
+            {selectedWork.description && (
+              <p style={{ marginTop: '1rem', color: 'var(--ink)' }}>{selectedWork.description}</p>
+            )}
+            {selectedWork.category && (
+              <Badge tone="violet" style={{ marginTop: '0.5rem' }}>{selectedWork.category}</Badge>
+            )}
+          </div>
         )}
       </Modal>
     </div>

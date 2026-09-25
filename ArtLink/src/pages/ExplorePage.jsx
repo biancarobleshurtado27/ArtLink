@@ -1,14 +1,12 @@
-import { useState, useMemo, useEffect } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { useMemo, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import {
-  Search,
+  ArrowRight,
   Heart,
   RotateCcw,
+  Search,
   SlidersHorizontal,
-  ArrowRight,
-  Star,
-  BadgeCheck,
-  CheckCircle2,
+  X,
 } from 'lucide-react'
 import ArtistCard from '../components/ArtistCard'
 import DecorativeStar from '../components/DecorativeStar'
@@ -19,68 +17,63 @@ import useArtists from '../hooks/useArtists'
 import useFavorites from '../hooks/useFavorites'
 import { filterArtists, getArtistOptions, sortArtists } from '../utils/artistFilters'
 
-const defaultFilters = {
-  query: '',
-  discipline: '',
-  style: '',
-  availability: '',
-  maxPrice: '',
-  sort: 'relevance',
-}
-
-const STYLE_PILLS = [
-  { label: 'Todos', styleValue: '' },
-  { label: 'Ilustración 2D', styleValue: 'Ilustración 2D' },
-  { label: 'Modelado 3D', styleValue: 'Modelado 3D' },
-  { label: 'Animación', styleValue: 'Animación' },
-  { label: 'Diseño Gráfico', styleValue: 'Diseño Gráfico' },
-  { label: 'Pixel Art', styleValue: 'Pixel Art' },
-  { label: 'Comics & WEBTOON', styleValue: 'WEBTOON' },
-  { label: 'Comisiones abiertas', availabilityValue: 'open' },
+const HORIZONTAL_CHIPS = [
+  { label: 'Todos', discipline: '', style: '', availability: '' },
+  { label: 'Ilustración 2D', discipline: 'Ilustración 2D' },
+  { label: 'Modelado 3D', discipline: 'Modelado 3D' },
+  { label: 'Animación', discipline: 'Animación' },
+  { label: 'Pixel Art', discipline: 'Pixel Art' },
+  { label: 'Emotes', discipline: 'Emotes' },
+  { label: 'Comisiones abiertas', availability: 'open' },
 ]
 
 export default function ExplorePage() {
   const [searchParams, setSearchParams] = useSearchParams()
   const { artists, loading, error, reload } = useArtists()
   const favorites = useFavorites()
-  const [queryInput, setQueryInput] = useState(searchParams.get('q') || '')
   const [onlyFavorites, setOnlyFavorites] = useState(false)
-  const [filters, setFilters] = useState(() => ({
-    query: searchParams.get('q') || '',
-    discipline: searchParams.get('discipline') || '',
-    style: searchParams.get('style') || '',
-    availability: searchParams.get('availability') || '',
-    maxPrice: searchParams.get('maxPrice') || '',
-    sort: searchParams.get('sort') || 'relevance',
-  }))
+  const [mobileFilterOpen, setMobileFilterOpen] = useState(false)
 
-  useEffect(() => {
-    const timer = window.setTimeout(() => {
-      setFilters((f) => ({ ...f, query: queryInput }))
-      setSearchParams((current) => {
-        const next = new URLSearchParams(current)
-        if (queryInput) next.set('q', queryInput)
-        else next.delete('q')
-        return next
-      }, { replace: true })
-    }, 350)
-    return () => window.clearTimeout(timer)
-  }, [queryInput, setSearchParams])
+  // Sincronización de estados locales con URL Query Params
+  const query = searchParams.get('q') || ''
+  const discipline = searchParams.get('discipline') || ''
+  const style = searchParams.get('style') || ''
+  const availability = searchParams.get('availability') || ''
+  const maxPrice = searchParams.get('maxPrice') || ''
+  const sort = searchParams.get('sort') || 'relevance'
 
-  function updateFilter(name, value) {
-    setFilters((f) => ({ ...f, [name]: value }))
+  const [inputVal, setInputVal] = useState(query)
+  const [prevQuery, setPrevQuery] = useState(query)
+
+  if (query !== prevQuery) {
+    setPrevQuery(query)
+    setInputVal(query)
+  }
+
+  const filters = useMemo(
+    () => ({ query, discipline, style, availability, maxPrice, sort }),
+    [query, discipline, style, availability, maxPrice, sort]
+  )
+
+  function updateParams(newParams) {
     setSearchParams((current) => {
       const next = new URLSearchParams(current)
-      if (value) next.set(name, value)
-      else next.delete(name)
+      Object.entries(newParams).forEach(([key, val]) => {
+        if (val) next.set(key, val)
+        else next.delete(key)
+      })
       return next
     }, { replace: true })
   }
 
+  function handleSearchSubmit(e) {
+    e.preventDefault()
+    updateParams({ q: inputVal.trim() })
+  }
+
   function resetFilters() {
-    setQueryInput('')
+    setInputVal('')
     setOnlyFavorites(false)
-    setFilters(defaultFilters)
     setSearchParams({}, { replace: true })
   }
 
@@ -93,160 +86,124 @@ export default function ExplorePage() {
     [pool, filters]
   )
 
-  const disciplines = useMemo(() => getArtistOptions(artists, 'disciplines'), [artists])
+  const disciplinesList = useMemo(() => getArtistOptions(artists, 'disciplines'), [artists])
   const stylesList = useMemo(() => getArtistOptions(artists, 'styles'), [artists])
 
-  const hasActiveFilters =
-    filters.query || filters.discipline || filters.style || filters.availability || filters.maxPrice || onlyFavorites
+  const hasActiveFilters = Boolean(
+    query || discipline || style || availability || maxPrice || onlyFavorites
+  )
 
   return (
     <div className="directory-page-container">
-      {/* ── 1. HERO BANNER DE EXPLORAR ── */}
+      {/* ── 1. ENCABEZADO Y HERO DE EXPLORAR ── */}
       <header className="explore-hero" aria-labelledby="explore-title">
         <div className="explore-hero-stickers">
-          <span className="sticker sticker-yellow">
-            <DecorativeStar size={13} color="#1E192B" /> Edición Primavera 2026
-          </span>
           <span className="sticker sticker-purple">
-            <DecorativeStar size={13} color="#1E192B" /> Galería viva de creadores · Comisiones seguras
+            <DecorativeStar size={13} color="#1E192B" /> CATÁLOGO DE CREADORES DIGITALES
           </span>
           <span className="sticker sticker-pink">
-            <DecorativeStar size={13} color="#1E192B" /> 100% Protegida
+            <DecorativeStar size={13} color="#1E192B" /> COMISIONES PROTEGIDAS
           </span>
         </div>
 
         <h1 id="explore-title" className="explore-hero-title">
-          Encuentra el arte que <em className="hero-gradient">imaginas</em>{' '}
-          <DecorativeStar size={24} color="#8B5CF6" />
+          Explora portafolios y <em className="hero-gradient">encarga arte</em>
         </h1>
         <p className="explore-hero-subtitle">
-          Descubre artistas digitales únicos en ilustración, 3D, animación y pixel art.
-          Revisa disponibilidad en tiempo real y encarga comisiones con depósito protegido.
+          Filtra por disciplina, técnica, rango de precio o estado de disponibilidad en tiempo real.
         </p>
-
-        {/* 3 Tarjetas de métricas y garantía */}
-        <div className="explore-metrics-grid">
-          <div className="explore-metric-card metric-yellow">
-            <strong className="metric-number">+ 2,400</strong>
-            <span className="metric-label">Artistas verificados</span>
-          </div>
-          <div className="explore-metric-card metric-mint">
-            <strong className="metric-number">100% Seguro</strong>
-            <span className="metric-label">Fondos en custodia</span>
-          </div>
-          <div className="explore-metric-card metric-violet">
-            <strong className="metric-number">
-              <Star size={16} fill="currentColor" color="#1E192B" inline /> 4.9 / 5
-            </strong>
-            <span className="metric-label">Satisfacción cliente</span>
-          </div>
-        </div>
       </header>
 
-      {/* ── 2. BARRA DE BÚSQUEDA Y PILLS DE ESTILOS ── */}
-      <section className="explore-search-section" aria-label="Búsqueda y categorías rápidas">
-        <form
-          className="explore-search-bar-wrap"
-          role="search"
-          aria-label="Buscar creadores"
-          onSubmit={(e) => e.preventDefault()}
-        >
+      {/* ── 2. BARRA DE BÚSQUEDA Y CHIPS HORIZONTALES CON SCROLL ── */}
+      <section className="explore-search-section" aria-label="Búsqueda y filtros por etiquetas">
+        <form className="explore-search-bar-wrap" role="search" onSubmit={handleSearchSubmit}>
           <div className="explore-search-input-box">
             <Search size={20} className="search-box-icon" aria-hidden="true" />
             <input
               id="explore-search-input"
               type="search"
-              value={queryInput}
-              onChange={(e) => setQueryInput(e.target.value)}
-              placeholder="Descubrir artista, estilo (cyberpunk, chibi, acuarela, editorial) o técnica..."
-              aria-label="Descubrir artista por estilo o técnica"
+              value={inputVal}
+              onChange={(e) => setInputVal(e.target.value)}
+              placeholder="Buscar por nombre, @usuario, disciplina (Ilustración 2D, 3D...)"
+              aria-label="Buscar artista por nombre o técnica"
             />
-            <kbd className="search-kbd-hint">CMD + K</kbd>
           </div>
           <button type="submit" className="button button-primary search-submit-btn">
-            Buscar arte <ArrowRight size={16} aria-hidden="true" />
+            Buscar <ArrowRight size={16} aria-hidden="true" />
           </button>
         </form>
 
-        {/* Fila de Pills de Estilos rápidos */}
-        <div className="explore-style-pills-row">
-          <span className="style-pills-label">
-            <DecorativeStar size={13} color="#8B5CF6" /> ESTILOS:
-          </span>
-          <div className="style-pills-list">
-            {STYLE_PILLS.map((pill) => {
-              const isActive = pill.styleValue !== undefined
-                ? filters.style === pill.styleValue
-                : filters.availability === pill.availabilityValue
+        {/* Chips horizontales scrollables en móvil y escritorio */}
+        <div className="explore-style-pills-row" aria-label="Chips de categorías principales">
+          <div className="style-pills-list" style={{ overflowX: 'auto', whiteSpace: 'nowrap', display: 'flex', gap: '0.5rem', paddingBottom: '0.25rem' }}>
+            {HORIZONTAL_CHIPS.map((chip) => {
+              const isSelected =
+                (chip.discipline && discipline === chip.discipline) ||
+                (chip.availability && availability === chip.availability) ||
+                (!chip.discipline && !chip.availability && !discipline && !availability)
 
               return (
                 <button
-                  key={pill.label}
+                  key={chip.label}
                   type="button"
-                  className={`style-pill-btn ${isActive ? 'is-active' : ''}`}
+                  className={`style-pill-btn ${isSelected ? 'is-active' : ''}`}
                   onClick={() => {
-                    if (pill.styleValue !== undefined) updateFilter('style', pill.styleValue)
-                    if (pill.availabilityValue !== undefined) updateFilter('availability', pill.availabilityValue)
+                    updateParams({
+                      discipline: chip.discipline || '',
+                      availability: chip.availability || '',
+                    })
                   }}
+                  style={{ flexShrink: 0 }}
                 >
-                  <DecorativeStar size={11} color="currentColor" /> {pill.label}
+                  <DecorativeStar size={11} color="currentColor" aria-hidden="true" /> {chip.label}
                 </button>
               )
             })}
           </div>
-
-          <div className="style-pills-right">
-            <label htmlFor="quick-price-select" className="sr-only">Presupuesto máximo</label>
-            <select
-              id="quick-price-select"
-              value={filters.maxPrice}
-              onChange={(e) => updateFilter('maxPrice', e.target.value)}
-              className="quick-select-pill"
-            >
-              <option value="">Presupuestos: Todos</option>
-              <option value="50">Hasta $50 USD</option>
-              <option value="100">Hasta $100 USD</option>
-              <option value="200">Hasta $200 USD</option>
-            </select>
-          </div>
         </div>
       </section>
 
-      {/* ── 3. CATÁLOGO PRINCIPAL Y SIDEBAR ── */}
+      {/* ── 3. BARRA DE HERRAMIENTAS Y ORDENAMIENTO ── */}
       <section className="explore-catalogue-section" aria-labelledby="catalogue-title">
         <div className="catalogue-heading-bar">
           <div>
-            <span className="sticker sticker-pink-small">
-              <DecorativeStar size={11} color="#1E192B" /> Colección Seleccionada / CREADORES EN BASE 150
-            </span>
-            <h2 id="catalogue-title" className="catalogue-title">Creadores listos para tu encargo</h2>
+            <h2 id="catalogue-title" className="catalogue-title">Catálogo de Artistas</h2>
+            <p className="catalogue-count-text">
+              <strong>{visibleArtists.length}</strong> {visibleArtists.length === 1 ? 'artista encontrado' : 'artistas encontrados'}
+            </p>
           </div>
 
           <div className="catalogue-heading-actions">
+            {/* Botón de apertura de filtros en Móvil */}
+            <button
+              className="button button-outline mobile-filter-toggle-btn"
+              type="button"
+              onClick={() => setMobileFilterOpen((o) => !o)}
+            >
+              <SlidersHorizontal size={16} aria-hidden="true" /> Filtros
+            </button>
+
             <button
               className={`filter-button favorites-filter ${onlyFavorites ? 'is-active' : ''}`}
               type="button"
               aria-pressed={onlyFavorites}
               onClick={() => setOnlyFavorites((v) => !v)}
             >
-              <Heart
-                size={16}
-                fill={onlyFavorites ? 'currentColor' : 'none'}
-                aria-hidden="true"
-              />
+              <Heart size={16} fill={onlyFavorites ? 'currentColor' : 'none'} aria-hidden="true" />
               Guardados ({favorites.count})
             </button>
 
             <label className="sort-select-wrap" htmlFor="explore-sort-select">
-              <span className="sort-label">Ordenado por:</span>
+              <span className="sort-label">Ordenar:</span>
               <select
                 id="explore-sort-select"
-                value={filters.sort}
-                onChange={(e) => updateFilter('sort', e.target.value)}
+                value={sort}
+                onChange={(e) => updateParams({ sort: e.target.value })}
                 className="sort-select-field"
               >
-                <option value="relevance">Disponibilidad inmediata</option>
-                <option value="price">Precio más bajo</option>
+                <option value="relevance">Relevancia</option>
+                <option value="price_asc">Precio: Menor a mayor</option>
+                <option value="price_desc">Precio: Mayor a menor</option>
                 <option value="rating">Mejor calificación</option>
               </select>
             </label>
@@ -254,13 +211,23 @@ export default function ExplorePage() {
         </div>
 
         <div className="directory-layout">
-          {/* Sidebar de Filtros Detallados */}
-          <aside className="filter-panel" aria-label="Filtros del directorio">
+          {/* Panel de Filtros (Sidepanel en escritorio / Modal colapsable en móvil) */}
+          <aside className={`filter-panel ${mobileFilterOpen ? 'is-mobile-open' : ''}`} aria-label="Filtros detallados">
             <div className="filter-heading">
               <h2><SlidersHorizontal size={18} aria-hidden="true" /> Filtros</h2>
               {hasActiveFilters && (
                 <button className="reset-button" type="button" onClick={resetFilters}>
-                  <RotateCcw size={14} aria-hidden="true" /> Limpiar
+                  <RotateCcw size={14} aria-hidden="true" /> Limpiar filtros
+                </button>
+              )}
+              {mobileFilterOpen && (
+                <button
+                  type="button"
+                  className="mobile-filter-close-btn"
+                  onClick={() => setMobileFilterOpen(false)}
+                  aria-label="Cerrar filtros"
+                >
+                  <X size={20} />
                 </button>
               )}
             </div>
@@ -269,11 +236,11 @@ export default function ExplorePage() {
               Disciplina artística
               <select
                 id="filter-discipline"
-                value={filters.discipline}
-                onChange={(e) => updateFilter('discipline', e.target.value)}
+                value={discipline}
+                onChange={(e) => updateParams({ discipline: e.target.value })}
               >
                 <option value="">Todas las disciplinas</option>
-                {disciplines.map((d) => <option key={d} value={d}>{d}</option>)}
+                {disciplinesList.map((d) => <option key={d} value={d}>{d}</option>)}
               </select>
             </label>
 
@@ -281,8 +248,8 @@ export default function ExplorePage() {
               Estilo visual
               <select
                 id="filter-style"
-                value={filters.style}
-                onChange={(e) => updateFilter('style', e.target.value)}
+                value={style}
+                onChange={(e) => updateParams({ style: e.target.value })}
               >
                 <option value="">Todos los estilos</option>
                 {stylesList.map((s) => <option key={s} value={s}>{s}</option>)}
@@ -290,13 +257,13 @@ export default function ExplorePage() {
             </label>
 
             <label htmlFor="filter-availability">
-              Estado de disponibilidad
+              Disponibilidad
               <select
                 id="filter-availability"
-                value={filters.availability}
-                onChange={(e) => updateFilter('availability', e.target.value)}
+                value={availability}
+                onChange={(e) => updateParams({ availability: e.target.value })}
               >
-                <option value="">Cualquier estado</option>
+                <option value="">Cualquier disponibilidad</option>
                 <option value="open">Abierto ahora</option>
                 <option value="waitlist">Lista de espera</option>
                 <option value="closed">Agenda cerrada</option>
@@ -304,32 +271,44 @@ export default function ExplorePage() {
             </label>
 
             <label htmlFor="filter-price">
-              Precio base máximo (USD)
+              Precio máximo (USD)
               <input
                 id="filter-price"
                 type="number"
                 min="0"
                 step="10"
-                placeholder="Ej. 100"
-                value={filters.maxPrice}
-                onChange={(e) => updateFilter('maxPrice', e.target.value)}
+                placeholder="Ej. 150"
+                value={maxPrice}
+                onChange={(e) => updateParams({ maxPrice: e.target.value })}
               />
             </label>
+
+            {hasActiveFilters && (
+              <button
+                className="button button-outline button-full-width"
+                type="button"
+                style={{ marginTop: '1rem' }}
+                onClick={resetFilters}
+              >
+                <RotateCcw size={14} aria-hidden="true" /> Limpiar filtros
+              </button>
+            )}
           </aside>
 
-          {/* Grid de Artistas Resultantes */}
+          {/* Grid de Resultados */}
           <div className="directory-results">
-            {loading && <LoadingState label="Cargando portafolios desde ArtLink..." />}
+            {loading && <LoadingState label="Cargando catálogo de creadores..." />}
 
             {error && <ErrorState message={error.message} onRetry={reload} />}
 
             {!loading && !error && visibleArtists.length === 0 && (
               <EmptyState
-                title={onlyFavorites ? 'No tienes favoritos con estos filtros' : 'No encontramos resultados'}
-                description={
-                  onlyFavorites
-                    ? 'Desactiva el filtro "Guardados" para ver todo el catálogo.'
-                    : 'Prueba ajustando la búsqueda, disciplina o rango de precio.'
+                title={onlyFavorites ? 'No tienes creadores en favoritos con estos filtros' : 'No se encontraron artistas'}
+                description="Intenta ajustar tus términos de búsqueda, disciplina o rango de precio, o haz clic en limpiar filtros."
+                action={
+                  <button className="button button-primary" type="button" onClick={resetFilters}>
+                    Limpiar todos los filtros
+                  </button>
                 }
               />
             )}
@@ -338,8 +317,8 @@ export default function ExplorePage() {
               <div className="artist-grid directory-grid">
                 {visibleArtists.map((artist) => (
                   <ArtistCard
-                    artist={artist}
                     key={artist.id}
+                    artist={artist}
                     favorited={favorites.isFavorite(artist.id)}
                     onFavorite={favorites.toggle}
                   />
@@ -347,142 +326,6 @@ export default function ExplorePage() {
               </div>
             )}
           </div>
-        </div>
-      </section>
-
-      {/* ── 4. SECCIÓN DESTACADA: ESPACIO DE UN ARTISTA EN ARTLINK ── */}
-      <section className="featured-space-showcase" aria-labelledby="showcase-title">
-        <div className="showcase-header">
-          <span className="sticker sticker-mint">
-            <DecorativeStar size={13} color="#1E192B" /> Experiencia Transparente
-          </span>
-          <h2 id="showcase-title">Así luce el espacio de un artista en ArtLink</h2>
-          <p>
-            Sin tarifas ocultas, con tiempos de entrega claros y comunicación directa en cada etapa del boceto al arte final.
-          </p>
-        </div>
-
-        {/* Card Mockup de Sofía Chen */}
-        <div className="showcase-profile-card paper-card">
-          <div className="showcase-banner-bar">
-            <span className="showcase-tag-top">
-              <DecorativeStar size={12} color="#8B5CF6" /> PERFIL DESTACADO DE LA SEMANA{' '}
-              <DecorativeStar size={12} color="#8B5CF6" />
-            </span>
-            <span className="badge badge-mint showcase-status-badge">DISPONIBLE AHORA</span>
-          </div>
-
-          <div className="showcase-profile-header">
-            <div className="showcase-avatar-box">
-              <span className="avatar avatar-large avatar-fallback" style={{ background: '#F472B6', color: '#1E192B' }}>SC</span>
-            </div>
-            <div className="showcase-profile-info">
-              <div className="showcase-name-row">
-                <h3>Sofía Chen (SofiArt)</h3>
-                <BadgeCheck size={18} color="#8B5CF6" aria-label="Artista verificada" />
-                <span className="badge badge-violet">PRO</span>
-              </div>
-              <p className="showcase-bio">
-                Ilustradora editorial y concept artist para videojuegos. Especializada en mundos de fantasía acogedores y escenas crepusculares.
-              </p>
-              <div className="showcase-stats-row">
-                <span><Star size={14} fill="#8B5CF6" color="#8B5CF6" /> 5.0 (48 reseñas)</span>
-                <span>· Madrid, ES ·</span>
-                <span className="text-mint"><strong>5/5 cupos activos</strong></span>
-              </div>
-            </div>
-
-            <div className="showcase-actions">
-              <button type="button" className="button button-outline button-small">
-                <Heart size={14} aria-hidden="true" /> Guardar
-              </button>
-              <Link to="/artista/artist-1" className="button button-primary button-small">
-                Solicitar comisión <ArrowRight size={14} aria-hidden="true" />
-              </Link>
-            </div>
-          </div>
-
-          <div className="showcase-body-grid">
-            {/* Izquierda: Muestras Recientes */}
-            <div className="showcase-samples-col">
-              <div className="samples-header">
-                <strong>Muestras recientes</strong>
-                <span className="sticker sticker-yellow-small">
-                  <CheckCircle2 size={12} aria-hidden="true" /> Impreso
-                </span>
-                <Link to="/artista/artist-1" className="samples-more-link">Ver galería completa (14) →</Link>
-              </div>
-              <div className="samples-grid">
-                <div className="sample-thumb-card">
-                  <div className="sample-placeholder-art bg-art-1">
-                    <span className="sample-pill">Ilustración Completa (7 días)</span>
-                  </div>
-                </div>
-                <div className="sample-thumb-card">
-                  <div className="sample-placeholder-art bg-art-2">
-                    <span className="sample-pill">Medio cuerpo (3 días)</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Derecha: Tarifario & Entregables */}
-            <div className="showcase-rates-col">
-              <div className="rates-header">
-                <strong>
-                  <DecorativeStar size={14} color="#8B5CF6" /> Tarifario & Entregables
-                </strong>
-                <span className="text-mint-small">
-                  <DecorativeStar size={11} color="#0F5C4F" /> Disponibilidad real
-                </span>
-              </div>
-              <ul className="rates-list">
-                <li className="rate-item">
-                  <div>
-                    <strong>Busto / Icon para redes</strong>
-                    <small>Entrega estimada: 5 días · PAGO PLANO</small>
-                  </div>
-                  <strong className="rate-price">$45 USD</strong>
-                </li>
-                <li className="rate-item">
-                  <div>
-                    <strong>Medio cuerpo a todo color</strong>
-                    <small>Entrega estimada: 7 días · 2 REVISIONES</small>
-                  </div>
-                  <strong className="rate-price">$85 USD</strong>
-                </li>
-                <li className="rate-item">
-                  <div>
-                    <strong>Ilustración compleja + Fondo</strong>
-                    <small>Entrega estimada: 14 días · ILUSTRACIÓN FULL</small>
-                  </div>
-                  <strong className="rate-price">$160 USD</strong>
-                </li>
-              </ul>
-              <p className="rates-footnote">
-                Estimación en días laborales tras aprobar el boceto inicial.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── 5. BANNER INFERIOR PARA CREADORES ── */}
-      <section className="explore-bottom-cta paper-card" aria-labelledby="cta-seller-title">
-        <span className="sticker sticker-purple">
-          <DecorativeStar size={13} color="#1E192B" /> ¿Eres ilustrador o modelador?
-        </span>
-        <h2 id="cta-seller-title">Abre tu vitrina y gestiona tus comisiones sin desorden</h2>
-        <p>
-          Automatiza tarifas de espacio, recibe pagos internacionales protegidos y presenta tus tarifas con la calidad de tu propio cuaderno de bocetos.
-        </p>
-        <div className="hero-actions">
-          <Link className="button button-primary" to="/registro?role=artist">
-            Empezar a vender
-          </Link>
-          <Link className="button button-secondary" to="/como-funciona">
-            Ver cómo funciona
-          </Link>
         </div>
       </section>
     </div>

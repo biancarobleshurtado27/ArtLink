@@ -1,8 +1,9 @@
-import { ArrowUpRight, Heart, MapPin, Star } from 'lucide-react'
+import { ArrowUpRight, Heart, MapPin } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import Badge from './Badge'
 import Card from './Card'
 import AvailabilityBadge from './AvailabilityBadge'
+import StarRating from './StarRating'
 import { handleImageError } from '../utils/imageFallback'
 
 export default function ArtistCard({ artist, favorited = false, onFavorite }) {
@@ -49,7 +50,7 @@ export default function ArtistCard({ artist, favorited = false, onFavorite }) {
         <p className="artist-bio">{artist.bio}</p>
         <div className="artist-meta">
           <span><MapPin size={15} aria-hidden="true" />{artist.location}</span>
-          <span><Star size={15} fill="currentColor" aria-hidden="true" />{artist.rating}</span>
+          <StarRating value={artist.rating} size={14} />
           <span>Desde ${artist.basePrice}</span>
         </div>
         <div className="discipline-row">
