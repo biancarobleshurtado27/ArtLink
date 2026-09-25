@@ -23,8 +23,6 @@ const mobileLinks = [
   { to: '/perfil', label: 'Perfil', icon: UserRound },
 ]
 
-
-
 export default function AppShell() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [userMenuOpen, setUserMenuOpen] = useState(false)
@@ -32,7 +30,11 @@ export default function AppShell() {
   const { theme, textSize, setTheme, setTextSize } = useDisplayPreferences()
   const userAreaRef = useRef(null)
   const headerRef = useRef(null)
-  const closeMenus = () => { setMenuOpen(false); setUserMenuOpen(false) }
+
+  const closeMenus = () => {
+    setMenuOpen(false)
+    setUserMenuOpen(false)
+  }
 
   useEffect(() => {
     function handleOutside(event) {
@@ -43,17 +45,19 @@ export default function AppShell() {
         setMenuOpen(false)
       }
     }
-    function handleEscape(event) {
+
+    function handleKeyDown(event) {
       if (event.key === 'Escape') {
         setUserMenuOpen(false)
         setMenuOpen(false)
       }
     }
+
     document.addEventListener('mousedown', handleOutside)
-    document.addEventListener('keydown', handleEscape)
+    document.addEventListener('keydown', handleKeyDown)
     return () => {
       document.removeEventListener('mousedown', handleOutside)
-      document.removeEventListener('keydown', handleEscape)
+      document.removeEventListener('keydown', handleKeyDown)
     }
   }, [userMenuOpen, menuOpen])
 
@@ -63,34 +67,15 @@ export default function AppShell() {
   return (
     <div className="app-shell">
       <a className="skip-link" href="#main-content">Saltar al contenido principal</a>
+
       <header className="site-header" ref={headerRef}>
         <div className="site-header-inner">
+          {/* Zona 1: Logotipo */}
           <Link className="brand" to="/" aria-label="ArtLink" onClick={closeMenus}>
-            <img src={logoArtLink} alt="ArtLink Logo" className="brand-logo" />
+            <img src={logoArtLink} alt="Logo de ArtLink" className="brand-logo" />
           </Link>
 
-          <div className="header-mobile-controls">
-            <button
-              className="display-control theme-toggle-compact"
-              type="button"
-              onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-              aria-label={theme === 'light' ? 'Activar tema oscuro' : 'Activar tema claro'}
-              title={theme === 'light' ? 'Tema oscuro' : 'Tema claro'}
-            >
-              {theme === 'light' ? <Moon size={18} aria-hidden="true" /> : <Sun size={18} aria-hidden="true" />}
-            </button>
-            <button
-              className="mobile-menu-button"
-              type="button"
-              aria-expanded={menuOpen}
-              aria-controls="main-menu"
-              aria-label={menuOpen ? 'Cerrar menú' : 'Abrir menú'}
-              onClick={() => setMenuOpen((open) => !open)}
-            >
-              {menuOpen ? <X size={22} aria-hidden="true" /> : <Menu size={22} aria-hidden="true" />}
-            </button>
-          </div>
-
+          {/* Zona 2: Navegación principal */}
           <nav id="main-menu" className={`desktop-nav ${menuOpen ? 'is-open' : ''}`} aria-label="Navegación principal">
             <div className="mobile-nav-brand" aria-hidden="true">
               <img src={logoArtLink} alt="Logo de ArtLink" className="brand-logo mobile-nav-brand-logo" />
@@ -114,63 +99,65 @@ export default function AppShell() {
               ))}
             </div>
 
+            {/* Zona 3: Acciones de usuario & Preferencias de visualización */}
             <div className="nav-actions-group">
-              {user
-                ? (
-                  <div className="user-area" ref={userAreaRef}>
-                    <button
-                      className={`user-chip ${userMenuOpen ? 'is-open' : ''}`}
-                      type="button"
-                      aria-expanded={userMenuOpen}
-                      aria-haspopup="menu"
-                      aria-label={`Cuenta de ${userName}`}
-                      onClick={() => setUserMenuOpen((open) => !open)}
-                    >
-                      <span className="avatar avatar-small avatar-fallback" aria-hidden="true">{initials}</span>
-                      <span className="user-chip-text">
-                        <strong>{userName}</strong>
-                        <small>{roleLabels[user.role] || user.role}</small>
-                      </span>
-                      <ChevronDown size={15} aria-hidden="true" className="user-chip-caret" />
-                    </button>
-                    {userMenuOpen && (
-                      <div className="user-menu" role="menu" aria-label="Opciones de cuenta">
-                        <p className="user-menu-title">Mi cuenta</p>
-                        {user?.role === ROLES.ARTIST && (
-                          <NavLink to="/artista/panel" role="menuitem" onClick={closeMenus}>
-                            <LayoutDashboard size={16} aria-hidden="true" /> Mi panel de artista
-                          </NavLink>
-                        )}
-                        {user?.role === ROLES.ADMIN && (
-                          <NavLink to="/admin" role="menuitem" onClick={closeMenus}>
-                            <LayoutDashboard size={16} aria-hidden="true" /> Panel de administración
-                          </NavLink>
-                        )}
-                        <NavLink to="/explorar" role="menuitem" onClick={closeMenus}>
-                          <Search size={16} aria-hidden="true" /> Explorar artistas
+              {user ? (
+                <div className="user-area" ref={userAreaRef}>
+                  <button
+                    className={`user-chip ${userMenuOpen ? 'is-open' : ''}`}
+                    type="button"
+                    aria-expanded={userMenuOpen}
+                    aria-haspopup="menu"
+                    aria-controls="user-dropdown-menu"
+                    aria-label={`Cuenta de ${userName}`}
+                    onClick={() => setUserMenuOpen((open) => !open)}
+                  >
+                    <span className="avatar avatar-small avatar-fallback" aria-hidden="true">{initials}</span>
+                    <span className="user-chip-text">
+                      <strong>{userName}</strong>
+                      <small>{roleLabels[user.role] || user.role}</small>
+                    </span>
+                    <ChevronDown size={15} aria-hidden="true" className="user-chip-caret" />
+                  </button>
+
+                  {userMenuOpen && (
+                    <div id="user-dropdown-menu" className="user-menu" role="menu" aria-label="Opciones de cuenta">
+                      <p className="user-menu-title">Mi cuenta</p>
+                      <NavLink to="/perfil" role="menuitem" onClick={closeMenus}>
+                        <UserRound size={16} aria-hidden="true" /> Mi perfil
+                      </NavLink>
+                      {user?.role === ROLES.ARTIST && (
+                        <NavLink to="/artista/panel" role="menuitem" onClick={closeMenus}>
+                          <LayoutDashboard size={16} aria-hidden="true" /> Mi panel de artista
                         </NavLink>
-                        <NavLink to="/solicitudes" role="menuitem" onClick={closeMenus}>
-                          <MessageCircle size={16} aria-hidden="true" /> Mis solicitudes
+                      )}
+                      {user?.role === ROLES.ADMIN && (
+                        <NavLink to="/admin" role="menuitem" onClick={closeMenus}>
+                          <LayoutDashboard size={16} aria-hidden="true" /> Panel de administración
                         </NavLink>
-                        <NavLink to="/perfil" role="menuitem" onClick={closeMenus}>
-                          <UserRound size={16} aria-hidden="true" /> Mi perfil
-                        </NavLink>
-                        <NavLink to="/ajustes" role="menuitem" onClick={closeMenus}>
-                          <Sliders size={16} aria-hidden="true" /> Ajustes y accesibilidad
-                        </NavLink>
-                        <button className="user-menu-logout" type="button" role="menuitem" onClick={() => { logout(); closeMenus() }}>
-                          <LogOut size={16} aria-hidden="true" /> Cerrar sesión
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                )
-                : (
-                  <div className="auth-nav-group">
-                    <NavLink to="/login" className="nav-login" onClick={closeMenus}>Iniciar sesión</NavLink>
-                    <Link className="button button-primary button-small" to="/registro" onClick={closeMenus}>Crear perfil</Link>
-                  </div>
-                )}
+                      )}
+                      <NavLink to="/explorar" role="menuitem" onClick={closeMenus}>
+                        <Search size={16} aria-hidden="true" /> Explorar artistas
+                      </NavLink>
+                      <NavLink to="/solicitudes" role="menuitem" onClick={closeMenus}>
+                        <MessageCircle size={16} aria-hidden="true" /> Mis solicitudes
+                      </NavLink>
+                      <NavLink to="/ajustes" role="menuitem" onClick={closeMenus}>
+                        <Sliders size={16} aria-hidden="true" /> Ajustes y accesibilidad
+                      </NavLink>
+                      <button className="user-menu-logout" type="button" role="menuitem" onClick={() => { logout(); closeMenus() }}>
+                        <LogOut size={16} aria-hidden="true" /> Cerrar sesión
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="auth-nav-group">
+                  <NavLink to="/login" className="nav-login" onClick={closeMenus}>Iniciar sesión</NavLink>
+                  <Link className="button button-primary button-small" to="/registro" onClick={closeMenus}>Crear perfil</Link>
+                </div>
+              )}
+
               <div className="display-controls" aria-label="Preferencias de visualización">
                 <button
                   className="display-control theme-toggle-desktop"
@@ -182,7 +169,13 @@ export default function AppShell() {
                   {theme === 'light' ? <Moon size={18} aria-hidden="true" /> : <Sun size={18} aria-hidden="true" />}
                 </button>
                 <label htmlFor="text-size" className="sr-only">Tamaño del texto</label>
-                <select id="text-size" className="text-size-select" value={textSize} onChange={(event) => setTextSize(event.target.value)} aria-label="Tamaño del texto">
+                <select
+                  id="text-size"
+                  className="text-size-select"
+                  value={textSize}
+                  onChange={(event) => setTextSize(event.target.value)}
+                  aria-label="Tamaño del texto"
+                >
                   <option value="normal">Texto normal</option>
                   <option value="large">Texto grande</option>
                   <option value="x-large">Texto extra grande</option>
@@ -190,12 +183,38 @@ export default function AppShell() {
               </div>
             </div>
           </nav>
+
+          {/* Controles de cabecera en vista móvil */}
+          <div className="header-mobile-controls">
+            <button
+              className="display-control theme-toggle-compact"
+              type="button"
+              onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+              aria-label={theme === 'light' ? 'Activar tema oscuro' : 'Activar tema claro'}
+              title={theme === 'light' ? 'Tema oscuro' : 'Tema claro'}
+            >
+              {theme === 'light' ? <Moon size={18} aria-hidden="true" /> : <Sun size={18} aria-hidden="true" />}
+            </button>
+            <button
+              className="mobile-menu-button"
+              type="button"
+              aria-expanded={menuOpen}
+              aria-controls="main-menu"
+              aria-label={menuOpen ? 'Cerrar menú' : 'Abrir menú'}
+              onClick={() => setMenuOpen((open) => !open)}
+            >
+              {menuOpen ? <X size={22} aria-hidden="true" /> : <Menu size={22} aria-hidden="true" />}
+            </button>
+          </div>
         </div>
       </header>
+
       {menuOpen && <div className="mobile-menu-backdrop" onClick={closeMenus} aria-hidden="true" />}
+
       <main id="main-content" className="main-content">
         <PageContainer><Outlet /></PageContainer>
       </main>
+
       <Footer />
       <AssistantWidget />
       <BottomNavigation links={mobileLinks} />
