@@ -33,6 +33,7 @@ export default function NewRequestPage() {
 
   const isWaitlist = profile?.availability === 'waitlist'
   const isClosed = profile?.availability === 'closed'
+  const isSelfRequest = Boolean(user && profile && (user.id === profile.id || user.id === artistId))
 
   function updateField(name, value) {
     setForm((current) => {
@@ -83,7 +84,7 @@ export default function NewRequestPage() {
 
   async function handleSubmit(event) {
     event.preventDefault()
-    if (isClosed) return
+    if (isClosed || isSelfRequest) return
     setSubmitError('')
     
     const errors = validate()
@@ -304,10 +305,18 @@ export default function NewRequestPage() {
               <FileText size={15} aria-hidden="true" /> Protótipo académico ArtLink: no se realizan cargos a tarjetas ni pagos reales.
             </p>
 
+            {isSelfRequest && (
+              <p className="form-message form-error" role="alert">
+                <AlertCircle size={15} aria-hidden="true" /> No puedes solicitarte una comisión a ti mismo.
+              </p>
+            )}
+
             {submitError && <p className="form-message form-error" role="alert">{submitError}</p>}
 
-            <Button type="submit" loading={submitting} disabled={isClosed || !effectiveComm}>
-              {isWaitlist ? 'Solicitar puesto en lista de espera' : 'Enviar propuesta de comisión'}
+            <Button type="submit" loading={submitting} disabled={isClosed || !effectiveComm || isSelfRequest}>
+              {isSelfRequest
+                ? 'No puedes solicitarte a ti mismo'
+                : (isWaitlist ? 'Solicitar puesto en lista de espera' : 'Enviar propuesta de comisión')}
             </Button>
           </form>
         </div>

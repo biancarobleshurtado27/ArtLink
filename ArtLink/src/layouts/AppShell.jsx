@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink, Outlet } from 'react-router-dom'
-import { ChevronDown, Home, LayoutDashboard, LogOut, Menu, MessageCircle, Moon, Search, Sun, UserRound, X } from 'lucide-react'
+import { ChevronDown, Home, LayoutDashboard, LogOut, Menu, MessageCircle, Moon, Search, Sliders, Sun, UserRound, X } from 'lucide-react'
 import logoArtLink from '../assets/logo-artlink.png'
 import useAuth from '../hooks/useAuth'
 import Footer from '../components/Footer'
@@ -23,12 +23,7 @@ const mobileLinks = [
   { to: '/perfil', label: 'Perfil', icon: UserRound },
 ]
 
-function accountLinks(user) {
-  const links = [{ to: '/perfil', label: 'Mi perfil', icon: UserRound }]
-  if (user?.role === ROLES.ADMIN) links.push({ to: '/admin', label: 'Panel de administración', icon: LayoutDashboard })
-  if (user?.role === ROLES.ARTIST) links.push({ to: '/artista/panel', label: 'Mi espacio de artista', icon: LayoutDashboard })
-  return links
-}
+
 
 export default function AppShell() {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -145,13 +140,27 @@ export default function AppShell() {
                     {userMenuOpen && (
                       <div className="user-menu" role="menu" aria-label="Opciones de cuenta">
                         <p className="user-menu-title">Mi cuenta</p>
-                        {accountLinks(user).map(({ to, label, icon: Icon }) => (
-                          <NavLink key={to} to={to} role="menuitem" onClick={closeMenus}>
-                            <Icon size={16} aria-hidden="true" /> {label}
+                        {user?.role === ROLES.ARTIST && (
+                          <NavLink to="/artista/panel" role="menuitem" onClick={closeMenus}>
+                            <LayoutDashboard size={16} aria-hidden="true" /> Mi panel de artista
                           </NavLink>
-                        ))}
+                        )}
+                        {user?.role === ROLES.ADMIN && (
+                          <NavLink to="/admin" role="menuitem" onClick={closeMenus}>
+                            <LayoutDashboard size={16} aria-hidden="true" /> Panel de administración
+                          </NavLink>
+                        )}
+                        <NavLink to="/explorar" role="menuitem" onClick={closeMenus}>
+                          <Search size={16} aria-hidden="true" /> Explorar artistas
+                        </NavLink>
                         <NavLink to="/solicitudes" role="menuitem" onClick={closeMenus}>
                           <MessageCircle size={16} aria-hidden="true" /> Mis solicitudes
+                        </NavLink>
+                        <NavLink to="/perfil" role="menuitem" onClick={closeMenus}>
+                          <UserRound size={16} aria-hidden="true" /> Mi perfil
+                        </NavLink>
+                        <NavLink to="/ajustes" role="menuitem" onClick={closeMenus}>
+                          <Sliders size={16} aria-hidden="true" /> Ajustes y accesibilidad
                         </NavLink>
                         <button className="user-menu-logout" type="button" role="menuitem" onClick={() => { logout(); closeMenus() }}>
                           <LogOut size={16} aria-hidden="true" /> Cerrar sesión

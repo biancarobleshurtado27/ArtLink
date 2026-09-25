@@ -1,8 +1,5 @@
-import { useContext } from 'react'
-import { DisplayPreferencesContext } from '../context/displayPreferences'
+import useSettings from './useSettings'
 
 export default function useDisplayPreferences() {
-  const context = useContext(DisplayPreferencesContext)
-  if (!context) throw new Error('useDisplayPreferences must be used inside DisplayPreferencesProvider')
-  return context
+  return useSettings()
 }

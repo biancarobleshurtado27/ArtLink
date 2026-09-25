@@ -108,6 +108,81 @@
   color-scheme: dark;
 }
 
-/* Escalas accesibles de tamaño de texto (solo cambia la raíz rem) */
-:root[data-text-size='large'] { font-size: 112.5%; }
-:root[data-text-size='x-large'] { font-size: 125%; }
+/* Escalas accesibles de tamaño de texto */
+:root[data-text-size='large'],
+:root[data-font-size='large'] { font-size: 112.5%; }
+:root[data-text-size='x-large'],
+:root[data-font-size='xlarge'] { font-size: 125%; }
+
+/* Modos de contraste accesibles */
+:root[data-contrast='high'] {
+  --line: #000000;
+  --border-strong: 3px solid #000000;
+  --shadow-firm: 6px 7px 0 #000000;
+  --text-muted: #111111;
+  --focus-color: #000000;
+  --focus-ring: 3px solid #000000;
+}
+:root[data-theme='dark'][data-contrast='high'] {
+  --bg: #050505;
+  --paper: #121212;
+  --line: #FFFFFF;
+  --ink: #FFFFFF;
+  --border-strong: 3px solid #FFFFFF;
+  --shadow-firm: 6px 7px 0 #FFFFFF;
+  --text-muted: #E5E5E5;
+  --focus-color: #FEF08A;
+  --focus-ring: 3px solid #FEF08A;
+}
+:root[data-contrast='soft'] {
+  --bg: #F7F5EE;
+  --paper: #FFFFFF;
+  --line: #E2DDD0;
+  --shadow-firm: 3px 4px 0 rgba(30, 25, 43, 0.12);
+}
+
+/* Modos de daltonismo */
+:root[data-color-mode='protanopia'] {
+  --violet: #2563EB;
+  --violet-dark: #1D4ED8;
+  --rose: #D97706;
+  --mint: #059669;
+}
+:root[data-color-mode='deuteranopia'] {
+  --violet: #3B82F6;
+  --violet-dark: #1E40AF;
+  --rose: #EA580C;
+  --mint: #0D9488;
+}
+:root[data-color-mode='tritanopia'] {
+  --violet: #DB2777;
+  --violet-dark: #9D174D;
+  --rose: #DC2626;
+  --mint: #2563EB;
+}
+
+/* Reducir movimiento */
+:root[data-reduce-motion='true'] *,
+:root[data-reduce-motion='true'] *::before,
+:root[data-reduce-motion='true'] *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+
+/* Tipografía de alta legibilidad */
+:root[data-readable-font='true'] body,
+:root[data-readable-font='true'] input,
+:root[data-readable-font='true'] select,
+:root[data-readable-font='true'] button,
+:root[data-readable-font='true'] textarea {
+  font-family: Arial, Helvetica, sans-serif !important;
+  letter-spacing: 0.03em !important;
+  line-height: 1.7 !important;
+}
+
+/* Mostrar texto descriptivo junto a iconos cuando esté activado */
+:root[data-show-labels='true'] .icon-label-text {
+  display: inline-block !important;
+  margin-left: 0.35rem;
+}
