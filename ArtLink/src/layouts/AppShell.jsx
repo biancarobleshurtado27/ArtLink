@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { ChevronDown, Home, LayoutDashboard, LogOut, Menu, MessageCircle, Search, Send, Sliders, User, UserRound, X } from 'lucide-react'
+import { Link, NavLink, Outlet } from 'react-router-dom'
+import { ChevronDown, Home, LayoutDashboard, LogOut, Menu, MessageCircle, Search, Sliders, User, UserRound, X } from 'lucide-react'
 import logoArtLink from '../assets/logo-artlink.png'
 import useAuth from '../hooks/useAuth'
 import Footer from '../components/Footer'
@@ -13,7 +13,6 @@ const desktopLinks = [
   { to: '/explorar', label: 'Explorar', accessibleLabel: 'Explorar artistas' },
   { to: '/como-funciona', label: 'Cómo funciona' },
   { to: '/para-artistas', label: 'Para artistas' },
-  { to: '/solicitudes', label: 'Comisiones' },
 ]
 
 const mobileLinks = [
@@ -26,9 +25,7 @@ const mobileLinks = [
 export default function AppShell() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [userMenuOpen, setUserMenuOpen] = useState(false)
-  const [headerSearchQuery, setHeaderSearchQuery] = useState('')
   const { user, logout } = useAuth()
-  const navigate = useNavigate()
   const userAreaRef = useRef(null)
   const headerRef = useRef(null)
 
@@ -62,14 +59,6 @@ export default function AppShell() {
     }
   }, [userMenuOpen, menuOpen])
 
-  function handleHeaderSearchSubmit(e) {
-    e.preventDefault()
-    if (headerSearchQuery.trim()) {
-      navigate(`/explorar?q=${encodeURIComponent(headerSearchQuery.trim())}`)
-      closeMenus()
-    }
-  }
-
   const userName = user?.name || user?.email?.split('@')[0] || 'Usuario'
   const initials = userName.split(' ').map((part) => part[0]).slice(0, 2).join('').toUpperCase()
 
@@ -79,12 +68,12 @@ export default function AppShell() {
 
       <header className="site-header" ref={headerRef}>
         <div className="site-header-inner">
-          {/* Logotipo ArtLink limpio sin sticker Scrapbook */}
+          {/* 1. Logo de ArtLink a la izquierda */}
           <Link className="brand" to="/" aria-label="ArtLink" onClick={closeMenus}>
             <img src={logoArtLink} alt="Logo de ArtLink" className="brand-logo" />
           </Link>
 
-          {/* Navegación principal */}
+          {/* 2. Navegación limpia horizontal en escritorio */}
           <nav id="main-menu" className={`desktop-nav ${menuOpen ? 'is-open' : ''}`} aria-label="Navegación principal">
             <div className="mobile-nav-brand" aria-hidden="true">
               <img src={logoArtLink} alt="Logo de ArtLink" className="brand-logo mobile-nav-brand-logo" />
@@ -94,7 +83,7 @@ export default function AppShell() {
               </span>
             </div>
 
-            {/* Cápsula de enlaces alargada */}
+            {/* Enlaces principales en el centro/junto al logo */}
             <div className="nav-links-capsule">
               {desktopLinks.map((link) => (
                 <NavLink
@@ -109,22 +98,7 @@ export default function AppShell() {
               ))}
             </div>
 
-            {/* Buscador Integrado con botón enviar en el extremo derecho */}
-            <form className="header-search-form" onSubmit={handleHeaderSearchSubmit}>
-              <Search size={15} className="header-search-icon" aria-hidden="true" />
-              <input
-                type="text"
-                placeholder="Buscar creadores, estilos..."
-                value={headerSearchQuery}
-                onChange={(e) => setHeaderSearchQuery(e.target.value)}
-                aria-label="Buscar creadores o estilos"
-              />
-              <button type="submit" className="header-search-submit-btn" aria-label="Enviar búsqueda" title="Enviar información">
-                <Send size={13} aria-hidden="true" />
-              </button>
-            </form>
-
-            {/* Acciones de la derecha */}
+            {/* 3. Acciones alineadas a la derecha */}
             <div className="nav-actions-group">
               {user ? (
                 <div className="user-area" ref={userAreaRef}>
@@ -182,7 +156,7 @@ export default function AppShell() {
                 <div className="auth-nav-group">
                   <NavLink to="/login" className="nav-login" onClick={closeMenus}>Iniciar sesión</NavLink>
                   <Link className="button button-primary button-small button-pill-artist" to="/registro?role=artist" onClick={closeMenus}>
-                    + Unirse como artista
+                    Unirse
                   </Link>
                   <Link to="/perfil" className="header-user-avatar-btn" aria-label="Mi cuenta" onClick={closeMenus}>
                     <User size={18} aria-hidden="true" />
