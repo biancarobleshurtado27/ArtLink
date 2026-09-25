@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { DollarSign, Eye, Inbox, Star, Layers, CheckCircle } from 'lucide-react'
+import { DollarSign, Inbox, Star, Layers, CheckCircle } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import ArtistCard from '../components/ArtistCard'
 import Button from '../components/Button'

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Eye, MessageCircle, Check, X, Calendar, DollarSign, ExternalLink } from 'lucide-react'
+import { Eye, MessageCircle, Check, X, Calendar, ExternalLink } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import Badge from './Badge'
 import Button from './Button'

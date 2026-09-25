@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, BadgeCheck, CalendarCheck2, CheckCircle2, ChevronDown, Clock, FolderKanban, Inbox, MessageSquareText, Palette, Sparkles, Star, Wallet, Zap } from 'lucide-react'
+import { ArrowRight, BadgeCheck, CalendarCheck2, CheckCircle2, ChevronDown, FolderKanban, Inbox, MessageSquareText, Palette, Star, Wallet, Zap } from 'lucide-react'
 import useAuth from '../hooks/useAuth'
 import { ROLES } from '../utils/roles'
 import AvailabilityBadge from '../components/AvailabilityBadge'

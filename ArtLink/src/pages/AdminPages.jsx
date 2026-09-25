@@ -3,8 +3,8 @@ import {
   BarChart, Bar, CartesianGrid, Cell, PieChart, Pie, ResponsiveContainer, Tooltip, XAxis, YAxis
 } from 'recharts'
 import {
-  Users, UserCheck, Palette, FileText, CheckCircle2, AlertTriangle, Activity, Plus, Search,
-  Trash2, Edit3, Filter, ArrowLeft, ShieldCheck, Clock, Server, ArrowRight, RefreshCw, X
+  Users, UserCheck, Palette, FileText, CheckCircle2, AlertTriangle, Plus, Search,
+  Trash2, Edit3, Filter, ArrowLeft, ShieldCheck, Clock, Server, ArrowRight, RefreshCw
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import Badge from '../components/Badge'
@@ -122,7 +122,20 @@ export function AdminDashboardPage() {
   }
 
   useEffect(() => {
-    loadDashboard()
+    let mounted = true
+    Promise.all([getUsers(), getArtists(), getRequests(), getCategories()])
+      .then(([users, artists, requests, categories]) => {
+        if (!mounted) return
+        setData({ users, artists, requests, categories })
+        setError(null)
+      })
+      .catch((err) => {
+        if (mounted) setError(err)
+      })
+      .finally(() => {
+        if (mounted) setLoading(false)
+      })
+    return () => { mounted = false }
   }, [])
 
   if (loading) return <LoadingState label="Cargando panel de control administrativo..." />
@@ -404,8 +417,21 @@ export function AdminResourcePage({ resource }) {
   }
 
   useEffect(() => {
-    fetchItems()
-  }, [resource])
+    let mounted = true
+    getAll()
+      .then((data) => {
+        if (!mounted) return
+        setItems(data)
+        setError(null)
+      })
+      .catch((err) => {
+        if (mounted) setError(err)
+      })
+      .finally(() => {
+        if (mounted) setLoading(false)
+      })
+    return () => { mounted = false }
+  }, [resource, getAll])
 
   // Filtrado y búsqueda
   const filteredAll = useMemo(() => {

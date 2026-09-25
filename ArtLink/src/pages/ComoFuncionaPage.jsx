@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, BadgeDollarSign, CalendarCheck2, CheckCircle2, ChevronDown, Clock, FolderKanban, MessageSquareText, Search, Send, ShieldCheck, Sparkles, UserPlus } from 'lucide-react'
+import { ArrowRight, BadgeDollarSign, CalendarCheck2, CheckCircle2, ChevronDown, Clock, FolderKanban, Search, Send, ShieldCheck, Sparkles, UserPlus } from 'lucide-react'
 
 const fourSteps = [
   {

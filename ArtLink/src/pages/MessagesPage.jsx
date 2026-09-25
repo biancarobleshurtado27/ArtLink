@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react'
-import { Send, CheckCheck, Clock, User, ArrowLeft, MessageSquare } from 'lucide-react'
+import { Send, CheckCheck, Clock, User, MessageSquare } from 'lucide-react'
 import { useSearchParams } from 'react-router-dom'
 import ErrorState from '../components/ErrorState'
 import EmptyState from '../components/EmptyState'
@@ -31,14 +31,8 @@ export default function MessagesPage() {
   const [sending, setSending] = useState(false)
   const chatBottomRef = useRef(null)
 
-  // Auto-select first request if none explicitly selected
-  useEffect(() => {
-    if (!selectedId && requests.length > 0) {
-      setSelectedId(requests[0].id)
-    }
-  }, [requests, selectedId])
-
-  const selected = requests.find((request) => request.id === selectedId)
+  const activeRequestId = selectedId || requests[0]?.id || ''
+  const selected = requests.find((request) => request.id === activeRequestId)
 
   useEffect(() => {
     if (selected) {
