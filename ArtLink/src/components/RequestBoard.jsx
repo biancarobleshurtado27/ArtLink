@@ -170,20 +170,26 @@ export default function RequestBoard({ requests, onStatusChange, busy }) {
 
             {selected.references && selected.references.length > 0 && (
               <div className="modal-section">
-                <h3>Referencias e inspiración proporcionadas</h3>
-                <ul className="references-list">
+                <h3>Previsualizaciones de referencias e inspiración</h3>
+                <div className="references-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))', gap: '0.6rem', marginTop: '0.5rem' }}>
                   {selected.references.map((ref, idx) => (
-                    <li key={idx}>
-                      {ref.startsWith('http') ? (
-                        <a href={ref} target="_blank" rel="noopener noreferrer" className="ref-link">
-                          <ExternalLink size={14} /> {ref}
-                        </a>
+                    <a
+                      href={ref.startsWith('http') ? ref : '#'}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      key={idx}
+                      style={{ display: 'block', borderRadius: '0.4rem', overflow: 'hidden', border: '1px solid #1E192B', height: '80px', background: '#FFF' }}
+                    >
+                      {ref.startsWith('http') || ref.startsWith('data:') ? (
+                        <img src={ref} alt={`Previsualización referencia ${idx + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                       ) : (
-                        <span>{ref}</span>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', fontSize: '0.75rem', padding: '0.3rem', textAlign: 'center' }}>
+                          <ExternalLink size={14} /> {ref}
+                        </div>
                       )}
-                    </li>
+                    </a>
                   ))}
-                </ul>
+                </div>
               </div>
             )}
 

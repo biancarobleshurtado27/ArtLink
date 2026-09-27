@@ -44,11 +44,14 @@ export default function useArtistWorkspace() {
           socialLinks: {},
         })
       }
-      const [items, rates, received] = await Promise.all([
+      const [items, rates, allRequests] = await Promise.all([
         getPortfolioItems({ artistId: artist.id }),
         getCommissions({ artistId: artist.id }),
-        getRequests({ artistId: artist.id }),
+        getRequests(),
       ])
+      const received = allRequests.filter(
+        (req) => req.artistId === artist.id || req.artistId === user.id
+      )
       setProfile(artist)
       setPortfolio(items)
       setCommissions(rates)

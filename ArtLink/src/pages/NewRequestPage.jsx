@@ -100,10 +100,13 @@ export default function NewRequestPage() {
   const [selectedFormatId, setSelectedFormatId] = useState(initialFormatId)
   const [selectedAddons, setSelectedAddons] = useState(['commercial'])
   const [description, setDescription] = useState('')
-  const [customBudget, setCustomBudget] = useState('')
   const [desiredDate, setDesiredDate] = useState('')
   const [paymentMethod, setPaymentMethod] = useState('card')
-  const [refFiles, setRefFiles] = useState(['Palette.png', 'Pose_01.jpg'])
+  const [refFiles, setRefFiles] = useState([
+    'https://picsum.photos/seed/art-reference-1/600/400',
+    'https://picsum.photos/seed/art-reference-2/600/400',
+  ])
+  const [newRefUrl, setNewRefUrl] = useState('')
   const [termsAccepted, setTermsAccepted] = useState(true)
 
   const [fieldErrors, setFieldErrors] = useState({})
@@ -121,13 +124,15 @@ export default function NewRequestPage() {
     return acc + (item ? item.price : 0)
   }, 0)
 
-  const subtotal = customBudget ? Number(customBudget) : (formatPrice + addonsPrice)
+  const subtotal = formatPrice + addonsPrice
   const escrowFee = Math.round(subtotal * 0.035 * 100) / 100
   const totalPrice = (subtotal + escrowFee).toFixed(2)
 
   const isClosed = profile?.availability === 'closed'
   const isWaitlist = profile?.availability === 'waitlist'
-  const isSelfRequest = Boolean(user && profile && (user.id === profile.id || user.id === artistId))
+  const isSelfRequest = Boolean(
+    user && profile && (user.id === profile.userId || user.id === profile.id)
+  )
 
   function toggleAddon(addonId) {
     setSelectedAddons((prev) =>
@@ -136,8 +141,13 @@ export default function NewRequestPage() {
   }
 
   function handleAddReference() {
-    const name = `Ref_${refFiles.length + 1}.png`
-    setRefFiles((prev) => [...prev, name])
+    const url = newRefUrl.trim() || `https://picsum.photos/seed/ref-${refFiles.length + 1}/600/400`
+    setRefFiles((prev) => [...prev, url])
+    setNewRefUrl('')
+  }
+
+  function handleRemoveReference(indexToRemove) {
+    setRefFiles((prev) => prev.filter((_, idx) => idx !== indexToRemove))
   }
 
   function validate() {
@@ -173,19 +183,19 @@ export default function NewRequestPage() {
         clientId: user ? user.id : 'guest-user',
         artistId: profile.id,
         commissionId: selectedFormat.id,
+        commissionTitle: selectedFormat.title,
+        price: Number(selectedFormat.price),
+        budget: Number(selectedFormat.price),
         description: description.trim(),
-        budget: Number(totalPrice),
         desiredDate: desiredDate || futureDate,
         references: refFiles,
-        addons: selectedAddons,
-        paymentMethod,
         status: isWaitlist ? 'waitlist' : 'pending',
-        termsAccepted: true,
+        createdAt: new Date().toISOString(),
       }
       const request = await createRequest(requestPayload)
       setCreatedRequest(request)
     } catch (err) {
-      setSubmitError(err.message || 'Ocurrió un error al procesar el depósito de la comisión.')
+      setSubmitError(err.message || 'Ocurrió un error al procesar la propuesta de comisión.')
     } finally {
       setSubmitting(false)
     }
@@ -431,13 +441,14 @@ export default function NewRequestPage() {
 
               <div className="form-two-columns" style={{ margin: '0.8rem 0' }}>
                 <label htmlFor="request-budget" className="form-field-label">
-                  <strong>Presupuesto propuesto (USD)</strong>
+                  <strong>Presupuesto propuesto (USD - Tarifa Fija)</strong>
                   <input
                     id="request-budget"
                     type="number"
-                    value={customBudget || subtotal}
-                    onChange={(e) => setCustomBudget(e.target.value)}
+                    value={selectedFormat.price}
+                    readOnly
                     required
+                    style={{ background: 'rgba(30, 25, 43, 0.05)', fontWeight: 700, cursor: 'not-allowed' }}
                   />
                 </label>
 
@@ -454,43 +465,82 @@ export default function NewRequestPage() {
               </div>
 
               <div className="brief-field-footer">
-                <small>Sé tan detallado como desees. Puedes pedir cambios durante el boceto.</small>
+                <small>Sé tan detallado como desees. La tarifa la establece el artista para la comisión seleccionada.</small>
                 <span className="char-counter">{description.length} / 2000</span>
               </div>
               {fieldErrors.description && (
                 <span className="field-error" role="alert"><AlertCircle size={13} /> {fieldErrors.description}</span>
               )}
 
-              {/* MOODBOARD / DROPZONE */}
-              <div className="references-board-wrap">
+              {/* PREVISUALIZACIONES VISUALES DE REFERENCIAS */}
+              <div className="references-board-wrap" style={{ marginTop: '1rem' }}>
                 <label className="form-field-label">
-                  <strong>Tablero de Referencias Visuales (Moodboard, bocetos o poses)</strong>
+                  <strong>Previsualización de Referencias Visuales (Moodboard / Imágenes)</strong>
                 </label>
 
-                <div className="dropzone-box" onClick={handleAddReference} role="button" tabIndex={0}>
-                  <UploadCloud size={28} className="text-violet" aria-hidden="true" />
-                  <strong>Arrastra imágenes de referencia aquí</strong>
-                  <small>PNG, JPG, PSD o WebP hasta 25MB por archivo</small>
-                  <button type="button" className="button button-small button-outline">
-                    Examinar archivos
+                <div className="ref-url-input-row" style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.8rem' }}>
+                  <input
+                    type="url"
+                    value={newRefUrl}
+                    onChange={(e) => setNewRefUrl(e.target.value)}
+                    placeholder="Pega la URL de una imagen de referencia (PNG/JPG)..."
+                    style={{ flex: 1, padding: '0.5rem', borderRadius: '0.4rem', border: '1px solid var(--ink)' }}
+                  />
+                  <button
+                    type="button"
+                    className="button button-outline button-small"
+                    onClick={handleAddReference}
+                  >
+                    + Agregar Imagen
                   </button>
                 </div>
 
-                <div className="ref-thumbnails-row">
-                  {refFiles.map((fileName, idx) => (
-                    <div className="ref-thumb-card" key={idx}>
-                      <ImageIcon size={18} className="text-violet" aria-hidden="true" />
-                      <span>{fileName}</span>
+                <div className="ref-previews-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(110px, 1fr))', gap: '0.8rem' }}>
+                  {refFiles.map((refUrl, idx) => (
+                    <div
+                      key={idx}
+                      className="ref-preview-card"
+                      style={{
+                        position: 'relative',
+                        height: '90px',
+                        borderRadius: '0.5rem',
+                        overflow: 'hidden',
+                        border: '2px solid #1E192B',
+                        boxShadow: '2px 2px 0px #1E192B',
+                        background: '#FFF',
+                      }}
+                    >
+                      <img
+                        src={refUrl}
+                        alt={`Referencia visual ${idx + 1}`}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveReference(idx)}
+                        style={{
+                          position: 'absolute',
+                          top: 4,
+                          right: 4,
+                          background: '#1E192B',
+                          color: '#FFF',
+                          border: 'none',
+                          borderRadius: '50%',
+                          width: '20px',
+                          height: '20px',
+                          cursor: 'pointer',
+                          fontSize: '11px',
+                          fontWeight: 'bold',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}
+                        title="Eliminar esta referencia"
+                      >
+                        ✕
+                      </button>
                     </div>
                   ))}
-                  <button
-                    type="button"
-                    className="add-ref-thumb-btn"
-                    onClick={handleAddReference}
-                    title="Añadir otra imagen"
-                  >
-                    + Añadir otro
-                  </button>
                 </div>
               </div>
 

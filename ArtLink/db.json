@@ -395,7 +395,7 @@
       "budget": 180,
       "desiredDate": "2026-12-10",
       "references": [],
-      "status": "completed",
+      "status": "rejected",
       "createdAt": "2026-08-02T09:15:00.000Z"
     },
     {
@@ -458,6 +458,15 @@
       "body": "Ahora mismo tengo la agenda cerrada, pero puedes unirte a la lista de espera.",
       "read": true,
       "createdAt": "2026-08-26T08:10:00.000Z"
+    },
+    {
+      "requestId": "request-001",
+      "senderId": "user-client-001",
+      "receiverId": "user-artist-001",
+      "body": "hola, como va la comision?",
+      "read": false,
+      "createdAt": "2026-09-27T22:29:18.207Z",
+      "id": "Gxon3m_aCOk"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

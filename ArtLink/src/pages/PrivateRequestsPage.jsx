@@ -208,20 +208,26 @@ export default function PrivateRequestsPage() {
 
             {selected.references && selected.references.length > 0 && (
               <div className="modal-section" style={{ marginBottom: '1rem' }}>
-                <h3>Referencias o enlaces adjuntos</h3>
-                <ul className="references-list" style={{ listStyle: 'none', padding: 0 }}>
+                <h3>Previsualizaciones de referencias visuales</h3>
+                <div className="references-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))', gap: '0.6rem', marginTop: '0.5rem' }}>
                   {selected.references.map((ref, idx) => (
-                    <li key={idx} style={{ marginBottom: '0.3rem' }}>
-                      {ref.startsWith('http') ? (
-                        <a href={ref} target="_blank" rel="noopener noreferrer" className="ref-link" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
-                          <ExternalLink size={14} /> {ref}
-                        </a>
+                    <a
+                      href={ref.startsWith('http') ? ref : '#'}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      key={idx}
+                      style={{ display: 'block', borderRadius: '0.4rem', overflow: 'hidden', border: '1px solid #1E192B', height: '80px', background: '#FFF' }}
+                    >
+                      {ref.startsWith('http') || ref.startsWith('data:') ? (
+                        <img src={ref} alt={`Previsualización referencia ${idx + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                       ) : (
-                        <span>📎 {ref}</span>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', fontSize: '0.75rem', padding: '0.3rem', textAlign: 'center' }}>
+                          <ExternalLink size={14} /> {ref}
+                        </div>
                       )}
-                    </li>
+                    </a>
                   ))}
-                </ul>
+                </div>
               </div>
             )}
 
