@@ -1,70 +1,92 @@
 import { useState, useMemo } from 'react'
-import { MessageCircle, Eye, Calendar, DollarSign, ExternalLink, Filter } from 'lucide-react'
+import {
+  Calendar,
+  CheckCircle2,
+  Clock,
+  DollarSign,
+  ExternalLink,
+  Eye,
+  FileText,
+  Filter,
+  MessageCircle,
+  XCircle,
+  Zap,
+} from 'lucide-react'
 import { Link } from 'react-router-dom'
 import Badge from '../components/Badge'
 import EmptyState from '../components/EmptyState'
 import ErrorState from '../components/ErrorState'
 import LoadingState from '../components/LoadingState'
 import Modal from '../components/Modal'
+import DecorativeStar from '../components/DecorativeStar'
 import usePrivateRequests from '../hooks/usePrivateRequests'
 
-const statusLabels = {
-  all: 'Todas',
-  pending: 'Pendiente',
-  in_review: 'En revisión',
-  accepted: 'Aceptada',
-  in_progress: 'En progreso',
-  completed: 'Completada',
-  rejected: 'Rechazada',
-  waitlist: 'Lista de espera',
-}
-
-function badgeTone(status) {
-  if (status === 'rejected') return 'closed'
-  if (status === 'completed') return 'mint'
-  if (status === 'accepted' || status === 'in_progress') return 'violet'
-  if (status === 'waitlist') return 'yellow'
-  return 'violet'
+const STATUS_CONFIG = {
+  all: { label: 'Todas', tone: 'soft', icon: Filter },
+  pending: { label: 'Pendiente', tone: 'violet', icon: Clock },
+  in_review: { label: 'En revisión', tone: 'violet', icon: FileText },
+  accepted: { label: 'Aceptada', tone: 'mint', icon: CheckCircle2 },
+  in_progress: { label: 'En progreso', tone: 'violet', icon: Zap },
+  completed: { label: 'Completada', tone: 'mint', icon: CheckCircle2 },
+  rejected: { label: 'Rechazada', tone: 'closed', icon: XCircle },
+  waitlist: { label: 'Lista de espera', tone: 'yellow', icon: Clock },
 }
 
 export default function PrivateRequestsPage() {
-  const { requests, loading, error } = usePrivateRequests()
+  const { clientRequests, requests, loading, error } = usePrivateRequests()
   const [selected, setSelected] = useState(null)
   const [statusFilter, setStatusFilter] = useState('all')
 
-  const filteredRequests = useMemo(() => {
-    if (statusFilter === 'all') return requests
-    return requests.filter((req) => req.status === statusFilter)
-  }, [requests, statusFilter])
+  // En /solicitudes mostramos solo las solicitudes realizadas por este usuario como cliente
+  const userClientRequests = useMemo(() => {
+    return clientRequests || []
+  }, [clientRequests])
 
-  if (loading) return <LoadingState label="Cargando el historial de tus solicitudes..." />
+  const filteredRequests = useMemo(() => {
+    if (statusFilter === 'all') return userClientRequests
+    return userClientRequests.filter((req) => req.status === statusFilter)
+  }, [userClientRequests, statusFilter])
+
+  if (loading) return <LoadingState label="Cargando tus solicitudes de comisión..." />
   if (error) return <ErrorState message={error.message} />
 
   return (
     <section className="private-page" aria-labelledby="private-requests-title">
       <div className="private-header">
         <div>
-          <p className="eyebrow">ArtLink / Mis encargos</p>
-          <h1 id="private-requests-title">Mis solicitudes</h1>
-          <p className="private-intro">Sigue el estado de cada encargo, revisa los detalles y mantén comunicación directa con el artista.</p>
+          <span className="sticker sticker-purple" style={{ display: 'inline-flex', marginBottom: '0.4rem' }}>
+            <DecorativeStar size={12} color="#1E192B" /> SEGUIMIENTO EN VIVO
+          </span>
+          <h1 id="private-requests-title">Mis Solicitudes de Comisión</h1>
+          <p className="private-intro">
+            Revisa el estado de tus encargos, los presupuestos en custodia y comunícate directamente con tus artistas.
+          </p>
         </div>
       </div>
 
-      {/* Filtros por estado */}
-      <div className="filter-bar" aria-label="Filtro de solicitudes por estado">
-        <span className="filter-label"><Filter size={15} /> Filtrar por estado:</span>
-        <div className="filter-pills">
-          {Object.entries(statusLabels).map(([key, label]) => {
-            const count = key === 'all' ? requests.length : requests.filter((r) => r.status === key).length
-            if (key !== 'all' && count === 0) return null
+      {/* Barra de Filtros por Estado */}
+      <div className="filter-bar" aria-label="Filtro de solicitudes por estado" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap', margin: '1rem 0' }}>
+        <span className="filter-label" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', fontWeight: 600 }}>
+          <Filter size={15} /> Filtrar por estado:
+        </span>
+        <div className="filter-pills" style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
+          {Object.entries(STATUS_CONFIG).map(([key, config]) => {
+            const count = key === 'all'
+              ? userClientRequests.length
+              : userClientRequests.filter((r) => r.status === key).length
+
+            const IconComp = config.icon
+
             return (
               <button
                 key={key}
                 type="button"
                 className={`filter-pill ${statusFilter === key ? 'is-active' : ''}`}
                 onClick={() => setStatusFilter(key)}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}
               >
-                {label} ({count})
+                <IconComp size={13} aria-hidden="true" />
+                {config.label} ({count})
               </button>
             )
           })}
@@ -73,95 +95,129 @@ export default function PrivateRequestsPage() {
 
       {filteredRequests.length === 0 ? (
         <EmptyState
-          title={statusFilter === 'all' ? 'Aún no tienes solicitudes' : `No hay solicitudes en estado "${statusLabels[statusFilter]}"`}
-          description={statusFilter === 'all' ? 'Cuando envíes una propuesta a un artista, aparecerá registrada en esta sección.' : 'Prueba a cambiar el filtro para ver tus otras solicitudes.'}
+          title={statusFilter === 'all' ? 'Aún no tienes solicitudes registradas' : `No hay solicitudes en estado "${STATUS_CONFIG[statusFilter]?.label || statusFilter}"`}
+          description={
+            statusFilter === 'all'
+              ? 'Explora el catálogo de artistas y encarga tu primera pieza de arte personalizada.'
+              : 'Selecciona la opción "Todas" para revisar el historial completo de encargos.'
+          }
+          action={
+            <Link to="/explorar" className="button button-primary">
+              Explorar artistas
+            </Link>
+          }
         />
       ) : (
         <div className="private-request-list">
-          {filteredRequests.map((request) => (
-            <article className="private-request-card" key={request.id}>
-              <div className="card-top">
-                <div className="card-meta">
-                  <span className="request-id">ID: #{request.id.slice(-6)}</span>
-                  <span className="card-date">
-                    <Calendar size={13} aria-hidden="true" /> {request.createdAt ? request.createdAt.slice(0, 10) : 'Reciente'}
-                  </span>
-                </div>
-                <Badge tone={badgeTone(request.status)}>
-                  {statusLabels[request.status] || request.status}
-                </Badge>
-              </div>
+          {filteredRequests.map((request) => {
+            const config = STATUS_CONFIG[request.status] || { label: request.status, tone: 'violet', icon: Clock }
+            const StatusIcon = config.icon
 
-              <div className="card-body">
-                <h2>{request.description}</h2>
-                <div className="card-financials">
-                  <span><DollarSign size={14} aria-hidden="true" /> <strong>${request.budget} USD</strong></span>
-                  <span>Entrega estimada: <strong>{request.desiredDate}</strong></span>
-                  {request.references && request.references.length > 0 && (
-                    <span className="references-count">📎 {request.references.length} ref.</span>
-                  )}
+            return (
+              <article className="private-request-card paper-card" key={request.id}>
+                <div className="card-top">
+                  <div className="card-meta">
+                    <span className="request-id">ID: #{request.id.slice(-6)}</span>
+                    <span className="card-date">
+                      <Calendar size={13} aria-hidden="true" /> {request.createdAt ? request.createdAt.slice(0, 10) : 'Reciente'}
+                    </span>
+                  </div>
+                  <Badge tone={config.tone}>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
+                      <StatusIcon size={13} aria-hidden="true" />
+                      {config.label}
+                    </span>
+                  </Badge>
                 </div>
-              </div>
 
-              <div className="private-request-actions">
-                <button
-                  className="button button-outline button-small"
-                  type="button"
-                  onClick={() => setSelected(request)}
-                >
-                  <Eye size={15} aria-hidden="true" /> Detalles
-                </button>
-                <Link
-                  className="button button-secondary button-small"
-                  to={`/mensajes?requestId=${request.id}`}
-                >
-                  <MessageCircle size={15} aria-hidden="true" /> Conversación
-                </Link>
-              </div>
-            </article>
-          ))}
+                <div className="card-body">
+                  <div style={{ marginBottom: '0.4rem', fontSize: '0.9rem', color: 'var(--violet-dark)', fontWeight: 600 }}>
+                    🎨 Artista: {request.artistName || 'Artista ArtLink'}
+                  </div>
+                  <h2>{request.description}</h2>
+                  <div className="card-financials" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '0.5rem' }}>
+                    <span><DollarSign size={14} aria-hidden="true" /> <strong>${request.budget} USD</strong></span>
+                    <span>Fecha estimada: <strong>{request.desiredDate}</strong></span>
+                    {request.references && request.references.length > 0 && (
+                      <span className="references-count">📎 {request.references.length} ref.</span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="private-request-actions" style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
+                  <button
+                    className="button button-outline button-small"
+                    type="button"
+                    onClick={() => setSelected(request)}
+                  >
+                    <Eye size={15} aria-hidden="true" /> Detalles
+                  </button>
+                  <Link
+                    className="button button-primary button-small"
+                    to={`/mensajes?requestId=${request.id}`}
+                  >
+                    <MessageCircle size={15} aria-hidden="true" /> Abrir Conversación
+                  </Link>
+                </div>
+              </article>
+            )
+          })}
         </div>
       )}
 
-      {/* Modal de detalle completo */}
-      <Modal open={Boolean(selected)} title="Detalle de solicitud" onClose={() => setSelected(null)}>
+      {/* Modal accesible de detalle completo */}
+      <Modal open={Boolean(selected)} title="Detalle de la solicitud" onClose={() => setSelected(null)}>
         {selected && (
           <div className="request-modal-content">
-            <div className="modal-badge-row">
+            <div className="modal-badge-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
               <span className="request-id">Solicitud #{selected.id}</span>
-              <Badge tone={badgeTone(selected.status)}>
-                {statusLabels[selected.status] || selected.status}
+              <Badge tone={STATUS_CONFIG[selected.status]?.tone || 'violet'}>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
+                  {STATUS_CONFIG[selected.status]?.icon && (
+                    <span aria-hidden="true">
+                      {(() => {
+                        const Icon = STATUS_CONFIG[selected.status].icon
+                        return <Icon size={13} />
+                      })()}
+                    </span>
+                  )}
+                  {STATUS_CONFIG[selected.status]?.label || selected.status}
+                </span>
               </Badge>
             </div>
 
-            <div className="modal-section">
-              <h3>Descripción del encargo</h3>
-              <p className="description-box">{selected.description}</p>
+            <div className="modal-section" style={{ marginBottom: '1rem' }}>
+              <h3>Descripción detallada del encargo</h3>
+              <p className="description-box" style={{ background: 'rgba(30, 25, 43, 0.04)', padding: '0.75rem', borderRadius: '0.5rem', marginTop: '0.3rem' }}>
+                {selected.description}
+              </p>
             </div>
 
-            <div className="modal-grid-two">
+            <div className="modal-grid-two" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
               <div>
-                <strong>Presupuesto propuesto</strong>
-                <p>${selected.budget} USD</p>
+                <strong>Presupuesto propuesto:</strong>
+                <p className="price-highlight" style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--violet-dark)' }}>
+                  ${selected.budget} USD
+                </p>
               </div>
               <div>
-                <strong>Fecha deseada</strong>
+                <strong>Fecha acordada:</strong>
                 <p>{selected.desiredDate}</p>
               </div>
             </div>
 
             {selected.references && selected.references.length > 0 && (
-              <div className="modal-section">
-                <h3>Referencias adjuntas</h3>
-                <ul className="references-list">
+              <div className="modal-section" style={{ marginBottom: '1rem' }}>
+                <h3>Referencias o enlaces adjuntos</h3>
+                <ul className="references-list" style={{ listStyle: 'none', padding: 0 }}>
                   {selected.references.map((ref, idx) => (
-                    <li key={idx}>
+                    <li key={idx} style={{ marginBottom: '0.3rem' }}>
                       {ref.startsWith('http') ? (
-                        <a href={ref} target="_blank" rel="noopener noreferrer" className="ref-link">
+                        <a href={ref} target="_blank" rel="noopener noreferrer" className="ref-link" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
                           <ExternalLink size={14} /> {ref}
                         </a>
                       ) : (
-                        <span>{ref}</span>
+                        <span>📎 {ref}</span>
                       )}
                     </li>
                   ))}
@@ -169,7 +225,7 @@ export default function PrivateRequestsPage() {
               </div>
             )}
 
-            <div className="modal-actions">
+            <div className="modal-actions" style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', marginTop: '1.5rem' }}>
               <Link
                 className="button button-primary"
                 to={`/mensajes?requestId=${selected.id}`}
@@ -187,4 +243,3 @@ export default function PrivateRequestsPage() {
     </section>
   )
 }
-

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import useAuth from './useAuth'
-import { getArtistByUserId, updateArtist } from '../services/artistService'
+import { getArtistByUserId, updateArtist, createArtist } from '../services/artistService'
 import { getPortfolioItems, createPortfolioItem, updatePortfolioItem, deletePortfolioItem } from '../services/portfolioService'
 import { getCommissions, createCommission, updateCommission, deleteCommission } from '../services/commissionService'
 import { getRequests, updateRequest } from '../services/requestService'
@@ -18,11 +18,32 @@ export default function useArtistWorkspace() {
   const [busy, setBusy] = useState(false)
 
   const load = useCallback(async () => {
+    if (!user) {
+      setLoading(false)
+      return
+    }
     setLoading(true)
     setError(null)
     try {
-      const [artist] = await getArtistByUserId(user.id)
-      if (!artist) throw new Error('No encontramos el perfil de artista asociado a esta cuenta.')
+      const profiles = await getArtistByUserId(user.id)
+      let artist = profiles[0]
+      if (!artist) {
+        artist = await createArtist({
+          userId: user.id,
+          displayName: user.name || 'Artista',
+          username: user.email?.split('@')[0] || `artist_${user.id.slice(-4)}`,
+          bio: 'Perfil nuevo de artista en ArtLink.',
+          disciplines: ['Ilustración'],
+          styles: ['Digital'],
+          location: '',
+          availability: 'open',
+          slots: 3,
+          rating: 5.0,
+          verified: false,
+          basePrice: 50,
+          socialLinks: {},
+        })
+      }
       const [items, rates, received] = await Promise.all([
         getPortfolioItems({ artistId: artist.id }),
         getCommissions({ artistId: artist.id }),
@@ -37,7 +58,7 @@ export default function useArtistWorkspace() {
     } finally {
       setLoading(false)
     }
-  }, [user.id])
+  }, [user])
 
   useEffect(() => {
     const timer = window.setTimeout(load, 0)

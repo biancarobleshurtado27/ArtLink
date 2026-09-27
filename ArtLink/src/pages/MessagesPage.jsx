@@ -1,9 +1,10 @@
-import { useEffect, useState, useRef } from 'react'
-import { Send, CheckCheck, Clock, User, MessageSquare } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { CheckCheck, Clock, MessageSquare, Send, User } from 'lucide-react'
 import { useSearchParams } from 'react-router-dom'
-import ErrorState from '../components/ErrorState'
 import EmptyState from '../components/EmptyState'
+import ErrorState from '../components/ErrorState'
 import LoadingState from '../components/LoadingState'
+import DecorativeStar from '../components/DecorativeStar'
 import usePrivateRequests from '../hooks/usePrivateRequests'
 import useAuth from '../hooks/useAuth'
 
@@ -40,23 +41,26 @@ export default function MessagesPage() {
     }
   }, [selected, loadMessages])
 
-  // Scroll to bottom when messages change
+  // Desplazamiento automático al final del chat al llegar nuevos mensajes
   useEffect(() => {
     chatBottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
-  if (loading) return <LoadingState label="Cargando tus conversaciones..." />
+  if (loading) return <LoadingState label="Cargando tus conversaciones de ArtLink..." />
   if (error) return <ErrorState message={error.message} />
+
   if (!requests.length) {
     return (
-      <section className="messages-page">
+      <section className="messages-page" aria-labelledby="messages-title">
         <div className="messages-header-top">
-          <p className="eyebrow">ArtLink / Chat</p>
-          <h1>Mensajes</h1>
+          <span className="sticker sticker-purple" style={{ display: 'inline-flex', marginBottom: '0.4rem' }}>
+            <DecorativeStar size={12} color="#1E192B" /> CHAT EN VIVO
+          </span>
+          <h1 id="messages-title">Mensajes Privados</h1>
         </div>
         <EmptyState
-          title="No tienes mensajes o conversaciones activas"
-          description="Las conversaciones se habilitan automáticamente cuando creas o recibes una solicitud de comisión."
+          title="No tienes conversaciones activas"
+          description="Las conversaciones se crean automáticamente cuando envías o recibes una propuesta de comisión."
         />
       </section>
     )
@@ -68,11 +72,11 @@ export default function MessagesPage() {
     setSending(true)
     const text = body.trim()
     try {
-      const recipientId = user.role === 'cliente' ? selected.artistId : selected.clientId
+      const recipientId = user.id === selected.clientId ? selected.artistId : selected.clientId
       await sendMessage(selected, text, recipientId)
       setBody('')
     } catch (err) {
-      console.error('Error enviando mensaje:', err)
+      console.error('Error al enviar mensaje:', err)
     } finally {
       setSending(false)
     }
@@ -81,19 +85,21 @@ export default function MessagesPage() {
   return (
     <section className="messages-page" aria-labelledby="messages-title">
       <div className="messages-header-top">
-        <p className="eyebrow">ArtLink / Centro de mensajes</p>
-        <h1 id="messages-title">Mensajes privados</h1>
+        <span className="sticker sticker-purple" style={{ display: 'inline-flex', marginBottom: '0.4rem' }}>
+          <DecorativeStar size={12} color="#1E192B" /> CANAL SEGURO DE COMUNICACIÓN
+        </span>
+        <h1 id="messages-title">Centro de Mensajes Privados</h1>
       </div>
 
       <div className="messages-layout">
-        {/* Lista de solicitudes / conversaciones */}
-        <aside className="conversation-list" aria-label="Lista de conversaciones">
+        {/* Listado de Conversaciones del Usuario */}
+        <aside className="conversation-list" aria-label="Lista de conversaciones activas">
           <div className="conversation-list-header">
             <span>Conversaciones ({requests.length})</span>
           </div>
           <div className="conversation-items">
             {requests.map((request) => {
-              const isSelected = request.id === selectedId
+              const isSelected = request.id === activeRequestId
               return (
                 <button
                   className={`conversation-item ${isSelected ? 'is-active' : ''}`}
@@ -113,12 +119,12 @@ export default function MessagesPage() {
           </div>
         </aside>
 
-        {/* Panel principal de chat */}
-        <section className="chat-panel" aria-label="Panel de mensajería">
+        {/* Panel Principal de Chat */}
+        <section className="chat-panel" aria-label="Panel de conversación">
           {!selected ? (
             <EmptyState
               title="Selecciona una conversación"
-              description="Elige una solicitud de la lista lateral para ver los mensajes."
+              description="Elige un encargo de la lista para ver el historial de mensajes."
             />
           ) : (
             <>
@@ -130,7 +136,7 @@ export default function MessagesPage() {
                   </span>
                 </div>
                 <div className="chat-role-indicator">
-                  <User size={14} /> Rol: {user.role === 'cliente' ? 'Cliente' : 'Artista'}
+                  <User size={14} aria-hidden="true" /> {user.id === selected.clientId ? 'Cliente' : 'Artista'}
                 </div>
               </header>
 
@@ -138,8 +144,12 @@ export default function MessagesPage() {
                 {messages.length ? (
                   messages.map((message) => {
                     const isMine = message.senderId === user.id
-                    const senderLabel = isMine ? 'Tú' : (user.role === 'cliente' ? 'Artista' : 'Cliente')
-                    
+                    const senderLabel = isMine
+                      ? 'Tú'
+                      : user.id === selected.clientId
+                      ? 'Artista'
+                      : 'Cliente'
+
                     return (
                       <article
                         className={`message-bubble ${isMine ? 'mine' : 'other'}`}
@@ -172,7 +182,7 @@ export default function MessagesPage() {
                   <div className="empty-chat-prompt">
                     <MessageSquare size={36} className="empty-chat-icon" />
                     <p><strong>Aún no hay mensajes en este encargo</strong></p>
-                    <small>Utiliza este canal para coordinar borradores, paleta de colores y detalles finales.</small>
+                    <small>Utiliza este canal seguro para coordinar referencias visuales, bocetos y entregas finales.</small>
                   </div>
                 )}
                 <div ref={chatBottomRef} />
@@ -205,4 +215,3 @@ export default function MessagesPage() {
     </section>
   )
 }
-

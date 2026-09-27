@@ -1,5 +1,12 @@
 import { useEffect, useState } from 'react'
-import { DollarSign, Inbox, Star, Layers, CheckCircle } from 'lucide-react'
+import {
+  CheckCircle,
+  DollarSign,
+  Eye,
+  Inbox,
+  Layers,
+  ShieldCheck,
+} from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import ArtistCard from '../components/ArtistCard'
 import Button from '../components/Button'
@@ -10,11 +17,12 @@ import InspirationWidget from '../components/InspirationWidget'
 import LoadingState from '../components/LoadingState'
 import PortfolioForm from '../components/PortfolioForm'
 import RequestBoard from '../components/RequestBoard'
+import DecorativeStar from '../components/DecorativeStar'
 import useArtistWorkspace from '../hooks/useArtistWorkspace'
 import { handleImageError } from '../utils/imageFallback'
 
 const price = (value) =>
-  new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(value)
+  new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(value)
 
 function Metric({ icon: Icon, label, value, subtitle, highlight }) {
   return (
@@ -34,27 +42,30 @@ function PortfolioSection({ items, editing, setEditing, busy, onCreate, onUpdate
     <section className="workspace-section" aria-labelledby="portfolio-workspace-title">
       <div className="section-heading">
         <div>
-          <p className="eyebrow">Piezas publicadas en tu perfil</p>
+          <p className="eyebrow">Piezas publicadas en tu perfil público</p>
           <h2 id="portfolio-workspace-title">Gestionar Portafolio</h2>
         </div>
         <span className="count-badge">{items.length} piezas</span>
       </div>
+
       <PortfolioForm
         item={editing}
         onSubmit={editing ? onUpdate : onCreate}
         onCancel={() => setEditing(null)}
         busy={busy}
       />
+
       {error && <p className="form-message form-error" role="alert">{error.message}</p>}
+
       <div className="workspace-items-grid">
         {items.map((item) => (
-          <article className="workspace-item" key={item.id}>
+          <article className="workspace-item paper-card" key={item.id}>
             <img src={item.image} onError={handleImageError} alt={item.title} />
             <div className="item-details">
               <h3>{item.title}</h3>
               <p>{item.category}</p>
               {item.featured && <span className="item-flag">Destacada</span>}
-              <div className="form-actions">
+              <div className="form-actions" style={{ display: 'flex', gap: '0.4rem', marginTop: '0.6rem' }}>
                 <Button variant="outline" type="button" onClick={() => setEditing(item)}>Editar</Button>
                 <Button variant="secondary" type="button" onClick={() => onDelete(item)}>Eliminar</Button>
               </div>
@@ -71,35 +82,41 @@ function CommissionSection({ items, editing, setEditing, busy, onCreate, onUpdat
     <section className="workspace-section" aria-labelledby="commission-workspace-title">
       <div className="section-heading">
         <div>
-          <p className="eyebrow">Catálogo de tarifas y servicios</p>
+          <p className="eyebrow">Catálogo de tarifas y paquetes</p>
           <h2 id="commission-workspace-title">Gestionar Comisiones</h2>
         </div>
-        <span className="count-badge">{items.length} tipos de comisión</span>
+        <span className="count-badge">{items.length} paquetes</span>
       </div>
+
       <CommissionForm
         commission={editing}
         onSubmit={editing ? onUpdate : onCreate}
         onCancel={() => setEditing(null)}
         busy={busy}
       />
+
       {error && <p className="form-message form-error" role="alert">{error.message}</p>}
+
       <div className="workspace-commission-list">
         {items.map((item) => (
-          <article className="workspace-commission" key={item.id}>
+          <article className="workspace-commission paper-card" key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', marginBottom: '0.8rem' }}>
             <div>
               <h3>{item.title}</h3>
               <p>{item.description}</p>
-              <div className="commission-meta">
+              <div className="commission-meta" style={{ display: 'flex', gap: '0.8rem', marginTop: '0.4rem', fontSize: '0.85rem' }}>
                 <span className={`status-text ${item.status}`}>
                   {item.status === 'active' ? 'Activa' : 'Pausada'}
                 </span>
-                <span className="delivery-days">⏱️ {item.deliveryDays} días est.</span>
+                <span className="delivery-days">⏱️ {item.deliveryDays} días de entrega</span>
+                <span>🔄 {item.revisions} revisiones</span>
               </div>
             </div>
-            <strong>{price(item.price)}</strong>
-            <div className="form-actions">
-              <Button variant="outline" type="button" onClick={() => setEditing(item)}>Editar</Button>
-              <Button variant="secondary" type="button" onClick={() => onDelete(item)}>Eliminar</Button>
+            <div style={{ textAlign: 'right' }}>
+              <strong style={{ fontSize: '1.2rem', color: 'var(--violet-dark)' }}>{price(item.price)}</strong>
+              <div className="form-actions" style={{ display: 'flex', gap: '0.4rem', marginTop: '0.6rem' }}>
+                <Button variant="outline" type="button" onClick={() => setEditing(item)}>Editar</Button>
+                <Button variant="secondary" type="button" onClick={() => onDelete(item)}>Eliminar</Button>
+              </div>
             </div>
           </article>
         ))}
@@ -123,20 +140,22 @@ export default function ArtistPanelPage() {
     ? 'portfolio'
     : location.pathname.endsWith('comisiones')
     ? 'commissions'
+    : location.pathname.endsWith('solicitudes')
+    ? 'requests'
     : 'overview'
 
   useEffect(() => {
     if (!profile) return undefined
     const timer = window.setTimeout(() => {
-      setAvailability(profile.availability)
-      setSlots(profile.slots)
+      setAvailability(profile.availability || 'open')
+      setSlots(profile.slots || 1)
     }, 0)
     return () => window.clearTimeout(timer)
   }, [profile])
 
-  if (loading) return <LoadingState label="Cargando tu espacio de trabajo como artista..." />
+  if (loading) return <LoadingState label="Cargando tu panel de artista en ArtLink..." />
   if (error && !profile) return <ErrorState message={error.message} onRetry={workspace.reload} />
-  if (!profile) return <EmptyState title="Perfil de artista no disponible" description="Esta cuenta todavía no tiene un perfil asociado." />
+  if (!profile) return <EmptyState title="Perfil de artista no disponible" description="Esta cuenta todavía no tiene un perfil de artista asociado." />
 
   async function saveAvailability(event) {
     event.preventDefault()
@@ -148,13 +167,13 @@ export default function ArtistPanelPage() {
   }
 
   async function removePortfolio(item) {
-    if (window.confirm(`¿Eliminar "${item.title}"? Esta acción no se puede deshacer.`)) {
+    if (window.confirm(`¿Eliminar "${item.title}" del portafolio? esta acción no se puede deshacer.`)) {
       await actions.deletePortfolio(item)
     }
   }
 
   async function removeCommission(item) {
-    if (window.confirm(`¿Eliminar "${item.title}"? Esta acción no se puede deshacer.`)) {
+    if (window.confirm(`¿Eliminar la comisión "${item.title}"? esta acción no se puede deshacer.`)) {
       await actions.deleteCommission(item)
     }
   }
@@ -172,40 +191,51 @@ export default function ArtistPanelPage() {
 
   return (
     <section className="artist-workspace" aria-labelledby="workspace-title">
+      {/* Aviso de protección del prototipo */}
+      <div className="escrow-demo-alert-banner" style={{ background: '#FEF08A', border: '2px solid #1E192B', padding: '0.6rem 1rem', borderRadius: '0.5rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+        <ShieldCheck size={18} color="#1E192B" aria-hidden="true" />
+        <span style={{ fontSize: '0.88rem', fontWeight: 600, color: '#1E192B' }}>
+          🔒 Prototipo ArtLink: Protección con custodia en Escrow demostrativa activada para pruebas de interacción.
+        </span>
+      </div>
+
       {/* Encabezado */}
       <div className="workspace-header">
         <div>
-          <p className="eyebrow">ArtLink / Panel de Artista</p>
-          <h1 id="workspace-title">Hola, {profile.displayName}</h1>
-          <p className="header-subtitle">Gestiona tus solicitudes, cambia tu disponibilidad y actualiza tu portafolio.</p>
+          <span className="sticker sticker-pink" style={{ display: 'inline-flex', marginBottom: '0.4rem' }}>
+            <DecorativeStar size={12} color="#1E192B" /> PANEL DE CREADOR
+          </span>
+          <h1 id="workspace-title">¡Hola, {profile.displayName}!</h1>
+          <p className="header-subtitle">Gestiona tu agenda, responde a solicitudes recibidas y mantiene al día tu portafolio.</p>
         </div>
         <ArtistCard artist={profile} />
       </div>
 
       {/* Pestañas de navegación */}
-      <nav className="workspace-tabs" aria-label="Secciones del panel de artista">
-        <Link className={section === 'overview' ? 'is-active' : ''} to="/artista/panel">Resumen & Solicitudes</Link>
+      <nav className="workspace-tabs" aria-label="Secciones del panel de artista" style={{ display: 'flex', gap: '0.5rem', margin: '1rem 0' }}>
+        <Link className={section === 'overview' ? 'is-active' : ''} to="/artista/panel">Resumen</Link>
+        <Link className={section === 'requests' ? 'is-active' : ''} to="/artista/solicitudes">Solicitudes ({requests.length})</Link>
         <Link className={section === 'portfolio' ? 'is-active' : ''} to="/artista/portafolio">Portafolio ({portfolio.length})</Link>
         <Link className={section === 'commissions' ? 'is-active' : ''} to="/artista/comisiones">Comisiones ({commissions.length})</Link>
       </nav>
 
-      {/* Sección: Resumen */}
+      {/* Sección: Resumen (Overview) */}
       {section === 'overview' && (
         <>
-          {/* Métricas compactas pastel */}
-          <section className="metrics-grid" aria-label="Métricas del panel">
+          {/* Métricas con indicativo demostrativo */}
+          <section className="metrics-grid" aria-label="Métricas de rendimiento" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
             <Metric
               icon={Inbox}
-              label="Solicitudes activas"
+              label="Encargos activos"
               value={activeRequests.length}
-              subtitle={`${requests.length} en total`}
+              subtitle={`${requests.length} recibidas en total`}
               highlight
             />
             <Metric
               icon={DollarSign}
-              label="Ingresos proyectados"
+              label="Ingresos proyectados (Simulado)"
               value={price(totalRevenueEstimate || 850)}
-              subtitle="Sumatoria de encargos activos/completados"
+              subtitle="Basado en solicitudes aceptadas"
             />
             <Metric
               icon={Layers}
@@ -214,20 +244,20 @@ export default function ArtistPanelPage() {
               subtitle={`${commissions.length} tarifas configuradas`}
             />
             <Metric
-              icon={Star}
-              label="Calificación promedio"
-              value={profile.rating ? `${profile.rating.toFixed(1)} ★` : 'Nueva'}
-              subtitle="Basado en reseñas del perfil"
+              icon={Eye}
+              label="Visitas al perfil (Simulado)"
+              value="420 este mes"
+              subtitle="Tráfico demostrado"
             />
           </section>
 
-          <div className="workspace-grid">
-            {/* Control de disponibilidad */}
-            <section className="workspace-section availability-panel" aria-labelledby="availability-title">
+          <div className="workspace-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
+            {/* Control de Disponibilidad */}
+            <section className="workspace-section availability-panel paper-card" aria-labelledby="availability-title">
               <div className="section-heading">
                 <div>
                   <p className="eyebrow">Agenda y estado público</p>
-                  <h2 id="availability-title">Control de disponibilidad</h2>
+                  <h2 id="availability-title">Control de Disponibilidad</h2>
                 </div>
                 <div className="availability-status-badge">
                   <span className={`availability-dot ${availability}`} aria-hidden="true" />
@@ -239,7 +269,7 @@ export default function ArtistPanelPage() {
 
               <form className="availability-form" onSubmit={saveAvailability}>
                 <label htmlFor="artist-availability">
-                  Estado actual de agenda
+                  Estado actual de la agenda
                   <select
                     id="artist-availability"
                     name="availability"
@@ -252,8 +282,8 @@ export default function ArtistPanelPage() {
                   </select>
                 </label>
 
-                <label htmlFor="artist-slots">
-                  Cupos disponibles
+                <label htmlFor="artist-slots" style={{ marginTop: '0.8rem' }}>
+                  Cupos libres disponibles
                   <input
                     id="artist-slots"
                     name="slots"
@@ -265,10 +295,12 @@ export default function ArtistPanelPage() {
                   />
                 </label>
 
-                <div className="availability-form-footer">
-                  <Button type="submit" loading={busy}>Guardar disponibilidad</Button>
+                <div className="availability-form-footer" style={{ marginTop: '1rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                  <Button type="submit" loading={busy}>Guardar estado de agenda</Button>
                   {savedSuccess && (
-                    <span className="save-toast"><CheckCircle size={15} /> ¡Disponibilidad actualizada!</span>
+                    <span className="save-toast" style={{ color: 'var(--mint)', fontWeight: 600 }}>
+                      <CheckCircle size={15} inline /> ¡Guardado!
+                    </span>
                   )}
                 </div>
               </form>
@@ -277,52 +309,43 @@ export default function ArtistPanelPage() {
             <InspirationWidget quote={inspiration} onRefresh={refreshQuote} loading={quoteLoading} />
           </div>
 
-          {/* Bandeja de solicitudes recibidas */}
-          <section className="workspace-section" aria-labelledby="requests-title">
+          {/* Tablero de solicitudes recibidas en Overview */}
+          <section className="workspace-section paper-card" aria-labelledby="requests-overview-title">
             <div className="section-heading">
               <div>
-                <p className="eyebrow">Bandeja de encargos</p>
-                <h2 id="requests-title">Solicitudes recibidas ({requests.length})</h2>
+                <p className="eyebrow">Bandeja de solicitudes</p>
+                <h2 id="requests-overview-title">Solicitudes Recientes ({requests.length})</h2>
               </div>
-              <span className="request-count">{activeRequests.length} pendientes de completar</span>
+              <Link to="/artista/solicitudes" className="button button-outline button-small">
+                Ver todas las solicitudes
+              </Link>
             </div>
 
             {requests.length ? (
               <RequestBoard requests={requests} onStatusChange={actions.updateRequestStatus} busy={busy} />
             ) : (
-              <EmptyState title="Bandeja de solicitudes vacía" description="Las propuestas enviadas por los clientes aparecerán aquí." />
+              <EmptyState title="No has recibido solicitudes" description="Las propuestas de clientes aparecerán en esta lista." />
             )}
           </section>
-
-          {/* Resumen de comisiones configuradas */}
-          <section className="workspace-section" aria-labelledby="commissions-summary-title">
-            <div className="section-heading">
-              <div>
-                <p className="eyebrow">Tus tarifas principales</p>
-                <h2 id="commissions-summary-title">Resumen de Comisiones</h2>
-              </div>
-              <Link to="/artista/comisiones" className="button button-outline button-small">
-                Gestionar comisiones
-              </Link>
-            </div>
-            
-            <div className="commission-summary-grid">
-              {commissions.map((comm) => (
-                <div className="commission-summary-card" key={comm.id}>
-                  <div className="card-top">
-                    <h4>{comm.title}</h4>
-                    <strong className="comm-price">${comm.price} USD</strong>
-                  </div>
-                  <p>{comm.description}</p>
-                  <div className="card-bottom">
-                    <span className={`status-badge ${comm.status}`}>{comm.status === 'active' ? 'Activa' : 'Pausada'}</span>
-                    <span className="delivery-time">{comm.deliveryDays} días de entrega</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
         </>
+      )}
+
+      {/* Sección: Solicitudes Recibidas */}
+      {section === 'requests' && (
+        <section className="workspace-section paper-card" aria-labelledby="requests-page-title">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">Gestión de encargos recibidos</p>
+              <h2 id="requests-page-title">Todas las Solicitudes Recibidas ({requests.length})</h2>
+            </div>
+          </div>
+
+          {requests.length ? (
+            <RequestBoard requests={requests} onStatusChange={actions.updateRequestStatus} busy={busy} />
+          ) : (
+            <EmptyState title="No tienes solicitudes actualmente" description="Cuando los clientes te encarguen comisiones, se mostrarán aquí." />
+          )}
+        </section>
       )}
 
       {/* Sección: Portafolio */}
@@ -355,4 +378,3 @@ export default function ArtistPanelPage() {
     </section>
   )
 }
-
