@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState, useEffect } from 'react'
 import {
   AlertCircle,
   ArrowLeft,
@@ -79,6 +79,7 @@ export default function NewRequestPage() {
   const [searchParams] = useSearchParams()
   const { user } = useAuth()
   const { profile, commissions, loading, error } = useArtistProfile(artistId)
+  const fileInputRef = useRef(null)
 
   const availableFormats = useMemo(() => {
     if (commissions && commissions.length > 0) {
@@ -129,15 +130,39 @@ export default function NewRequestPage() {
   const totalPrice = (subtotal + escrowFee).toFixed(2)
 
   const isClosed = profile?.availability === 'closed'
-  const isWaitlist = profile?.availability === 'waitlist'
   const isSelfRequest = Boolean(
     user && profile && (user.id === profile.userId || user.id === profile.id)
   )
+
+  useEffect(() => {
+    if (!createdRequest) return
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setCreatedRequest(null)
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [createdRequest])
 
   function toggleAddon(addonId) {
     setSelectedAddons((prev) =>
       prev.includes(addonId) ? prev.filter((id) => id !== addonId) : [...prev, addonId]
     )
+  }
+
+  function handleFileSelect(e) {
+    const files = Array.from(e.target.files || [])
+    files.forEach((file) => {
+      if (!file.type.startsWith('image/')) return
+      const reader = new FileReader()
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          setRefFiles((prev) => [...prev, event.target.result])
+        }
+      }
+      reader.readAsDataURL(file)
+    })
   }
 
   function handleAddReference() {
@@ -189,7 +214,7 @@ export default function NewRequestPage() {
         description: description.trim(),
         desiredDate: desiredDate || futureDate,
         references: refFiles,
-        status: isWaitlist ? 'waitlist' : 'pending',
+        status: 'waitlist',
         createdAt: new Date().toISOString(),
       }
       const request = await createRequest(requestPayload)
@@ -217,37 +242,79 @@ export default function NewRequestPage() {
 
   if (createdRequest) {
     return (
-      <section className="confirmation-panel paper-card" aria-labelledby="request-success-title">
-        <div className="confirmation-card">
-          <CheckCircle2 size={56} className="success-icon" aria-hidden="true" />
-          <p className="eyebrow">Checkout de Arte Protegido</p>
-          <h1 id="request-success-title">¡Encargo de Comisión Registrado con Éxito!</h1>
-          <p className="confirmation-intro">
-            Tu propuesta para {profile.displayName} ha sido registrada. Los fondos quedarán protegidos en custodia hasta que autorices la entrega final.
-          </p>
+      <section
+        className="confirmation-panel paper-card"
+        role="status"
+        aria-live="polite"
+        style={{ maxWidth: '620px', margin: '2rem auto', padding: '2.5rem', borderRadius: '16px', background: '#FFFDF8', border: '2px solid #1E192B', boxShadow: '4px 4px 0px #1E192B' }}
+      >
+        <div className="confirmation-card" style={{ position: 'relative' }}>
+          <button
+            type="button"
+            className="close-button"
+            onClick={() => setCreatedRequest(null)}
+            aria-label="Cerrar confirmación"
+            style={{
+              position: 'absolute',
+              top: '-10px',
+              right: '-10px',
+              background: '#1E192B',
+              color: '#FFF',
+              border: 'none',
+              borderRadius: '50%',
+              width: '28px',
+              height: '28px',
+              fontSize: '14px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontWeight: 'bold',
+            }}
+          >
+            ✕
+          </button>
+          <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+            <CheckCircle2 size={56} style={{ margin: '0 auto 1rem', color: '#8B5CF6' }} aria-hidden="true" />
+            <h1 autoFocus tabIndex={-1} style={{ fontSize: '1.8rem', fontWeight: 800, marginBottom: '0.5rem', color: '#1E192B' }}>
+              Propuesta enviada
+            </h1>
+            <p style={{ color: '#4B5563', fontSize: '1.05rem', margin: 0 }}>
+              Tu propuesta fue enviada al artista y quedó en lista de espera.
+            </p>
+          </div>
 
-          <div className="summary-ticket">
-            <div className="ticket-header">
+          <div className="summary-ticket" style={{ background: '#FFF', border: '2px solid #1E192B', borderRadius: '12px', padding: '1.25rem', marginBottom: '1.5rem' }}>
+            <div className="ticket-header" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
               <Avatar src={profile.avatar} name={profile.displayName} size="medium" />
               <div>
-                <strong>{profile.displayName}</strong>
-                <span className="ticket-service">{selectedFormat.title}</span>
+                <strong style={{ display: 'block', fontSize: '1.05rem' }}>{profile.displayName}</strong>
+                <span className="ticket-service" style={{ color: '#6B7280', fontSize: '0.9rem' }}>
+                  {createdRequest.commissionTitle || selectedFormat.title}
+                </span>
               </div>
             </div>
-            <hr />
-            <div className="ticket-details">
-              <div><span>Total en Custodia:</span><strong>${createdRequest.budget} USD</strong></div>
-              <div><span>Método de pago:</span><strong style={{ textTransform: 'uppercase' }}>{createdRequest.paymentMethod}</strong></div>
-              <div><span>Estado del pedido:</span><span className="badge badge-mint">{createdRequest.status === 'waitlist' ? 'Lista de Espera' : 'Pendiente de Aprobación'}</span></div>
+            <hr style={{ border: 'none', borderTop: '1px solid #E5E7EB', margin: '0.75rem 0' }} />
+            <div className="ticket-details" style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', fontSize: '0.95rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span>Precio fijo:</span>
+                <strong style={{ fontSize: '1.1rem', color: '#1E192B' }}>${createdRequest.price || createdRequest.budget} USD</strong>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span>Estado:</span>
+                <span className="badge badge-mint" style={{ background: '#2DD4BF', color: '#1E192B', fontWeight: 700, padding: '0.25rem 0.75rem', borderRadius: '20px' }}>
+                  En lista de espera
+                </span>
+              </div>
             </div>
           </div>
 
-          <div className="confirmation-actions">
-            <Link className="button button-primary" to="/solicitudes">
-              Ver mis encargos
+          <div className="confirmation-actions" style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+            <Link className="button button-primary" to="/solicitudes" style={{ flex: 1, textAlign: 'center' }}>
+              Ver mis solicitudes
             </Link>
-            <Link className="button button-secondary" to={`/mensajes?requestId=${createdRequest.id}`}>
-              <MessageCircle size={16} aria-hidden="true" /> Abrir conversación con {profile.displayName}
+            <Link className="button button-secondary" to="/explorar" style={{ flex: 1, textAlign: 'center' }}>
+              Seguir explorando
             </Link>
           </div>
         </div>
@@ -478,20 +545,37 @@ export default function NewRequestPage() {
                   <strong>Previsualización de Referencias Visuales (Moodboard / Imágenes)</strong>
                 </label>
 
-                <div className="ref-url-input-row" style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.8rem' }}>
+                <div className="ref-url-input-row" style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.8rem', flexWrap: 'wrap' }}>
+                  <button
+                    type="button"
+                    className="button button-outline button-small"
+                    onClick={() => fileInputRef.current?.click()}
+                    style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}
+                  >
+                    <UploadCloud size={15} aria-hidden="true" /> Examinar archivos
+                  </button>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp"
+                    multiple
+                    style={{ display: 'none' }}
+                    onChange={handleFileSelect}
+                  />
+
                   <input
                     type="url"
                     value={newRefUrl}
                     onChange={(e) => setNewRefUrl(e.target.value)}
-                    placeholder="Pega la URL de una imagen de referencia (PNG/JPG)..."
-                    style={{ flex: 1, padding: '0.5rem', borderRadius: '0.4rem', border: '1px solid var(--ink)' }}
+                    placeholder="O pega la URL de una imagen..."
+                    style={{ flex: 1, minWidth: '180px', padding: '0.5rem', borderRadius: '0.4rem', border: '1px solid var(--ink)' }}
                   />
                   <button
                     type="button"
                     className="button button-outline button-small"
                     onClick={handleAddReference}
                   >
-                    + Agregar Imagen
+                    + URL
                   </button>
                 </div>
 
@@ -685,7 +769,9 @@ export default function NewRequestPage() {
             >
               <Lock size={16} aria-hidden="true" />
               <span>
-                {isSelfRequest
+                {submitting
+                  ? 'Enviando propuesta…'
+                  : isSelfRequest
                   ? 'No puedes solicitarte a ti mismo'
                   : `Enviar propuesta de comisión ($${totalPrice} USD)`}
               </span>
