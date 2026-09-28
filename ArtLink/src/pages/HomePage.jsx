@@ -17,6 +17,7 @@ import {
   Palette,
 } from 'lucide-react'
 import { getArtists } from '../services/artistService'
+import { getPortfolioItems } from '../services/portfolioService'
 import { handleImageError } from '../utils/imageFallback'
 
 // Métricas de la plataforma
@@ -84,48 +85,48 @@ const CATEGORIES_MOCK = [
 const FEATURED_CREATORS_STATIC = [
   {
     id: 'artist-001',
-    name: "Valeria 'Vex' Cruz",
-    handle: '@vex_artworks | Ilustración',
+    name: 'Mateo Ríos',
+    handle: '@mateorios | Ilustración 2D',
     status: 'CUPOS DISPONIBLES',
     statusClass: 'status-open',
-    bio: 'Especializada en personajes cyberpunk, sci-fi y líneas de contorno dinámicas y diseño depurado hasta el último detalle.',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80',
+    bio: 'Ilustrador editorial especializado en mundos narrativos y personajes expresivos.',
+    avatar: 'https://i.pravatar.cc/150?img=12',
     thumbnails: [
-      '/images/hero/soramoon.jpg',
-      'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=300&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=300&auto=format&fit=crop&q=80',
+      'https://picsum.photos/seed/forest-guardian/900/700',
+      'https://picsum.photos/seed/floating-islands/900/700',
+      'https://picsum.photos/seed/secret-valley/900/700',
     ],
-    startingPrice: '$45 USD',
+    startingPrice: '$80 USD',
   },
   {
     id: 'artist-002',
-    name: 'Kenji Morita',
-    handle: '@kenji_morita | 3D y 2D Anime',
-    status: 'ÚLTIMOS 2 CUPOS',
+    name: 'Sofía Nakamura',
+    handle: '@sofinaka | Diseño de personajes',
+    status: 'ÚLTIMOS CUPOS',
     statusClass: 'status-waitlist',
-    bio: 'Modelador 3D y artist 2D. Assets de alta calidad y animaciones optimizadas para videojuegos e integración en Unity.',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80',
+    bio: 'Diseñadora de personajes y retratos digitales con una paleta suave y cinematográfica.',
+    avatar: 'https://i.pravatar.cc/150?img=32',
     thumbnails: [
-      'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=300&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=300&auto=format&fit=crop&q=80',
-      '/images/hero/azure_isles.jpg',
+      'https://picsum.photos/seed/winter-portrait/900/700',
+      'https://picsum.photos/seed/lunar-explorer/900/700',
+      'https://picsum.photos/seed/sunset-glow/900/700',
     ],
-    startingPrice: '$115 USD',
+    startingPrice: '$120 USD',
   },
   {
     id: 'artist-003',
-    name: 'Yochi & Goma',
-    handle: '@yochigoma | VTuber & Emotes',
+    name: 'Diego Álvarez',
+    handle: '@diegoalvarez3d | Modelado 3D',
     status: 'EN REVISIÓN DE BRIEF',
     statusClass: 'status-review',
-    bio: 'Arte y rigging para VTubers, badges de suscripción y expresiones tiernas para streamers de todas las plataformas.',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&auto=format&fit=crop&q=80',
+    bio: 'Artista 3D enfocado en producto, arquitectura y escenas para marcas independientes.',
+    avatar: 'https://i.pravatar.cc/150?img=68',
     thumbnails: [
-      'https://images.unsplash.com/photo-1563089145-599997674d42?w=300&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=300&auto=format&fit=crop&q=80',
-      '/images/hero/magic_shop.jpg',
+      'https://picsum.photos/seed/form-lamp/900/700',
+      'https://picsum.photos/seed/concrete-study/900/700',
+      'https://picsum.photos/seed/sound-chair/900/700',
     ],
-    startingPrice: '$25 USD',
+    startingPrice: '$200 USD',
   },
 ]
 
@@ -179,18 +180,193 @@ const HERO_SPARKLES_DATA = [
   { id: 'sp-20', bottom: '1.6rem', right: '7%', size: 26, color: '#F472B6', anim: 'anim-star-float-2', delay: '0.9s' },
 ]
 
+// Obtiene una semilla numérica para el día actual (cambia a la medianoche UTC)
+const getDaySeed = () => {
+  const d = new Date()
+  return Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86400000)
+}
+
+// Pool de obras de artistas de ArtLink para rotación diaria
+const HERO_ARTIST_WORKS_POOL = [
+  {
+    artistId: 'artist-kuro',
+    artistName: 'Kuro Illust',
+    category: 'VTuber Model',
+    workTitle: 'Airi Hoshino ✦ Live2D',
+    image: '/images/hero/soramoon.jpg',
+    badgeClass: 'badge-pill-purple',
+  },
+  {
+    artistId: 'artist-dan',
+    artistName: 'Dan Artworks',
+    category: 'Concept Art',
+    workTitle: 'The Azure Isles',
+    image: '/images/hero/azure_isles.jpg',
+    badgeClass: 'badge-pill-mint',
+  },
+  {
+    artistId: 'artist-poly',
+    artistName: 'Poly Lola',
+    category: 'Modelado 3D',
+    workTitle: 'Magic Shop 3D',
+    image: '/images/hero/magic_shop.jpg',
+    badgeClass: 'badge-pill-rose',
+  },
+  {
+    artistId: 'artist-001',
+    artistName: 'Mateo Ríos',
+    category: 'Ilustración 2D',
+    workTitle: 'La Guardiana del Bosque',
+    image: '/images/hero/portfolio/forest-guardian.jpg',
+    badgeClass: 'badge-pill-purple',
+  },
+  {
+    artistId: 'artist-002',
+    artistName: 'Sofía Nakamura',
+    category: 'Retrato & Anime',
+    workTitle: 'Retrato de Invierno',
+    image: '/images/hero/portfolio/winter-portrait.jpg',
+    badgeClass: 'badge-pill-rose',
+  },
+  {
+    artistId: 'artist-003',
+    artistName: 'Diego Álvarez',
+    category: 'Arte 3D & Render',
+    workTitle: 'Estudio de Hormigón',
+    image: '/images/hero/portfolio/cozy-workshop.jpg',
+    badgeClass: 'badge-pill-mint',
+  },
+  {
+    artistId: 'artist-004',
+    artistName: 'Elena Rostova',
+    category: 'Fondos & Escenarios',
+    workTitle: 'Templo en las Alturas',
+    image: 'https://picsum.photos/seed/sky-temple/900/700',
+    badgeClass: 'badge-pill-purple',
+  },
+  {
+    artistId: 'artist-005',
+    artistName: 'Lucas Mendoza',
+    category: 'Pixel Art',
+    workTitle: 'Callejón Neo-Kyoto 16-bit',
+    image: 'https://picsum.photos/seed/neo-kyoto-pixel/900/700',
+    badgeClass: 'badge-pill-mint',
+  },
+  {
+    artistId: 'artist-009',
+    artistName: 'Álvaro Sola',
+    category: 'Modelado 3D',
+    workTitle: 'Minotauro Colosal 3D',
+    image: 'https://picsum.photos/seed/colossal-minotaur/900/700',
+    badgeClass: 'badge-pill-rose',
+  },
+]
+
+// Genera las 3 tarjetas destacadas del día actual
+function getDailyShowcaseCards(pool, seed = getDaySeed()) {
+  if (!pool || pool.length === 0) return []
+  const count = pool.length
+  const tapes = ['tape-yellow tape-left', 'tape-pink tape-center', 'tape-yellow tape-right']
+  const badges = ['badge-pill-purple', 'badge-pill-mint', 'badge-pill-rose', 'badge-pill-yellow']
+
+  return [0, 1, 2].map((slot) => {
+    const itemIndex = ((seed * 3) + slot) % count
+    const item = pool[itemIndex]
+    return {
+      ...item,
+      id: `showcase-orbit-${item.artistId}-${slot}-${seed}`,
+      tapeClass: tapes[slot],
+      badgeClass: item.badgeClass || badges[(slot + seed) % badges.length],
+    }
+  })
+}
+
 export default function HomePage() {
   const [query, setQuery] = useState('')
   const [area, setArea] = useState('all')
-  const [featuredCreators] = useState(FEATURED_CREATORS_STATIC)
+  const [allCreators, setAllCreators] = useState([])
+  const [carouselIndex, setCarouselIndex] = useState(0)
+  const [featuredCreators, setFeaturedCreators] = useState(FEATURED_CREATORS_STATIC)
+  const [dailyCards, setDailyCards] = useState(() => getDailyShowcaseCards(HERO_ARTIST_WORKS_POOL))
+  const [activeOrbitIndex, setActiveOrbitIndex] = useState(1) // Comienza con la tarjeta central en frente
+  const [isPausedOrbit, setIsPausedOrbit] = useState(false)
   const navigate = useNavigate()
+
+  // Rotación circular automática entre las tarjetas cada 4 segundos
+  useEffect(() => {
+    if (isPausedOrbit || dailyCards.length === 0) return
+    const timer = setInterval(() => {
+      setActiveOrbitIndex((prev) => (prev + 1) % dailyCards.length)
+    }, 4000)
+    return () => clearInterval(timer)
+  }, [isPausedOrbit, dailyCards.length])
 
   useEffect(() => {
     let mounted = true
-    getArtists()
-      .then((data) => {
-        if (mounted && data && data.length > 0) {
-          // Keep active artist integration
+    Promise.all([
+      getArtists(),
+      getPortfolioItems(),
+    ])
+      .then(([artists, portfolio]) => {
+        if (!mounted || !artists || artists.length === 0) return
+        const portfolioByArtist = {}
+        portfolio?.forEach((item) => {
+          if (!portfolioByArtist[item.artistId]) portfolioByArtist[item.artistId] = []
+          portfolioByArtist[item.artistId].push(item.image)
+        })
+
+        const mapped = artists.map((artist, idx) => {
+          const thumbs = portfolioByArtist[artist.id] || []
+          const fallbackThumbs = [
+            `https://picsum.photos/seed/art-${artist.id}-1/900/700`,
+            `https://picsum.photos/seed/art-${artist.id}-2/900/700`,
+            `https://picsum.photos/seed/art-${artist.id}-3/900/700`,
+          ]
+          const statusMap = {
+            open: { label: 'CUPOS DISPONIBLES', cls: 'status-open' },
+            waitlist: { label: 'ÚLTIMOS CUPOS', cls: 'status-waitlist' },
+            closed: { label: 'EN REVISIÓN DE BRIEF', cls: 'status-review' },
+          }
+          const currentStatus = statusMap[artist.availability] || statusMap.open
+          const mainDiscipline = artist.disciplines?.[0] || 'Arte Digital'
+
+          return {
+            id: artist.id,
+            name: artist.displayName || artist.name,
+            handle: `@${artist.username} | ${mainDiscipline}`,
+            status: currentStatus.label,
+            statusClass: currentStatus.cls,
+            bio: artist.bio || 'Creador digital activo en ArtLink.',
+            avatar: artist.avatar || `https://i.pravatar.cc/150?img=${(idx % 70) + 1}`,
+            thumbnails: thumbs.length >= 3 ? thumbs.slice(0, 3) : [...thumbs, ...fallbackThumbs].slice(0, 3),
+            startingPrice: `$${artist.basePrice || 50} USD`,
+          }
+        })
+        setAllCreators(mapped)
+        setFeaturedCreators(mapped.slice(0, 3))
+
+        // Construir tarjetas del carrusel hero con obras de artistas del día
+        const activeArtistWorks = []
+        artists.forEach((artist) => {
+          const works = portfolioByArtist[artist.id]
+          if (works && works.length > 0) {
+            const daySeed = getDaySeed()
+            const fullWorks = portfolio.filter((p) => p.artistId === artist.id)
+            const chosen = fullWorks[daySeed % fullWorks.length]
+            if (chosen) {
+              activeArtistWorks.push({
+                artistId: artist.id,
+                artistName: artist.displayName || artist.name,
+                category: chosen.category || artist.disciplines?.[0] || 'Arte Digital',
+                workTitle: chosen.title || '',
+                image: chosen.image,
+              })
+            }
+          }
+        })
+
+        if (activeArtistWorks.length >= 3) {
+          setDailyCards(getDailyShowcaseCards(activeArtistWorks, getDaySeed()))
         }
       })
       .catch(() => {})
@@ -198,6 +374,20 @@ export default function HomePage() {
       mounted = false
     }
   }, [])
+
+  const handlePrevCreators = () => {
+    if (allCreators.length <= 3) return
+    const newIdx = (carouselIndex - 3 + allCreators.length) % allCreators.length
+    setCarouselIndex(newIdx)
+    setFeaturedCreators(allCreators.slice(newIdx, newIdx + 3))
+  }
+
+  const handleNextCreators = () => {
+    if (allCreators.length <= 3) return
+    const newIdx = (carouselIndex + 3) % allCreators.length
+    setCarouselIndex(newIdx)
+    setFeaturedCreators(allCreators.slice(newIdx, newIdx + 3))
+  }
 
   function handleSearchSubmit(event) {
     event.preventDefault()
@@ -322,87 +512,95 @@ export default function HomePage() {
             ))}
           </div>
 
-          {/* Hero 3 Showcase Cards (Straight / Sin inclinación) */}
-          <div className="hero-showcase-gallery">
-            {/* Card 1 (Left) */}
-            <div className="hero-card-item">
-              <div className="showcase-img-wrap">
-                <span className="floating-badge badge-purple">
-                  SoraMoon · Live2D
-                </span>
-                <img
-                  src="/images/hero/soramoon.jpg"
-                  alt="SoraMoon Live2D Art"
-                  className="showcase-image"
-                  onError={handleImageError}
-                />
-              </div>
-              <div className="showcase-card-footer">
-                <div>
-                  <h3 className="showcase-card-title">SoraMoon · Live2D</h3>
-                  <p className="showcase-card-sub">VTuber Model - 2D Art</p>
-                </div>
-                <div className="showcase-price-box">
-                  <span className="showcase-price-val">$350 USD</span>
-                  <span className="showcase-price-lbl">Tarifa base</span>
-                </div>
-              </div>
-            </div>
+          {/* Hero 3 Showcase Carousel (Rotación circular 3D: Una ilustración + Nombre de artista + Categoría) */}
+          <div
+            className="hero-rotating-carousel-stage"
+            onMouseEnter={() => setIsPausedOrbit(true)}
+            onMouseLeave={() => setIsPausedOrbit(false)}
+            onTouchStart={() => setIsPausedOrbit(true)}
+            onTouchEnd={() => setIsPausedOrbit(false)}
+            aria-label="Carrusel circular de artistas destacados del día"
+          >
+            {dailyCards.map((card, idx) => {
+              // Calcular posición en el círculo respecto a activeOrbitIndex
+              const diff = (idx - activeOrbitIndex + dailyCards.length) % dailyCards.length
+              const orbitClass =
+                diff === 0
+                  ? 'card-orbit-center'
+                  : diff === 1
+                  ? 'card-orbit-right'
+                  : 'card-orbit-left'
+              const isCenter = diff === 0
 
-            {/* Card 2 (Center) */}
-            <div className="hero-card-item hero-card-center">
-              <div className="showcase-img-wrap">
-                <div className="center-floating-badges">
-                  <span className="floating-badge badge-yellow">Respuesta en 24h</span>
-                  <span className="floating-badge badge-mint">✦ penciller_artworks</span>
-                </div>
-                <img
-                  src="/images/hero/azure_isles.jpg"
-                  alt="The Azure Isles"
-                  className="showcase-image"
-                  onError={handleImageError}
-                />
-              </div>
-              <div className="showcase-card-footer">
-                <div>
-                  <div className="showcase-subtags-row">
-                    <span className="showcase-subtag">Fantasía & Sci-Fi</span>
-                    <span className="showcase-subtag subtag-open">Cupos Abiertos</span>
+              return (
+                <div
+                  key={card.id}
+                  className={`hero-orbit-card ${orbitClass}`}
+                  onClick={() => {
+                    if (!isCenter) setActiveOrbitIndex(idx)
+                  }}
+                  style={{ cursor: isCenter ? 'default' : 'pointer' }}
+                  title={!isCenter ? 'Haz clic para traer esta tarjeta al frente' : undefined}
+                >
+                  <span className={`card-washi-tape ${card.tapeClass}`} aria-hidden="true" />
+
+                  {/* Marco de la Ilustración: 1 sola obra destacada, amplia y limpia */}
+                  <div className="showcase-card-inner showcase-card-clean">
+                    {isCenter ? (
+                      <Link
+                        to={`/artista/${card.artistId}`}
+                        className="showcase-main-img-wrap showcase-clickable-art"
+                        title={`Ver perfil y portafolio de ${card.artistName}`}
+                      >
+                        <img
+                          src={card.image}
+                          alt={card.workTitle || card.artistName}
+                          className="showcase-main-img"
+                          onError={handleImageError}
+                        />
+                        <span className="showcase-art-hover-overlay">
+                          <span>Ver portafolio</span>
+                        </span>
+                      </Link>
+                    ) : (
+                      <div className="showcase-main-img-wrap">
+                        <img
+                          src={card.image}
+                          alt={card.workTitle || card.artistName}
+                          className="showcase-main-img"
+                          onError={handleImageError}
+                        />
+                      </div>
+                    )}
                   </div>
-                  <h3 className="showcase-card-title">The Azure Isles</h3>
-                  <p className="showcase-card-sub">penciller_artworks</p>
-                </div>
-                <div className="showcase-price-box">
-                  <span className="showcase-price-val val-lg">$160 USD</span>
-                  <span className="showcase-price-lbl">Tarifa base</span>
-                </div>
-              </div>
-            </div>
 
-            {/* Card 3 (Right) */}
-            <div className="hero-card-item">
-              <div className="showcase-img-wrap">
-                <span className="floating-badge badge-pink">
-                  Pixel Art 2D
-                </span>
-                <img
-                  src="/images/hero/magic_shop.jpg"
-                  alt="Magic Shop 2D"
-                  className="showcase-image"
-                  onError={handleImageError}
-                />
-              </div>
-              <div className="showcase-card-footer">
-                <div>
-                  <h3 className="showcase-card-title">Magic Shop 2D</h3>
-                  <p className="showcase-card-sub">pixel_master</p>
+                  {/* Datos del Cuadro: Solo Categoría + Nombre del Artista */}
+                  <div className="showcase-card-clean-footer">
+                    <div className="showcase-clean-meta-row">
+                      <span className={`badge-pill ${card.badgeClass}`}>
+                        {card.category}
+                      </span>
+                    </div>
+
+                    <h3 className="showcase-clean-artist">
+                      {isCenter ? (
+                        <Link to={`/artista/${card.artistId}`} className="showcase-artist-link">
+                          {card.artistName}
+                        </Link>
+                      ) : (
+                        <span>{card.artistName}</span>
+                      )}
+                    </h3>
+
+                    {card.workTitle && (
+                      <p className="showcase-clean-work-title">
+                        «{card.workTitle}»
+                      </p>
+                    )}
+                  </div>
                 </div>
-                <div className="showcase-price-box">
-                  <span className="showcase-price-val">$85 USD</span>
-                  <span className="showcase-price-lbl">Tarifa base</span>
-                </div>
-              </div>
-            </div>
+              )
+            })}
           </div>
         </div>
       </section>
@@ -542,10 +740,20 @@ export default function HomePage() {
               </p>
             </div>
             <div className="carousel-nav-btns">
-              <button className="carousel-btn" aria-label="Anterior">
+              <button
+                className="carousel-btn"
+                aria-label="Anterior"
+                type="button"
+                onClick={handlePrevCreators}
+              >
                 <ChevronLeft size={18} />
               </button>
-              <button className="carousel-btn" aria-label="Siguiente">
+              <button
+                className="carousel-btn"
+                aria-label="Siguiente"
+                type="button"
+                onClick={handleNextCreators}
+              >
                 <ChevronRight size={18} />
               </button>
             </div>

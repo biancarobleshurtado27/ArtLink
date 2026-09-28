@@ -177,6 +177,36 @@
       "avatar": "https://i.pravatar.cc/150?img=41",
       "createdAt": "2026-02-10T17:10:00.000Z",
       "active": true
+    },
+    {
+      "id": "user-artist-kuro",
+      "name": "Kuro Illust",
+      "email": "kuro@artlink.demo",
+      "passwordDemo": "artista123",
+      "role": "artista",
+      "avatar": "/images/hero/thumbs/sora-1.jpg",
+      "createdAt": "2026-01-10T10:00:00.000Z",
+      "active": true
+    },
+    {
+      "id": "user-artist-dan",
+      "name": "Dan Artworks",
+      "email": "dan@artlink.demo",
+      "passwordDemo": "artista123",
+      "role": "artista",
+      "avatar": "/images/hero/thumbs/azure-1.jpg",
+      "createdAt": "2026-01-11T10:00:00.000Z",
+      "active": true
+    },
+    {
+      "id": "user-artist-poly",
+      "name": "Poly Lola",
+      "email": "poly@artlink.demo",
+      "passwordDemo": "artista123",
+      "role": "artista",
+      "avatar": "/images/hero/thumbs/shop-1.jpg",
+      "createdAt": "2026-01-12T10:00:00.000Z",
+      "active": true
     }
   ],
   "artistProfiles": [
@@ -565,6 +595,85 @@
         "behance": "https://behance.net/noravane",
         "instagram": "https://instagram.com/noravane_render"
       }
+    },
+    {
+      "id": "artist-kuro",
+      "userId": "user-artist-kuro",
+      "displayName": "Kuro Illust",
+      "username": "kuro_illust",
+      "bio": "Especialista en modelos VTuber 2D, diseño conceptual y personajes estilo anime con Live2D listo para streaming.",
+      "disciplines": [
+        "VTuber Model",
+        "Ilustración 2D",
+        "Live2D"
+      ],
+      "styles": [
+        "Anime",
+        "Pastel",
+        "Vibrante"
+      ],
+      "location": "Tokio / Remoto",
+      "availability": "open",
+      "slots": 1,
+      "rating": 5,
+      "verified": true,
+      "basePrice": 380,
+      "socialLinks": {
+        "twitter": "https://twitter.com/kuro_illust",
+        "artstation": "https://artstation.com/kuro_illust"
+      }
+    },
+    {
+      "id": "artist-dan",
+      "userId": "user-artist-dan",
+      "displayName": "Dan Artworks",
+      "username": "dan_artworks",
+      "bio": "Creador de arte conceptual fantástico, paisajes majestuosos y mundos medievales para cine y videojuegos.",
+      "disciplines": [
+        "Concept art",
+        "Fantasía & Splash",
+        "Ilustración"
+      ],
+      "styles": [
+        "Fantástico",
+        "Épico",
+        "Cinematográfico"
+      ],
+      "location": "Madrid, España",
+      "availability": "open",
+      "slots": 3,
+      "rating": 4.9,
+      "verified": true,
+      "basePrice": 160,
+      "socialLinks": {
+        "artstation": "https://artstation.com/dan_artworks"
+      }
+    },
+    {
+      "id": "artist-poly",
+      "userId": "user-artist-poly",
+      "displayName": "Poly Lola",
+      "username": "poly_lola",
+      "bio": "Artista 3D y entorno en Blender. Entornos acogedores, dioramas isométricos y modelos para videojuegos.",
+      "disciplines": [
+        "Blender 3D",
+        "Modelado 3D",
+        "Diorama Isométrico"
+      ],
+      "styles": [
+        "Isometric",
+        "Cozy",
+        "Estilizado"
+      ],
+      "location": "Santiago, Chile",
+      "availability": "open",
+      "slots": 2,
+      "rating": 4.9,
+      "verified": true,
+      "basePrice": 95,
+      "socialLinks": {
+        "instagram": "https://instagram.com/poly_lola"
+      }
     }
   ],
   "portfolioItems": [
@@ -572,7 +681,7 @@
       "id": "portfolio-001",
       "artistId": "artist-001",
       "title": "La guardiana del bosque",
-      "image": "https://picsum.photos/seed/forest-guardian/900/700",
+      "image": "/images/hero/portfolio/forest-guardian.jpg",
       "category": "Ilustración",
       "description": "Personaje editorial para una novela juvenil.",
       "featured": true
@@ -581,7 +690,7 @@
       "id": "portfolio-002",
       "artistId": "artist-001",
       "title": "Mapa de las islas flotantes",
-      "image": "https://picsum.photos/seed/floating-islands/900/700",
+      "image": "/images/hero/portfolio/sky-sanctuary.jpg",
       "category": "Concept art",
       "description": "Mapa ilustrado de un universo de fantasía.",
       "featured": true
@@ -590,7 +699,7 @@
       "id": "portfolio-003",
       "artistId": "artist-002",
       "title": "Retrato de invierno",
-      "image": "https://picsum.photos/seed/winter-portrait/900/700",
+      "image": "/images/hero/portfolio/winter-portrait.jpg",
       "category": "Retrato",
       "description": "Retrato digital con iluminación cinematográfica.",
       "featured": true
@@ -599,7 +708,7 @@
       "id": "portfolio-004",
       "artistId": "artist-002",
       "title": "Nina, exploradora lunar",
-      "image": "https://picsum.photos/seed/lunar-explorer/900/700",
+      "image": "/images/hero/portfolio/fantasy-girl.jpg",
       "category": "Diseño de personajes",
       "description": "Hoja de personaje para una aventura espacial.",
       "featured": false
@@ -608,7 +717,7 @@
       "id": "portfolio-005",
       "artistId": "artist-003",
       "title": "Lámpara Forma",
-      "image": "https://picsum.photos/seed/form-lamp/900/700",
+      "image": "/images/hero/portfolio/form-lamp.jpg",
       "category": "Arte 3D",
       "description": "Visualización de producto para una colección de diseño.",
       "featured": true
@@ -617,7 +726,7 @@
       "id": "portfolio-006",
       "artistId": "artist-003",
       "title": "Estudio de hormigón",
-      "image": "https://picsum.photos/seed/concrete-study/900/700",
+      "image": "/images/hero/portfolio/cozy-workshop.jpg",
       "category": "Render",
       "description": "Escena arquitectónica de estilo minimalista.",
       "featured": false
@@ -944,6 +1053,123 @@
       "image": "https://picsum.photos/seed/botanic-render/900/700",
       "category": "Arte 3D",
       "description": "Render de envase cosmético con gotas de agua y fondo orgánico.",
+      "featured": false
+    },
+    {
+      "id": "portfolio-kuro-001",
+      "artistId": "artist-kuro",
+      "title": "Airi Hoshino ✦ Live2D",
+      "image": "/images/hero/soramoon.jpg",
+      "category": "VTuber Model",
+      "description": "Modelo VTuber 2D con rigging completo y expresiones faciales dinámicas.",
+      "featured": true
+    },
+    {
+      "id": "portfolio-kuro-002",
+      "artistId": "artist-kuro",
+      "title": "Airi Hoshino - Expresiones y Accesorios",
+      "image": "/images/hero/thumbs/sora-1.jpg",
+      "category": "VTuber Model",
+      "description": "Hoja de expresiones y detalles del modelo.",
+      "featured": true
+    },
+    {
+      "id": "portfolio-kuro-003",
+      "artistId": "artist-kuro",
+      "title": "Airi Hoshino - Ilustración Detalle",
+      "image": "/images/hero/thumbs/sora-2.jpg",
+      "category": "Ilustración 2D",
+      "description": "Arte promocional de alta resolución.",
+      "featured": false
+    },
+    {
+      "id": "portfolio-kuro-004",
+      "artistId": "artist-kuro",
+      "title": "Airi Hoshino - Pose Chibi",
+      "image": "/images/hero/thumbs/sora-3.jpg",
+      "category": "Live2D",
+      "description": "Variación chibi para alertas de streaming.",
+      "featured": false
+    },
+    {
+      "id": "portfolio-kuro-005",
+      "artistId": "artist-kuro",
+      "title": "Airi Hoshino - Concept Sheet",
+      "image": "/images/hero/thumbs/sora-4.jpg",
+      "category": "Concept art",
+      "description": "Boceto y paleta de color aprobada.",
+      "featured": false
+    },
+    {
+      "id": "portfolio-dan-001",
+      "artistId": "artist-dan",
+      "title": "The Azure Isles",
+      "image": "/images/hero/azure_isles.jpg",
+      "category": "Concept art",
+      "description": "Concept art de castillos flotantes y explorador en el confín de las islas celestes.",
+      "featured": true
+    },
+    {
+      "id": "portfolio-dan-002",
+      "artistId": "artist-dan",
+      "title": "The Azure Isles - Boceto Arquitectura",
+      "image": "/images/hero/thumbs/azure-1.jpg",
+      "category": "Concept art",
+      "description": "Estudio de las ruinas y torres flotantes.",
+      "featured": true
+    },
+    {
+      "id": "portfolio-dan-003",
+      "artistId": "artist-dan",
+      "title": "The Azure Isles - Panorama Aéreo",
+      "image": "/images/hero/thumbs/azure-2.jpg",
+      "category": "Concept art",
+      "description": "Vista lejana del horizonte de nubes.",
+      "featured": false
+    },
+    {
+      "id": "portfolio-poly-001",
+      "artistId": "artist-poly",
+      "title": "Magic Shop 3D",
+      "image": "/images/hero/magic_shop.jpg",
+      "category": "Blender 3D",
+      "description": "Diorama isométrico 3D de invernadero de pociones y herbolaria mágica.",
+      "featured": true
+    },
+    {
+      "id": "portfolio-poly-002",
+      "artistId": "artist-poly",
+      "title": "Magic Shop 3D - Alquimia y Pociones",
+      "image": "/images/hero/thumbs/shop-1.jpg",
+      "category": "Blender 3D",
+      "description": "Detalle de los frascos iluminados y mesa de trabajo.",
+      "featured": true
+    },
+    {
+      "id": "portfolio-poly-003",
+      "artistId": "artist-poly",
+      "title": "Magic Shop 3D - Escalera Caracol",
+      "image": "/images/hero/thumbs/shop-2.jpg",
+      "category": "Blender 3D",
+      "description": "Estructura de madera y biblioteca botánica.",
+      "featured": false
+    },
+    {
+      "id": "portfolio-poly-004",
+      "artistId": "artist-poly",
+      "title": "Magic Shop 3D - Rincón Botánico",
+      "image": "/images/hero/thumbs/shop-3.jpg",
+      "category": "Blender 3D",
+      "description": "Plantas en maceta y enredaderas del ventanal.",
+      "featured": false
+    },
+    {
+      "id": "portfolio-poly-005",
+      "artistId": "artist-poly",
+      "title": "Magic Shop 3D - Vista Nocturna",
+      "image": "/images/hero/thumbs/shop-4.jpg",
+      "category": "Blender 3D",
+      "description": "Iluminación cálida con niebla volumétrica.",
       "featured": false
     }
   ],
@@ -1343,6 +1569,42 @@
       "revisions": 2,
       "status": "active",
       "terms": "Entrega de 2 tomas en resolución 4K con posproducción fotográfica."
+    },
+    {
+      "id": "commission-kuro-001",
+      "artistId": "artist-kuro",
+      "title": "Modelo VTuber Airi + Rigging Live2D",
+      "description": "Modelo VTuber 2D de busto o cuerpo completo con rigging facial y física de cabello.",
+      "category": "VTuber Model",
+      "price": 380,
+      "deliveryDays": 21,
+      "revisions": 3,
+      "status": "active",
+      "terms": "Incluye archivos listos para VTube Studio y derechos de uso para streaming comercial."
+    },
+    {
+      "id": "commission-dan-001",
+      "artistId": "artist-dan",
+      "title": "Ilustración Fantasía & Splash Completa",
+      "description": "Pintura digital de alta definición para escenas de fantasía, fondos y portadas.",
+      "category": "Concept art",
+      "price": 160,
+      "deliveryDays": 14,
+      "revisions": 2,
+      "status": "active",
+      "terms": "Entrega en PSD por capas y PNG a 300 DPI."
+    },
+    {
+      "id": "commission-poly-001",
+      "artistId": "artist-poly",
+      "title": "Diorama Isométrico 3D en Blender",
+      "description": "Escena isométrica 3D detallada con texturizado, iluminación y render final.",
+      "category": "Blender 3D",
+      "price": 95,
+      "deliveryDays": 14,
+      "revisions": 2,
+      "status": "active",
+      "terms": "Archivo .blend, texturas empaquetadas y renders 4K en múltiples ángulos."
     }
   ],
   "categories": [

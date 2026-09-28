@@ -498,135 +498,604 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px
   margin-top: 0.15rem;
 }
 
-/* Hero Showcase 3 Cards (Completely upright / Straight) */
-.hero-showcase-gallery {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
-  max-width: 68rem;
-  margin: 2.8rem auto 0;
-  align-items: stretch;
+/* Hero 3D Rotating Circular Carousel Stage (Rotación circular entre tarjetas) */
+.hero-rotating-carousel-stage {
+  position: relative;
+  width: 100%;
+  max-width: 76rem;
+  height: 38rem;
+  margin: 3.2rem auto 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 1300px;
 }
-.hero-card-item {
+
+.hero-orbit-card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 24.8rem;
+  max-width: 92vw;
   background: #FFFFFF;
   border: 2.5px solid #1E192B;
-  border-radius: 18px;
+  border-radius: 22px;
   box-shadow: 4px 4px 0 #1E192B;
-  padding: 0.85rem;
+  padding: 1.15rem;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  position: relative;
-  z-index: 2;
-  transform: none !important;
+  text-align: left;
+  transition: transform 0.85s cubic-bezier(0.25, 1, 0.36, 1),
+              opacity 0.85s cubic-bezier(0.25, 1, 0.36, 1),
+              box-shadow 0.3s ease;
+  user-select: none;
 }
-.showcase-img-wrap {
+
+/* Posición 0: En frente (Centro, destacada y amplia) */
+.card-orbit-center {
+  transform: translate(-50%, -50%) scale(1.05) rotate(0deg);
+  z-index: 10;
+  opacity: 1;
+  box-shadow: 7px 12px 0 #1E192B;
+  pointer-events: auto;
+}
+
+.card-orbit-center:hover {
+  transform: translate(-50%, calc(-50% - 10px)) scale(1.07) rotate(0deg);
+  box-shadow: 9px 18px 0 #1E192B;
+}
+
+/* Posición 1: Fondo Derecha */
+.card-orbit-right {
+  transform: translate(calc(-50% + 310px), -50%) scale(0.9) rotate(4.5deg);
+  z-index: 4;
+  opacity: 0.92;
+  box-shadow: 3px 4px 0 #1E192B;
+}
+
+.card-orbit-right:hover {
+  transform: translate(calc(-50% + 310px), calc(-50% - 6px)) scale(0.93) rotate(3deg);
+  opacity: 1;
+  box-shadow: 5px 8px 0 #1E192B;
+}
+
+/* Posición 2: Fondo Izquierda */
+.card-orbit-left {
+  transform: translate(calc(-50% - 310px), -50%) scale(0.9) rotate(-4.5deg);
+  z-index: 4;
+  opacity: 0.92;
+  box-shadow: 3px 4px 0 #1E192B;
+}
+
+.card-orbit-left:hover {
+  transform: translate(calc(-50% - 310px), calc(-50% - 6px)) scale(0.93) rotate(-3deg);
+  opacity: 1;
+  box-shadow: 5px 8px 0 #1E192B;
+}
+
+/* Solo la tarjeta del frente puede abrir el portafolio y mostrar la capa interactiva */
+.card-orbit-right,
+.card-orbit-left {
+  cursor: pointer;
+}
+.card-orbit-right a,
+.card-orbit-left a {
+  pointer-events: none;
+}
+.card-orbit-right .showcase-art-hover-overlay,
+.card-orbit-left .showcase-art-hover-overlay {
+  display: none !important;
+}
+
+@media (max-width: 900px) {
+  .hero-rotating-carousel-stage {
+    height: 35rem;
+  }
+  .hero-orbit-card {
+    width: 20rem;
+    padding: 0.95rem;
+  }
+  .card-orbit-right {
+    transform: translate(calc(-50% + 180px), -50%) scale(0.86) rotate(3.5deg);
+  }
+  .card-orbit-left {
+    transform: translate(calc(-50% - 180px), -50%) scale(0.86) rotate(-3.5deg);
+  }
+}
+
+@media (max-width: 600px) {
+  .hero-rotating-carousel-stage {
+    height: 33rem;
+  }
+  .hero-orbit-card {
+    width: 17rem;
+    padding: 0.85rem;
+  }
+  .card-orbit-right {
+    transform: translate(calc(-50% + 100px), -50%) scale(0.82) rotate(2deg);
+  }
+  .card-orbit-left {
+    transform: translate(calc(-50% - 100px), -50%) scale(0.82) rotate(-2deg);
+  }
+}
+
+/* Clickable Art Illustration Area */
+.showcase-clickable-art {
+  display: block;
+  text-decoration: none;
+  cursor: pointer;
   position: relative;
-  border-radius: 12px;
   overflow: hidden;
+}
+
+.showcase-clickable-art img {
+  transition: transform 0.35s ease;
+}
+
+.showcase-clickable-art:hover img {
+  transform: scale(1.04);
+}
+
+.showcase-art-hover-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(30, 25, 43, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.showcase-art-hover-overlay span {
+  background: #FFFFFF;
   border: 1.5px solid #1E192B;
-  height: 16rem;
-  width: 100%;
+  border-radius: 999px;
+  font-family: var(--badge);
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #1E192B;
+  padding: 0.35rem 0.85rem;
+  box-shadow: 2px 2px 0 #1E192B;
+  transform: translateY(4px);
+  transition: transform 0.2s ease;
 }
-.showcase-image {
+
+.showcase-clickable-art:hover .showcase-art-hover-overlay {
+  opacity: 1;
+}
+
+.showcase-clickable-art:hover .showcase-art-hover-overlay span {
+  transform: translateY(0);
+}
+
+/* Washi Tape Ribbon Stickers (Paleta Suave de ArtLink) */
+.card-washi-tape {
+  position: absolute;
+  top: -12px;
+  width: 86px;
+  height: 23px;
+  opacity: 0.92;
+  z-index: 10;
+  box-shadow: 0 1.5px 3px rgba(0, 0, 0, 0.12);
+  border-radius: 1px;
+  pointer-events: none;
+}
+.tape-yellow {
+  background: #FEF08A; /* var(--yellow) */
+  border: 1px dashed rgba(180, 140, 20, 0.4);
+  box-shadow: 0 1.5px 3px rgba(180, 140, 20, 0.15);
+}
+.tape-pink {
+  background: #FFD2E7; /* var(--rose-soft) */
+  border: 1px dashed rgba(244, 114, 182, 0.45);
+  box-shadow: 0 1.5px 3px rgba(244, 114, 182, 0.15);
+}
+.tape-left {
+  left: 2.8rem;
+  transform: rotate(-2deg);
+}
+.tape-center {
+  left: 50%;
+  transform: translateX(-50%) rotate(0.8deg);
+}
+.tape-right {
+  left: 50%;
+  transform: translateX(-50%) rotate(-1.2deg);
+}
+
+/* Showcase Inner Frame */
+.showcase-card-inner {
+  border: 1.5px solid #1E192B;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #FAF9F6;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Modo Limpio y Minimalista: Gran Ilustración + Categoría + Nombre de Artista */
+.showcase-card-inner.showcase-card-clean {
+  border: 2px solid #1E192B;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #18181B;
+  display: flex;
+  flex-direction: column;
+}
+
+.showcase-card-clean .showcase-main-img-wrap {
+  width: 100%;
+  height: 20.5rem; /* Ilustración amplia, protagonista y sin cortes */
+  position: relative;
+  overflow: hidden;
+  background: #18181B;
+}
+
+.showcase-card-clean .showcase-main-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
-.floating-badge {
+
+.showcase-card-clean-footer {
+  display: flex;
+  flex-direction: column;
+  padding-top: 0.95rem;
+  margin-top: auto;
+  gap: 0.4rem;
+}
+
+.showcase-clean-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.showcase-clean-artist {
+  font-family: var(--heading);
+  font-size: 1.18rem;
+  font-weight: 800;
+  color: #18181B;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.showcase-clean-artist a {
+  color: #18181B;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.showcase-clean-artist a:hover {
+  color: #8B5CF6;
+  text-decoration: underline;
+}
+
+.showcase-clean-work-title {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #71717A;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 900px) {
+  .showcase-card-clean .showcase-main-img-wrap {
+    height: 17rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .showcase-card-clean .showcase-main-img-wrap {
+    height: 14.5rem;
+  }
+}
+
+/* Mini Top Navigation Bar inside Card */
+.showcase-mini-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.55rem 0.85rem;
+  background: #FFFFFF;
+  border-bottom: 1px solid #E4E4E7;
+}
+.showcase-nav-links {
+  display: flex;
+  gap: 0.75rem;
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: #71717A;
+}
+.showcase-nav-right-text {
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: #71717A;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* Badges - Paleta Oficial ArtLink (Violeta, Rosa, Amarillo, Menta) */
+.badge-pill {
   border: 1.5px solid #1E192B;
   border-radius: 999px;
   font-family: var(--badge);
   font-size: 0.65rem;
   font-weight: 800;
-  padding: 0.3rem 0.7rem;
+  padding: 0.25rem 0.7rem;
   text-transform: uppercase;
-  box-shadow: 2px 2px 0 #1E192B;
-  z-index: 2;
+  box-shadow: 1.5px 1.5px 0 #1E192B;
+  white-space: nowrap;
 }
-.badge-purple {
-  position: absolute;
-  top: 0.8rem;
-  right: 0.8rem;
-  background: #7C3AED;
+.badge-pill-purple {
+  background: #8B5CF6; /* var(--violet) */
   color: #FFFFFF;
 }
-.badge-pink {
-  position: absolute;
-  top: 0.8rem;
-  left: 0.8rem;
-  background: #EC4899;
+.badge-pill-rose {
+  background: #F472B6; /* var(--rose) */
   color: #FFFFFF;
 }
-.center-floating-badges {
-  position: absolute;
-  top: 0.8rem;
-  left: 0.8rem;
-  display: flex;
-  gap: 0.4rem;
-  z-index: 2;
+.badge-pill-yellow {
+  background: #FEF08A; /* var(--yellow) */
+  color: #1E192B;
 }
-.badge-yellow { background: #FEF08A; color: #854D0E; }
-.badge-mint { background: #CCFBF1; color: #0F766E; }
+.badge-pill-mint {
+  background: #2DD4BF; /* var(--mint) */
+  color: #1E192B;
+}
 
+/* Main Image: Más amplia y destacada sin verse apretada */
+.showcase-main-img-wrap {
+  position: relative;
+  width: 100%;
+  height: 16rem;
+  overflow: hidden;
+  background: #18181B;
+}
+.showcase-main-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Thumbnails Strip con espacio limpio y bien distribuido */
+.showcase-thumbs-strip {
+  padding: 0.65rem 0.85rem 0.75rem;
+  background: #FFFFFF;
+  border-top: 1px solid #E4E4E7;
+}
+.showcase-thumbs-label {
+  display: block;
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #71717A;
+  margin-bottom: 0.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+.showcase-thumbs-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+.showcase-thumb-box {
+  aspect-ratio: 4 / 3;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1.2px solid #1E192B;
+  background: #F4F4F5;
+}
+.showcase-thumb-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Browser Mockup inside Center Card */
+.mockup-window-header {
+  background: #3F3F46;
+  color: #F4F4F5;
+  font-size: 0.54rem;
+  font-weight: 600;
+  padding: 0.28rem 0.7rem;
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+.mockup-sub-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.45rem 0.85rem;
+  background: #FFFFFF;
+  border-bottom: 1px solid #E4E4E7;
+}
+.mockup-logo-text {
+  font-family: var(--heading);
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: #18181B;
+}
+.mockup-nav-items {
+  display: flex;
+  gap: 0.55rem;
+  font-size: 0.52rem;
+  font-weight: 700;
+  color: #71717A;
+}
+.mockup-nav-icon {
+  font-size: 0.68rem;
+  color: #71717A;
+}
+.mockup-hero-banner {
+  position: relative;
+  width: 100%;
+  height: 14.5rem;
+  overflow: hidden;
+}
+.mockup-hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.mockup-hero-overlay {
+  position: absolute;
+  bottom: 0.9rem;
+  right: 0.9rem;
+  text-align: right;
+  color: #FFFFFF;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
+  pointer-events: none;
+}
+.mockup-hero-title {
+  font-family: var(--heading);
+  font-size: 1.08rem;
+  font-weight: 900;
+  line-height: 1;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+.mockup-hero-desc {
+  font-size: 0.6rem;
+  font-weight: 600;
+  margin: 0.25rem 0 0;
+  opacity: 0.95;
+}
+.mockup-lower-content {
+  background: #FFFFFF;
+  padding: 0.65rem 0.85rem;
+  border-top: 1px solid #E4E4E7;
+}
+.mockup-search-preview {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #F4F4F5;
+  border: 1px solid #E4E4E7;
+  border-radius: 8px;
+  padding: 0.32rem 0.65rem;
+  font-size: 0.56rem;
+  color: #71717A;
+  margin-bottom: 0.5rem;
+}
+.mockup-cols-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+.mockup-col-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #FAF9F6;
+  border: 1px solid #E4E4E7;
+  border-radius: 8px;
+  padding: 0.35rem 0.45rem;
+}
+.mockup-col-thumb {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid #1E192B;
+  flex-shrink: 0;
+}
+.mockup-col-texts strong {
+  display: block;
+  font-size: 0.54rem;
+  font-weight: 700;
+  color: #18181B;
+  line-height: 1.15;
+}
+.mockup-col-texts span {
+  display: block;
+  font-size: 0.48rem;
+  color: #71717A;
+}
+
+/* Center Card Badges */
+.center-overlay-badges {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  margin-bottom: 0.2rem;
+}
+
+/* Card Footer */
 .showcase-card-footer {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  padding-top: 0.85rem;
+  padding-top: 1rem;
   margin-top: auto;
-}
-.showcase-subtags-row {
-  display: flex;
-  gap: 0.35rem;
-  margin-bottom: 0.35rem;
-}
-.showcase-subtag {
-  background: #CCFBF1;
-  border: 1px solid #1E192B;
-  border-radius: 999px;
-  font-family: var(--badge);
-  font-size: 0.62rem;
-  font-weight: 800;
-  padding: 0.15rem 0.5rem;
-  color: #0F766E;
-}
-.subtag-open {
-  background: #E0E7FF;
-  color: #4338CA;
 }
 .showcase-card-title {
   font-family: var(--heading);
-  font-size: 1.05rem;
+  font-size: 1.12rem;
   font-weight: 800;
   color: #18181B;
   margin: 0;
+  text-decoration: none;
+}
+.showcase-card-title.val-lg {
+  font-size: 1.25rem;
 }
 .showcase-card-sub {
-  font-size: 0.76rem;
+  font-size: 0.78rem;
   color: #71717A;
-  margin: 0.15rem 0 0;
+  margin: 0.2rem 0 0;
+}
+.showcase-artist-link {
+  color: #52525B;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.15s;
+}
+.showcase-artist-link:hover {
+  color: #8B5CF6; /* var(--violet) */
+  text-decoration: underline;
 }
 .showcase-price-box {
   text-align: right;
+  flex-shrink: 0;
 }
 .showcase-price-val {
   display: block;
   font-family: var(--heading);
-  font-size: 1.15rem;
+  font-size: 1.18rem;
   font-weight: 800;
   color: #18181B;
+  line-height: 1.1;
 }
-.val-lg {
+.showcase-price-val.val-lg {
   font-size: 1.35rem;
-  color: #18181B;
 }
-.showcase-price-lbl {
-  display: block;
-  font-size: 0.7rem;
-  color: #71717A;
-  margin-top: 0.1rem;
+.showcase-status-tag {
+  display: inline-block;
+  font-family: var(--badge);
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  margin-top: 0.2rem;
+  text-transform: uppercase;
+}
+.showcase-status-tag.tag-purple {
+  color: #8B5CF6; /* var(--violet) */
+}
+.showcase-status-tag.tag-pink {
+  color: #F472B6; /* var(--rose) pastel, no vino */
+}
+.showcase-status-tag.tag-muted-purple {
+  color: #8B5CF6; /* var(--violet) */
 }
 
 /* ── 2. SECCIÓN ¿CÓMO FUNCIONA? (BLOQUE HUNDIDO INTERCALADO) ── */
