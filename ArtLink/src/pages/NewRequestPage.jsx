@@ -107,7 +107,6 @@ export default function NewRequestPage() {
     'https://picsum.photos/seed/art-reference-1/600/400',
     'https://picsum.photos/seed/art-reference-2/600/400',
   ])
-  const [newRefUrl, setNewRefUrl] = useState('')
   const [termsAccepted, setTermsAccepted] = useState(true)
 
   const [fieldErrors, setFieldErrors] = useState({})
@@ -163,12 +162,6 @@ export default function NewRequestPage() {
       }
       reader.readAsDataURL(file)
     })
-  }
-
-  function handleAddReference() {
-    const url = newRefUrl.trim() || `https://picsum.photos/seed/ref-${refFiles.length + 1}/600/400`
-    setRefFiles((prev) => [...prev, url])
-    setNewRefUrl('')
   }
 
   function handleRemoveReference(indexToRemove) {
@@ -240,90 +233,91 @@ export default function NewRequestPage() {
     )
   }
 
-  if (createdRequest) {
-    return (
-      <section
-        className="confirmation-panel paper-card"
-        role="status"
-        aria-live="polite"
-        style={{ maxWidth: '620px', margin: '2rem auto', padding: '2.5rem', borderRadius: '16px', background: '#FFFDF8', border: '2px solid #1E192B', boxShadow: '4px 4px 0px #1E192B' }}
-      >
-        <div className="confirmation-card" style={{ position: 'relative' }}>
-          <button
-            type="button"
-            className="close-button"
-            onClick={() => setCreatedRequest(null)}
-            aria-label="Cerrar confirmación"
-            style={{
-              position: 'absolute',
-              top: '-10px',
-              right: '-10px',
-              background: '#1E192B',
-              color: '#FFF',
-              border: 'none',
-              borderRadius: '50%',
-              width: '28px',
-              height: '28px',
-              fontSize: '14px',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontWeight: 'bold',
-            }}
-          >
-            ✕
-          </button>
-          <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-            <CheckCircle2 size={56} style={{ margin: '0 auto 1rem', color: '#8B5CF6' }} aria-hidden="true" />
-            <h1 autoFocus tabIndex={-1} style={{ fontSize: '1.8rem', fontWeight: 800, marginBottom: '0.5rem', color: '#1E192B' }}>
-              Propuesta enviada
-            </h1>
-            <p style={{ color: '#4B5563', fontSize: '1.05rem', margin: 0 }}>
-              Tu propuesta fue enviada al artista y quedó en lista de espera.
-            </p>
-          </div>
-
-          <div className="summary-ticket" style={{ background: '#FFF', border: '2px solid #1E192B', borderRadius: '12px', padding: '1.25rem', marginBottom: '1.5rem' }}>
-            <div className="ticket-header" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
-              <Avatar src={profile.avatar} name={profile.displayName} size="medium" />
-              <div>
-                <strong style={{ display: 'block', fontSize: '1.05rem' }}>{profile.displayName}</strong>
-                <span className="ticket-service" style={{ color: '#6B7280', fontSize: '0.9rem' }}>
-                  {createdRequest.commissionTitle || selectedFormat.title}
-                </span>
-              </div>
-            </div>
-            <hr style={{ border: 'none', borderTop: '1px solid #E5E7EB', margin: '0.75rem 0' }} />
-            <div className="ticket-details" style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', fontSize: '0.95rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span>Precio fijo:</span>
-                <strong style={{ fontSize: '1.1rem', color: '#1E192B' }}>${createdRequest.price || createdRequest.budget} USD</strong>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span>Estado:</span>
-                <span className="badge badge-mint" style={{ background: '#2DD4BF', color: '#1E192B', fontWeight: 700, padding: '0.25rem 0.75rem', borderRadius: '20px' }}>
-                  En lista de espera
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div className="confirmation-actions" style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-            <Link className="button button-primary" to="/solicitudes" style={{ flex: 1, textAlign: 'center' }}>
-              Ver mis solicitudes
-            </Link>
-            <Link className="button button-secondary" to="/explorar" style={{ flex: 1, textAlign: 'center' }}>
-              Seguir explorando
-            </Link>
-          </div>
-        </div>
-      </section>
-    )
-  }
-
   return (
-    <div className="request-page-wrapper" aria-labelledby="checkout-title">
+    <div className="request-page-wrapper" aria-labelledby="checkout-title" style={{ position: 'relative' }}>
+      {/* ── TARJETA SUPERPUESTA DE CONFIRMACIÓN DE PROPUESTA (OVERLAY MODAL) ── */}
+      {createdRequest && (
+        <div className="confirmation-overlay">
+          <section
+            className="confirmation-panel paper-card"
+            role="status"
+            aria-live="polite"
+            style={{ maxWidth: '620px', width: '100%', padding: '2.5rem', borderRadius: '16px', background: '#FFFDF8', border: '2px solid #1E192B', boxShadow: '6px 6px 0px #1E192B' }}
+          >
+            <div className="confirmation-card" style={{ position: 'relative' }}>
+              <button
+                type="button"
+                className="close-button"
+                onClick={() => setCreatedRequest(null)}
+                aria-label="Cerrar confirmación"
+                style={{
+                  position: 'absolute',
+                  top: '-10px',
+                  right: '-10px',
+                  background: '#1E192B',
+                  color: '#FFF',
+                  border: 'none',
+                  borderRadius: '50%',
+                  width: '28px',
+                  height: '28px',
+                  fontSize: '14px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontWeight: 'bold',
+                }}
+              >
+                ✕
+              </button>
+              <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+                <CheckCircle2 size={56} style={{ margin: '0 auto 1rem', color: '#8B5CF6' }} aria-hidden="true" />
+                <h1 autoFocus tabIndex={-1} style={{ fontSize: '1.8rem', fontWeight: 800, marginBottom: '0.5rem', color: '#1E192B' }}>
+                  Propuesta enviada
+                </h1>
+                <p style={{ color: '#4B5563', fontSize: '1.05rem', margin: 0 }}>
+                  Tu propuesta fue enviada al artista y quedó en lista de espera.
+                </p>
+              </div>
+
+              <div className="summary-ticket" style={{ background: '#FFF', border: '2px solid #1E192B', borderRadius: '12px', padding: '1.25rem', marginBottom: '1.5rem' }}>
+                <div className="ticket-header" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
+                  <Avatar src={profile.avatar} name={profile.displayName} size="medium" />
+                  <div>
+                    <strong style={{ display: 'block', fontSize: '1.05rem' }}>{profile.displayName}</strong>
+                    <span className="ticket-service" style={{ color: '#6B7280', fontSize: '0.9rem' }}>
+                      {createdRequest.commissionTitle || selectedFormat.title}
+                    </span>
+                  </div>
+                </div>
+                <hr style={{ border: 'none', borderTop: '1px solid #E5E7EB', margin: '0.75rem 0' }} />
+                <div className="ticket-details" style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', fontSize: '0.95rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span>Precio fijo:</span>
+                    <strong style={{ fontSize: '1.1rem', color: '#1E192B' }}>${createdRequest.price || createdRequest.budget} USD</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span>Estado:</span>
+                    <span className="badge badge-mint" style={{ background: '#2DD4BF', color: '#1E192B', fontWeight: 700, padding: '0.25rem 0.75rem', borderRadius: '20px' }}>
+                      En lista de espera
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="confirmation-actions" style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+                <Link className="button button-primary" to="/solicitudes" style={{ flex: 1, textAlign: 'center' }}>
+                  Ver mis solicitudes
+                </Link>
+                <Link className="button button-secondary" to="/explorar" style={{ flex: 1, textAlign: 'center' }}>
+                  Seguir explorando
+                </Link>
+              </div>
+            </div>
+          </section>
+        </div>
+      )}
+
       {/* ── BREADCRUMB ── */}
       <nav className="checkout-breadcrumb" aria-label="Migas de pan">
         <Link className="back-link" to={`/artista/${profile.id}`}>
@@ -539,13 +533,13 @@ export default function NewRequestPage() {
                 <span className="field-error" role="alert"><AlertCircle size={13} /> {fieldErrors.description}</span>
               )}
 
-              {/* PREVISUALIZACIONES VISUALES DE REFERENCIAS */}
+              {/* PREVISUALIZACIONES VISUALES DE REFERENCIAS DESDE ARCHIVOS NATIVOS */}
               <div className="references-board-wrap" style={{ marginTop: '1rem' }}>
                 <label className="form-field-label">
                   <strong>Previsualización de Referencias Visuales (Moodboard / Imágenes)</strong>
                 </label>
 
-                <div className="ref-url-input-row" style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.8rem', flexWrap: 'wrap' }}>
+                <div className="ref-url-input-row" style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.8rem' }}>
                   <button
                     type="button"
                     className="button button-outline button-small"
@@ -562,21 +556,6 @@ export default function NewRequestPage() {
                     style={{ display: 'none' }}
                     onChange={handleFileSelect}
                   />
-
-                  <input
-                    type="url"
-                    value={newRefUrl}
-                    onChange={(e) => setNewRefUrl(e.target.value)}
-                    placeholder="O pega la URL de una imagen..."
-                    style={{ flex: 1, minWidth: '180px', padding: '0.5rem', borderRadius: '0.4rem', border: '1px solid var(--ink)' }}
-                  />
-                  <button
-                    type="button"
-                    className="button button-outline button-small"
-                    onClick={handleAddReference}
-                  >
-                    + URL
-                  </button>
                 </div>
 
                 <div className="ref-previews-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(110px, 1fr))', gap: '0.8rem' }}>
@@ -804,3 +783,4 @@ export default function NewRequestPage() {
     </div>
   )
 }
+

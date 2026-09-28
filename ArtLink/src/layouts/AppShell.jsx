@@ -1,22 +1,32 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import {
+  Bell,
   Compass,
+  ExternalLink,
+  HelpCircle,
   Home,
   Inbox,
+  Laptop,
   LayoutDashboard,
   LogOut,
   Menu,
   MessageCircle,
+  Moon,
+  MoreVertical,
+  Plus,
   Search,
   Sliders,
   Sparkles,
+  Star,
+  Sun,
   User,
   UserRound,
   X,
 } from 'lucide-react'
 import logoArtLink from '../assets/logo-artlink.png'
 import useAuth from '../hooks/useAuth'
+import useDisplayPreferences from '../hooks/useDisplayPreferences'
 import Footer from '../components/Footer'
 import AssistantWidget from '../components/AssistantWidget'
 import PageContainer from '../components/PageContainer'
@@ -27,6 +37,7 @@ export default function AppShell() {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [userMenuOpen, setUserMenuOpen] = useState(false)
   const { user, logout } = useAuth()
+  const { theme, setTheme } = useDisplayPreferences()
   const userAreaRef = useRef(null)
   const location = useLocation()
 
@@ -59,27 +70,28 @@ export default function AppShell() {
     }
   }, [userMenuOpen])
 
-  const userName = user?.name || user?.email?.split('@')[0] || 'Usuario'
+  const userName = user?.name || user?.email?.split('@')[0] || 'Bianca Robles Hurtado'
+  const userEmail = user?.email || 'biancarobleshurtado27@gmail.com'
   const initials = userName.split(' ').map((part) => part[0]).slice(0, 2).join('').toUpperCase()
 
-  const navItems = [
+  // Orden estricto según la imagen de referencia 1:
+  // 1. Logo
+  // 2. Inicio (Home)
+  // 3. Explorar (Search)
+  // 4. Mensajes (MessageCircle)
+  // 5. Solicitudes (Bell)
+  // 6. (+) Botón de acción rápida
+  const topNavItems = [
     { to: '/', label: 'Inicio', icon: Home, accessibleLabel: 'Inicio' },
-    { to: '/explorar', label: 'Explorar', icon: Compass, accessibleLabel: 'Explorar artistas' },
-    { to: '/solicitudes', label: 'Solicitudes', icon: Inbox, accessibleLabel: 'Mis solicitudes' },
+    { to: '/explorar', label: 'Explorar', icon: Search, accessibleLabel: 'Explorar artistas' },
     { to: '/mensajes', label: 'Mensajes', icon: MessageCircle, accessibleLabel: 'Mensajes privados' },
-    ...(user?.role === ROLES.ARTIST
-      ? [{ to: '/artista/panel', label: 'Panel de artista', icon: LayoutDashboard, accessibleLabel: 'Panel de artista' }]
-      : []),
-    { to: '/ajustes', label: 'Ajustes', icon: Sliders, accessibleLabel: 'Ajustes y accesibilidad' },
-    ...(!user
-      ? [{ to: '/registro?role=artist', label: 'Unirse', icon: Sparkles, accessibleLabel: 'Unirse como artista' }]
-      : []),
+    { to: '/solicitudes', label: 'Solicitudes', icon: Bell, accessibleLabel: 'Mis solicitudes' },
   ]
 
   const mobileLinks = [
     { to: '/', label: 'Inicio', icon: Home },
     { to: '/explorar', label: 'Explorar', icon: Search },
-    { to: '/solicitudes', label: 'Solicitudes', icon: Inbox },
+    { to: '/solicitudes', label: 'Solicitudes', icon: Bell },
     { to: '/mensajes', label: 'Mensajes', icon: MessageCircle },
     { to: '/perfil', label: 'Perfil', icon: UserRound },
   ]
@@ -114,16 +126,16 @@ export default function AppShell() {
 
       {/* LEFT SIDEBAR (DESKTOP FIXED / MOBILE DRAWER) */}
       <aside className={`app-sidebar ${drawerOpen ? 'is-drawer-open' : ''}`} aria-label="Navegación principal">
-        {/* LOGO SUPERIOR */}
-        <div className="sidebar-top">
+        {/* 1. LOGO SUPERIOR */}
+        <div className="sidebar-brand">
           <Link to="/" className="sidebar-brand-link brand" aria-label="ArtLink" onClick={closeMenus}>
             <img src={logoArtLink} alt="Logo de ArtLink" className="brand-logo sidebar-logo-img" />
           </Link>
         </div>
 
-        {/* NAVEGACIÓN VERTICAL CENTRADA */}
-        <nav className="sidebar-nav-list desktop-nav" aria-label="Menú de navegación">
-          {navItems.map(({ to, label, icon: Icon, accessibleLabel }) => (
+        {/* 2-6. NAVEGACIÓN SUPERIOR (Inicio, Explorar, Mensajes, Solicitudes, +) */}
+        <nav className="sidebar-nav desktop-nav" aria-label="Navegación principal">
+          {topNavItems.map(({ to, label, icon: Icon, accessibleLabel }) => (
             <NavLink
               key={to}
               to={to}
@@ -136,66 +148,156 @@ export default function AppShell() {
               <span className="sidebar-tooltip" role="tooltip">{label}</span>
             </NavLink>
           ))}
+
+          {/* Botón (+) circular de acción rápida */}
+          <NavLink
+            to="/solicitudes"
+            onClick={closeMenus}
+            aria-label="Nueva solicitud"
+            className="sidebar-nav-item sidebar-plus-btn"
+          >
+            <Plus size={22} className="sidebar-icon" aria-hidden="true" />
+            <span className="sidebar-tooltip" role="tooltip">Nueva solicitud</span>
+          </NavLink>
         </nav>
 
-        {/* USUARIO / ACCIONES INFERIORES */}
-        <div className="sidebar-bottom" ref={userAreaRef}>
-          {user ? (
-            <div className="sidebar-user-wrap user-area">
-              <button
-                className={`sidebar-user-chip user-chip ${userMenuOpen ? 'is-open' : ''}`}
-                type="button"
-                aria-expanded={userMenuOpen}
-                aria-haspopup="menu"
-                aria-label={`Cuenta de ${userName}`}
-                onClick={() => setUserMenuOpen((o) => !o)}
-              >
-                <span className="avatar avatar-small avatar-fallback avatar-purple">{initials}</span>
-                <span className="sidebar-tooltip" role="tooltip">{userName}</span>
-              </button>
+        {/* 7-9. SECCIÓN INFERIOR (Panel Creador + Botón Opciones Usuario) */}
+        <div className="sidebar-footer" ref={userAreaRef}>
+          {/* Icono de Creador / Panel de Artista */}
+          <NavLink
+            to={user?.role === ROLES.ARTIST ? "/artista/panel" : "/registro?role=artist"}
+            onClick={closeMenus}
+            aria-label={user?.role === ROLES.ARTIST ? "Panel de artista" : "Unirse como creador"}
+            className={({ isActive }) => (isActive ? 'sidebar-nav-item is-active nav-pill active' : 'sidebar-nav-item nav-pill')}
+            style={{ marginBottom: '0.4rem' }}
+          >
+            <Star size={22} className="sidebar-icon" aria-hidden="true" />
+            <span className="sidebar-tooltip" role="tooltip">
+              {user?.role === ROLES.ARTIST ? 'Panel de artista' : 'Convertirse en creador'}
+            </span>
+          </NavLink>
 
-              {userMenuOpen && (
-                <div className="sidebar-user-dropdown-menu user-menu" role="menu" aria-label="Opciones de cuenta">
-                  <div className="user-menu-header">
+          {/* Botón de Menú de Usuario (Tres Puntos) */}
+          <div className="sidebar-user-wrap user-area">
+            <button
+              className={`sidebar-user-chip user-chip ${userMenuOpen ? 'is-open' : ''}`}
+              type="button"
+              aria-expanded={userMenuOpen}
+              aria-haspopup="menu"
+              aria-label={`Opciones de cuenta de ${userName}`}
+              onClick={() => setUserMenuOpen((o) => !o)}
+            >
+              <MoreVertical size={20} aria-hidden="true" />
+              <span className="sidebar-tooltip" role="tooltip">Opciones de usuario</span>
+            </button>
+
+            {/* MENÚ DESPLEGABLE DEL USUARIO (FLOTANTE HACIA ARRIBA Y DERECHA - SEGÚN IMAGEN 2) */}
+            {userMenuOpen && (
+              <div className="sidebar-user-dropdown-menu user-menu" role="menu" aria-label="Opciones de cuenta">
+                {/* PERFIL: AVATAR, NOMBRE Y CORREO */}
+                <div className="user-dropdown-profile-header">
+                  <span className="avatar avatar-medium avatar-fallback avatar-purple">{initials}</span>
+                  <div className="user-dropdown-profile-info">
                     <strong>{userName}</strong>
-                    <small style={{ textTransform: 'capitalize' }}>{user.role}</small>
+                    <small>{userEmail}</small>
                   </div>
-                  <hr style={{ margin: '0.4rem 0', borderColor: 'var(--line)' }} />
-                  <NavLink to="/perfil" role="menuitem" onClick={closeMenus} className="dropdown-item">
-                    <UserRound size={15} aria-hidden="true" /> Mi perfil
+                </div>
+
+                <hr className="dropdown-divider" />
+
+                {/* SELECTOR DE APARIENCIA (LIGHT / DARK / SYSTEM) */}
+                <div className="dropdown-appearance-section">
+                  <div className="appearance-label">
+                    <Sun size={16} aria-hidden="true" />
+                    <span>Apariencia</span>
+                  </div>
+                  <div className="theme-toggle-group">
+                    <button
+                      type="button"
+                      className={`theme-btn ${theme === 'light' ? 'is-active' : ''}`}
+                      onClick={() => setTheme('light')}
+                      title="Modo claro"
+                      aria-label="Modo claro"
+                    >
+                      <Sun size={14} />
+                    </button>
+                    <button
+                      type="button"
+                      className={`theme-btn ${theme === 'dark' ? 'is-active' : ''}`}
+                      onClick={() => setTheme('dark')}
+                      title="Modo oscuro"
+                      aria-label="Modo oscuro"
+                    >
+                      <Moon size={14} />
+                    </button>
+                    <button
+                      type="button"
+                      className={`theme-btn ${theme === 'system' ? 'is-active' : ''}`}
+                      onClick={() => setTheme('system')}
+                      title="Modo del sistema"
+                      aria-label="Modo del sistema"
+                    >
+                      <Laptop size={14} />
+                    </button>
+                  </div>
+                </div>
+
+                <hr className="dropdown-divider" />
+
+                {/* AJUSTES, PERFIL, SOPORTE, CREADOR Y LOGOUT */}
+                <NavLink to="/ajustes" role="menuitem" onClick={closeMenus} className="dropdown-item">
+                  <Sliders size={16} aria-hidden="true" />
+                  <span>Ajustes</span>
+                </NavLink>
+
+                <NavLink to="/perfil" role="menuitem" onClick={closeMenus} className="dropdown-item">
+                  <UserRound size={16} aria-hidden="true" />
+                  <span>Mi perfil</span>
+                </NavLink>
+
+                <a href="#soporte" role="menuitem" onClick={closeMenus} className="dropdown-item">
+                  <HelpCircle size={16} aria-hidden="true" />
+                  <span>Soporte</span>
+                  <ExternalLink size={14} className="external-icon" aria-hidden="true" />
+                </a>
+
+                {user?.role === ROLES.ARTIST ? (
+                  <NavLink to="/artista/panel" role="menuitem" onClick={closeMenus} className="dropdown-item">
+                    <Star size={16} aria-hidden="true" />
+                    <span>Panel de artista</span>
                   </NavLink>
-                  {user.role === ROLES.ARTIST && (
-                    <NavLink to="/artista/panel" role="menuitem" onClick={closeMenus} className="dropdown-item">
-                      <LayoutDashboard size={15} aria-hidden="true" /> Panel de artista
-                    </NavLink>
-                  )}
-                  {user.role === ROLES.ADMIN && (
-                    <NavLink to="/admin" role="menuitem" onClick={closeMenus} className="dropdown-item">
-                      <LayoutDashboard size={15} aria-hidden="true" /> Panel admin
-                    </NavLink>
-                  )}
-                  <NavLink to="/ajustes" role="menuitem" onClick={closeMenus} className="dropdown-item">
-                    <Sliders size={15} aria-hidden="true" /> Ajustes
+                ) : (
+                  <NavLink to="/registro?role=artist" role="menuitem" onClick={closeMenus} className="dropdown-item">
+                    <Star size={16} aria-hidden="true" />
+                    <span>Convertirse en creador</span>
                   </NavLink>
+                )}
+
+                {user ? (
                   <button
                     type="button"
                     role="menuitem"
                     className="dropdown-item dropdown-item-logout user-menu-logout"
                     onClick={() => { logout(); closeMenus() }}
                   >
-                    <LogOut size={15} aria-hidden="true" /> Cerrar sesión
+                    <LogOut size={16} aria-hidden="true" />
+                    <span>Cerrar sesión</span>
                   </button>
+                ) : (
+                  <NavLink to="/login" role="menuitem" onClick={closeMenus} className="dropdown-item">
+                    <User size={16} aria-hidden="true" />
+                    <span>Iniciar sesión</span>
+                  </NavLink>
+                )}
+
+                <hr className="dropdown-divider" />
+
+                <div className="user-dropdown-footer">
+                  <small>Términos de uso · Privacidad · Políticas</small>
                 </div>
-              )}
-            </div>
-          ) : (
-            <div className="sidebar-auth-group">
-              <NavLink to="/login" className="sidebar-nav-item nav-pill nav-pill-login" aria-label="Iniciar sesión">
-                <User size={22} aria-hidden="true" />
-                <span className="sidebar-tooltip" role="tooltip">Iniciar sesión</span>
-              </NavLink>
-            </div>
-          )}
+              </div>
+            )}
+          </div>
         </div>
       </aside>
 

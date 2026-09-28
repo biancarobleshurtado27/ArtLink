@@ -1528,6 +1528,7 @@ img, svg, video {
   top: 0;
   left: 0;
   bottom: 0;
+  height: 100vh;
   width: 88px;
   background-color: #FFFDF8;
   border-right: 1.5px solid #E5E7EB;
@@ -1538,6 +1539,14 @@ img, svg, video {
   align-items: center;
   padding: 1.2rem 0.5rem;
   box-shadow: 2px 0 12px rgba(30, 25, 43, 0.03);
+}
+
+.sidebar-brand {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 0.5rem;
 }
 
 .sidebar-brand-link {
@@ -1560,6 +1569,7 @@ img, svg, video {
   object-fit: contain;
 }
 
+.sidebar-nav,
 .sidebar-nav-list {
   display: flex;
   flex-direction: column;
@@ -1631,11 +1641,14 @@ img, svg, video {
   visibility: visible;
 }
 
+.sidebar-footer,
 .sidebar-bottom {
+  margin-top: auto;
   position: relative;
   width: 100%;
   display: flex;
   justify-content: center;
+  padding-top: 0.5rem;
 }
 
 .sidebar-user-chip {
@@ -1652,28 +1665,118 @@ img, svg, video {
   padding: 0;
 }
 
+.sidebar-plus-btn {
+  border: 1.5px solid #1E192B !important;
+  border-radius: 50% !important;
+  width: 48px !important;
+  height: 48px !important;
+  margin-top: 0.2rem;
+}
+
 .sidebar-user-dropdown-menu {
-  position: absolute;
-  bottom: 100%;
-  left: 100%;
-  margin-left: 0.75rem;
-  margin-bottom: 0.5rem;
+  position: fixed;
+  left: 96px;
+  bottom: 20px;
+  width: 310px;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
   background: #FFFDF8;
   border: 2px solid #1E192B;
-  box-shadow: 4px 4px 0px #1E192B;
-  border-radius: 0.6rem;
-  width: 13rem;
-  padding: 0.8rem;
-  z-index: 120;
+  box-shadow: 6px 6px 0px #1E192B;
+  border-radius: 16px;
+  padding: 1.25rem;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.user-dropdown-profile-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-bottom: 0.4rem;
+}
+
+.user-dropdown-profile-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.user-dropdown-profile-info strong {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1E192B;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-dropdown-profile-info small {
+  font-size: 0.8rem;
+  color: #6B7280;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropdown-divider {
+  border: none;
+  border-top: 1px solid #E5E7EB;
+  margin: 0.35rem 0;
+}
+
+.dropdown-appearance-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.4rem 0;
+}
+
+.appearance-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1E192B;
+}
+
+.theme-toggle-group {
+  display: flex;
+  background: #E5E7EB;
+  border-radius: 10px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.theme-btn {
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  padding: 5px 8px;
+  cursor: pointer;
+  color: #6B7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.theme-btn.is-active {
+  background: #FFFFFF;
+  color: #1E192B;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .dropdown-item {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.6rem;
-  border-radius: 0.4rem;
-  font-size: 0.82rem;
+  gap: 0.6rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: 0.5rem;
+  font-size: 0.88rem;
   font-weight: 600;
   color: #1E192B;
   text-decoration: none;
@@ -1696,6 +1799,22 @@ img, svg, video {
   background: #FFF0F5;
 }
 
+.external-icon {
+  margin-left: auto;
+  color: #9CA3AF;
+}
+
+.user-dropdown-footer {
+  text-align: center;
+  padding-top: 0.25rem;
+}
+
+.user-dropdown-footer small {
+  font-size: 0.75rem;
+  color: #9CA3AF;
+}
+
+
 .app-main-layout {
   flex: 1;
   margin-left: 88px;
@@ -1703,6 +1822,19 @@ img, svg, video {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+}
+
+/* OVERLAY TARJETA SUPERPUESTA DE CONFIRMACIÓN */
+.confirmation-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(30, 25, 43, 0.65);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
 }
 
 /* Responsive Mobile Layout (< 768px) */
@@ -1755,10 +1887,12 @@ img, svg, video {
     left: 0;
   }
 
+  .sidebar-brand,
   .sidebar-top {
     display: none;
   }
 
+  .sidebar-nav,
   .sidebar-nav-list {
     align-items: stretch;
   }
