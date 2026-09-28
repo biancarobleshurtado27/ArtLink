@@ -1131,22 +1131,367 @@ label { font-family: var(--sans); }
 .assistant-panel { border-radius: var(--radius); }
 
 /* ==========================================================================
-   14. Pie de página (Footer)
+   14. Pie de página (Footer - Adaptado a la Identidad Visual de ArtLink)
    ========================================================================== */
-.site-footer a,
-.site-footer .brand { box-sizing: border-box; min-height: 44px; }
-.footer-col a { display: inline-flex; align-items: center; }
-.footer-col h3 { position: relative; padding-left: .7rem; }
-.footer-col h3::before {
-  background: var(--rose);
+.site-footer {
+  background-color: var(--bg);
+  color: var(--text);
+  border-top: 2px solid var(--ink);
+  margin-top: auto;
+  padding: 3.5rem clamp(1.5rem, 5vw, 4.5rem) 2.5rem;
+  width: 100%;
+  box-sizing: border-box;
+  transition: background-color .2s, color .2s, border-color .2s;
+}
+
+:root[data-theme='dark'] .site-footer {
+  border-top: 2px solid var(--line);
+}
+
+.site-footer .footer-container {
+  max-width: 82rem;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2.75rem;
+}
+
+/* ── Encabezado de Marca del Footer ── */
+.site-footer .footer-brand-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding-bottom: 2rem;
+  border-bottom: 1.5px dashed var(--line);
+}
+
+.site-footer .footer-brand-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  max-width: 44rem;
+}
+
+.site-footer .footer-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+}
+
+.site-footer .footer-brand .brand-text strong {
+  font-family: var(--heading);
+  font-size: 1.4rem;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+
+.site-footer .footer-brand .brand-text small {
+  display: block;
+  font-family: var(--badge);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--violet);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.site-footer .footer-brand-blurb {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.site-footer .footer-sticker {
+  background: var(--yellow);
+  border: 2px solid var(--ink);
+  box-shadow: 2.5px 2.5px 0 var(--ink);
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--badge);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.45rem 0.85rem;
+  color: #1E192B;
+  transform: rotate(-1.5deg);
+  transition: transform .2s ease;
+}
+
+.site-footer .footer-sticker:hover {
+  transform: rotate(0deg) scale(1.04);
+}
+
+/* ── Grilla ordenada de 5 columnas con estética ArtLink ── */
+.site-footer .footer-nav-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 2rem 1.25rem;
+  width: 100%;
+}
+
+.site-footer .footer-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.site-footer .footer-col-title {
+  font-family: var(--heading);
+  color: var(--ink);
+  font-size: 0.96rem;
+  font-weight: 800;
+  margin: 0 0 1.15rem 0;
+  padding: 0 0 0 0.7rem;
+  position: relative;
+  letter-spacing: -0.01em;
+}
+
+.site-footer .footer-col-title::before {
+  background: var(--violet);
   border: 1.5px solid var(--ink);
   border-radius: var(--radius-pill);
-  bottom: .1rem;
+  bottom: 0.15rem;
   content: '';
   left: 0;
   position: absolute;
-  top: .1rem;
-  width: .3rem;
+  top: 0.15rem;
+  width: 0.32rem;
+}
+
+/* Colores de acento temáticos para cada columna en el estilo ArtLink */
+.site-footer .col-rose .footer-col-title::before { background: var(--rose); }
+.site-footer .col-violet .footer-col-title::before { background: var(--violet); }
+.site-footer .col-yellow .footer-col-title::before { background: var(--yellow); }
+.site-footer .col-mint .footer-col-title::before { background: var(--mint); }
+.site-footer .col-lilac .footer-col-title::before { background: var(--violet-soft); }
+
+.site-footer .footer-col ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.site-footer .footer-col li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.site-footer .footer-col a {
+  color: var(--muted);
+  font-family: var(--sans);
+  font-size: 0.87rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.18s ease, transform 0.18s ease;
+  line-height: 1.45;
+  display: inline-block;
+  min-height: auto;
+}
+
+.site-footer .footer-col a:hover {
+  color: var(--violet);
+  transform: translateX(3px);
+}
+
+.site-footer .footer-subitem {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding-left: 0.45rem;
+  color: var(--muted);
+  font-size: 0.83rem;
+}
+
+.site-footer .footer-subitem:hover {
+  color: var(--violet);
+  transform: translateX(4px);
+}
+
+.site-footer .footer-subitem-tree {
+  color: var(--violet);
+  font-family: var(--badge);
+  font-weight: 700;
+  font-size: 0.9rem;
+  user-select: none;
+}
+
+/* ── Barra inferior del Footer ── */
+.site-footer .footer-bottom-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding-top: 1.8rem;
+  border-top: 1.5px dashed var(--line);
+  width: 100%;
+}
+
+.site-footer .footer-bottom-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* Botones píldora con la anatomía visual de ArtLink */
+.site-footer .footer-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--paper);
+  border: 2px solid var(--ink);
+  box-shadow: 2px 2px 0 var(--ink);
+  border-radius: var(--radius-pill);
+  padding: 0.45rem 0.95rem;
+  color: var(--ink);
+  font-family: var(--badge);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+.site-footer .footer-pill-btn:hover {
+  background-color: var(--yellow);
+  color: #1E192B;
+  transform: translateY(-2px);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+.site-footer .footer-pill-btn svg {
+  flex-shrink: 0;
+}
+
+.site-footer .footer-pill-flag {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.site-footer .footer-pill-symbol {
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 50%;
+  border: 1.5px solid currentColor;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+/* Botones circulares para redes sociales en estilo Neo-Pop / Gallery */
+.site-footer .footer-bottom-middle {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.site-footer .footer-social-btn {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  box-shadow: 2px 2px 0 var(--ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink);
+  transition: var(--transition);
+  text-decoration: none;
+}
+
+.site-footer .footer-social-btn:hover {
+  background: var(--mint);
+  color: #0F3A33;
+  transform: translateY(-2px);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+.site-footer .footer-bottom-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--muted);
+  font-family: var(--badge);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.site-footer .footer-sep {
+  color: var(--line);
+}
+
+.site-footer .footer-brand-tag {
+  color: var(--ink);
+}
+
+.site-footer .footer-brand-tag strong {
+  color: var(--violet-dark);
+  font-weight: 800;
+}
+
+/* Responsividad para tabletas y móviles */
+@media (max-width: 67.5rem) {
+  .site-footer .footer-nav-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2rem 1.5rem;
+  }
+}
+
+@media (max-width: 48rem) {
+  .site-footer {
+    padding: 2.5rem 1.25rem calc(6rem + env(safe-area-inset-bottom));
+  }
+
+  .site-footer .footer-brand-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .site-footer .footer-nav-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem 1.25rem;
+  }
+
+  .site-footer .footer-bottom-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+  }
+
+  .site-footer .footer-bottom-right {
+    white-space: normal;
+  }
+}
+
+@media (max-width: 30rem) {
+  .site-footer .footer-nav-grid {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+  }
+
+  .site-footer .footer-bottom-left {
+    width: 100%;
+  }
+
+  .site-footer .footer-pill-btn {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 /* ==========================================================================
@@ -1551,8 +1896,8 @@ img, svg, video {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   border-radius: 12px;
   transition: transform 0.15s ease;
 }
@@ -1562,8 +1907,12 @@ img, svg, video {
 }
 
 .sidebar-logo-img {
-  max-width: 40px;
-  max-height: 40px;
+  display: block;
+  margin-inline: auto;
+  width: auto;
+  height: auto;
+  max-width: 48px;
+  max-height: 48px;
   object-fit: contain;
 }
 
@@ -1962,6 +2311,30 @@ img, svg, video {
   margin-left: 0 !important;
 }
 
+/* ==========================================================================
+   Página de Mensajes (/mensajes)
+   ========================================================================== */
+.messages-page {
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 32px;
+  width: 100%;
+}
+
+.messages-layout {
+  display: grid;
+  grid-template-columns: minmax(220px, 300px) minmax(0, 1fr);
+  min-height: min(680px, calc(100vh - 140px));
+  align-items: stretch;
+  gap: 1.5rem;
+}
+
+.messages-list,
+.message-thread {
+  min-height: 0;
+  overflow: auto;
+}
+
 /* OVERLAY TARJETA SUPERPUESTA DE CONFIRMACIÓN */
 .confirmation-overlay {
   position: fixed;
@@ -1977,14 +2350,25 @@ img, svg, video {
 
 /* Responsive Mobile Layout (< 768px) */
 @media (max-width: 48rem) {
+  .messages-page {
+    padding: 16px;
+    min-height: auto;
+  }
+
+  .messages-layout {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    gap: 1rem;
+  }
+
   .mobile-header-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
     height: 60px;
     padding: 0 1rem;
-    background: #FFFDF8;
-    border-bottom: 2px solid #1E192B;
+    background: var(--surface, #FFFDF8);
+    border-bottom: 2px solid var(--line, #1E192B);
     position: sticky;
     top: 0;
     z-index: 80;
@@ -1993,7 +2377,7 @@ img, svg, video {
   .mobile-hamburger-btn {
     background: transparent;
     border: none;
-    color: #1E192B;
+    color: var(--text, #1E192B);
     cursor: pointer;
     padding: 0.4rem;
     display: flex;
@@ -2001,8 +2385,12 @@ img, svg, video {
   }
 
   .mobile-brand-logo img {
-    height: 36px;
+    height: 42px;
+    max-height: 42px;
+    width: auto;
     object-fit: contain;
+    display: block;
+    margin-inline: auto;
   }
 
   .app-sidebar {

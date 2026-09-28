@@ -30,10 +30,15 @@ export default function MessagesPage() {
   const [selectedId, setSelectedId] = useState(searchParams.get('requestId') || '')
   const [body, setBody] = useState('')
   const [sending, setSending] = useState(false)
-  const chatBottomRef = useRef(null)
+  const messageListRef = useRef(null)
 
   const activeRequestId = selectedId || requests[0]?.id || ''
   const selected = requests.find((request) => request.id === activeRequestId)
+
+  // Asegurar que al entrar a la página comience arriba
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+  }, [])
 
   useEffect(() => {
     if (selected) {
@@ -41,9 +46,11 @@ export default function MessagesPage() {
     }
   }, [selected, loadMessages])
 
-  // Desplazamiento automático al final del chat al llegar nuevos mensajes
+  // Desplazamiento automático al final de la lista de mensajes sin desplazar la ventana
   useEffect(() => {
-    chatBottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+    if (messageListRef.current) {
+      messageListRef.current.scrollTop = messageListRef.current.scrollHeight
+    }
   }, [messages])
 
   if (loading) return <LoadingState label="Cargando tus conversaciones de ArtLink..." />
@@ -54,9 +61,9 @@ export default function MessagesPage() {
       <section className="messages-page" aria-labelledby="messages-title">
         <div className="messages-header-top">
           <span className="sticker sticker-purple" style={{ display: 'inline-flex', marginBottom: '0.4rem' }}>
-            <DecorativeStar size={12} color="#1E192B" /> CHAT EN VIVO
+            <DecorativeStar size={12} color="#1E192B" /> CANAL SEGURO DE COMUNICACIÓN
           </span>
-          <h1 id="messages-title">Mensajes Privados</h1>
+          <h1 id="messages-title">Mensajes</h1>
         </div>
         <EmptyState
           title="No tienes conversaciones activas"
@@ -88,12 +95,12 @@ export default function MessagesPage() {
         <span className="sticker sticker-purple" style={{ display: 'inline-flex', marginBottom: '0.4rem' }}>
           <DecorativeStar size={12} color="#1E192B" /> CANAL SEGURO DE COMUNICACIÓN
         </span>
-        <h1 id="messages-title">Centro de Mensajes Privados</h1>
+        <h1 id="messages-title">Mensajes</h1>
       </div>
 
       <div className="messages-layout">
         {/* Listado de Conversaciones del Usuario */}
-        <aside className="conversation-list" aria-label="Lista de conversaciones activas">
+        <aside className="conversation-list messages-list" aria-label="Lista de conversaciones activas">
           <div className="conversation-list-header">
             <span>Conversaciones ({requests.length})</span>
           </div>
@@ -120,7 +127,7 @@ export default function MessagesPage() {
         </aside>
 
         {/* Panel Principal de Chat */}
-        <section className="chat-panel" aria-label="Panel de conversación">
+        <section className="chat-panel message-thread" aria-label="Panel de conversación">
           {!selected ? (
             <EmptyState
               title="Selecciona una conversación"
@@ -140,7 +147,7 @@ export default function MessagesPage() {
                 </div>
               </header>
 
-              <div className="message-list">
+              <div className="message-list" ref={messageListRef}>
                 {messages.length ? (
                   messages.map((message) => {
                     const isMine = message.senderId === user.id
@@ -185,7 +192,6 @@ export default function MessagesPage() {
                     <small>Utiliza este canal seguro para coordinar referencias visuales, bocetos y entregas finales.</small>
                   </div>
                 )}
-                <div ref={chatBottomRef} />
               </div>
 
               <form className="message-form" onSubmit={submit}>

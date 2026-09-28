@@ -16,7 +16,6 @@ import {
   Monitor,
   Moon,
   MoreVertical,
-  Plus,
   Search,
   Settings,
   Sliders,
@@ -225,17 +224,6 @@ export default function AppShell() {
               <span className="sidebar-tooltip" role="tooltip">{label}</span>
             </NavLink>
           ))}
-
-          {/* Botón (+) circular de acción rápida */}
-          <NavLink
-            to="/solicitudes"
-            onClick={closeMenus}
-            aria-label="Nueva solicitud"
-            className="sidebar-nav-item sidebar-plus-btn"
-          >
-            <Plus size={26} className="sidebar-icon" aria-hidden="true" />
-            <span className="sidebar-tooltip" role="tooltip">Nueva solicitud</span>
-          </NavLink>
         </nav>
 
         {/* 7-9. SECCIÓN INFERIOR (Panel Creador + Botón Opciones Usuario) */}

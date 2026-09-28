@@ -480,7 +480,7 @@
       "senderId": "user-client-001",
       "receiverId": "user-artist-001",
       "body": "hola, como va la comision?",
-      "read": false,
+      "read": true,
       "createdAt": "2026-09-27T22:29:18.207Z",
       "id": "Gxon3m_aCOk"
     }
