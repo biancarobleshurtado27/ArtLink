@@ -18,10 +18,24 @@ export async function getArtists(params = {}) {
 }
 export async function getArtistById(id) {
   try {
-    const [{ data: profile }, { data: users }] = await Promise.all([
-      apiClient.get(`/artistProfiles/${id}`),
-      apiClient.get('/users'),
-    ])
+    const normalizedId = typeof id === 'string' && /^artist-\d+$/.test(id)
+      ? `artist-${id.replace('artist-', '').padStart(3, '0')}`
+      : id
+
+    let profile
+    try {
+      const { data } = await apiClient.get(`/artistProfiles/${normalizedId}`)
+      profile = data
+    } catch (primaryError) {
+      const { data: byUser } = await apiClient.get('/artistProfiles', { params: { userId: id } })
+      if (byUser && byUser.length > 0) {
+        profile = byUser[0]
+      } else {
+        throw primaryError
+      }
+    }
+
+    const { data: users } = await apiClient.get('/users')
     const user = users.find((candidate) => candidate.id === profile.userId)
     return { ...profile, avatar: user?.avatar || '', name: user?.name || profile.displayName }
   } catch (error) { throw getServiceError(error, resource) }

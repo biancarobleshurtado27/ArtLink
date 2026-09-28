@@ -83,7 +83,7 @@ const CATEGORIES_MOCK = [
 
 const FEATURED_CREATORS_STATIC = [
   {
-    id: 'artist-1',
+    id: 'artist-001',
     name: "Valeria 'Vex' Cruz",
     handle: '@vex_artworks | Ilustración',
     status: 'CUPOS DISPONIBLES',
@@ -98,7 +98,7 @@ const FEATURED_CREATORS_STATIC = [
     startingPrice: '$45 USD',
   },
   {
-    id: 'artist-2',
+    id: 'artist-002',
     name: 'Kenji Morita',
     handle: '@kenji_morita | 3D y 2D Anime',
     status: 'ÚLTIMOS 2 CUPOS',
@@ -113,7 +113,7 @@ const FEATURED_CREATORS_STATIC = [
     startingPrice: '$115 USD',
   },
   {
-    id: 'artist-3',
+    id: 'artist-003',
     name: 'Yochi & Goma',
     handle: '@yochigoma | VTuber & Emotes',
     status: 'EN REVISIÓN DE BRIEF',
