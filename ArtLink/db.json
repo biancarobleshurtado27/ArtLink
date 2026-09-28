@@ -67,6 +67,116 @@
       "active": true,
       "createdAt": "2026-09-24T15:32:45.392Z",
       "id": "Ocv9hjUJTAw"
+    },
+    {
+      "id": "user-artist-004",
+      "name": "Elena Rostova",
+      "email": "elena@artlink.demo",
+      "passwordDemo": "artista123",
+      "role": "artista",
+      "avatar": "https://i.pravatar.cc/150?img=49",
+      "createdAt": "2026-01-10T08:00:00.000Z",
+      "active": true
+    },
+    {
+      "id": "user-artist-005",
+      "name": "Lucas Mendoza",
+      "email": "lucas@artlink.demo",
+      "passwordDemo": "artista123",
+      "role": "artista",
+      "avatar": "https://i.pravatar.cc/150?img=15",
+      "createdAt": "2026-01-12T09:30:00.000Z",
+      "active": true
+    },
+    {
+      "id": "user-artist-006",
+      "name": "Camille Laurent",
+      "email": "camille@artlink.demo",
+      "passwordDemo": "artista123",
+      "role": "artista",
+      "avatar": "https://i.pravatar.cc/150?img=26",
+      "createdAt": "2026-01-14T11:00:00.000Z",
+      "active": true
+    },
+    {
+      "id": "user-artist-007",
+      "name": "Kenji Takahashi",
+      "email": "kenji@artlink.demo",
+      "passwordDemo": "artista123",
+      "role": "artista",
+      "avatar": "https://i.pravatar.cc/150?img=11",
+      "createdAt": "2026-01-18T14:20:00.000Z",
+      "active": true
+    },
+    {
+      "id": "user-artist-008",
+      "name": "Valeria Morales",
+      "email": "valeria@artlink.demo",
+      "passwordDemo": "artista123",
+      "role": "artista",
+      "avatar": "https://i.pravatar.cc/150?img=44",
+      "createdAt": "2026-01-20T16:45:00.000Z",
+      "active": true
+    },
+    {
+      "id": "user-artist-009",
+      "name": "Marcus Vance",
+      "email": "marcus@artlink.demo",
+      "passwordDemo": "artista123",
+      "role": "artista",
+      "avatar": "https://i.pravatar.cc/150?img=53",
+      "createdAt": "2026-01-22T10:15:00.000Z",
+      "active": true
+    },
+    {
+      "id": "user-artist-010",
+      "name": "Luna Gómez",
+      "email": "luna@artlink.demo",
+      "passwordDemo": "artista123",
+      "role": "artista",
+      "avatar": "https://i.pravatar.cc/150?img=36",
+      "createdAt": "2026-01-25T13:00:00.000Z",
+      "active": true
+    },
+    {
+      "id": "user-artist-011",
+      "name": "Alex Tan",
+      "email": "alex@artlink.demo",
+      "passwordDemo": "artista123",
+      "role": "artista",
+      "avatar": "https://i.pravatar.cc/150?img=60",
+      "createdAt": "2026-01-28T15:30:00.000Z",
+      "active": true
+    },
+    {
+      "id": "user-artist-012",
+      "name": "Bea Carrasco",
+      "email": "bea@artlink.demo",
+      "passwordDemo": "artista123",
+      "role": "artista",
+      "avatar": "https://i.pravatar.cc/150?img=28",
+      "createdAt": "2026-02-01T09:00:00.000Z",
+      "active": true
+    },
+    {
+      "id": "user-artist-013",
+      "name": "Renzo Castillo",
+      "email": "renzo@artlink.demo",
+      "passwordDemo": "artista123",
+      "role": "artista",
+      "avatar": "https://i.pravatar.cc/150?img=59",
+      "createdAt": "2026-02-05T12:00:00.000Z",
+      "active": true
+    },
+    {
+      "id": "user-artist-014",
+      "name": "Nora Vane",
+      "email": "nora@artlink.demo",
+      "passwordDemo": "artista123",
+      "role": "artista",
+      "avatar": "https://i.pravatar.cc/150?img=41",
+      "createdAt": "2026-02-10T17:10:00.000Z",
+      "active": true
     }
   ],
   "artistProfiles": [
@@ -165,6 +275,296 @@
       "basePrice": 0,
       "socialLinks": {},
       "id": "WSzX1A9jJJo"
+    },
+    {
+      "id": "artist-004",
+      "userId": "user-artist-004",
+      "displayName": "Elena Rostova",
+      "username": "elenarostova",
+      "bio": "Concept artist y diseñadora de fondos de fantasía y ciencia ficción para videojuegos y juegos de mesa.",
+      "disciplines": [
+        "Concept art",
+        "Fondos y escenarios",
+        "Ilustración 2D"
+      ],
+      "styles": [
+        "Fantasía",
+        "Cinematográfico",
+        "Realista"
+      ],
+      "location": "Santiago, Chile",
+      "availability": "open",
+      "slots": 3,
+      "rating": 4.95,
+      "verified": true,
+      "basePrice": 150,
+      "socialLinks": {
+        "artstation": "https://artstation.com/elenarostova",
+        "instagram": "https://instagram.com/elenarostova"
+      }
+    },
+    {
+      "id": "artist-005",
+      "userId": "user-artist-005",
+      "displayName": "Lucas Mendoza",
+      "username": "bitpix_lucas",
+      "bio": "Especialista en pixel art para videojuegos indie, tilesets modulares, sprites animados y retratos retro 16-bit.",
+      "disciplines": [
+        "Pixel Art",
+        "Animación",
+        "Diseño de personajes"
+      ],
+      "styles": [
+        "Retro",
+        "Cyberpunk",
+        "Chibi"
+      ],
+      "location": "Buenos Aires, Argentina",
+      "availability": "open",
+      "slots": 5,
+      "rating": 4.88,
+      "verified": true,
+      "basePrice": 45,
+      "socialLinks": {
+        "twitter": "https://twitter.com/bitpix_lucas",
+        "itch": "https://bitpix.itch.io"
+      }
+    },
+    {
+      "id": "artist-006",
+      "userId": "user-artist-006",
+      "displayName": "Camille Laurent",
+      "username": "camille_art",
+      "bio": "Ilustradora editorial y portadista infantil. Líneas texturizadas, paletas cálidas y narración visual nostálgica.",
+      "disciplines": [
+        "Ilustración editorial",
+        "Ilustración 2D"
+      ],
+      "styles": [
+        "Editorial",
+        "Minimalista",
+        "Infantil"
+      ],
+      "location": "Lyon, Francia",
+      "availability": "open",
+      "slots": 2,
+      "rating": 4.92,
+      "verified": true,
+      "basePrice": 95,
+      "socialLinks": {
+        "behance": "https://behance.net/camillelaurent",
+        "instagram": "https://instagram.com/camillelaurent"
+      }
+    },
+    {
+      "id": "artist-007",
+      "userId": "user-artist-007",
+      "displayName": "Kenji Takahashi",
+      "username": "kenji_anim",
+      "bio": "Animador 2D tradicional y motion designer especializado en intros animadas, loops para streamers y escenas fluidas.",
+      "disciplines": [
+        "Animación",
+        "Ilustración 2D"
+      ],
+      "styles": [
+        "Anime",
+        "Retro",
+        "Dinámico"
+      ],
+      "location": "Kioto, Japón",
+      "availability": "waitlist",
+      "slots": 0,
+      "rating": 4.97,
+      "verified": true,
+      "basePrice": 180,
+      "socialLinks": {
+        "youtube": "https://youtube.com/@kenjianim",
+        "twitter": "https://twitter.com/kenji_anim"
+      }
+    },
+    {
+      "id": "artist-008",
+      "userId": "user-artist-008",
+      "displayName": "Valeria Morales",
+      "username": "valemotes",
+      "bio": "Creadora de emotes, badges y paneles personalizados para Twitch, YouTube y Discord con acabados limpios y expresivos.",
+      "disciplines": [
+        "Emotes",
+        "Diseño de personajes",
+        "Ilustración 2D"
+      ],
+      "styles": [
+        "Chibi",
+        "Colorido",
+        "Anime"
+      ],
+      "location": "San José, Costa Rica",
+      "availability": "open",
+      "slots": 6,
+      "rating": 4.85,
+      "verified": true,
+      "basePrice": 35,
+      "socialLinks": {
+        "twitch": "https://twitch.tv/valemotes",
+        "twitter": "https://twitter.com/valemotes"
+      }
+    },
+    {
+      "id": "artist-009",
+      "userId": "user-artist-009",
+      "displayName": "Marcus Vance",
+      "username": "marcus3d",
+      "bio": "Escultor digital y modelador 3D para miniaturas coleccionables, impresión 3D y personajes estilizados.",
+      "disciplines": [
+        "Modelado 3D",
+        "Arte 3D",
+        "Diseño de personajes"
+      ],
+      "styles": [
+        "Fantasía",
+        "Realista",
+        "Estilizado"
+      ],
+      "location": "Montreal, Canadá",
+      "availability": "open",
+      "slots": 2,
+      "rating": 4.79,
+      "verified": false,
+      "basePrice": 160,
+      "socialLinks": {
+        "artstation": "https://artstation.com/marcusvance"
+      }
+    },
+    {
+      "id": "artist-010",
+      "userId": "user-artist-010",
+      "displayName": "Luna Gómez",
+      "username": "lunag_art",
+      "bio": "Ilustradora 2D y diseñadora de criaturas mágicas, botánica fantástica y folclore latinoamericano.",
+      "disciplines": [
+        "Ilustración 2D",
+        "Concept art"
+      ],
+      "styles": [
+        "Fantasía",
+        "Místico",
+        "Colorido"
+      ],
+      "location": "Medellín, Colombia",
+      "availability": "open",
+      "slots": 4,
+      "rating": 4.91,
+      "verified": true,
+      "basePrice": 75,
+      "socialLinks": {
+        "instagram": "https://instagram.com/lunag_art",
+        "behance": "https://behance.net/lunag_art"
+      }
+    },
+    {
+      "id": "artist-011",
+      "userId": "user-artist-011",
+      "displayName": "Alex Tan",
+      "username": "alextan_scenery",
+      "bio": "Artista de escenarios y paisajes urbanos cyberpunk y sci-fi para novelas gráficas y cinemáticas.",
+      "disciplines": [
+        "Fondos y escenarios",
+        "Concept art",
+        "Ilustración 2D"
+      ],
+      "styles": [
+        "Cyberpunk",
+        "Cinematográfico",
+        "Futurista"
+      ],
+      "location": "Singapur",
+      "availability": "closed",
+      "slots": 0,
+      "rating": 4.86,
+      "verified": true,
+      "basePrice": 210,
+      "socialLinks": {
+        "artstation": "https://artstation.com/alextan_scenery"
+      }
+    },
+    {
+      "id": "artist-012",
+      "userId": "user-artist-012",
+      "displayName": "Bea Carrasco",
+      "username": "beacarrasco",
+      "bio": "Ilustración de moda, retratos realistas al óleo digital y portadas de revistas con acabado elegante y orgánico.",
+      "disciplines": [
+        "Retrato",
+        "Ilustración editorial"
+      ],
+      "styles": [
+        "Realista",
+        "Editorial",
+        "Minimalista"
+      ],
+      "location": "Madrid, España",
+      "availability": "open",
+      "slots": 3,
+      "rating": 4.9,
+      "verified": true,
+      "basePrice": 130,
+      "socialLinks": {
+        "instagram": "https://instagram.com/beacarrasco",
+        "behance": "https://behance.net/beacarrasco"
+      }
+    },
+    {
+      "id": "artist-013",
+      "userId": "user-artist-013",
+      "displayName": "Renzo Castillo",
+      "username": "renzodesign",
+      "bio": "Diseñador de personajes para juegos móviles, concept sheet, turnaround técnico y trajes temáticos.",
+      "disciplines": [
+        "Diseño de personajes",
+        "Concept art",
+        "Ilustración 2D"
+      ],
+      "styles": [
+        "Anime",
+        "Fantasía",
+        "Colorido"
+      ],
+      "location": "Lima, Perú",
+      "availability": "waitlist",
+      "slots": 1,
+      "rating": 4.75,
+      "verified": false,
+      "basePrice": 110,
+      "socialLinks": {
+        "artstation": "https://artstation.com/renzodesign"
+      }
+    },
+    {
+      "id": "artist-014",
+      "userId": "user-artist-014",
+      "displayName": "Nora Vane",
+      "username": "noravane_render",
+      "bio": "Renderizado 3D fotorrealista y diseño de espacios interiores estilizados para arquitectura y visual branding.",
+      "disciplines": [
+        "Modelado 3D",
+        "Render",
+        "Arte 3D"
+      ],
+      "styles": [
+        "Minimalista",
+        "Realista",
+        "Arquitectura"
+      ],
+      "location": "Berlín, Alemania",
+      "availability": "open",
+      "slots": 2,
+      "rating": 4.82,
+      "verified": true,
+      "basePrice": 220,
+      "socialLinks": {
+        "behance": "https://behance.net/noravane",
+        "instagram": "https://instagram.com/noravane_render"
+      }
     }
   ],
   "portfolioItems": [
@@ -220,6 +620,330 @@
       "image": "https://picsum.photos/seed/concrete-study/900/700",
       "category": "Render",
       "description": "Escena arquitectónica de estilo minimalista.",
+      "featured": false
+    },
+    {
+      "id": "portfolio-007",
+      "artistId": "artist-001",
+      "title": "Cuentos del valle secreto",
+      "image": "https://picsum.photos/seed/secret-valley/900/700",
+      "category": "Ilustración",
+      "description": "Portada e interiores para antología de relatos fantásticos.",
+      "featured": false
+    },
+    {
+      "id": "portfolio-008",
+      "artistId": "artist-002",
+      "title": "Luz de atardecer",
+      "image": "https://picsum.photos/seed/sunset-glow/900/700",
+      "category": "Retrato",
+      "description": "Estudio de color y luz cálida para personaje femenino.",
+      "featured": false
+    },
+    {
+      "id": "portfolio-009",
+      "artistId": "artist-003",
+      "title": "Cátedra de sonido",
+      "image": "https://picsum.photos/seed/sound-chair/900/700",
+      "category": "Arte 3D",
+      "description": "Concepto de mobiliario acústico para oficina moderna.",
+      "featured": false
+    },
+    {
+      "id": "portfolio-010",
+      "artistId": "artist-004",
+      "title": "Templo en las alturas",
+      "image": "https://picsum.photos/seed/sky-temple/900/700",
+      "category": "Fondos y escenarios",
+      "description": "Concept art ambiental para un videojuego de aventura mística.",
+      "featured": true
+    },
+    {
+      "id": "portfolio-011",
+      "artistId": "artist-004",
+      "title": "Ciudadela de hielo",
+      "image": "https://picsum.photos/seed/ice-citadel/900/700",
+      "category": "Concept art",
+      "description": "Pintura digital de una fortaleza en un risco ártico.",
+      "featured": true
+    },
+    {
+      "id": "portfolio-012",
+      "artistId": "artist-004",
+      "title": "Ruinas bioluminiscentes",
+      "image": "https://picsum.photos/seed/glowing-ruins/900/700",
+      "category": "Ilustración 2D",
+      "description": "Entorno nocturno con vegetación brillante y ruinas ancestrales.",
+      "featured": false
+    },
+    {
+      "id": "portfolio-013",
+      "artistId": "artist-005",
+      "title": "Callejón Neo-Kyoto 16-bit",
+      "image": "https://picsum.photos/seed/neo-kyoto-pixel/900/700",
+      "category": "Pixel Art",
+      "description": "Escenario cyberpunk detallado para metroidvania retro.",
+      "featured": true
+    },
+    {
+      "id": "portfolio-014",
+      "artistId": "artist-005",
+      "title": "Pack de guerreros y pícaros",
+      "image": "https://picsum.photos/seed/warriors-pixel/900/700",
+      "category": "Diseño de personajes",
+      "description": "Sprites animados en 32x32 píxeles con 8 direcciones.",
+      "featured": true
+    },
+    {
+      "id": "portfolio-015",
+      "artistId": "artist-005",
+      "title": "Taberna del aventurero",
+      "image": "https://picsum.photos/seed/tavern-pixel/900/700",
+      "category": "Pixel Art",
+      "description": "Tileset interior completo para RPG clásico en vista cenital.",
+      "featured": false
+    },
+    {
+      "id": "portfolio-016",
+      "artistId": "artist-006",
+      "title": "El zorro y la tetera mágica",
+      "image": "https://picsum.photos/seed/fox-teapot/900/700",
+      "category": "Ilustración editorial",
+      "description": "Doble página para álbum ilustrado publicado en Francia.",
+      "featured": true
+    },
+    {
+      "id": "portfolio-017",
+      "artistId": "artist-006",
+      "title": "Jardín de invierno",
+      "image": "https://picsum.photos/seed/winter-garden/900/700",
+      "category": "Ilustración 2D",
+      "description": "Postal botánica con técnicas mixtas y texturas de gouache digital.",
+      "featured": true
+    },
+    {
+      "id": "portfolio-018",
+      "artistId": "artist-006",
+      "title": "El faro del abuelo",
+      "image": "https://picsum.photos/seed/grandpa-lighthouse/900/700",
+      "category": "Ilustración editorial",
+      "description": "Portada de libro infantil con tonos cálidos y marina serena.",
+      "featured": false
+    },
+    {
+      "id": "portfolio-019",
+      "artistId": "artist-007",
+      "title": "Secuencia de transformación mística",
+      "image": "https://picsum.photos/seed/transformation-anim/900/700",
+      "category": "Animación",
+      "description": "Keyframes y animación intercalada en 24 fps estilo anime clásico.",
+      "featured": true
+    },
+    {
+      "id": "portfolio-020",
+      "artistId": "artist-007",
+      "title": "Loop Lo-fi Night Ride",
+      "image": "https://picsum.photos/seed/lofi-loop/900/700",
+      "category": "Animación",
+      "description": "Bucle animado continuo de viaje en tren para canal de música.",
+      "featured": true
+    },
+    {
+      "id": "portfolio-021",
+      "artistId": "artist-007",
+      "title": "Estudio de efectos de agua y viento",
+      "image": "https://picsum.photos/seed/water-wind-study/900/700",
+      "category": "Ilustración 2D",
+      "description": "Hojas de modelado de efectos elementales animados a mano.",
+      "featured": false
+    },
+    {
+      "id": "portfolio-022",
+      "artistId": "artist-008",
+      "title": "Colección de emotes gatunos",
+      "image": "https://picsum.photos/seed/cat-emotes/900/700",
+      "category": "Emotes",
+      "description": "Pack de 6 expresiones tiernas y legibles en tamaños pequeños.",
+      "featured": true
+    },
+    {
+      "id": "portfolio-023",
+      "artistId": "artist-008",
+      "title": "Insignias de lealtad cristales",
+      "image": "https://picsum.photos/seed/crystal-badges/900/700",
+      "category": "Emotes",
+      "description": "Set de sub badges evolutivos para canal de Twitch.",
+      "featured": true
+    },
+    {
+      "id": "portfolio-024",
+      "artistId": "artist-008",
+      "title": "Chibi streamer avatar",
+      "image": "https://picsum.photos/seed/chibi-streamer/900/700",
+      "category": "Diseño de personajes",
+      "description": "Diseño de personaje chibi para branding de creadora de contenido.",
+      "featured": false
+    },
+    {
+      "id": "portfolio-025",
+      "artistId": "artist-009",
+      "title": "Minotauro Colosal 3D",
+      "image": "https://picsum.photos/seed/colossal-minotaur/900/700",
+      "category": "Modelado 3D",
+      "description": "Escultura en ZBrush preparada para impresión 3D en resina.",
+      "featured": true
+    },
+    {
+      "id": "portfolio-026",
+      "artistId": "artist-009",
+      "title": "Busto de hechicera elfa",
+      "image": "https://picsum.photos/seed/elf-sorceress/900/700",
+      "category": "Arte 3D",
+      "description": "Modelo coleccionable con microdetalle de piel y telas.",
+      "featured": true
+    },
+    {
+      "id": "portfolio-027",
+      "artistId": "artist-009",
+      "title": "Compañero dracónico estilizado",
+      "image": "https://picsum.photos/seed/dragon-pet/900/700",
+      "category": "Diseño de personajes",
+      "description": "Modelo 3D optimizado para juego móvil con topología limpia.",
+      "featured": false
+    },
+    {
+      "id": "portfolio-028",
+      "artistId": "artist-010",
+      "title": "Espíritu de la selva nubosa",
+      "image": "https://picsum.photos/seed/cloud-forest-spirit/900/700",
+      "category": "Ilustración 2D",
+      "description": "Pintura digital inspirada en orquídeas y aves andinas.",
+      "featured": true
+    },
+    {
+      "id": "portfolio-029",
+      "artistId": "artist-010",
+      "title": "Bestiario botánico",
+      "image": "https://picsum.photos/seed/botanical-beasts/900/700",
+      "category": "Concept art",
+      "description": "Serie de tres criaturas nacidas de plantas carnívoras.",
+      "featured": true
+    },
+    {
+      "id": "portfolio-030",
+      "artistId": "artist-010",
+      "title": "La dama del colibrí",
+      "image": "https://picsum.photos/seed/hummingbird-lady/900/700",
+      "category": "Ilustración 2D",
+      "description": "Retrato mitológico con rica paleta de verdes y dorados.",
+      "featured": false
+    },
+    {
+      "id": "portfolio-031",
+      "artistId": "artist-011",
+      "title": "Metrópolis 2099",
+      "image": "https://picsum.photos/seed/metropolis-2099/900/700",
+      "category": "Fondos y escenarios",
+      "description": "Paisaje vertical con rascacielos modulares y tráfico aéreo.",
+      "featured": true
+    },
+    {
+      "id": "portfolio-032",
+      "artistId": "artist-011",
+      "title": "Estación orbital Helios",
+      "image": "https://picsum.photos/seed/helios-station/900/700",
+      "category": "Concept art",
+      "description": "Diseño ambiental exterior para producción de ciencia ficción.",
+      "featured": true
+    },
+    {
+      "id": "portfolio-033",
+      "artistId": "artist-011",
+      "title": "Mercado subterráneo de neón",
+      "image": "https://picsum.photos/seed/neon-bazaar/900/700",
+      "category": "Fondos y escenarios",
+      "description": "Composición con iluminación focalizada y texturas de lluvia ácida.",
+      "featured": false
+    },
+    {
+      "id": "portfolio-034",
+      "artistId": "artist-012",
+      "title": "Retrato en tonos tierra",
+      "image": "https://picsum.photos/seed/earthy-portrait/900/700",
+      "category": "Retrato",
+      "description": "Óleo digital con pinceladas visibles y expresión melancólica.",
+      "featured": true
+    },
+    {
+      "id": "portfolio-035",
+      "artistId": "artist-012",
+      "title": "Colección Alta Costura Otoño",
+      "image": "https://picsum.photos/seed/fashion-editorial/900/700",
+      "category": "Ilustración editorial",
+      "description": "Serie de 4 figurines estilizados para revista de tendencias.",
+      "featured": true
+    },
+    {
+      "id": "portfolio-036",
+      "artistId": "artist-012",
+      "title": "Estudio de manos y joyas",
+      "image": "https://picsum.photos/seed/jewelry-study/900/700",
+      "category": "Retrato",
+      "description": "Detalle realista de texturas metálicas, sedas y luz difusa.",
+      "featured": false
+    },
+    {
+      "id": "portfolio-037",
+      "artistId": "artist-013",
+      "title": "Paladín Solar: Turnaround",
+      "image": "https://picsum.photos/seed/solar-paladin/900/700",
+      "category": "Diseño de personajes",
+      "description": "Vistas frontal, tres cuartos y posterior con desglose de armadura.",
+      "featured": true
+    },
+    {
+      "id": "portfolio-038",
+      "artistId": "artist-013",
+      "title": "Invocadora de mareas",
+      "image": "https://picsum.photos/seed/tide-summoner/900/700",
+      "category": "Concept art",
+      "description": "Splash art dinámico de personaje para pantalla de carga.",
+      "featured": true
+    },
+    {
+      "id": "portfolio-039",
+      "artistId": "artist-013",
+      "title": "Ranger del bosque de jade",
+      "image": "https://picsum.photos/seed/jade-ranger/900/700",
+      "category": "Diseño de personajes",
+      "description": "Exploración de atuendos, armas y expresiones faciales.",
+      "featured": false
+    },
+    {
+      "id": "portfolio-040",
+      "artistId": "artist-014",
+      "title": "Loft nórdico en madera clara",
+      "image": "https://picsum.photos/seed/nordic-loft/900/700",
+      "category": "Render",
+      "description": "Visualización 3D fotorrealista con iluminación solar natural.",
+      "featured": true
+    },
+    {
+      "id": "portfolio-041",
+      "artistId": "artist-014",
+      "title": "Pabellón de vidrio y concreto",
+      "image": "https://picsum.photos/seed/glass-pavilion/900/700",
+      "category": "Modelado 3D",
+      "description": "Modelado paramétrico de estructura arquitectónica contemporánea.",
+      "featured": true
+    },
+    {
+      "id": "portfolio-042",
+      "artistId": "artist-014",
+      "title": "Composición de producto botánico",
+      "image": "https://picsum.photos/seed/botanic-render/900/700",
+      "category": "Arte 3D",
+      "description": "Render de envase cosmético con gotas de agua y fondo orgánico.",
       "featured": false
     }
   ],
@@ -295,6 +1019,330 @@
       "revisions": 2,
       "status": "paused",
       "terms": "La disponibilidad se confirma antes de iniciar el proyecto."
+    },
+    {
+      "id": "commission-007",
+      "artistId": "artist-001",
+      "title": "Portada de libro o novela",
+      "description": "Ilustración narrativa completa con tipografía y diseño de contraportada.",
+      "category": "Ilustración",
+      "price": 320,
+      "deliveryDays": 20,
+      "revisions": 3,
+      "status": "active",
+      "terms": "Derechos comerciales editoriales incluidos con crédito de autoría."
+    },
+    {
+      "id": "commission-008",
+      "artistId": "artist-002",
+      "title": "Ilustración completa de pareja",
+      "description": "Dos personajes con fondo trabajado y paleta de iluminación cinematográfica.",
+      "category": "Retrato",
+      "price": 240,
+      "deliveryDays": 16,
+      "revisions": 2,
+      "status": "paused",
+      "terms": "Boceto y paleta de color revisados antes de pasar a limpieza."
+    },
+    {
+      "id": "commission-009",
+      "artistId": "artist-003",
+      "title": "Animación de producto 3D",
+      "description": "Loop de 10 segundos con rotación 360 y explosión de componentes.",
+      "category": "Arte 3D",
+      "price": 650,
+      "deliveryDays": 25,
+      "revisions": 2,
+      "status": "paused",
+      "terms": "Entrega en MP4 y ProRes sin compresión."
+    },
+    {
+      "id": "commission-010",
+      "artistId": "artist-004",
+      "title": "Concept art de escenario",
+      "description": "Pintura ambiental con composición cinematográfica, clima e iluminación clave.",
+      "category": "Fondos y escenarios",
+      "price": 150,
+      "deliveryDays": 12,
+      "revisions": 2,
+      "status": "active",
+      "terms": "Incluye 3 miniaturas de composición iniciales a elegir."
+    },
+    {
+      "id": "commission-011",
+      "artistId": "artist-004",
+      "title": "Matte painting épico",
+      "description": "Escenario de alta resolución para cinemática o cartel de gran escala.",
+      "category": "Concept art",
+      "price": 380,
+      "deliveryDays": 21,
+      "revisions": 3,
+      "status": "active",
+      "terms": "Se entregan capas separadas de primer plano, medio y fondo."
+    },
+    {
+      "id": "commission-012",
+      "artistId": "artist-005",
+      "title": "Sprite animado de personaje",
+      "description": "Sprite en pixel art con ciclo de caminata, ataque y descanso.",
+      "category": "Pixel Art",
+      "price": 45,
+      "deliveryDays": 5,
+      "revisions": 2,
+      "status": "active",
+      "terms": "Entrega en hoja de sprites PNG transparente y GIF de previsualización."
+    },
+    {
+      "id": "commission-013",
+      "artistId": "artist-005",
+      "title": "Retrato retro 16-bit",
+      "description": "Retrato de perfil o avatar cuadrado en estilo consola clásica.",
+      "category": "Pixel Art",
+      "price": 65,
+      "deliveryDays": 6,
+      "revisions": 1,
+      "status": "active",
+      "terms": "Paleta limitada personalizada según preferencia del cliente."
+    },
+    {
+      "id": "commission-014",
+      "artistId": "artist-005",
+      "title": "Tileset de nivel completo",
+      "description": "Conjunto de 30 piezas modulares para construir niveles 2D de plataforma.",
+      "category": "Pixel Art",
+      "price": 160,
+      "deliveryDays": 14,
+      "revisions": 2,
+      "status": "active",
+      "terms": "Compatibilidad con Tiled y motores Unity o Godot."
+    },
+    {
+      "id": "commission-015",
+      "artistId": "artist-006",
+      "title": "Ilustración de libro infantil",
+      "description": "Página completa con personajes entrañables y textura suave de acuarela digital.",
+      "category": "Ilustración editorial",
+      "price": 95,
+      "deliveryDays": 9,
+      "revisions": 2,
+      "status": "active",
+      "terms": "Aprobación de boceto a lápiz previa a la aplicación de color final."
+    },
+    {
+      "id": "commission-016",
+      "artistId": "artist-006",
+      "title": "Postal o lámina decorativa",
+      "description": "Diseño botánico o animal estilizado listo para imprimir en tamaño A4 o A3.",
+      "category": "Ilustración 2D",
+      "price": 140,
+      "deliveryDays": 10,
+      "revisions": 2,
+      "status": "active",
+      "terms": "Archivo CMYK a 300 DPI con márgenes de sangrado estándar."
+    },
+    {
+      "id": "commission-017",
+      "artistId": "artist-007",
+      "title": "Intro animada corta (5s)",
+      "description": "Animación de logotipo o personaje para apertura de stream o canal de video.",
+      "category": "Animación",
+      "price": 180,
+      "deliveryDays": 15,
+      "revisions": 2,
+      "status": "paused",
+      "terms": "Requiere diseño de personaje preexistente o referencia clara."
+    },
+    {
+      "id": "commission-018",
+      "artistId": "artist-007",
+      "title": "Loop de fondo animado",
+      "description": "Escena ambiental fluida de 8 a 15 segundos con ciclo perfecto.",
+      "category": "Animación",
+      "price": 320,
+      "deliveryDays": 20,
+      "revisions": 2,
+      "status": "paused",
+      "terms": "Entrega optimizada para OBS y pantallas de espera en streaming."
+    },
+    {
+      "id": "commission-019",
+      "artistId": "artist-008",
+      "title": "Pack de 3 emotes personalizados",
+      "description": "Tres emotes optimizados en todas las resoluciones oficiales de Twitch y Discord.",
+      "category": "Emotes",
+      "price": 35,
+      "deliveryDays": 4,
+      "revisions": 2,
+      "status": "active",
+      "terms": "Archivos en 112px, 56px, 28px y 500px en formato PNG."
+    },
+    {
+      "id": "commission-020",
+      "artistId": "artist-008",
+      "title": "Pack completo streamer (6 emotes + 4 badges)",
+      "description": "Colección integral de identidad para canal con emotes y medallas de lealtad.",
+      "category": "Emotes",
+      "price": 85,
+      "deliveryDays": 8,
+      "revisions": 3,
+      "status": "active",
+      "terms": "Asesoría de legibilidad en tema claro y oscuro incluida."
+    },
+    {
+      "id": "commission-021",
+      "artistId": "artist-008",
+      "title": "Avatar Chibi de cuerpo entero",
+      "description": "Ilustración tierna en alta resolución para avatar y promociones.",
+      "category": "Diseño de personajes",
+      "price": 60,
+      "deliveryDays": 6,
+      "revisions": 2,
+      "status": "active",
+      "terms": "Incluye fondo plano con elementos decorativos sencillos."
+    },
+    {
+      "id": "commission-022",
+      "artistId": "artist-009",
+      "title": "Miniatura para impresión 3D (32mm)",
+      "description": "Modelo 3D esculpido en ZBrush con soporte verificado para resina.",
+      "category": "Modelado 3D",
+      "price": 160,
+      "deliveryDays": 14,
+      "revisions": 2,
+      "status": "active",
+      "terms": "Entrega en formato STL y OBJ con versiones soportada y no soportada."
+    },
+    {
+      "id": "commission-023",
+      "artistId": "artist-009",
+      "title": "Estatua coleccionable (escala 1/10)",
+      "description": "Escultura digital de alta definición con despiece por partes y encastres.",
+      "category": "Modelado 3D",
+      "price": 380,
+      "deliveryDays": 28,
+      "revisions": 2,
+      "status": "active",
+      "terms": "Pensada para pintores de miniaturas y coleccionistas avanzados."
+    },
+    {
+      "id": "commission-024",
+      "artistId": "artist-010",
+      "title": "Criatura mágica fantástica",
+      "description": "Diseño conceptual de bestia mística con anatomía y paleta natural.",
+      "category": "Concept art",
+      "price": 75,
+      "deliveryDays": 7,
+      "revisions": 2,
+      "status": "active",
+      "terms": "Incluye ficha con variantes de color y bocetos preliminares."
+    },
+    {
+      "id": "commission-025",
+      "artistId": "artist-010",
+      "title": "Ilustración botánica fantástica",
+      "description": "Pintura con composiciones de flora irreal y elementos luminiscentes.",
+      "category": "Ilustración 2D",
+      "price": 120,
+      "deliveryDays": 10,
+      "revisions": 2,
+      "status": "active",
+      "terms": "Archivo digital a 4000x3000 píxeles listo para portada o póster."
+    },
+    {
+      "id": "commission-026",
+      "artistId": "artist-011",
+      "title": "Concept art de ciudad cyberpunk",
+      "description": "Paisaje futurista detallado con neón, lluvia y tráfico vehicular volumétrico.",
+      "category": "Fondos y escenarios",
+      "price": 210,
+      "deliveryDays": 18,
+      "revisions": 2,
+      "status": "paused",
+      "terms": "Entrega de archivo PSD con capas de iluminación ajustables."
+    },
+    {
+      "id": "commission-027",
+      "artistId": "artist-011",
+      "title": "Fondo para novela visual",
+      "description": "Escenario interior o exterior en dos versiones de luz: día y noche.",
+      "category": "Fondos y escenarios",
+      "price": 340,
+      "deliveryDays": 22,
+      "revisions": 2,
+      "status": "paused",
+      "terms": "Resolución estándar 4K 16:9 con perspectiva recta."
+    },
+    {
+      "id": "commission-028",
+      "artistId": "artist-012",
+      "title": "Retrato al óleo digital",
+      "description": "Retrato de busto con acabado pictórico clásico y textura de lienzo.",
+      "category": "Retrato",
+      "price": 130,
+      "deliveryDays": 10,
+      "revisions": 2,
+      "status": "active",
+      "terms": "Basado en fotografía de referencia de alta definición proporcionada por el cliente."
+    },
+    {
+      "id": "commission-029",
+      "artistId": "artist-012",
+      "title": "Ilustración de moda editorial",
+      "description": "Figura completa estilizada para lookbook o publicación digital.",
+      "category": "Ilustración editorial",
+      "price": 200,
+      "deliveryDays": 14,
+      "revisions": 2,
+      "status": "active",
+      "terms": "Uso comercial para marcas independientes disponible bajo acuerdo."
+    },
+    {
+      "id": "commission-030",
+      "artistId": "artist-013",
+      "title": "Diseño de personaje completo",
+      "description": "Personaje en pose dinámica con armas, accesorios y renderizado sombreado anime.",
+      "category": "Diseño de personajes",
+      "price": 110,
+      "deliveryDays": 11,
+      "revisions": 2,
+      "status": "active",
+      "terms": "Fondo sencillo incluido; fondos complejos se cotizan por separado."
+    },
+    {
+      "id": "commission-031",
+      "artistId": "artist-013",
+      "title": "Hoja de modelo técnica",
+      "description": "Tres vistas ortogonales y 4 expresiones faciales del personaje.",
+      "category": "Concept art",
+      "price": 230,
+      "deliveryDays": 18,
+      "revisions": 3,
+      "status": "active",
+      "terms": "Especialmente pensado para modeladores 3D o animadores."
+    },
+    {
+      "id": "commission-032",
+      "artistId": "artist-014",
+      "title": "Render interior minimalista",
+      "description": "Visualización 3D fotorrealista de un espacio residencial o comercial.",
+      "category": "Render",
+      "price": 220,
+      "deliveryDays": 12,
+      "revisions": 2,
+      "status": "active",
+      "terms": "El cliente provee planos o medidas aproximadas y referencias de estilo."
+    },
+    {
+      "id": "commission-033",
+      "artistId": "artist-014",
+      "title": "Modelado arquitectónico exterior",
+      "description": "Modelo 3D y renderizado exterior de vivienda o pabellón contemporáneo.",
+      "category": "Modelado 3D",
+      "price": 450,
+      "deliveryDays": 20,
+      "revisions": 2,
+      "status": "active",
+      "terms": "Entrega de 2 tomas en resolución 4K con posproducción fotográfica."
     }
   ],
   "categories": [
@@ -357,6 +1405,18 @@
       "name": "Emotes",
       "slug": "emotes",
       "color": "#8B5CF6"
+    },
+    {
+      "id": "category-011",
+      "name": "Ilustración editorial",
+      "slug": "ilustracion-editorial",
+      "color": "#E07A5F"
+    },
+    {
+      "id": "category-012",
+      "name": "Fondos y escenarios",
+      "slug": "fondos-escenarios",
+      "color": "#3D405B"
     }
   ],
   "requests": [

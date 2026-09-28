@@ -61,7 +61,7 @@ export default function Footer() {
             </p>
           </div>
           <div className="footer-brand-badge">
-            <span className="footer-sticker">🎨 Plataforma para creadores</span>
+            <span className="footer-sticker">Plataforma para creadores</span>
           </div>
         </div>
 
@@ -158,7 +158,10 @@ export default function Footer() {
             </button>
 
             <button type="button" className="footer-pill-btn" aria-label="Seleccionar país o región">
-              <span className="footer-pill-flag" aria-hidden="true">🇨🇷</span>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
               <span>Costa Rica</span>
             </button>
 

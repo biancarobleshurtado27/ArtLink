@@ -430,8 +430,8 @@ export default function NewRequestPage() {
                     </div>
 
                     <div className="format-meta-footer">
-                      <span>⏱ {fmt.deliveryDays} días de entrega</span>
-                      <span>🔄 {fmt.revisions}</span>
+                      <span>{fmt.deliveryDays} días de entrega</span>
+                      <span>{fmt.revisions}</span>
                     </div>
                   </label>
                 )
@@ -642,7 +642,7 @@ export default function NewRequestPage() {
               <div className="summary-line-item">
                 <div>
                   <strong>{selectedFormat.title}</strong>
-                  <small>✓ Licencia Personal Incluida</small>
+                  <small>Licencia Personal Incluida</small>
                 </div>
                 <span>${selectedFormat.price}.00</span>
               </div>
@@ -654,7 +654,7 @@ export default function NewRequestPage() {
                   <div className="summary-line-item" key={addonId}>
                     <div>
                       <strong>{add.title.replace('+ ', '')}</strong>
-                      <small>✓ Incluido en la entrega</small>
+                      <small>Incluido en la entrega</small>
                     </div>
                     <span>${add.price}.00</span>
                   </div>
@@ -704,7 +704,7 @@ export default function NewRequestPage() {
                   className={`pay-method-btn ${paymentMethod === 'card' ? 'is-selected' : ''}`}
                   onClick={() => setPaymentMethod('card')}
                 >
-                  💳 Tarjeta
+                  Tarjeta
                 </button>
                 <button
                   type="button"

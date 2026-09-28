@@ -193,7 +193,7 @@ export default function HomePage() {
                 onChange={(e) => setArea(e.target.value)}
                 aria-label="Seleccionar área"
               >
-                <option value="all">📍 Todas las áreas</option>
+                <option value="all">Todas las áreas</option>
                 <option value="Ilustración 2D">Ilustración 2D</option>
                 <option value="Modelado 3D">Modelado 3D</option>
                 <option value="Animación">Animación & VTuber</option>
@@ -211,7 +211,7 @@ export default function HomePage() {
               />
             </div>
             <button type="submit" className="button button-primary button-search-hero">
-              Buscar Artista ✦
+              Buscar Artista
             </button>
           </form>
 
@@ -252,7 +252,7 @@ export default function HomePage() {
             {/* Tarjeta 1 (Izquierda) */}
             <div className="hero-showcase-card paper-card">
               <span className="showcase-sticker" style={{ background: '#8B5CF6' }}>
-                ✦ SoraMoon · Live2D
+                SoraMoon · Live2D
               </span>
               <img
                 src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop&q=80"
@@ -275,8 +275,8 @@ export default function HomePage() {
             {/* Tarjeta 2 (Centro - Principal) */}
             <div className="hero-showcase-card paper-card" style={{ border: '2.5px solid #1E192B' }}>
               <div style={{ position: 'absolute', top: '1.2rem', left: '1.2rem', zIndex: 2, display: 'flex', gap: '0.4rem' }}>
-                <span className="badge badge-yellow" style={{ fontSize: '0.65rem', fontWeight: 800 }}>⚡ Respuesta en 24h</span>
-                <span className="badge badge-violet" style={{ fontSize: '0.65rem', fontWeight: 800 }}>✦ SofiArt</span>
+                <span className="badge badge-yellow" style={{ fontSize: '0.65rem', fontWeight: 800 }}>Respuesta en 24h</span>
+                <span className="badge badge-violet" style={{ fontSize: '0.65rem', fontWeight: 800 }}>SofiArt</span>
               </div>
               <img
                 src="https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=600&auto=format&fit=crop&q=80"
@@ -300,7 +300,7 @@ export default function HomePage() {
             {/* Tarjeta 3 (Derecha) */}
             <div className="hero-showcase-card paper-card">
               <span className="showcase-sticker" style={{ background: '#F472B6' }}>
-                ✦ PixelArt 2D
+                PixelArt 2D
               </span>
               <img
                 src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&auto=format&fit=crop&q=80"
@@ -347,7 +347,7 @@ export default function HomePage() {
               Revisa portafolios verificados con disponibilidad real, tiempos de entrega garantizados y tarifas públicas sin sorpresas.
             </p>
             <span className="step-pill-footer pill-mint">
-              ✓ Filtros por especialidad
+              Filtros por especialidad
             </span>
           </div>
 
@@ -362,7 +362,7 @@ export default function HomePage() {
               Envía tus referencias visuales y deposita el pago en el sistema <strong>Escrow Shield</strong>. El dinero no se libera al artista hasta que sus fondos ya están asegurados.
             </p>
             <span className="step-pill-footer pill-pink">
-              ✓ Pago 100% Blindado
+              Pago 100% Blindado
             </span>
           </div>
 
@@ -377,7 +377,7 @@ export default function HomePage() {
               Aprueba bocetos por etapas, realiza correcciones sobre la marcha y descarga los archivos finales en máxima resolución antes de liberar el pago.
             </p>
             <span className="step-pill-footer pill-mint">
-              ✓ Archivos PSD / PNG / 3D
+              Archivos PSD / PNG / 3D
             </span>
           </div>
         </div>
@@ -388,7 +388,7 @@ export default function HomePage() {
         <div className="section-header-flex">
           <div>
             <span className="sticker sticker-yellow">
-              ✦ CATÁLOGO ABIERTO
+              CATÁLOGO ABIERTO
             </span>
             <h2 id="popular-categories-title">Categorías Populares</h2>
             <p className="section-subtext">
@@ -428,7 +428,7 @@ export default function HomePage() {
         <div className="section-header-flex">
           <div>
             <span className="sticker sticker-pink">
-              ✦ COMUNIDAD VERIFICADA
+              COMUNIDAD VERIFICADA
             </span>
             <h2 id="featured-creators-title">Creadores Destacados del Mes</h2>
             <p className="section-subtext">
@@ -489,7 +489,7 @@ export default function HomePage() {
         <div className="trust-card-container paper-card">
           <div className="trust-copy">
             <span className="sticker sticker-mint">
-              ✦ ESCROW SHIELD
+              ESCROW SHIELD
             </span>
             <h2 id="escrow-trust-title">
               Tranquilidad total tanto para quienes compran como para quienes crean.
@@ -533,7 +533,7 @@ export default function HomePage() {
                   <strong>1. Depósito del Cliente</strong>
                   <small>Fondos resguardados en custodia</small>
                 </div>
-                <span style={{ marginLeft: 'auto', fontSize: '0.72rem', fontWeight: 800, color: '#059669' }}>✓ Verificado</span>
+                <span style={{ marginLeft: 'auto', fontSize: '0.72rem', fontWeight: 800, color: '#059669' }}>Verificado</span>
               </li>
               <div style={{ textAlign: 'center', color: '#8B5CF6', fontWeight: 900, lineHeight: 1 }}>↓</div>
               <li className="flow-step active">

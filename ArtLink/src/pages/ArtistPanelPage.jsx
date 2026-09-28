@@ -107,8 +107,8 @@ function CommissionSection({ items, editing, setEditing, busy, onCreate, onUpdat
                 <span className={`status-text ${item.status}`}>
                   {item.status === 'active' ? 'Activa' : 'Pausada'}
                 </span>
-                <span className="delivery-days">⏱️ {item.deliveryDays} días de entrega</span>
-                <span>🔄 {item.revisions} revisiones</span>
+                <span className="delivery-days">{item.deliveryDays} días de entrega</span>
+                <span>{item.revisions} revisiones</span>
               </div>
             </div>
             <div style={{ textAlign: 'right' }}>
@@ -195,7 +195,7 @@ export default function ArtistPanelPage() {
       <div className="escrow-demo-alert-banner" style={{ background: '#FEF08A', border: '2px solid #1E192B', padding: '0.6rem 1rem', borderRadius: '0.5rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
         <ShieldCheck size={18} color="#1E192B" aria-hidden="true" />
         <span style={{ fontSize: '0.88rem', fontWeight: 600, color: '#1E192B' }}>
-          🔒 Prototipo ArtLink: Protección con custodia en Escrow demostrativa activada para pruebas de interacción.
+          Prototipo ArtLink: Protección con custodia en Escrow demostrativa activada para pruebas de interacción.
         </span>
       </div>
 

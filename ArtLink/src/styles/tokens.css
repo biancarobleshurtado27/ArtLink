@@ -52,9 +52,9 @@
   --badge: var(--font-badge);
 
   /* Sombras */
-  --shadow-firm: 5px 6px 0 var(--ink);
-  --shadow-soft: 3px 4px 0 rgba(30, 25, 43, .15);
-  --shadow-lift: 0 10px 30px rgba(30, 25, 43, .14);
+  --shadow-firm: 3px 3px 0 var(--ink);
+  --shadow-soft: 2px 2px 0 rgba(30, 25, 43, .12);
+  --shadow-lift: 0 8px 24px rgba(30, 25, 43, .12);
   --shadow: var(--shadow-firm);
 
   /* Bordes y radios */
@@ -103,8 +103,8 @@
   --text-muted: var(--muted);
   --focus-color: var(--yellow);
 
-  --shadow-firm: 5px 6px 0 var(--ink);
-  --shadow-soft: 3px 4px 0 rgba(0, 0, 0, .55);
+  --shadow-firm: 3px 3px 0 var(--ink);
+  --shadow-soft: 2px 2px 0 rgba(0, 0, 0, .45);
   color-scheme: dark;
 }
 

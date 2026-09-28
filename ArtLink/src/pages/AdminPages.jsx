@@ -301,20 +301,20 @@ export function AdminDashboardPage() {
         <section className="admin-panel-card" aria-labelledby="server-status-title">
           <div className="panel-card-header">
             <h2 id="server-status-title"><Server size={18} /> Estado de infraestructura</h2>
-            <span className="badge badge-mint">🟢 Operacional</span>
+            <span className="badge badge-mint">Operacional</span>
           </div>
           <div className="system-health-grid">
             <div className="health-row">
               <span>API Services (Express Mock):</span>
-              <strong className="status-online">🟢 200 OK</strong>
+              <strong className="status-online">200 OK</strong>
             </div>
             <div className="health-row">
               <span>Base de Datos JSON-Server:</span>
-              <strong className="status-online">🟢 Conectada (0.4ms)</strong>
+              <strong className="status-online">Conectada (0.4ms)</strong>
             </div>
             <div className="health-row">
               <span>Almacenamiento de Assets:</span>
-              <strong className="status-online">🟢 100% Disponible</strong>
+              <strong className="status-online">100% Disponible</strong>
             </div>
             <div className="health-row">
               <span>Disponibilidad del Sistema (SLA):</span>

@@ -17,10 +17,10 @@
 .steps-grid { display: grid; gap: 1.4rem; grid-template-columns: repeat(3, minmax(0, 1fr)); list-style: none; margin: 0; padding: 0; }
 .steps-grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 @media (max-width: 64rem) { .steps-grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-.step-card { background: var(--paper); border: var(--border-strong); border-radius: var(--radius); box-shadow: var(--shadow-soft); padding: 2rem 1.5rem 1.5rem; position: relative; transform: rotate(-.6deg); transition: var(--transition); }
-.step-card:nth-child(2) { transform: rotate(.7deg); }
-.step-card:nth-child(3) { transform: rotate(-.3deg); }
-.step-card:hover { box-shadow: var(--shadow-firm); transform: translateY(-5px) rotate(0); }
+.step-card { background: var(--paper); border: var(--border-strong); border-radius: var(--radius); box-shadow: var(--shadow-soft); padding: 2rem 1.5rem 1.5rem; position: relative; transform: none; transition: var(--transition); }
+.step-card:nth-child(2) { transform: none; }
+.step-card:nth-child(3) { transform: none; }
+.step-card:hover { box-shadow: var(--shadow-firm); transform: translateY(-4px); }
 .step-number { align-items: center; background: var(--yellow); border: 2px solid var(--ink); border-radius: 999px; box-shadow: 2px 2px 0 var(--ink); color: var(--ink); display: flex; font-family: var(--badge); font-size: .78rem; height: 2.2rem; justify-content: center; left: 1.2rem; position: absolute; top: -1rem; width: 2.2rem; }
 .step-icon { align-items: center; background: var(--lilac); border: 2px solid var(--ink); border-radius: var(--radius); color: var(--violet-dark); display: inline-flex; height: 3rem; justify-content: center; margin-bottom: .9rem; width: 3rem; }
 .step-card h3 { font-size: 1.15rem; margin-bottom: .5rem; }
@@ -80,10 +80,10 @@
 
 /* ---------- Testimonios ---------- */
 .testimonial-grid { display: grid; gap: 1.3rem; grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.testimonial-card { background: var(--paper); border: 2px solid var(--ink); border-radius: var(--radius); box-shadow: var(--shadow-soft); display: flex; flex-direction: column; gap: .8rem; padding: 1.5rem 1.4rem 1.3rem; position: relative; transform: rotate(.6deg); transition: var(--transition); }
-.testimonial-card:nth-child(2) { transform: rotate(-.7deg); }
+.testimonial-card { background: var(--paper); border: 2px solid var(--ink); border-radius: var(--radius); box-shadow: var(--shadow-soft); display: flex; flex-direction: column; gap: .8rem; padding: 1.5rem 1.4rem 1.3rem; position: relative; transform: none; transition: var(--transition); }
+.testimonial-card:nth-child(2) { transform: none; }
 .testimonial-card:hover { box-shadow: var(--shadow-firm); }
-.testimonial-card::before { background: var(--rose); content: ''; height: 1.4rem; left: 28%; position: absolute; top: -.8rem; transform: rotate(-3deg); width: 6rem; }
+.testimonial-card::before { background: var(--rose); content: ''; height: 1.4rem; left: 28%; position: absolute; top: -.8rem; transform: none; width: 6rem; }
 .testimonial-stars { color: var(--violet); display: flex; gap: .15rem; }
 .testimonial-card p { font-size: .9rem; }
 .testimonial-card footer { align-items: center; display: flex; gap: .65rem; margin-top: auto; }
@@ -155,8 +155,8 @@
 .auth-switch { font-size: .8rem; margin-top: 1.1rem; }
 .auth-switch a { color: var(--violet-dark); font-weight: 700; text-decoration: none; }
 .auth-switch a:hover { text-decoration: underline; }
-.auth-aside { background: var(--rose); border: 2px solid var(--ink); border-radius: var(--radius); box-shadow: var(--shadow); padding: clamp(1.5rem, 4vw, 2.2rem); position: relative; transform: rotate(1.5deg); }
-.auth-aside-tape { background: var(--yellow); border: 2px solid var(--ink); height: 1.6rem; left: 50%; position: absolute; top: -.9rem; transform: translateX(-50%) rotate(-4deg); width: 8rem; }
+.auth-aside { background: var(--rose); border: 2px solid var(--ink); border-radius: var(--radius); box-shadow: var(--shadow); padding: clamp(1.5rem, 4vw, 2.2rem); position: relative; transform: none; }
+.auth-aside-tape { background: var(--yellow); border: 2px solid var(--ink); height: 1.6rem; left: 50%; position: absolute; top: -.9rem; transform: translateX(-50%); width: 8rem; }
 .auth-aside .eyebrow { color: var(--ink); }
 .auth-aside h2 { font-size: clamp(1.5rem, 3.5vw, 2.2rem); margin-bottom: .8rem; }
 .auth-aside p { color: var(--ink); font-size: .88rem; }

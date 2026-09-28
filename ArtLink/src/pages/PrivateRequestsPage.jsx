@@ -132,14 +132,14 @@ export default function PrivateRequestsPage() {
 
                 <div className="card-body">
                   <div style={{ marginBottom: '0.4rem', fontSize: '0.9rem', color: 'var(--violet-dark)', fontWeight: 600 }}>
-                    🎨 Artista: {request.artistName || 'Artista ArtLink'}
+                    Artista: {request.artistName || 'Artista ArtLink'}
                   </div>
                   <h2>{request.description}</h2>
                   <div className="card-financials" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '0.5rem' }}>
                     <span><DollarSign size={14} aria-hidden="true" /> <strong>${request.budget} USD</strong></span>
                     <span>Fecha estimada: <strong>{request.desiredDate}</strong></span>
                     {request.references && request.references.length > 0 && (
-                      <span className="references-count">📎 {request.references.length} ref.</span>
+                      <span className="references-count">{request.references.length} ref.</span>
                     )}
                   </div>
                 </div>

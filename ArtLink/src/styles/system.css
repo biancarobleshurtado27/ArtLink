@@ -66,7 +66,7 @@
 }
 
 .brand:hover .brand-logo {
-  transform: scale(1.08) rotate(-4deg);
+  transform: scale(1.05);
 }
 
 .brand-text {
@@ -667,7 +667,7 @@
 }
 
 .footer-brand:hover .footer-logo {
-  transform: scale(1.08) rotate(-4deg);
+  transform: scale(1.05);
 }
 
 .auth-brand-badge {
@@ -707,7 +707,7 @@
 }
 
 .auth-brand-link:hover .auth-logo {
-  transform: scale(1.08) rotate(-4deg);
+  transform: scale(1.05);
 }
 
 @media (max-width: 30rem) {
@@ -841,7 +841,7 @@ a.button-ghost {
   opacity: .92;
   position: absolute;
   top: -.55rem;
-  transform: translateX(-50%) rotate(-3deg);
+  transform: translateX(-50%);
   width: 3.6rem;
   z-index: 1;
 }
@@ -858,7 +858,7 @@ a.button-ghost {
   right: -.45rem;
   top: -.45rem;
   width: 1.15rem;
-  transform: rotate(12deg);
+  transform: none;
   z-index: 2;
 }
 
@@ -908,12 +908,24 @@ a.button-ghost {
   height: 4.2rem;
   justify-content: center;
   position: relative;
-  transform: rotate(-6deg);
+  transform: none;
   width: 4.2rem;
   z-index: 1;
 }
 
-.artist-card-body { display: flex; flex-direction: column; gap: .55rem; }
+.artist-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  box-sizing: border-box;
+}
+.artist-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: .55rem;
+  flex: 1;
+}
 .artist-card-top { align-items: flex-start; display: flex; gap: .75rem; justify-content: space-between; }
 .artist-name-row { align-items: center; display: flex; flex-wrap: wrap; gap: .45rem; min-width: 0; }
 .artist-name-row h3 { font-size: 1.18rem; }
@@ -935,7 +947,7 @@ a.button-ghost {
   gap: .4rem;
   height: auto;
   justify-content: center;
-  margin-top: 1rem;
+  margin-top: auto;
   padding: .65rem 1rem;
   position: static;
   text-decoration: none;
@@ -963,7 +975,7 @@ a.button-ghost {
   border-radius: 50%;
   content: '';
   height: .55rem;
-  transform: rotate(-8deg);
+  transform: none;
   width: .55rem;
 }
 .section-heading h2 { margin: 0; }
@@ -1219,12 +1231,12 @@ label { font-family: var(--sans); }
   font-weight: 700;
   padding: 0.45rem 0.85rem;
   color: #1E192B;
-  transform: rotate(-1.5deg);
+  transform: none;
   transition: transform .2s ease;
 }
 
 .site-footer .footer-sticker:hover {
-  transform: rotate(0deg) scale(1.04);
+  transform: translateY(-2px);
 }
 
 /* ── Grilla ordenada de 5 columnas con estética ArtLink ── */
