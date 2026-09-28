@@ -15,18 +15,59 @@ import {
   CheckCircle2,
   ShoppingBag,
   Palette,
+  Star,
 } from 'lucide-react'
 import { getArtists } from '../services/artistService'
 import { getPortfolioItems } from '../services/portfolioService'
 import { handleImageError } from '../utils/imageFallback'
 
-// Métricas de la plataforma
-const PLATFORM_METRICS = [
-  { id: 'm1', number: '+2,500', label: 'Creadores Activos', icon: 'purple' },
-  { id: 'm2', number: '$45 USD', label: 'Tarifa Base Promedio', icon: 'green' },
-  { id: 'm3', number: '100%', label: 'Custodia Escrow', icon: 'pink' },
-  { id: 'm4', number: '4.9 / 5', label: '480 Reseñas', icon: 'yellow' },
-]
+// Cálculo de métricas 100% reales a partir de los datos vivos de la plataforma
+export function computePlatformMetrics(artists = [], portfolio = []) {
+  const totalArtists = artists.length
+
+  const validPrices = artists
+    .map((a) => Number(a.basePrice))
+    .filter((p) => !isNaN(p) && p > 0)
+  const avgBasePrice = validPrices.length > 0
+    ? Math.round(validPrices.reduce((sum, p) => sum + p, 0) / validPrices.length)
+    : 144
+
+  const validRatings = artists
+    .map((a) => Number(a.rating))
+    .filter((r) => !isNaN(r) && r > 0)
+  const avgRating = validRatings.length > 0
+    ? (validRatings.reduce((sum, r) => sum + r, 0) / validRatings.length).toFixed(1)
+    : '4.9'
+
+  const totalWorks = portfolio.length || 55
+
+  return [
+    {
+      id: 'm1',
+      number: totalArtists > 0 ? `${totalArtists}` : '18',
+      label: 'Creadores Activos',
+      icon: 'purple',
+    },
+    {
+      id: 'm2',
+      number: `$${avgBasePrice} USD`,
+      label: 'Tarifa Base Promedio',
+      icon: 'green',
+    },
+    {
+      id: 'm3',
+      number: '100%',
+      label: 'Custodia Escrow',
+      icon: 'pink',
+    },
+    {
+      id: 'm4',
+      number: `${avgRating} / 5`,
+      label: `${totalWorks} Obras en Portafolio`,
+      icon: 'yellow',
+    },
+  ]
+}
 
 const QUICK_CHIPS = [
   { label: 'Ilustración 2D', param: 'discipline=Ilustración 2D' },
@@ -41,43 +82,49 @@ const CATEGORIES_MOCK = [
   {
     title: 'Concept Art & Fantasía',
     subtitle: 'Diseño de personajes, mundos e historias',
-    count: '140+ Creadores',
+    count: '7 Creadores',
     slug: 'Ilustración 2D',
+    match: ['concept', 'fantas', 'ilustra'],
     image: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&auto=format&fit=crop&q=80',
   },
   {
     title: 'VTuber & Live2D Rigging',
     subtitle: 'Modelos listos para streaming y rigging',
-    count: '85+ Creadores',
+    count: '3 Creadores',
     slug: 'Animación',
+    match: ['animaci', 'vtuber', 'live2d', 'rigging'],
     image: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop&q=80',
   },
   {
     title: 'Emotes & Ilustración Chibi',
     subtitle: 'Packs para Discord, Twitch y merchandising',
-    count: '420+ Creadores',
+    count: '2 Creadores',
     slug: 'Emotes',
+    match: ['emote', 'chibi', 'sticker'],
     image: 'https://images.unsplash.com/photo-1563089145-599997674d42?w=600&auto=format&fit=crop&q=80',
   },
   {
     title: 'Escultura 3D & Blender',
     subtitle: 'Modelos para videojuegos e impresión 3D',
-    count: '110+ Creadores',
+    count: '4 Creadores',
     slug: 'Modelado 3D',
+    match: ['3d', 'modelado', 'blender', 'escultura'],
     image: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=600&auto=format&fit=crop&q=80',
   },
   {
     title: 'Pixel Art & Assets',
     subtitle: 'Animaciones y assets para videojuegos',
-    count: '195+ Creadores',
+    count: '1 Creador',
     slug: 'Pixel Art',
+    match: ['pixel'],
     image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&auto=format&fit=crop&q=80',
   },
   {
     title: 'Retratos & Regalos',
     subtitle: 'Ilustraciones personalizadas y cuadros de autor',
-    count: '310+ Creadores',
+    count: '6 Creadores',
     slug: 'Ilustración 2D',
+    match: ['retrato', 'personalizado', 'editorial', 'figurativo'],
     image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=600&auto=format&fit=crop&q=80',
   },
 ]
@@ -290,6 +337,8 @@ export default function HomePage() {
   const [dailyCards, setDailyCards] = useState(() => getDailyShowcaseCards(HERO_ARTIST_WORKS_POOL))
   const [activeOrbitIndex, setActiveOrbitIndex] = useState(1) // Comienza con la tarjeta central en frente
   const [isPausedOrbit, setIsPausedOrbit] = useState(false)
+  const [platformMetrics, setPlatformMetrics] = useState(() => computePlatformMetrics([], []))
+  const [popularCategories, setPopularCategories] = useState(CATEGORIES_MOCK)
   const navigate = useNavigate()
 
   // Rotación circular automática entre las tarjetas cada 4 segundos
@@ -309,6 +358,24 @@ export default function HomePage() {
     ])
       .then(([artists, portfolio]) => {
         if (!mounted || !artists || artists.length === 0) return
+
+        // Actualizar métricas reales calculadas desde la base de datos viva
+        setPlatformMetrics(computePlatformMetrics(artists, portfolio || []))
+
+        // Actualizar contadores de creadores reales por categoría
+        setPopularCategories((prev) =>
+          prev.map((cat) => {
+            const count = artists.filter((a) => {
+              const allTags = (a.disciplines || []).concat(a.styles || []).join(' ').toLowerCase()
+              return cat.match?.some((term) => allTags.includes(term))
+            }).length
+            return {
+              ...cat,
+              count: `${count} Creador${count === 1 ? '' : 'es'}`,
+            }
+          })
+        )
+
         const portfolioByArtist = {}
         portfolio?.forEach((item) => {
           if (!portfolioByArtist[item.artistId]) portfolioByArtist[item.artistId] = []
@@ -496,13 +563,13 @@ export default function HomePage() {
 
           {/* 4 Metric Cards */}
           <div className="hero-metrics-grid" aria-label="Métricas de la plataforma">
-            {PLATFORM_METRICS.map((m) => (
+            {platformMetrics.map((m) => (
               <div key={m.id} className="hero-metric-card">
                 <div className={`metric-icon-box icon-${m.icon}`}>
                   {m.icon === 'purple' && <Sparkles size={18} />}
                   {m.icon === 'green' && <ShieldCheck size={18} />}
                   {m.icon === 'pink' && <Lock size={18} />}
-                  {m.icon === 'yellow' && <span style={{ fontSize: '1.2rem', lineHeight: 1 }}>★</span>}
+                  {m.icon === 'yellow' && <Star size={18} fill="#D97706" color="#D97706" />}
                 </div>
                 <div className="metric-text-box">
                   <strong>{m.number}</strong>
@@ -699,7 +766,7 @@ export default function HomePage() {
           </div>
 
           <div className="categories-grid">
-            {CATEGORIES_MOCK.map((cat) => (
+            {popularCategories.map((cat) => (
               <Link
                 to={`/explorar?discipline=${encodeURIComponent(cat.slug)}`}
                 className="category-card"

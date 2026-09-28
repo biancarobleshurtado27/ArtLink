@@ -30,6 +30,7 @@ export default function AppRouter() {
           <Route path="/como-funciona" element={<ComoFuncionaPage />} />
           <Route path="/para-artistas" element={<ParaArtistasPage />} />
           <Route path="/artista/:id" element={<ArtistProfilePage />} />
+          <Route path="/ajustes" element={<SettingsPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/registro" element={<RegisterPage />} />
           <Route path="/ayuda" element={<LegalPage />} />
@@ -40,7 +41,6 @@ export default function AppRouter() {
 
           <Route element={<ProtectedRoute allowedRoles={[ROLES.CLIENT, ROLES.ARTIST, ROLES.ADMIN]} />}>
             <Route path="/perfil" element={<ProfilePage />} />
-            <Route path="/ajustes" element={<SettingsPage />} />
             <Route path="/solicitudes" element={<PrivateRequestsPage />} />
             <Route path="/mensajes" element={<MessagesPage />} />
             <Route path="/solicitudes/nueva/:artistId" element={<NewRequestPage />} />

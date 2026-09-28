@@ -254,6 +254,43 @@
   outline-offset: 2px !important;
 }
 
+/* Botón "Ajustes" del Navbar (junto a Unirse) */
+.nav-pill-settings {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.35rem !important;
+  background: var(--cream, #FFFDF8) !important;
+  color: #1E192B !important;
+  border: 1.5px solid var(--ink, #1E192B) !important;
+  box-shadow: 2px 2px 0 var(--ink, #1E192B) !important;
+  font-weight: 700 !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.nav-pill-settings:hover {
+  background: #FEF08A !important; /* Amarillo pastel */
+  color: #1E192B !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 2px 3px 0 var(--ink, #1E192B) !important;
+}
+
+.nav-pill-settings:active,
+.nav-pill-join:active,
+.nav-pill-login:active {
+  transform: translate(1px, 1px) !important;
+  box-shadow: 1px 1px 0 var(--ink, #1E192B) !important;
+}
+
+.nav-pill-settings:focus-visible {
+  outline: 2px solid var(--violet, #8B5CF6) !important;
+  outline-offset: 2px !important;
+}
+
+.nav-pill-settings.active {
+  background: #EBE5FF !important;
+  color: #45208F !important;
+}
+
 /* Navbar Search Input Capsule */
 .header-search-form {
   display: flex;

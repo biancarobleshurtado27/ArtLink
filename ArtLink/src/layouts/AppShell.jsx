@@ -138,6 +138,10 @@ export default function AppShell() {
                   <NavLink to="/registro?role=artist" className="nav-pill nav-pill-join" onClick={closeMenus}>
                     Unirse
                   </NavLink>
+                  <NavLink to="/ajustes" className="nav-pill nav-pill-settings" onClick={closeMenus} aria-label="Ajustes de la plataforma">
+                    <Settings size={15} aria-hidden="true" />
+                    <span>Ajustes</span>
+                  </NavLink>
                 </div>
               </div>
             </nav>
