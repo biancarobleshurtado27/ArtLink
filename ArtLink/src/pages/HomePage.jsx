@@ -168,16 +168,15 @@ const HERO_SPARKLES_DATA = [
   { id: 'sp-11', top: '38rem', left: '2.2%', size: 20, color: '#2DD4BF', anim: 'anim-star-float-2', delay: '2.2s' },
   { id: 'sp-12', top: '40rem', right: '2.5%', size: 26, color: '#BCA6E8', anim: 'anim-star-float-3', delay: '1.3s' },
 
-  // Zona Inferior (Espaciadas armoniosamente debajo de las tarjetas hasta la división)
-  { id: 'sp-13', bottom: '8rem', left: '4%', size: 24, color: '#F472B6', anim: 'anim-star-float-1', delay: '1.8s' },
-  { id: 'sp-14', bottom: '8.5rem', right: '4.5%', size: 24, color: '#A78BFA', anim: 'anim-star-float-2', delay: '0.7s' },
-  { id: 'sp-15', bottom: '4.5rem', left: '16%', size: 22, color: '#2DD4BF', anim: 'anim-star-float-3', delay: '2.4s' },
-  { id: 'sp-16', bottom: '2rem', left: '6%', size: 25, color: '#BCA6E8', anim: 'anim-star-float-1', delay: '1.2s' },
-  { id: 'sp-17', bottom: '1.6rem', left: '32%', size: 22, color: '#FBBF24', anim: 'anim-star-float-2', delay: '0.5s' },
-  { id: 'sp-18', bottom: '4.2rem', left: '50%', size: 20, color: '#F472B6', anim: 'anim-star-float-3', delay: '3.0s' },
-  { id: 'sp-19', bottom: '1.8rem', left: '68%', size: 22, color: '#2DD4BF', anim: 'anim-star-float-1', delay: '1.9s' },
-  { id: 'sp-20', bottom: '4.8rem', right: '16%', size: 22, color: '#FBBF24', anim: 'anim-star-float-2', delay: '2.7s' },
-  { id: 'sp-21', bottom: '2.2rem', right: '5.5%', size: 26, color: '#F472B6', anim: 'anim-star-float-3', delay: '0.9s' },
+  // Zona Inferior (Exclusivamente en el fondo abierto y despejado de las tarjetas)
+  { id: 'sp-13', bottom: '8rem', left: '3.5%', size: 24, color: '#F472B6', anim: 'anim-star-float-1', delay: '1.8s' },
+  { id: 'sp-14', bottom: '8.5rem', right: '4%', size: 24, color: '#A78BFA', anim: 'anim-star-float-2', delay: '0.7s' },
+  { id: 'sp-15', bottom: '4rem', left: '3%', size: 22, color: '#2DD4BF', anim: 'anim-star-float-3', delay: '2.4s' },
+  { id: 'sp-16', bottom: '4.5rem', right: '3.5%', size: 22, color: '#FBBF24', anim: 'anim-star-float-1', delay: '1.1s' },
+  { id: 'sp-17', bottom: '1.5rem', left: '8%', size: 24, color: '#BCA6E8', anim: 'anim-star-float-2', delay: '0.5s' },
+  { id: 'sp-18', bottom: '1.4rem', left: '30%', size: 20, color: '#FBBF24', anim: 'anim-star-float-3', delay: '2.0s' },
+  { id: 'sp-19', bottom: '1.4rem', right: '30%', size: 20, color: '#2DD4BF', anim: 'anim-star-float-1', delay: '1.5s' },
+  { id: 'sp-20', bottom: '1.6rem', right: '7%', size: 26, color: '#F472B6', anim: 'anim-star-float-2', delay: '0.9s' },
 ]
 
 export default function HomePage() {
@@ -233,10 +232,10 @@ export default function HomePage() {
         <div className="hero-landing-content">
           {/* Top Stickers */}
           <div className="hero-stickers-row">
-            <span className="hero-sticker sticker-white">
+            <span className="hero-landing-sticker sticker-white">
               <span className="sticker-bullet">✦</span> LA VITRINA PARA ARTISTAS DIGITALES
             </span>
-            <span className="hero-sticker sticker-pink">
+            <span className="hero-landing-sticker sticker-pink">
               <span className="sticker-bullet">✦</span> COMISIONES 100% SEGURAS
             </span>
           </div>
