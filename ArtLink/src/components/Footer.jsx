@@ -1,5 +1,30 @@
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { Check } from 'lucide-react'
 import logoArtLink from '../assets/logo-artlink.png'
+import DecorativeStar from './DecorativeStar'
+
+const AVAILABLE_LANGUAGES = [
+  'Español (Costa Rica)',
+  'Español (México)',
+  'Español (Colombia)',
+  'Español (España)',
+  'Español (Argentina)',
+  'English (United States)',
+  'English (United Kingdom)',
+  'Português (Brasil)',
+]
+
+const AVAILABLE_COUNTRIES = [
+  'Costa Rica',
+  'México',
+  'Colombia',
+  'España',
+  'Argentina',
+  'Chile',
+  'Perú',
+  'Estados Unidos',
+]
 
 const creatorLinks = [
   { label: 'Ilustración 2D', to: '/explorar?discipline=Ilustración 2D' },
@@ -46,6 +71,60 @@ const companyLinks = [
 ]
 
 export default function Footer() {
+  const [selectedLanguage, setSelectedLanguage] = useState(() => {
+    return localStorage.getItem('artlink_pref_lang') || 'Español (Costa Rica)'
+  })
+  const [selectedCountry, setSelectedCountry] = useState(() => {
+    return localStorage.getItem('artlink_pref_country') || 'Costa Rica'
+  })
+  const [langMenuOpen, setLangMenuOpen] = useState(false)
+  const [countryMenuOpen, setCountryMenuOpen] = useState(false)
+  const langRef = useRef(null)
+  const countryRef = useRef(null)
+
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (langRef.current && !langRef.current.contains(e.target)) {
+        setLangMenuOpen(false)
+      }
+      if (countryRef.current && !countryRef.current.contains(e.target)) {
+        setCountryMenuOpen(false)
+      }
+    }
+    function handleKeyDown(e) {
+      if (e.key === 'Escape') {
+        setLangMenuOpen(false)
+        setCountryMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [])
+
+  function handleSelectLanguage(lang) {
+    setSelectedLanguage(lang)
+    try {
+      localStorage.setItem('artlink_pref_lang', lang)
+    } catch {
+      // ignore
+    }
+    setLangMenuOpen(false)
+  }
+
+  function handleSelectCountry(country) {
+    setSelectedCountry(country)
+    try {
+      localStorage.setItem('artlink_pref_country', country)
+    } catch {
+      // ignore
+    }
+    setCountryMenuOpen(false)
+  }
+
   return (
     <footer className="combined-site-footer" role="contentinfo">
       <div className="combined-footer-inner">
@@ -68,13 +147,13 @@ export default function Footer() {
 
           <div className="footer-stickers-group">
             <span className="footer-sticker sticker-white">
-              ✦ 100% Hecho para Artistas
+              <DecorativeStar size={11} color="currentColor" /> 100% Hecho para Artistas
             </span>
             <span className="footer-sticker sticker-lilac">
-              ✦ Pagos Protegidos
+              <DecorativeStar size={11} color="currentColor" /> Pagos Protegidos
             </span>
             <span className="footer-sticker sticker-yellow">
-              ✦ Plataforma para Creadores
+              <DecorativeStar size={11} color="currentColor" /> Plataforma para Creadores
             </span>
           </div>
         </div>
@@ -144,29 +223,88 @@ export default function Footer() {
 
         {/* Barra Inferior Completa: Selectores, Redes Sociales y Copyright */}
         <div className="combined-footer-bottom">
-          {/* Selectores estilo píldora */}
+          {/* Selectores estilo píldora interactivos */}
           <div className="footer-bottom-selectors">
-            <button type="button" className="footer-pill-btn" aria-label="Seleccionar idioma">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <circle cx="12" cy="12" r="10" />
-                <line x1="2" y1="12" x2="22" y2="12" />
-                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-              </svg>
-              <span>Español (Costa Rica)</span>
-            </button>
+            {/* Selector de Idioma */}
+            <div className="footer-popover-wrap" ref={langRef}>
+              <button
+                type="button"
+                className={`footer-pill-btn ${langMenuOpen ? 'is-active' : ''}`}
+                onClick={() => {
+                  setLangMenuOpen((prev) => !prev)
+                  setCountryMenuOpen(false)
+                }}
+                aria-expanded={langMenuOpen}
+                aria-haspopup="listbox"
+                aria-label="Seleccionar idioma"
+              >
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="2" y1="12" x2="22" y2="12" />
+                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                </svg>
+                <span>{selectedLanguage}</span>
+              </button>
 
-            <button type="button" className="footer-pill-btn" aria-label="Seleccionar país o región">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                <circle cx="12" cy="10" r="3" />
-              </svg>
-              <span>Costa Rica</span>
-            </button>
+              {langMenuOpen && (
+                <div className="footer-popover-menu" role="listbox" aria-label="Lista de idiomas">
+                  <span className="footer-popover-header">Selecciona tu idioma</span>
+                  {AVAILABLE_LANGUAGES.map((lang) => (
+                    <button
+                      key={lang}
+                      type="button"
+                      role="option"
+                      aria-selected={lang === selectedLanguage}
+                      className={`footer-popover-item ${lang === selectedLanguage ? 'is-selected' : ''}`}
+                      onClick={() => handleSelectLanguage(lang)}
+                    >
+                      <span>{lang}</span>
+                      {lang === selectedLanguage && <Check size={14} aria-hidden="true" />}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
 
-            <button type="button" className="footer-pill-btn" aria-label="Seleccionar divisa">
-              <span className="footer-pill-symbol" aria-hidden="true">$</span>
-              <span>USD</span>
-            </button>
+            {/* Selector de País */}
+            <div className="footer-popover-wrap" ref={countryRef}>
+              <button
+                type="button"
+                className={`footer-pill-btn ${countryMenuOpen ? 'is-active' : ''}`}
+                onClick={() => {
+                  setCountryMenuOpen((prev) => !prev)
+                  setLangMenuOpen(false)
+                }}
+                aria-expanded={countryMenuOpen}
+                aria-haspopup="listbox"
+                aria-label="Seleccionar país o región"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                <span>{selectedCountry}</span>
+              </button>
+
+              {countryMenuOpen && (
+                <div className="footer-popover-menu" role="listbox" aria-label="Lista de países">
+                  <span className="footer-popover-header">Selecciona tu país o región</span>
+                  {AVAILABLE_COUNTRIES.map((country) => (
+                    <button
+                      key={country}
+                      type="button"
+                      role="option"
+                      aria-selected={country === selectedCountry}
+                      className={`footer-popover-item ${country === selectedCountry ? 'is-selected' : ''}`}
+                      onClick={() => handleSelectCountry(country)}
+                    >
+                      <span>{country}</span>
+                      {country === selectedCountry && <Check size={14} aria-hidden="true" />}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Iconos de Redes Sociales */}
