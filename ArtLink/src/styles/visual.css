@@ -203,20 +203,50 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px
 
 .hero-floating-star {
   position: absolute;
-  font-size: 1.8rem;
-  line-height: 1;
   pointer-events: none;
   user-select: none;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  will-change: transform;
 }
-.hero-star-left {
-  top: 3.5rem;
-  left: clamp(1rem, 5vw, 4rem);
-  color: #BCA6E8;
+
+.anim-star-float-1 {
+  animation: heroStarFloat1 5.5s ease-in-out infinite;
 }
-.hero-star-right {
-  top: 4.5rem;
-  right: clamp(1rem, 5vw, 4.5rem);
-  color: #F472B6;
+.anim-star-float-2 {
+  animation: heroStarFloat2 6.8s ease-in-out infinite;
+}
+.anim-star-float-3 {
+  animation: heroStarFloat3 6s ease-in-out infinite;
+}
+
+@keyframes heroStarFloat1 {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translateY(-11px) rotate(8deg) scale(1.06);
+  }
+}
+
+@keyframes heroStarFloat2 {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translateY(11px) rotate(-8deg) scale(0.95);
+  }
+}
+
+@keyframes heroStarFloat3 {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translateY(-8px) translateX(5px) rotate(6deg) scale(1.04);
+  }
 }
 
 .hero-landing-content {

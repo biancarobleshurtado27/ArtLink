@@ -60,7 +60,6 @@ export default function Footer() {
                   <small>Conecta tu arte</small>
                 </span>
               </Link>
-              <span className="footer-badge-vitrina">Vitrina</span>
             </div>
             <p className="footer-brand-desc">
               ArtLink centraliza portafolios, precios y disponibilidad de artistas digitales para que una buena idea encuentre a su creador sin perderse en el camino. Tu espacio de trabajo seguro.
