@@ -1,14 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 import {
-  BarChart, Bar, CartesianGrid, Cell, PieChart, Pie, ResponsiveContainer, Tooltip, XAxis, YAxis
-} from 'recharts'
-import {
   Users, UserCheck, Palette, FileText, CheckCircle2, AlertTriangle, Plus, Search,
-  Trash2, Edit3, Filter, ArrowLeft, ShieldCheck, Clock, Server, ArrowRight, RefreshCw,
-  Calendar, Layers, RotateCcw, BarChart3, Eye, ChevronRight
+  Trash2, Edit3, Filter, ShieldCheck, Clock, Server, ArrowRight, RefreshCw,
+  Calendar, Layers, RotateCcw, Eye, ChevronRight
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import Badge from '../components/Badge'
 import Button from '../components/Button'
 import EmptyState from '../components/EmptyState'
 import ErrorState from '../components/ErrorState'
@@ -103,7 +99,7 @@ const resourceConfigs = {
   }
 }
 
-export function renderStatusBadge(status) {
+function renderStatusBadge(status) {
   if (status === 'completed') {
     return (
       <span className="admin-status-pill status-pill-mint">

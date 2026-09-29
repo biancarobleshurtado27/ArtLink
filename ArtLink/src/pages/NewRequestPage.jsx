@@ -5,7 +5,6 @@ import {
   CheckCircle2,
   FileText,
   HelpCircle,
-  Image as ImageIcon,
   Lock,
   MessageCircle,
   RotateCcw,

@@ -185,13 +185,9 @@ export function generateStatusAccessibleSummary(statusData = [], total = 0) {
     return `Se registraron ${total} solicitudes en total.`
   }
 
-  let formattedList = ''
-  if (parts.length === 1) {
-    formattedList = parts[0]
-  } else {
-    const last = parts.pop()
-    formattedList = `${parts.join(', ')} y ${last}`
-  }
+  const formattedList = parts.length === 1
+    ? parts[0]
+    : `${parts.slice(0, -1).join(', ')} y ${parts[parts.length - 1]}`
 
   return `Se registraron ${total} ${total === 1 ? 'solicitud' : 'solicitudes'}: ${formattedList}.`
 }
@@ -200,7 +196,7 @@ export function generateStatusAccessibleSummary(statusData = [], total = 0) {
  * Calcula artistas agrupados por disciplina aplicando la regla documentada:
  * Cada disciplina que el artista ofrece en su perfil cuenta 1 vez hacia el total de la plataforma.
  */
-export function computeArtistsByDiscipline(artists = [], selectedDiscipline = 'all') {
+export function computeArtistsByDiscipline(artists = []) {
   const counts = {}
 
   let totalMentions = 0
@@ -308,14 +304,9 @@ export function computeRequestsActivity(requests = [], period = 'all') {
 
   sorted.forEach(req => {
     const d = new Date(req.createdAt)
-    let key = ''
-    if (isDaily) {
-      key = d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })
-    } else {
-      key = d.toLocaleDateString('es-ES', { month: 'short', year: 'numeric' })
-      // Capitalizar primera letra: "sep. 2026" -> "Sep 2026"
-      key = key.replace('.', '').replace(/^\w/, c => c.toUpperCase())
-    }
+    const key = isDaily
+      ? d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })
+      : d.toLocaleDateString('es-ES', { month: 'short', year: 'numeric' }).replace('.', '').replace(/^\w/, c => c.toUpperCase())
 
     map.set(key, (map.get(key) || 0) + 1)
   })

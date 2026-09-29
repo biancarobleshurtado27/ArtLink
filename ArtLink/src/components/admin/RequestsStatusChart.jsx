@@ -21,6 +21,21 @@ import {
  * Muestra las solicitudes agrupadas en los 6 estados obligatorios:
  * Pendientes, En lista de espera, Aceptadas, En progreso, Completadas y Rechazadas.
  */
+function CustomTooltip({ active, payload }) {
+  if (active && payload && payload.length) {
+    const data = payload[0].payload
+    return (
+      <div className="chart-tooltip-box" role="tooltip">
+        <p className="tooltip-title">{data.name}</p>
+        <p className="tooltip-value">
+          <strong>{data.total}</strong> {data.total === 1 ? 'solicitud' : 'solicitudes'} ({data.percentage})
+        </p>
+      </div>
+    )
+  }
+  return null
+}
+
 export default function RequestsStatusChart({ requests = [], loading = false, error = null }) {
   const { data: statusData, total } = useMemo(() => {
     return computeRequestsByStatus(requests)
@@ -29,22 +44,6 @@ export default function RequestsStatusChart({ requests = [], loading = false, er
   const summary = useMemo(() => {
     return generateStatusAccessibleSummary(statusData, total)
   }, [statusData, total])
-
-  // Custom tooltip con alto contraste y diseño ArtLink
-  const CustomTooltip = ({ active, payload }) => {
-    if (active && payload && payload.length) {
-      const data = payload[0].payload
-      return (
-        <div className="chart-tooltip-box" role="tooltip">
-          <p className="tooltip-title">{data.name}</p>
-          <p className="tooltip-value">
-            <strong>{data.total}</strong> {data.total === 1 ? 'solicitud' : 'solicitudes'} ({data.percentage})
-          </p>
-        </div>
-      )
-    }
-    return null
-  }
 
   return (
     <AdminChartCard

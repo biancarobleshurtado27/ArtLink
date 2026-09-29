@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Table, Eye, EyeOff, AlertCircle } from 'lucide-react'
+import { Table, EyeOff, AlertCircle } from 'lucide-react'
 import ChartSummary from './ChartSummary'
 import LoadingState from '../LoadingState'
 import EmptyState from '../EmptyState'

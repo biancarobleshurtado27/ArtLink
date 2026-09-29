@@ -211,9 +211,76 @@
 
 .nav-pill.active,
 .nav-link-item.active {
-  background: #EBE5FF !important;
-  color: #45208F !important;
+  background: #8B5CF6 !important;
+  color: #FFFFFF !important;
   font-weight: 800 !important;
+}
+
+/* Brand con Scrapbook pill */
+.brand-with-scrapbook {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.scrapbook-pill {
+  background: #FFE4EE;
+  border: 1.5px solid #1E192B;
+  border-radius: 999px;
+  padding: 0.25rem 0.65rem;
+  font-family: var(--badge);
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #1E192B;
+  box-shadow: 1.5px 1.5px 0px #1E192B;
+}
+
+/* Cápsula de búsqueda rápida en el header */
+.header-search-capsule {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #FFFFFF;
+  border: 1.5px solid #1E192B;
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  height: 2.35rem;
+  box-sizing: border-box;
+}
+
+.header-search-capsule input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 0.82rem;
+  width: 5.5rem;
+  color: #1E192B;
+  font-family: inherit;
+}
+
+.header-search-kbd {
+  background: #F3F4F6;
+  border: 1px solid #D1D5DB;
+  border-radius: 4px;
+  font-size: 0.68rem;
+  padding: 0.1rem 0.35rem;
+  color: #6B7280;
+  font-family: monospace;
+}
+
+.nav-user-circle {
+  width: 2.35rem;
+  height: 2.35rem;
+  border-radius: 50%;
+  border: 1.5px solid #1E192B;
+  background: #FFFFFF;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #1E192B;
+  box-shadow: 1.5px 1.5px 0px #1E192B;
+  text-decoration: none;
+  flex-shrink: 0;
 }
 
 /* Botón "Iniciar sesión" del Navbar */
@@ -3325,5 +3392,156 @@ p.admin-subtitle {
   .admin-hero-actions {
     flex-wrap: wrap !important;
     justify-content: space-between !important;
+  }
+}
+
+/* ── ARTLINK STUDIO PLATFORM FOOTER ── */
+.artlink-studio-footer {
+  background: #FAF9F6;
+  border-top: 2px solid #1E192B;
+  padding: 3rem 1.5rem 2rem;
+  margin-top: 4rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.studio-footer-inner {
+  max-width: 82rem;
+  margin: 0 auto;
+}
+
+.studio-footer-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 2rem;
+  border-bottom: 2px solid #1E192B;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.studio-brand-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.studio-green-dot {
+  width: 0.65rem;
+  height: 0.65rem;
+  background: #10B981;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+}
+
+.studio-brand-name {
+  font-family: var(--heading);
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #1E192B;
+  letter-spacing: -0.01em;
+}
+
+.studio-badges-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.studio-badge {
+  border: 1.5px solid #1E192B;
+  border-radius: 999px;
+  padding: 0.35rem 0.85rem;
+  font-family: var(--badge);
+  font-size: 0.72rem;
+  font-weight: 800;
+  box-shadow: 2px 2px 0px #1E192B;
+}
+
+.studio-badge.badge-mint {
+  background: #D1FAE5;
+  color: #065F46;
+}
+
+.studio-badge.badge-pink {
+  background: #FFE4EE;
+  color: #9D174D;
+}
+
+.studio-footer-columns {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2.5rem;
+  padding: 2.5rem 0 3rem;
+}
+
+.studio-col h4 {
+  font-family: var(--heading);
+  font-size: 1rem;
+  font-weight: 900;
+  color: #1E192B;
+  margin: 0 0 1.25rem;
+}
+
+.studio-col ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.studio-col a {
+  color: #6B7280;
+  font-size: 0.88rem;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.15s;
+}
+
+.studio-col a:hover {
+  color: #8B5CF6;
+  text-decoration: underline;
+}
+
+.studio-footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1.5px dashed #D1D5DB;
+  padding-top: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.82rem;
+  color: #6B7280;
+}
+
+.studio-copy-links {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.studio-copy-links a {
+  color: #6B7280;
+  text-decoration: none;
+}
+
+.studio-copy-links a:hover {
+  color: #1E192B;
+  text-decoration: underline;
+}
+
+@media (max-width: 48rem) {
+  .studio-footer-columns {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.8rem;
+  }
+  .studio-footer-top {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }

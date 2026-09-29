@@ -23,6 +23,21 @@ import {
  * Cada disciplina declarada en el perfil del artista suma 1 mención a la oferta global.
  * Los artistas multidisciplinarios computan en cada disciplina que ofrecen activamente.
  */
+function CustomTooltip({ active, payload }) {
+  if (active && payload && payload.length) {
+    const item = payload[0].payload
+    return (
+      <div className="chart-tooltip-box" role="tooltip">
+        <p className="tooltip-title">{item.name}</p>
+        <p className="tooltip-value">
+          <strong>{item.value}</strong> artistas ({item.percentage})
+        </p>
+      </div>
+    )
+  }
+  return null
+}
+
 export default function ArtistsDisciplineChart({ artists = [], loading = false, error = null }) {
   const { data: disciplineData, totalMentions, uniqueArtists } = useMemo(() => {
     return computeArtistsByDiscipline(artists)
@@ -31,22 +46,6 @@ export default function ArtistsDisciplineChart({ artists = [], loading = false, 
   const summary = useMemo(() => {
     return generateDisciplineAccessibleSummary(disciplineData, totalMentions, uniqueArtists)
   }, [disciplineData, totalMentions, uniqueArtists])
-
-  // Custom Tooltip accesible y con contraste
-  const CustomTooltip = ({ active, payload }) => {
-    if (active && payload && payload.length) {
-      const item = payload[0].payload
-      return (
-        <div className="chart-tooltip-box" role="tooltip">
-          <p className="tooltip-title">{item.name}</p>
-          <p className="tooltip-value">
-            <strong>{item.value}</strong> artistas ({item.percentage})
-          </p>
-        </div>
-      )
-    }
-    return null
-  }
 
   // Filtrar disciplinas activas para el renderizado del pastel
   const chartSlices = useMemo(() => {

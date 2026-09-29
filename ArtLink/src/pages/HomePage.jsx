@@ -23,7 +23,7 @@ import { handleImageError } from '../utils/imageFallback'
 import DecorativeStar from '../components/DecorativeStar'
 
 // Cálculo de métricas 100% reales a partir de los datos vivos de la plataforma
-export function computePlatformMetrics(artists = [], portfolio = []) {
+function computePlatformMetrics(artists = [], portfolio = []) {
   const totalArtists = artists.length
 
   const validPrices = artists

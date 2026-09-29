@@ -33,7 +33,7 @@ const STATUS_CONFIG = {
 }
 
 export default function PrivateRequestsPage() {
-  const { clientRequests, requests, loading, error } = usePrivateRequests()
+  const { clientRequests, loading, error } = usePrivateRequests()
   const [selected, setSelected] = useState(null)
   const [statusFilter, setStatusFilter] = useState('all')
 

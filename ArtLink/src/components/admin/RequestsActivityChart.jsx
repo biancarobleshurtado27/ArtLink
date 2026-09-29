@@ -20,6 +20,20 @@ import {
  * Agrupa las solicitudes por mes o por fecha usando los datos de createdAt de JSON Server
  * y datos demostrativos coherentes claramente identificados.
  */
+function CustomTooltip({ active, payload, label }) {
+  if (active && payload && payload.length) {
+    return (
+      <div className="chart-tooltip-box" role="tooltip">
+        <p className="tooltip-title">{label}</p>
+        <p className="tooltip-value">
+          <strong>{payload[0].value}</strong> {payload[0].value === 1 ? 'solicitud creada' : 'solicitudes creadas'}
+        </p>
+      </div>
+    )
+  }
+  return null
+}
+
 export default function RequestsActivityChart({
   requests = [],
   period = 'all',
@@ -33,21 +47,6 @@ export default function RequestsActivityChart({
   const summary = useMemo(() => {
     return generateActivityAccessibleSummary(activityData, total, peakLabel)
   }, [activityData, total, peakLabel])
-
-  // Custom tooltip
-  const CustomTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="chart-tooltip-box" role="tooltip">
-          <p className="tooltip-title">{label}</p>
-          <p className="tooltip-value">
-            <strong>{payload[0].value}</strong> {payload[0].value === 1 ? 'solicitud creada' : 'solicitudes creadas'}
-          </p>
-        </div>
-      )
-    }
-    return null
-  }
 
   return (
     <AdminChartCard

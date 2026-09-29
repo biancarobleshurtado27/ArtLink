@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard,
@@ -30,10 +30,13 @@ export default function AdminLayout() {
   const location = useLocation()
   const navigate = useNavigate()
 
+  const [prevPath, setPrevPath] = useState(location.pathname)
+
   // Cerrar sidebar móvil al cambiar de ruta
-  useEffect(() => {
+  if (prevPath !== location.pathname) {
+    setPrevPath(location.pathname)
     setSidebarOpen(false)
-  }, [location.pathname])
+  }
 
   const handleLogout = () => {
     logout()

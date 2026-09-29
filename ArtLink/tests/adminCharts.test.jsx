@@ -7,8 +7,7 @@ import {
   filterRequests,
   generateStatusAccessibleSummary,
   generateDisciplineAccessibleSummary,
-  generateActivityAccessibleSummary,
-  REQUEST_STATUS_CONFIG
+  generateActivityAccessibleSummary
 } from '../src/utils/adminChartUtils'
 import RequestsStatusChart from '../src/components/admin/RequestsStatusChart'
 import ArtistsDisciplineChart from '../src/components/admin/ArtistsDisciplineChart'
@@ -91,17 +90,17 @@ describe('adminChartUtils - data transformations & accessibility', () => {
     const { data, total } = computeRequestsByStatus(mockRequests)
     const summary = generateStatusAccessibleSummary(data, total)
     expect(summary).toMatch(/Se registraron 6 solicitudes/i)
-    expect(summary).not.toMatch(/[⭐★\uD83C-\uDBFF\uDC00-\uDFFF]/)
+    expect(summary).not.toMatch(/[⭐★\uD83C-\uDBFF\uDC00-\uDFFF]/u)
 
     const { data: dData, totalMentions, uniqueArtists } = computeArtistsByDiscipline(mockArtists)
     const dSummary = generateDisciplineAccessibleSummary(dData, totalMentions, uniqueArtists)
     expect(dSummary).toMatch(/especialidades activas/i)
-    expect(dSummary).not.toMatch(/[⭐★\uD83C-\uDBFF\uDC00-\uDFFF]/)
+    expect(dSummary).not.toMatch(/[⭐★\uD83C-\uDBFF\uDC00-\uDFFF]/u)
 
     const { data: aData, peakLabel } = computeRequestsActivity(mockRequests, 'all')
     const aSummary = generateActivityAccessibleSummary(aData, total, peakLabel)
     expect(aSummary).toMatch(/Actividad de 6 solicitudes/i)
-    expect(aSummary).not.toMatch(/[⭐★\uD83C-\uDBFF\uDC00-\uDFFF]/)
+    expect(aSummary).not.toMatch(/[⭐★\uD83C-\uDBFF\uDC00-\uDFFF]/u)
   })
 })
 

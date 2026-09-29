@@ -2,13 +2,10 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import {
   Bell,
-  Compass,
   Contrast,
   ExternalLink,
   HelpCircle,
   Home,
-  Inbox,
-  Laptop,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -18,8 +15,6 @@ import {
   MoreVertical,
   Search,
   Settings,
-  Sliders,
-  Sparkles,
   Star,
   Sun,
   User,
@@ -45,15 +40,18 @@ export default function AppShell() {
   const userAreaRef = useRef(null)
   const location = useLocation()
   const navigate = useNavigate()
+  const [prevPath, setPrevPath] = useState(location.pathname)
 
   const closeMenus = () => {
     setDrawerOpen(false)
     setUserMenuOpen(false)
   }
 
-  useEffect(() => {
-    closeMenus()
-  }, [location.pathname])
+  if (prevPath !== location.pathname) {
+    setPrevPath(location.pathname)
+    setDrawerOpen(false)
+    setUserMenuOpen(false)
+  }
 
   useEffect(() => {
     function handleOutside(event) {
