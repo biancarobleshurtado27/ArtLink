@@ -35,6 +35,7 @@ export default function AppShell() {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [userMenuOpen, setUserMenuOpen] = useState(false)
   const [avatarError, setAvatarError] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
   const { user, logout } = useAuth()
   const { theme, setTheme } = useDisplayPreferences()
   const userAreaRef = useRef(null)
@@ -52,6 +53,15 @@ export default function AppShell() {
     setDrawerOpen(false)
     setUserMenuOpen(false)
   }
+
+  useEffect(() => {
+    function handleScroll() {
+      setIsScrolled(window.scrollY > 24)
+    }
+    handleScroll()
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   useEffect(() => {
     function handleOutside(event) {
@@ -137,7 +147,7 @@ export default function AppShell() {
         <a className="skip-link" href="#main-content">Saltar al contenido principal</a>
 
         {/* CABECERA PÚBLICA HORIZONTAL */}
-        <header className="site-header">
+        <header className={`site-header ${isScrolled ? 'is-scrolled' : ''}`}>
           <div className="site-header-inner">
             <Link className="brand" to="/" aria-label="ArtLink" onClick={closeMenus}>
               <img src={logoArtLink} alt="Logo de ArtLink" className="brand-logo" />
@@ -208,7 +218,7 @@ export default function AppShell() {
       <a className="skip-link" href="#main-content">Saltar al contenido principal</a>
 
       {/* MOBILE TOP BAR */}
-      <header className="mobile-header-bar">
+      <header className={`mobile-header-bar ${isScrolled ? 'is-scrolled' : ''}`}>
         <button
           className="mobile-hamburger-btn"
           type="button"

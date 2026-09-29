@@ -13,6 +13,7 @@ import {
   Lock,
   Eye,
   CheckCircle2,
+  Check,
   ShoppingBag,
   Palette,
   Star,
@@ -952,6 +953,48 @@ export default function HomePage() {
                 Protección transaccional de 14 días + PayPal / Stripe
               </p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── BANNER PROMOCIONAL: VITRINA DE CREADORES & ARTISTAS ── */}
+      <section className="home-promo-banner-wrap" style={{ maxWidth: '1240px', margin: '3.5rem auto 1rem auto', padding: '0 1.5rem' }} aria-label="Vitrina de creadores">
+        <div className="explore-promo-banner" aria-labelledby="home-promo-banner-title" style={{ margin: 0 }}>
+          <div className="promo-banner-left">
+            <span className="promo-banner-eyebrow">
+              ✦ CREADORES & ARTISTAS ✦
+            </span>
+            <h2 id="home-promo-banner-title" className="promo-banner-title">
+              Muestra tu portafolio y cobra de forma segura en cualquier país
+            </h2>
+            <p className="promo-banner-desc">
+              Gestiona colas de comisiones, aprueba bocetos con marcas de agua automáticas
+              y recibe pagos asegurados sin sufrir cancelaciones fraudulentas.
+            </p>
+
+            <div className="promo-features-row">
+              <span className="promo-feature-pill">
+                <Check size={14} color="#10B981" aria-hidden="true" />
+                <span>0% comisiones ocultas</span>
+              </span>
+              <span className="promo-feature-pill">
+                <Check size={14} color="#10B981" aria-hidden="true" />
+                <span>Pagos en Escrow Shield</span>
+              </span>
+              <span className="promo-feature-pill">
+                <Check size={14} color="#10B981" aria-hidden="true" />
+                <span>Gestor de revisiones integrado</span>
+              </span>
+            </div>
+          </div>
+
+          <div className="promo-banner-actions">
+            <Link to="/registro?role=artist" className="promo-btn-primary">
+              Abrir mi vitrina gratis
+            </Link>
+            <Link to="/como-funciona" className="promo-btn-secondary">
+              Conoce tarifas y planes
+            </Link>
           </div>
         </div>
       </section>

@@ -3,32 +3,16 @@ import { Link } from 'react-router-dom'
 import {
   Search,
   SlidersHorizontal,
-  Check,
   Heart,
   Bookmark,
   Sparkles,
-  Zap,
-  Users,
-  Layers,
   Grid,
   List,
   ChevronLeft,
   ChevronRight,
-  TrendingUp,
-  X,
-  RotateCcw
+  X
 } from 'lucide-react'
 import { handleImageError } from '../utils/imageFallback'
-
-const TRENDING_TAGS = [
-  { tag: '#Anime2D', color: 'tag-pink' },
-  { tag: '#CharacterSheet', color: 'tag-mint' },
-  { tag: '#FantasyLandscape', color: 'tag-lilac' },
-  { tag: '#VtuberModel', color: 'tag-pink' },
-  { tag: '#PixelArtRPG', color: 'tag-yellow' },
-  { tag: '#DarkFantasy', color: 'tag-purple' },
-  { tag: '#3DAssetsUnity', color: 'tag-cyan' },
-]
 
 const CATEGORIES = [
   { id: 'all', label: 'Todas las Obras', count: '4.2k' },
@@ -212,18 +196,243 @@ const COMMUNITY_ARTWORKS = [
     openSlots: true,
     tags: ['#FantasyLandscape', '#DarkFantasy'],
   },
+  {
+    id: 'art-9',
+    title: 'Enchanted Forest Shrine',
+    badge: 'Comisión abierta · Desde $85',
+    badgeClass: 'badge-mint',
+    artist: '@mateorios',
+    artistAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80',
+    artistId: 'artist-001',
+    likes: 980,
+    image: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80',
+    category: '2d',
+    openSlots: true,
+    tags: ['#FantasyLandscape', '#Anime2D'],
+  },
+  {
+    id: 'art-10',
+    title: 'Solaris Mech Pilot',
+    badge: 'Modelado 3D · $140',
+    badgeClass: 'badge-pink',
+    artist: '@diego_alv',
+    artistAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80',
+    artistId: 'artist-003',
+    likes: 1340,
+    image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80',
+    category: '3d',
+    openSlots: true,
+    tags: ['#3DAssetsUnity'],
+  },
+  {
+    id: 'art-11',
+    title: 'Retro Dungeon Crawler Pack',
+    badge: 'Pixel Art · $55',
+    badgeClass: 'badge-mint',
+    artist: '@sofia_art',
+    artistAvatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80',
+    artistId: 'artist-002',
+    likes: 1720,
+    image: 'https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=800&q=80',
+    category: 'pixel',
+    openSlots: true,
+    tags: ['#PixelArtRPG'],
+  },
+  {
+    id: 'art-12',
+    title: 'Starlight Idol Live2D',
+    badge: 'Rigging completo',
+    badgeClass: 'badge-magenta',
+    artist: '@elena_rostova',
+    artistAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80',
+    artistId: 'artist-004',
+    likes: 2890,
+    image: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=800&q=80',
+    category: 'animation',
+    openSlots: false,
+    tags: ['#VtuberModel'],
+  },
+  {
+    id: 'art-13',
+    title: 'Floating Citadel of Zephyr',
+    badge: 'Concept Art · $130',
+    badgeClass: 'badge-lilac',
+    artist: '@camille_l',
+    artistAvatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=120&q=80',
+    artistId: 'artist-005',
+    likes: 1650,
+    image: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=800&q=80',
+    category: 'concept',
+    openSlots: true,
+    tags: ['#FantasyLandscape'],
+  },
+  {
+    id: 'art-14',
+    title: 'Boba Kitty Stream Emotes',
+    badge: 'Pack 8 Emotes · $35',
+    badgeClass: 'badge-pink',
+    artist: '@sora_lin',
+    artistAvatar: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=120&q=80',
+    artistId: 'artist-006',
+    likes: 3100,
+    image: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=800&q=80',
+    category: 'chibi',
+    openSlots: true,
+    tags: ['#Anime2D'],
+  },
+  {
+    id: 'art-15',
+    title: 'Midnight Ronin Katana',
+    badge: 'Modelo 3D Game-Ready',
+    badgeClass: 'badge-mint',
+    artist: '@kenji_mecha',
+    artistAvatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80',
+    artistId: 'artist-003',
+    likes: 1210,
+    image: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=800&q=80',
+    category: '3d',
+    openSlots: true,
+    tags: ['#3DAssetsUnity', '#DarkFantasy'],
+  },
+  {
+    id: 'art-16',
+    title: 'Celestial Empress Illustration',
+    badge: 'Desde $110',
+    badgeClass: 'badge-lilac',
+    artist: '@valeria_m',
+    artistAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80',
+    artistId: 'artist-007',
+    likes: 2420,
+    image: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80',
+    category: '2d',
+    openSlots: true,
+    tags: ['#Anime2D', '#CharacterSheet'],
+  },
+  {
+    id: 'art-17',
+    title: 'Cozy Tavern Isometric Art',
+    badge: 'Pixel Art · $70',
+    badgeClass: 'badge-mint',
+    artist: '@pixel_dan',
+    artistAvatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=120&q=80',
+    artistId: 'artist-002',
+    likes: 1850,
+    image: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=800&q=80',
+    category: 'pixel',
+    openSlots: true,
+    tags: ['#PixelArtRPG'],
+  },
+  {
+    id: 'art-18',
+    title: 'Cyber Goth Avatar Rig',
+    badge: 'Live2D & Expresiones',
+    badgeClass: 'badge-magenta',
+    artist: '@erikasia_v',
+    artistAvatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80',
+    artistId: 'artist-004',
+    likes: 1980,
+    image: 'https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=800&q=80',
+    category: 'animation',
+    openSlots: true,
+    tags: ['#VtuberModel', '#DarkFantasy'],
+  },
+  {
+    id: 'art-19',
+    title: 'Nordic Fjord Landscape',
+    badge: 'Comisión abierta · $105',
+    badgeClass: 'badge-mint',
+    artist: '@hana_draws',
+    artistAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80',
+    artistId: 'artist-001',
+    likes: 1430,
+    image: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80',
+    category: 'concept',
+    openSlots: true,
+    tags: ['#FantasyLandscape'],
+  },
+  {
+    id: 'art-20',
+    title: 'Neon Ramen Bar Night',
+    badge: 'Ilustración Full · $90',
+    badgeClass: 'badge-pink',
+    artist: '@neon_brush',
+    artistAvatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=120&q=80',
+    artistId: 'artist-004',
+    likes: 2190,
+    image: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=800&q=80',
+    category: '2d',
+    openSlots: true,
+    tags: ['#Anime2D'],
+  },
+  {
+    id: 'art-21',
+    title: 'Chibi Kawaii Food Pack',
+    badge: 'Pack 10 Emotes · $40',
+    badgeClass: 'badge-lilac',
+    artist: '@chibi_mochi',
+    artistAvatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80',
+    artistId: 'artist-002',
+    likes: 1670,
+    image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80',
+    category: 'chibi',
+    openSlots: true,
+    tags: ['#Anime2D'],
+  },
+  {
+    id: 'art-22',
+    title: 'Steampunk Airship Explorer',
+    badge: 'Modelado 3D & Texturas',
+    badgeClass: 'badge-mint',
+    artist: '@lucas_v',
+    artistAvatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80',
+    artistId: 'artist-003',
+    likes: 1120,
+    image: 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=800&q=80',
+    category: '3d',
+    openSlots: true,
+    tags: ['#3DAssetsUnity'],
+  },
+  {
+    id: 'art-23',
+    title: 'Crystal Cavern Ruins',
+    badge: 'Fondo Ilustrado · $115',
+    badgeClass: 'badge-lilac',
+    artist: '@celesta_art',
+    artistAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80',
+    artistId: 'artist-001',
+    likes: 1840,
+    image: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80',
+    category: 'concept',
+    openSlots: true,
+    tags: ['#FantasyLandscape', '#DarkFantasy'],
+  },
+  {
+    id: 'art-24',
+    title: 'Pixel Cyberpunk Character Set',
+    badge: 'Spritesheet Animado · $50',
+    badgeClass: 'badge-pink',
+    artist: '@mateorios',
+    artistAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80',
+    artistId: 'artist-001',
+    likes: 2010,
+    image: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=800&q=80',
+    category: 'pixel',
+    openSlots: true,
+    tags: ['#PixelArtRPG', '#CharacterSheet'],
+  },
 ]
 
 export default function ExplorePage() {
   // Estados de búsqueda y filtros
   const [searchQuery, setSearchQuery] = useState('')
-  const [selectedType, setSelectedType] = useState('all')
-  const [activeTab, setActiveTab] = useState('obras')
   const [openSlotsOnly, setOpenSlotsOnly] = useState(false)
   const [selectedSort, setSelectedSort] = useState('popular')
   const [viewMode, setViewMode] = useState('grid')
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [filterModalOpen, setFilterModalOpen] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
+
+  const ITEMS_PER_PAGE = 8
 
   // Estados interactivos de Likes y Bookmarks
   const [likedMap, setLikedMap] = useState({})
@@ -237,13 +446,23 @@ export default function ExplorePage() {
     setBookmarkedMap((prev) => ({ ...prev, [id]: !prev[id] }))
   }
 
-  function handleTagClick(tag) {
-    setSearchQuery(tag)
+  function handleCategorySelect(id) {
+    setSelectedCategory(id)
+    setCurrentPage(1)
   }
+
+  function handleSortChange(sort) {
+    setSelectedSort(sort)
+    setCurrentPage(1)
+  }
+
+  // Número de filtros que el usuario tiene activos
+  const activeFilterCount =
+    (searchQuery.trim() ? 1 : 0) + (selectedCategory !== 'all' ? 1 : 0) + (openSlotsOnly ? 1 : 0)
 
   // Filtrado reactivo de obras
   const filteredArtworks = useMemo(() => {
-    return COMMUNITY_ARTWORKS.filter((art) => {
+    let list = COMMUNITY_ARTWORKS.filter((art) => {
       if (openSlotsOnly && !art.openSlots) return false
       if (selectedCategory !== 'all' && art.category !== selectedCategory) return false
 
@@ -257,11 +476,25 @@ export default function ExplorePage() {
 
       return true
     })
-  }, [openSlotsOnly, selectedCategory, searchQuery])
+
+    if (selectedSort === 'recent') {
+      list = [...list].reverse()
+    } else if (selectedSort === 'popular') {
+      list = [...list].sort((a, b) => b.likes - a.likes)
+    }
+
+    return list
+  }, [openSlotsOnly, selectedCategory, searchQuery, selectedSort])
+
+  const totalPages = Math.max(1, Math.ceil(filteredArtworks.length / ITEMS_PER_PAGE))
+  const activePage = Math.min(currentPage, totalPages)
+  const startIndex = (activePage - 1) * ITEMS_PER_PAGE
+  const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, filteredArtworks.length)
+  const paginatedArtworks = filteredArtworks.slice(startIndex, endIndex)
 
   return (
     <div className="explore-v3-container">
-      {/* ── 1. HERO SECTION ── */}
+      {/* 1. HERO SECTION */}
       <header className="explore-v3-hero" aria-labelledby="explore-hero-title">
         <div className="explore-v3-eyebrow">
           <Sparkles size={14} aria-hidden="true" />
@@ -280,7 +513,7 @@ export default function ExplorePage() {
         </p>
       </header>
 
-      {/* ── 2. MEGA SEARCH & FILTER CARD ── */}
+      {/* 2. MEGA SEARCH & FILTER CARD */}
       <section className="explore-mega-search-card" aria-label="Buscador central de arte">
         <div className="mega-search-top">
           <div className="mega-search-input-wrap">
@@ -289,134 +522,51 @@ export default function ExplorePage() {
               type="text"
               placeholder="Buscar por estilo, personaje o artista..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value)
+                setCurrentPage(1)
+              }}
               aria-label="Buscar en la galería"
             />
           </div>
 
-          <select
-            className="mega-search-select"
-            value={selectedType}
-            onChange={(e) => setSelectedType(e.target.value)}
-            aria-label="Filtrar por tipo de contenido"
-          >
-            <option value="all">Todo el contenido</option>
-            <option value="2d">Ilustración 2D</option>
-            <option value="3d">Modelado 3D</option>
-            <option value="animation">Animación</option>
-            <option value="pixel">Pixel Art</option>
-            <option value="chibi">Emotes</option>
-            <option value="concept">Concept Art</option>
-          </select>
-
           <button
             type="button"
-            className="mega-search-filters-btn"
+            className={`mega-search-filters-btn ${activeFilterCount > 0 ? 'has-filters' : ''}`}
             onClick={() => setFilterModalOpen(true)}
             aria-label="Abrir panel de filtros"
           >
             <SlidersHorizontal size={16} aria-hidden="true" />
             <span>Filtros</span>
-            <span className="mega-filters-badge">3</span>
+            {activeFilterCount > 0 && (
+              <span className="mega-filters-badge" aria-label={`${activeFilterCount} filtros activos`}>
+                {activeFilterCount}
+              </span>
+            )}
           </button>
 
           <button
             type="button"
             className="mega-search-submit-btn"
-            onClick={() => {}}
+            onClick={() => {
+              const el = document.getElementById('destacadas-section-header')
+              if (el) el.scrollIntoView({ behavior: 'smooth' })
+            }}
             aria-label="Explorar Galería"
           >
             <Sparkles size={16} aria-hidden="true" />
             <span>Explorar Galería</span>
           </button>
         </div>
-
-        <div className="mega-search-bottom">
-          <span className="mega-trending-label">
-            <TrendingUp size={14} aria-hidden="true" />
-            <span>Tendencias de hoy:</span>
-          </span>
-
-          <div className="mega-tag-pills">
-            {TRENDING_TAGS.map(({ tag, color }) => (
-              <button
-                key={tag}
-                type="button"
-                className={`mega-tag-pill ${color} ${searchQuery === tag ? 'is-active' : ''}`}
-                onClick={() => handleTagClick(tag)}
-              >
-                {tag}
-              </button>
-            ))}
-          </div>
-        </div>
       </section>
 
-      {/* ── 3. TABS Y FILTROS RÁPIDOS ── */}
-      <section className="explore-tabs-bar" aria-label="Navegación de secciones de catálogo">
-        <div className="explore-tabs-group" role="tablist">
-          <button
-            type="button"
-            role="tab"
-            aria-selected={activeTab === 'obras'}
-            className={`explore-tab-pill ${activeTab === 'obras' ? 'is-active' : ''}`}
-            onClick={() => setActiveTab('obras')}
-          >
-            <Layers size={16} aria-hidden="true" />
-            <span>Todas las Obras</span>
-            <span className="explore-tab-count">4.2k</span>
-          </button>
-
-          <button
-            type="button"
-            role="tab"
-            aria-selected={activeTab === 'artistas'}
-            className={`explore-tab-pill ${activeTab === 'artistas' ? 'is-active' : ''}`}
-            onClick={() => setActiveTab('artistas')}
-          >
-            <Users size={16} aria-hidden="true" />
-            <span>Directorio de Artistas</span>
-          </button>
-
-          <button
-            type="button"
-            role="tab"
-            aria-selected={activeTab === 'urgentes'}
-            className={`explore-tab-pill ${activeTab === 'urgentes' ? 'is-active' : ''}`}
-            onClick={() => setActiveTab('urgentes')}
-          >
-            <Zap size={16} aria-hidden="true" />
-            <span>Comisiones Urgentes</span>
-            <span className="momento-card-badge badge-pink" style={{ padding: '0.1rem 0.35rem', marginLeft: '0.2rem' }}>•</span>
-          </button>
-
-          <button
-            type="button"
-            role="tab"
-            aria-selected={activeTab === 'curadas'}
-            className={`explore-tab-pill ${activeTab === 'curadas' ? 'is-active' : ''}`}
-            onClick={() => setActiveTab('curadas')}
-          >
-            <Sparkles size={16} aria-hidden="true" />
-            <span>Colecciones Curadas</span>
-          </button>
-        </div>
-
+      {/* 3. CONTROLES DE ORDEN Y VISTA */}
+      <section className="explore-tabs-bar explore-toolbar-bar" aria-label="Controles de orden y vista">
         <div className="explore-controls-group">
-          <button
-            type="button"
-            className={`cupos-switch-btn ${openSlotsOnly ? 'is-active' : ''}`}
-            onClick={() => setOpenSlotsOnly((prev) => !prev)}
-            aria-pressed={openSlotsOnly}
-          >
-            <Check size={14} aria-hidden="true" />
-            <span>Cupos abiertos</span>
-          </button>
-
           <select
             className="explore-sort-dropdown"
             value={selectedSort}
-            onChange={(e) => setSelectedSort(e.target.value)}
+            onChange={(e) => handleSortChange(e.target.value)}
             aria-label="Ordenar resultados"
           >
             <option value="popular">Más populares</option>
@@ -426,12 +576,14 @@ export default function ExplorePage() {
             <option value="rating">Mejor calificación</option>
           </select>
 
-          <div className="view-mode-buttons">
+          <div className="view-mode-buttons" role="group" aria-label="Cambiar vista de las obras">
             <button
               type="button"
               className={`view-mode-btn ${viewMode === 'grid' ? 'is-active' : ''}`}
               onClick={() => setViewMode('grid')}
+              aria-pressed={viewMode === 'grid'}
               aria-label="Vista en cuadrícula"
+              title="Vista en cuadrícula"
             >
               <Grid size={16} aria-hidden="true" />
             </button>
@@ -439,7 +591,9 @@ export default function ExplorePage() {
               type="button"
               className={`view-mode-btn ${viewMode === 'list' ? 'is-active' : ''}`}
               onClick={() => setViewMode('list')}
+              aria-pressed={viewMode === 'list'}
               aria-label="Vista en lista"
+              title="Vista en lista"
             >
               <List size={16} aria-hidden="true" />
             </button>
@@ -447,7 +601,7 @@ export default function ExplorePage() {
         </div>
       </section>
 
-      {/* ── 4. CAROUSEL DE CATEGORÍAS HORIZONTAL ── */}
+      {/* 4. CAROUSEL DE CATEGORÍAS HORIZONTAL */}
       <section className="explore-carousel-bar" aria-label="Categorías artísticas">
         <button
           type="button"
@@ -469,7 +623,7 @@ export default function ExplorePage() {
                 key={id}
                 type="button"
                 className={`category-pill-item ${isActive ? 'is-active' : ''}`}
-                onClick={() => setSelectedCategory(id)}
+                onClick={() => handleCategorySelect(id)}
               >
                 {id === 'all' ? '✦ ' : ''}
                 {label} {id !== 'all' ? `(${count})` : ''}
@@ -491,7 +645,7 @@ export default function ExplorePage() {
         </button>
       </section>
 
-      {/* ── 5. SECCIÓN: ARTISTAS DEL MOMENTO ── */}
+      {/* 5. SECCIÓN: ARTISTAS DEL MOMENTO */}
       <section className="momento-section" aria-labelledby="momento-title">
         <div className="momento-header">
           <div className="momento-title-wrap">
@@ -505,16 +659,32 @@ export default function ExplorePage() {
           </div>
 
           <div className="momento-arrows">
-            <button type="button" className="carousel-arrow-btn" aria-label="Anterior artista">
+            <button
+              type="button"
+              className="carousel-arrow-btn"
+              aria-label="Anterior artista"
+              onClick={() => {
+                const el = document.getElementById('momento-cards-container')
+                if (el) el.scrollBy({ left: -320, behavior: 'smooth' })
+              }}
+            >
               <ChevronLeft size={16} aria-hidden="true" />
             </button>
-            <button type="button" className="carousel-arrow-btn" aria-label="Siguiente artista">
+            <button
+              type="button"
+              className="carousel-arrow-btn"
+              aria-label="Siguiente artista"
+              onClick={() => {
+                const el = document.getElementById('momento-cards-container')
+                if (el) el.scrollBy({ left: 320, behavior: 'smooth' })
+              }}
+            >
               <ChevronRight size={16} aria-hidden="true" />
             </button>
           </div>
         </div>
 
-        <div className="momento-cards-grid">
+        <div className="momento-cards-grid" id="momento-cards-container">
           {FEATURED_ARTISTS.map((artist) => (
             <article key={artist.id} className="momento-artist-card" aria-label={`Perfil de ${artist.name}`}>
               <span className={`momento-card-badge ${artist.badgeClass}`}>
@@ -566,20 +736,20 @@ export default function ExplorePage() {
         </div>
       </section>
 
-      {/* ── 6. SECCIÓN: OBRAS DESTACADAS EN LA COMUNIDAD ── */}
-      <section className="destacadas-section" aria-labelledby="destacadas-title">
+      {/* 6. SECCIÓN: OBRAS DESTACADAS EN LA COMUNIDAD */}
+      <section className="destacadas-section" aria-labelledby="destacadas-title" id="destacadas-section-header">
         <div className="destacadas-header">
           <div className="destacadas-title-wrap">
             <h2 id="destacadas-title">Obras Destacadas en la Comunidad</h2>
-            <span className="destacadas-counter-badge">1,482 Encontradas</span>
+            <span className="destacadas-counter-badge">{filteredArtworks.length} Encontradas</span>
           </div>
           <span className="destacadas-counter-text">
-            Mostrando 1 - {filteredArtworks.length} de 1,482
+            Mostrando {filteredArtworks.length > 0 ? startIndex + 1 : 0} - {endIndex} de {filteredArtworks.length}
           </span>
         </div>
 
-        <div className="destacadas-grid">
-          {filteredArtworks.map((art) => {
+        <div className={`destacadas-grid ${viewMode === 'list' ? 'is-list' : ''}`}>
+          {paginatedArtworks.map((art) => {
             const isLiked = Boolean(likedMap[art.id])
             const isBookmarked = Boolean(bookmarkedMap[art.id])
             const displayLikes = isLiked ? (art.likes + 1).toLocaleString() : art.likes.toLocaleString()
@@ -648,82 +818,61 @@ export default function ExplorePage() {
         </div>
       </section>
 
-      {/* ── 7. BANNER PROMOCIONAL PARA CREADORES ── */}
-      <section className="explore-promo-banner" aria-labelledby="promo-banner-title">
-        <div className="promo-banner-left">
-          <span className="promo-banner-eyebrow">
-            ✦ CREADORES & ARTISTAS ✦
-          </span>
-          <h2 id="promo-banner-title" className="promo-banner-title">
-            Muestra tu portafolio y cobra de forma segura en cualquier país
-          </h2>
-          <p className="promo-banner-desc">
-            Gestiona colas de comisiones, aprueba bocetos con marcas de agua automáticas
-            y recibe pagos asegurados sin sufrir cancelaciones fraudulentas.
-          </p>
 
-          <div className="promo-features-row">
-            <span className="promo-feature-pill">
-              <Check size={14} color="#10B981" aria-hidden="true" />
-              <span>0% comisiones ocultas</span>
-            </span>
-            <span className="promo-feature-pill">
-              <Check size={14} color="#10B981" aria-hidden="true" />
-              <span>Pagos en Escrow Shield</span>
-            </span>
-            <span className="promo-feature-pill">
-              <Check size={14} color="#10B981" aria-hidden="true" />
-              <span>Gestor de revisiones integrado</span>
-            </span>
-          </div>
-        </div>
-
-        <div className="promo-banner-actions">
-          <Link to="/registro?role=artist" className="promo-btn-primary">
-            Abrir mi vitrina gratis
-          </Link>
-          <Link to="/como-funciona" className="promo-btn-secondary">
-            Conoce tarifas y planes
-          </Link>
-        </div>
-      </section>
-
-      {/* ── 8. PAGINACIÓN Y CARGAR MÁS ── */}
+      {/* 7. PAGINACIÓN DINÁMICA */}
       <div className="explore-pagination-wrap">
-        <button
-          type="button"
-          className="load-more-big-btn"
-          onClick={() => {}}
-          aria-label="Cargar más obras inspiradoras"
-        >
-          <RotateCcw size={16} aria-hidden="true" />
-          <span>Cargar más obras inspiradoras (Página 1 de 24)</span>
-        </button>
-
         <div className="numeric-pagination-row" aria-label="Paginación">
-          <button type="button" className="page-num-btn" aria-label="Página anterior">
+          <button
+            type="button"
+            className="page-num-btn"
+            aria-label="Página anterior"
+            disabled={activePage <= 1}
+            onClick={() => {
+              if (activePage > 1) {
+                setCurrentPage(activePage - 1)
+                const el = document.getElementById('destacadas-section-header')
+                if (el) el.scrollIntoView({ behavior: 'smooth' })
+              }
+            }}
+          >
             <ChevronLeft size={16} aria-hidden="true" />
           </button>
-          <button type="button" className="page-num-btn is-active" aria-current="page">
-            1
-          </button>
-          <button type="button" className="page-num-btn">
-            2
-          </button>
-          <button type="button" className="page-num-btn">
-            3
-          </button>
-          <span className="page-dots">...</span>
-          <button type="button" className="page-num-btn">
-            24
-          </button>
-          <button type="button" className="page-num-btn" aria-label="Página siguiente">
+
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+            <button
+              key={pageNum}
+              type="button"
+              className={`page-num-btn ${activePage === pageNum ? 'is-active' : ''}`}
+              aria-current={activePage === pageNum ? 'page' : undefined}
+              onClick={() => {
+                setCurrentPage(pageNum)
+                const el = document.getElementById('destacadas-section-header')
+                if (el) el.scrollIntoView({ behavior: 'smooth' })
+              }}
+            >
+              {pageNum}
+            </button>
+          ))}
+
+          <button
+            type="button"
+            className="page-num-btn"
+            aria-label="Página siguiente"
+            disabled={activePage >= totalPages}
+            onClick={() => {
+              if (activePage < totalPages) {
+                setCurrentPage(activePage + 1)
+                const el = document.getElementById('destacadas-section-header')
+                if (el) el.scrollIntoView({ behavior: 'smooth' })
+              }
+            }}
+          >
             <ChevronRight size={16} aria-hidden="true" />
           </button>
         </div>
       </div>
 
-      {/* ── 9. MODAL DE FILTROS DETALLADOS ── */}
+      {/* 8. MODAL DE FILTROS DETALLADOS */}
       {filterModalOpen && (
         <div
           className="filter-modal-backdrop"
