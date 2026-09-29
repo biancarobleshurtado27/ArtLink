@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import AppLayout from '../layouts/AppLayout'
+import AdminLayout from '../layouts/AdminLayout'
 import HomePage from '../pages/HomePage'
 import ExplorePage from '../pages/ExplorePage'
 import ComoFuncionaPage from '../pages/ComoFuncionaPage'
@@ -24,6 +25,18 @@ export default function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Rutas exclusivas del Administrador con Layout dedicado */}
+        <Route element={<RoleRoute allowedRoles={[ROLES.ADMIN]} />}>
+          <Route element={<AdminLayout />}>
+            <Route path="/admin" element={<AdminDashboardPage />} />
+            <Route path="/admin/usuarios" element={<AdminResourcePage resource="usuarios" />} />
+            <Route path="/admin/artistas" element={<AdminResourcePage resource="artistas" />} />
+            <Route path="/admin/categorias" element={<AdminResourcePage resource="categorias" />} />
+            <Route path="/admin/solicitudes" element={<AdminResourcePage resource="solicitudes" />} />
+          </Route>
+        </Route>
+
+        {/* Rutas Públicas y de Clientes / Artistas con AppLayout estándar */}
         <Route element={<AppLayout />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/explorar" element={<ExplorePage />} />
@@ -51,14 +64,6 @@ export default function AppRouter() {
             <Route path="/artista/solicitudes" element={<ArtistPanelPage />} />
             <Route path="/artista/portafolio" element={<ArtistPanelPage />} />
             <Route path="/artista/comisiones" element={<ArtistPanelPage />} />
-          </Route>
-
-          <Route element={<RoleRoute allowedRoles={[ROLES.ADMIN]} />}>
-            <Route path="/admin" element={<AdminDashboardPage />} />
-            <Route path="/admin/usuarios" element={<AdminResourcePage resource="usuarios" />} />
-            <Route path="/admin/artistas" element={<AdminResourcePage resource="artistas" />} />
-            <Route path="/admin/categorias" element={<AdminResourcePage resource="categorias" />} />
-            <Route path="/admin/solicitudes" element={<AdminResourcePage resource="solicitudes" />} />
           </Route>
 
           <Route path="*" element={<NotFoundPage />} />

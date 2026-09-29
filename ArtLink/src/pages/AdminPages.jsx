@@ -5,7 +5,7 @@ import {
 import {
   Users, UserCheck, Palette, FileText, CheckCircle2, AlertTriangle, Plus, Search,
   Trash2, Edit3, Filter, ArrowLeft, ShieldCheck, Clock, Server, ArrowRight, RefreshCw,
-  Calendar, Layers, RotateCcw, BarChart3
+  Calendar, Layers, RotateCcw, BarChart3, Eye, ChevronRight
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import Badge from '../components/Badge'
@@ -103,11 +103,100 @@ const resourceConfigs = {
   }
 }
 
-const statusBadgeTone = (status) => {
-  if (status === 'rejected' || status === 'closed') return 'closed'
-  if (status === 'completed' || status === 'accepted' || status === 'open') return 'mint'
-  if (status === 'waitlist') return 'yellow'
-  return 'violet'
+export function renderStatusBadge(status) {
+  if (status === 'completed') {
+    return (
+      <span className="admin-status-pill status-pill-mint">
+        <CheckCircle2 size={12} aria-hidden="true" />
+        <span>Completada</span>
+      </span>
+    )
+  }
+  if (status === 'accepted') {
+    return (
+      <span className="admin-status-pill status-pill-mint">
+        <CheckCircle2 size={12} aria-hidden="true" />
+        <span>Aceptada</span>
+      </span>
+    )
+  }
+  if (status === 'in_progress') {
+    return (
+      <span className="admin-status-pill status-pill-pink">
+        <Clock size={12} aria-hidden="true" />
+        <span>En progreso</span>
+      </span>
+    )
+  }
+  if (status === 'waitlist') {
+    return (
+      <span className="admin-status-pill status-pill-violet">
+        <Clock size={12} aria-hidden="true" />
+        <span>Lista de espera</span>
+      </span>
+    )
+  }
+  if (status === 'rejected') {
+    return (
+      <span className="admin-status-pill status-pill-ink">
+        <AlertTriangle size={12} aria-hidden="true" />
+        <span>Rechazada</span>
+      </span>
+    )
+  }
+  if (status === 'open') {
+    return (
+      <span className="admin-status-pill status-pill-mint">
+        <UserCheck size={12} aria-hidden="true" />
+        <span>Abierto</span>
+      </span>
+    )
+  }
+  if (status === 'closed') {
+    return (
+      <span className="admin-status-pill status-pill-ink">
+        <AlertTriangle size={12} aria-hidden="true" />
+        <span>Cerrado</span>
+      </span>
+    )
+  }
+  if (status === 'pending') {
+    return (
+      <span className="admin-status-pill status-pill-yellow">
+        <Clock size={12} aria-hidden="true" />
+        <span>Pendiente</span>
+      </span>
+    )
+  }
+  if (status === 'cliente') {
+    return (
+      <span className="admin-status-pill status-pill-violet">
+        <Users size={12} aria-hidden="true" />
+        <span>Cliente</span>
+      </span>
+    )
+  }
+  if (status === 'artista') {
+    return (
+      <span className="admin-status-pill status-pill-mint">
+        <UserCheck size={12} aria-hidden="true" />
+        <span>Artista</span>
+      </span>
+    )
+  }
+  if (status === 'admin' || status === 'administrador') {
+    return (
+      <span className="admin-status-pill status-pill-accent">
+        <ShieldCheck size={12} aria-hidden="true" />
+        <span>Admin</span>
+      </span>
+    )
+  }
+  return (
+    <span className="admin-status-pill status-pill-neutral">
+      <span>{String(status || '-')}</span>
+    </span>
+  )
 }
 
 export function AdminDashboardPage() {
@@ -143,10 +232,6 @@ export function AdminDashboardPage() {
     return () => { mounted = false }
   }, [])
 
-  if (loading) return <LoadingState label="Cargando panel de control administrativo..." />
-  if (error) return <ErrorState message={error.message} onRetry={loadDashboard} />
-  if (!data) return null
-
   // Filtros interactivos para las gráficas
   const [filterPeriod, setFilterPeriod] = useState('all')
   const [filterStatus, setFilterStatus] = useState('all')
@@ -179,62 +264,199 @@ export function AdminDashboardPage() {
     })
   }, [data, filterDiscipline])
 
+  // Cálculo de la Categoría más utilizada
+  const topCategoryData = useMemo(() => {
+    if (!data || !data.artists) return { name: 'Ilustración 2D', count: 0 }
+    const counts = {}
+    data.artists.forEach((a) => {
+      (a.disciplines || []).forEach((d) => {
+        const norm = normalizeDisciplineName(d)
+        counts[norm] = (counts[norm] || 0) + 1
+      })
+    })
+    let bestName = 'Ilustración 2D'
+    let bestCount = 0
+    Object.entries(counts).forEach(([name, count]) => {
+      if (count > bestCount) {
+        bestName = name
+        bestCount = count
+      }
+    })
+    return { name: bestName, count: bestCount }
+  }, [data])
+
+  // Fecha actual formateada para la cabecera
+  const formattedDate = useMemo(() => {
+    try {
+      const d = new Intl.DateTimeFormat('es-ES', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      }).format(new Date())
+      return d.charAt(0).toUpperCase() + d.slice(1)
+    } catch {
+      return 'Septiembre 2026'
+    }
+  }, [])
+
+  if (loading) return <LoadingState label="Cargando panel de control administrativo..." />
+  if (error) return <ErrorState message={error.message} onRetry={loadDashboard} />
+  if (!data) return null
+
+  const totalUsers = data.users.length
+  const clientsCount = data.users.filter((u) => u.role === 'cliente').length
+  const artistsCount = data.users.filter((u) => u.role === 'artista').length
+  const totalArtists = data.artists.length
+  const openArtistsCount = data.artists.filter((a) => a.availability === 'open').length
+  const totalRequests = data.requests.length
+  const completedRequestsCount = data.requests.filter((r) => r.status === 'completed').length
+  const pendingRequestsCount = data.requests.filter((r) => r.status === 'pending').length
   const recentRequests = [...data.requests].slice(-5).reverse()
 
   return (
-    <section className="admin-page" aria-labelledby="admin-title">
-      <div className="admin-header">
-        <div>
-          <p className="eyebrow"><ShieldCheck size={14} inline="true" /> ArtLink / Panel de Control</p>
-          <h1 id="admin-title">Administración Global de la Plataforma</h1>
-          <p className="admin-subtitle">Monitoreo en tiempo real de usuarios, solicitudes, métricas y estado del sistema.</p>
+    <div className="admin-console-view" aria-labelledby="admin-title">
+      {/* 1. Encabezado Superior del Dashboard */}
+      <div className="admin-dashboard-hero">
+        <div className="admin-hero-text">
+          <div className="admin-hero-eyebrow">
+            <ShieldCheck size={14} aria-hidden="true" />
+            <span>Consola Administrativa ArtLink</span>
+          </div>
+          <h1 id="admin-title">Panel administrativo</h1>
+          <p className="admin-subtitle">Supervisa la actividad y la salud de ArtLink</p>
         </div>
-        <button className="button button-outline button-small" type="button" onClick={loadDashboard}>
-          <RefreshCw size={14} /> Actualizar datos
-        </button>
+
+        <div className="admin-hero-actions">
+          <div className="admin-date-badge" title="Fecha seleccionada del sistema">
+            <Calendar size={14} aria-hidden="true" />
+            <span>{formattedDate}</span>
+          </div>
+          <button
+            className="button button-outline button-small admin-btn-refresh"
+            type="button"
+            onClick={loadDashboard}
+            disabled={loading}
+            aria-label="Actualizar datos del panel"
+          >
+            <RefreshCw size={14} className={loading ? 'spin' : ''} aria-hidden="true" />
+            <span>Actualizar datos</span>
+          </button>
+        </div>
       </div>
 
-      {/* 4 Métricas destacadas */}
-      <div className="admin-metrics" aria-label="Métricas del sistema">
-        <article className="admin-metric metric-purple">
-          <div className="metric-icon-wrap"><Users size={22} /></div>
-          <div>
-            <span>Usuarios registrados</span>
-            <strong>{data.users.length}</strong>
-            <small>{data.users.filter(u => u.role === 'cliente').length} clientes · {data.users.filter(u => u.role === 'artista').length} artistas</small>
+      {/* 2. Cuadrícula de 5 Métricas Destacadas */}
+      <div className="admin-metrics-5grid" aria-label="Métricas destacadas del sistema">
+        {/* Métrica 1: Usuarios registrados */}
+        <article className="admin-metric-card">
+          <div className="admin-metric-top">
+            <span className="admin-metric-lbl">Usuarios registrados</span>
+            <span className="admin-metric-status status-positive">
+              <CheckCircle2 size={12} aria-hidden="true" />
+              <span>Activos</span>
+            </span>
           </div>
+          <div className="admin-metric-middle">
+            <div className="admin-metric-icon metric-icon-violet">
+              <Users size={22} aria-hidden="true" />
+            </div>
+            <strong className="admin-metric-val">{totalUsers}</strong>
+          </div>
+          <p className="admin-metric-ctx">
+            {clientsCount} clientes · {artistsCount} artistas
+          </p>
         </article>
 
-        <article className="admin-metric metric-mint">
-          <div className="metric-icon-wrap"><UserCheck size={22} /></div>
-          <div>
-            <span>Artistas activos</span>
-            <strong>{data.artists.length}</strong>
-            <small>{data.artists.filter(a => a.availability === 'open').length} abiertos a comisiones</small>
+        {/* Métrica 2: Artistas activos */}
+        <article className="admin-metric-card">
+          <div className="admin-metric-top">
+            <span className="admin-metric-lbl">Artistas activos</span>
+            <span className="admin-metric-status status-positive">
+              <UserCheck size={12} aria-hidden="true" />
+              <span>En catálogo</span>
+            </span>
           </div>
+          <div className="admin-metric-middle">
+            <div className="admin-metric-icon metric-icon-mint">
+              <UserCheck size={22} aria-hidden="true" />
+            </div>
+            <strong className="admin-metric-val">{totalArtists}</strong>
+          </div>
+          <p className="admin-metric-ctx">
+            {openArtistsCount} abiertos a encargos
+          </p>
         </article>
 
-        <article className="admin-metric metric-yellow">
-          <div className="metric-icon-wrap"><FileText size={22} /></div>
-          <div>
-            <span>Solicitudes procesadas</span>
-            <strong>{data.requests.length}</strong>
-            <small>{data.requests.filter(r => r.status === 'pending').length} pendientes de respuesta</small>
+        {/* Métrica 3: Solicitudes enviadas */}
+        <article className="admin-metric-card">
+          <div className="admin-metric-top">
+            <span className="admin-metric-lbl">Solicitudes enviadas</span>
+            <span className="admin-metric-status status-neutral">
+              <FileText size={12} aria-hidden="true" />
+              <span>Total global</span>
+            </span>
           </div>
+          <div className="admin-metric-middle">
+            <div className="admin-metric-icon metric-icon-yellow">
+              <FileText size={22} aria-hidden="true" />
+            </div>
+            <strong className="admin-metric-val">{totalRequests}</strong>
+          </div>
+          <p className="admin-metric-ctx">
+            {completedRequestsCount} encargos finalizados
+          </p>
         </article>
 
-        <article className="admin-metric metric-pink">
-          <div className="metric-icon-wrap"><Palette size={22} /></div>
-          <div>
-            <span>Categorías activas</span>
-            <strong>{data.categories.length}</strong>
-            <small>Disciplinas y géneros de arte</small>
+        {/* Métrica 4: Solicitudes pendientes */}
+        <article className="admin-metric-card">
+          <div className="admin-metric-top">
+            <span className="admin-metric-lbl">Solicitudes pendientes</span>
+            {pendingRequestsCount > 0 ? (
+              <span className="admin-metric-status status-warning">
+                <Clock size={12} aria-hidden="true" />
+                <span>Requiere atención</span>
+              </span>
+            ) : (
+              <span className="admin-metric-status status-positive">
+                <CheckCircle2 size={12} aria-hidden="true" />
+                <span>Al día</span>
+              </span>
+            )}
           </div>
+          <div className="admin-metric-middle">
+            <div className="admin-metric-icon metric-icon-rose">
+              <Clock size={22} aria-hidden="true" />
+            </div>
+            <strong className="admin-metric-val">{pendingRequestsCount}</strong>
+          </div>
+          <p className="admin-metric-ctx">
+            Esperando respuesta del artista
+          </p>
+        </article>
+
+        {/* Métrica 5: Categoría más utilizada */}
+        <article className="admin-metric-card">
+          <div className="admin-metric-top">
+            <span className="admin-metric-lbl">Categoría más utilizada</span>
+            <span className="admin-metric-status status-accent">
+              <Palette size={12} aria-hidden="true" />
+              <span>Mayor demanda</span>
+            </span>
+          </div>
+          <div className="admin-metric-middle">
+            <div className="admin-metric-icon metric-icon-violet">
+              <Palette size={22} aria-hidden="true" />
+            </div>
+            <strong className="admin-metric-val font-compact">{topCategoryData.name}</strong>
+          </div>
+          <p className="admin-metric-ctx">
+            {topCategoryData.count} artistas especializados
+          </p>
         </article>
       </div>
 
-      {/* Sección Analítica: 3 Gráficas Obligatorias y Filtros Interactivos */}
-      <section className="admin-charts-section" aria-labelledby="admin-analytics-title">
+      {/* 3. Sección Analítica de Gráficas y Filtros */}
+      <section id="reportes-graficas" className="admin-charts-section" aria-labelledby="admin-analytics-title">
         <div className="admin-charts-section-header">
           <div>
             <h2 id="admin-analytics-title">Métricas y Visualizaciones del Sistema</h2>
@@ -330,23 +552,23 @@ export function AdminDashboardPage() {
           )}
         </div>
 
-        {/* Cuadrícula Responsive: 3 columnas escritorio, 2 tablet, 1 móvil */}
+        {/* Cuadrícula de Gráficas: Principal de barras, dona de disciplinas y línea de actividad */}
         <div className="admin-charts-grid" aria-label="Cuadrícula de gráficas administrativas">
-          {/* 1. Gráfica de barras: Solicitudes por estado */}
+          {/* Gráfica 1: Solicitudes por estado */}
           <RequestsStatusChart
             requests={filteredRequests}
             loading={loading}
             error={error}
           />
 
-          {/* 2. Gráfica circular / dona: Artistas por disciplina */}
+          {/* Gráfica 2: Artistas por disciplina */}
           <ArtistsDisciplineChart
             artists={filteredArtists}
             loading={loading}
             error={error}
           />
 
-          {/* 3. Gráfica de líneas: Actividad de solicitudes */}
+          {/* Gráfica 3: Actividad de solicitudes */}
           <RequestsActivityChart
             requests={filteredRequests}
             period={filterPeriod}
@@ -356,31 +578,75 @@ export function AdminDashboardPage() {
         </div>
       </section>
 
-      {/* Fila intermedia: Alertas del sistema y Estado de Plataforma */}
+      {/* 4. Solicitudes Recientes con Estados Visuales en Texto e Iconos */}
+      <section className="admin-panel-card admin-recent-table" aria-labelledby="recent-requests-title">
+        <div className="panel-card-header">
+          <div>
+            <h2 id="recent-requests-title">Solicitudes recientes en la plataforma</h2>
+            <p className="subtext">Supervisión de los últimos encargos y comisiones registrados.</p>
+          </div>
+          <Link to="/admin/solicitudes" className="button button-outline button-small">
+            Ver todas <ArrowRight size={14} aria-hidden="true" />
+          </Link>
+        </div>
+
+        <div className="admin-table-wrap">
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Presupuesto</th>
+                <th>Fecha Estimada</th>
+                <th>Estado</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              {recentRequests.map((req) => (
+                <tr key={req.id}>
+                  <td><strong>#{req.id.slice(-6)}</strong></td>
+                  <td><strong>${req.budget} USD</strong></td>
+                  <td>{req.desiredDate}</td>
+                  <td>
+                    {renderStatusBadge(req.status)}
+                  </td>
+                  <td>
+                    <Link to="/admin/solicitudes" className="button button-secondary button-small">
+                      Gestionar
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      {/* 5. Alertas del Sistema y Estado de Infraestructura */}
       <div className="admin-status-row">
         {/* Panel de Alertas */}
         <section className="admin-panel-card" aria-labelledby="alerts-title">
           <div className="panel-card-header">
-            <h2 id="alerts-title"><AlertTriangle size={18} className="icon-warn" /> Alertas del sistema</h2>
+            <h2 id="alerts-title"><AlertTriangle size={18} className="icon-warn" aria-hidden="true" /> Alertas del sistema</h2>
             <span className="badge badge-yellow">3 activas</span>
           </div>
           <div className="alert-list">
             <div className="alert-item alert-warning">
-              <Clock size={16} />
+              <Clock size={16} aria-hidden="true" />
               <div>
-                <strong>Solicitudes pendientes</strong>
-                <p>Hay {data.requests.filter(r => r.status === 'pending').length} solicitudes esperando primera respuesta del artista.</p>
+                <strong>Solicitudes pendientes de respuesta</strong>
+                <p>Hay {pendingRequestsCount} solicitudes esperando confirmación de los artistas.</p>
               </div>
             </div>
             <div className="alert-item alert-info">
-              <UserCheck size={16} />
+              <UserCheck size={16} aria-hidden="true" />
               <div>
-                <strong>Nuevos registros</strong>
-                <p>Se registraron {data.users.slice(-3).length} cuentas nuevas esta semana.</p>
+                <strong>Nuevos registros en plataforma</strong>
+                <p>Se registraron {data.users.slice(-3).length} cuentas recientemente verificadas.</p>
               </div>
             </div>
             <div className="alert-item alert-success">
-              <CheckCircle2 size={16} />
+              <CheckCircle2 size={16} aria-hidden="true" />
               <div>
                 <strong>Catálogo verificado</strong>
                 <p>Las {data.categories.length} categorías están optimizadas para la búsqueda pública.</p>
@@ -389,10 +655,10 @@ export function AdminDashboardPage() {
           </div>
         </section>
 
-        {/* Estado de plataforma */}
+        {/* Estado de infraestructura */}
         <section className="admin-panel-card" aria-labelledby="server-status-title">
           <div className="panel-card-header">
-            <h2 id="server-status-title"><Server size={18} /> Estado de infraestructura</h2>
+            <h2 id="server-status-title"><Server size={18} aria-hidden="true" /> Estado de infraestructura</h2>
             <span className="badge badge-mint">Operacional</span>
           </div>
           <div className="system-health-grid">
@@ -416,66 +682,22 @@ export function AdminDashboardPage() {
         </section>
       </div>
 
-      {/* Solicitudes recientes */}
-      <section className="admin-panel-card admin-recent-table" aria-labelledby="recent-requests-title">
-        <div className="panel-card-header">
-          <div>
-            <h2 id="recent-requests-title">Solicitudes recientes en la plataforma</h2>
-            <p className="subtext">Últimos encargos registrados por los clientes.</p>
-          </div>
-          <Link to="/admin/solicitudes" className="button button-outline button-small">
-            Ver todas <ArrowRight size={14} />
-          </Link>
-        </div>
-
-        <div className="admin-table-wrap">
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Presupuesto</th>
-                <th>Fecha Entrega</th>
-                <th>Estado</th>
-                <th>Acción</th>
-              </tr>
-            </thead>
-            <tbody>
-              {recentRequests.map((req) => (
-                <tr key={req.id}>
-                  <td><strong>#{req.id.slice(-6)}</strong></td>
-                  <td>${req.budget} USD</td>
-                  <td>{req.desiredDate}</td>
-                  <td>
-                    <Badge tone={statusBadgeTone(req.status)}>{req.status}</Badge>
-                  </td>
-                  <td>
-                    <Link to="/admin/solicitudes" className="button button-secondary button-small">
-                      Gestionar
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      {/* Accesos rápidos a recursos */}
+      {/* 6. Accesos Rápidos a Recursos */}
       <nav className="admin-links" aria-label="Navegación de recursos administrativos">
         <Link to="/admin/usuarios" className="admin-nav-link">
-          <Users size={18} /> Gestionar Usuarios ({data.users.length})
+          <Users size={18} aria-hidden="true" /> Gestionar Usuarios ({data.users.length})
         </Link>
         <Link to="/admin/artistas" className="admin-nav-link">
-          <UserCheck size={18} /> Gestionar Artistas ({data.artists.length})
+          <UserCheck size={18} aria-hidden="true" /> Gestionar Artistas ({data.artists.length})
         </Link>
         <Link to="/admin/categorias" className="admin-nav-link">
-          <Palette size={18} /> Gestionar Categorías ({data.categories.length})
+          <Palette size={18} aria-hidden="true" /> Gestionar Categorías ({data.categories.length})
         </Link>
         <Link to="/admin/solicitudes" className="admin-nav-link">
-          <FileText size={18} /> Gestionar Solicitudes ({data.requests.length})
+          <FileText size={18} aria-hidden="true" /> Gestionar Solicitudes ({data.requests.length})
         </Link>
       </nav>
-    </section>
+    </div>
   )
 }
 
@@ -485,6 +707,7 @@ export function AdminResourcePage({ resource }) {
   const [query, setQuery] = useState('')
   const [filterValue, setFilterValue] = useState('all')
   const [editing, setEditing] = useState(null)
+  const [viewingItem, setViewingItem] = useState(null)
   const [isNew, setIsNew] = useState(false)
   const [form, setForm] = useState({})
   const [loading, setLoading] = useState(true)
@@ -605,22 +828,26 @@ export function AdminResourcePage({ resource }) {
 
   return (
     <section className="admin-page" aria-labelledby="resource-title">
-      <Link className="back-link" to="/admin">
-        <ArrowLeft size={16} aria-hidden="true" /> Volver al Dashboard
-      </Link>
+      {/* Breadcrumb de navegación */}
+      <nav aria-label="Ruta de navegación" className="admin-resource-breadcrumb">
+        <Link to="/admin">Panel administrativo</Link>
+        <ChevronRight size={14} aria-hidden="true" />
+        <span aria-current="page">{config.title}</span>
+      </nav>
 
+      {/* Encabezado de la Consola */}
       <div className="admin-header">
         <div>
-          <p className="eyebrow">Gestión CRUD de Plataforma</p>
+          <p className="eyebrow">Consola de gestión</p>
           <h1 id="resource-title">{config.title}</h1>
           <p className="admin-subtitle">{config.description}</p>
         </div>
         <Button type="button" onClick={openNewForm}>
-          <Plus size={16} aria-hidden="true" /> Nuevo {config.singularTitle}
+          <Plus size={16} aria-hidden="true" /> Agregar {config.singularTitle}
         </Button>
       </div>
 
-      {/* Toolbar con Búsqueda y Filtros */}
+      {/* Toolbar con Búsqueda, Filtros y Conteo */}
       <div className="admin-toolbar" aria-label="Herramientas de búsqueda y filtrado">
         <div className="search-field-wrap">
           <Search size={16} className="search-icon" aria-hidden="true" />
@@ -638,7 +865,7 @@ export function AdminResourcePage({ resource }) {
 
         {config.filterOptions.length > 1 && (
           <div className="filter-select-wrap">
-            <Filter size={15} />
+            <Filter size={15} aria-hidden="true" />
             <select
               value={filterValue}
               onChange={(e) => {
@@ -655,6 +882,10 @@ export function AdminResourcePage({ resource }) {
             </select>
           </div>
         )}
+
+        <div className="admin-result-count" aria-live="polite">
+          {filteredAll.length} {filteredAll.length === 1 ? 'registro encontrado' : 'registros encontrados'}
+        </div>
       </div>
 
       {notice && <p className="success-message" role="status">{notice}</p>}
@@ -716,6 +947,59 @@ export function AdminResourcePage({ resource }) {
         </form>
       </Modal>
 
+      {/* Modal de Detalle / Ver */}
+      <Modal open={Boolean(viewingItem)} title={`Detalles de ${config.singularTitle}`} onClose={() => setViewingItem(null)}>
+        {viewingItem && (
+          <div className="admin-detail-view">
+            <div className="detail-meta">
+              <span className="table-id">ID: #{viewingItem.id}</span>
+            </div>
+            <dl className="admin-detail-list">
+              {config.fields.map((f) => (
+                <div key={f.name} className="detail-row">
+                  <dt>{f.label}:</dt>
+                  <dd>
+                    {f.type === 'checkbox' ? (
+                      viewingItem[f.name] ? (
+                        <span className="admin-status-badge is-active">
+                          <CheckCircle2 size={13} aria-hidden="true" />
+                          <span>Activo</span>
+                        </span>
+                      ) : (
+                        <span className="admin-status-badge is-closed">
+                          <AlertTriangle size={13} aria-hidden="true" />
+                          <span>Inactivo</span>
+                        </span>
+                      )
+                    ) : f.name === 'status' || f.name === 'availability' || f.name === 'role' ? (
+                      renderStatusBadge(viewingItem[f.name])
+                    ) : (
+                      String(viewingItem[f.name] ?? '-')
+                    )}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+            <div className="crud-form-actions">
+              <Button
+                variant="outline"
+                type="button"
+                onClick={() => {
+                  const itm = viewingItem
+                  setViewingItem(null)
+                  openEditForm(itm)
+                }}
+              >
+                <Edit3 size={14} aria-hidden="true" /> Editar
+              </Button>
+              <Button type="button" onClick={() => setViewingItem(null)}>
+                Cerrar
+              </Button>
+            </div>
+          </div>
+        )}
+      </Modal>
+
       {/* Modal de Confirmación de Eliminación */}
       <Modal open={Boolean(itemToDelete)} title="Confirmar eliminación" onClose={() => setItemToDelete(null)}>
         {itemToDelete && (
@@ -759,7 +1043,7 @@ export function AdminResourcePage({ resource }) {
         <>
           <div className="admin-table-wrap">
             <table className="admin-table">
-              <caption className="sr-only">Tabla de {config.title}</caption>
+              <caption className="sr-only">Tabla de gestión de {config.title}</caption>
               <thead>
                 <tr>
                   <th scope="col">ID</th>
@@ -776,9 +1060,19 @@ export function AdminResourcePage({ resource }) {
                     {config.fields.slice(0, 4).map((f) => (
                       <td key={f.name}>
                         {f.type === 'checkbox' ? (
-                          item[f.name] ? <Badge tone="mint">Sí</Badge> : <Badge tone="closed">No</Badge>
+                          item[f.name] ? (
+                            <span className="admin-status-badge is-active">
+                              <CheckCircle2 size={13} aria-hidden="true" />
+                              <span>Activo</span>
+                            </span>
+                          ) : (
+                            <span className="admin-status-badge is-closed">
+                              <AlertTriangle size={13} aria-hidden="true" />
+                              <span>Inactivo</span>
+                            </span>
+                          )
                         ) : f.name === 'status' || f.name === 'availability' || f.name === 'role' ? (
-                          <Badge tone={statusBadgeTone(item[f.name])}>{String(item[f.name] || '-')}</Badge>
+                          renderStatusBadge(item[f.name])
                         ) : (
                           String(item[f.name] ?? '-')
                         )}
@@ -790,18 +1084,30 @@ export function AdminResourcePage({ resource }) {
                           variant="outline"
                           className="button-small"
                           type="button"
+                          onClick={() => setViewingItem(item)}
+                          title="Ver detalle"
+                          aria-label={`Ver detalle de ${item.name || item.title || item.id}`}
+                        >
+                          <Eye size={14} aria-hidden="true" /> Ver
+                        </Button>
+                        <Button
+                          variant="outline"
+                          className="button-small"
+                          type="button"
                           onClick={() => openEditForm(item)}
                           title="Editar"
+                          aria-label={`Editar ${item.name || item.title || item.id}`}
                         >
-                          <Edit3 size={14} /> Editar
+                          <Edit3 size={14} aria-hidden="true" /> Editar
                         </Button>
                         <button
                           className="button button-small button-outline button-danger"
                           type="button"
                           onClick={() => setItemToDelete(item)}
                           title="Eliminar"
+                          aria-label={`Eliminar ${item.name || item.title || item.id}`}
                         >
-                          <Trash2 size={14} />
+                          <Trash2 size={14} aria-hidden="true" /> Eliminar
                         </button>
                       </div>
                     </td>
@@ -818,11 +1124,31 @@ export function AdminResourcePage({ resource }) {
                 <div className="card-mobile-top">
                   <span className="table-id">ID: #{item.id.slice(-6)}</span>
                   <div className="card-mobile-actions">
-                    <Button variant="outline" className="button-small" onClick={() => openEditForm(item)}>
-                      <Edit3 size={13} />
+                    <Button
+                      variant="outline"
+                      className="button-small"
+                      onClick={() => setViewingItem(item)}
+                      title="Ver"
+                      aria-label={`Ver ${item.id}`}
+                    >
+                      <Eye size={13} aria-hidden="true" />
                     </Button>
-                    <button className="button button-small button-outline button-danger" onClick={() => setItemToDelete(item)}>
-                      <Trash2 size={13} />
+                    <Button
+                      variant="outline"
+                      className="button-small"
+                      onClick={() => openEditForm(item)}
+                      title="Editar"
+                      aria-label={`Editar ${item.id}`}
+                    >
+                      <Edit3 size={13} aria-hidden="true" />
+                    </Button>
+                    <button
+                      className="button button-small button-outline button-danger"
+                      onClick={() => setItemToDelete(item)}
+                      title="Eliminar"
+                      aria-label={`Eliminar ${item.id}`}
+                    >
+                      <Trash2 size={13} aria-hidden="true" />
                     </button>
                   </div>
                 </div>
@@ -830,9 +1156,25 @@ export function AdminResourcePage({ resource }) {
                   {config.fields.slice(0, 4).map((f) => (
                     <div key={f.name} className="mobile-field">
                       <span>{f.label}:</span>
-                      <strong>
-                        {f.type === 'checkbox' ? (item[f.name] ? 'Sí' : 'No') : String(item[f.name] ?? '-')}
-                      </strong>
+                      <div>
+                        {f.type === 'checkbox' ? (
+                          item[f.name] ? (
+                            <span className="admin-status-badge is-active">
+                              <CheckCircle2 size={13} aria-hidden="true" />
+                              <span>Activo</span>
+                            </span>
+                          ) : (
+                            <span className="admin-status-badge is-closed">
+                              <AlertTriangle size={13} aria-hidden="true" />
+                              <span>Inactivo</span>
+                            </span>
+                          )
+                        ) : f.name === 'status' || f.name === 'availability' || f.name === 'role' ? (
+                          renderStatusBadge(item[f.name])
+                        ) : (
+                          <strong>{String(item[f.name] ?? '-')}</strong>
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>
