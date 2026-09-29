@@ -4,7 +4,8 @@ import {
 } from 'recharts'
 import {
   Users, UserCheck, Palette, FileText, CheckCircle2, AlertTriangle, Plus, Search,
-  Trash2, Edit3, Filter, ArrowLeft, ShieldCheck, Clock, Server, ArrowRight, RefreshCw
+  Trash2, Edit3, Filter, ArrowLeft, ShieldCheck, Clock, Server, ArrowRight, RefreshCw,
+  Calendar, Layers, RotateCcw, BarChart3
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import Badge from '../components/Badge'
@@ -13,6 +14,10 @@ import EmptyState from '../components/EmptyState'
 import ErrorState from '../components/ErrorState'
 import LoadingState from '../components/LoadingState'
 import Modal from '../components/Modal'
+import RequestsStatusChart from '../components/admin/RequestsStatusChart'
+import ArtistsDisciplineChart from '../components/admin/ArtistsDisciplineChart'
+import RequestsActivityChart from '../components/admin/RequestsActivityChart'
+import { filterRequests, normalizeDisciplineName } from '../utils/adminChartUtils'
 import { getUsers, createUser, updateUser, deleteUser } from '../services/userService'
 import { getArtists, createArtist, updateArtist, deleteArtist } from '../services/artistService'
 import { getCategories, createCategory, updateCategory, deleteCategory } from '../services/categoryService'
@@ -142,25 +147,37 @@ export function AdminDashboardPage() {
   if (error) return <ErrorState message={error.message} onRetry={loadDashboard} />
   if (!data) return null
 
-  // Prepara datos para gráficos Recharts
-  const requestsByStatus = Object.entries(
-    data.requests.reduce((acc, req) => {
-      const label = req.status === 'pending' ? 'Pendientes'
-        : req.status === 'in_review' ? 'En revisión'
-        : req.status === 'accepted' ? 'Aceptadas'
-        : req.status === 'in_progress' ? 'En progreso'
-        : req.status === 'completed' ? 'Completadas'
-        : 'Rechazadas'
-      acc[label] = (acc[label] || 0) + 1
-      return acc
-    }, {})
-  ).map(([name, total]) => ({ name, total }))
+  // Filtros interactivos para las gráficas
+  const [filterPeriod, setFilterPeriod] = useState('all')
+  const [filterStatus, setFilterStatus] = useState('all')
+  const [filterDiscipline, setFilterDiscipline] = useState('all')
 
-  const usersByRole = [
-    { name: 'Clientes', value: data.users.filter((u) => u.role === 'cliente').length, color: '#8B5CF6' },
-    { name: 'Artistas', value: data.users.filter((u) => u.role === 'artista').length, color: '#2DD4BF' },
-    { name: 'Admins', value: data.users.filter((u) => u.role === 'admin').length, color: '#FEF08A' }
-  ]
+  const resetFilters = () => {
+    setFilterPeriod('all')
+    setFilterStatus('all')
+    setFilterDiscipline('all')
+  }
+
+  // Solicitudes filtradas dinámicamente según periodo, estado y disciplina
+  const filteredRequests = useMemo(() => {
+    if (!data) return []
+    return filterRequests(data.requests, {
+      period: filterPeriod,
+      status: filterStatus,
+      discipline: filterDiscipline,
+      artists: data.artists
+    })
+  }, [data, filterPeriod, filterStatus, filterDiscipline])
+
+  // Artistas filtrados para la gráfica de disciplinas
+  const filteredArtists = useMemo(() => {
+    if (!data) return []
+    if (filterDiscipline === 'all') return data.artists
+    return data.artists.filter((artist) => {
+      const disciplines = (artist.disciplines || []).map((d) => normalizeDisciplineName(d))
+      return disciplines.includes(filterDiscipline)
+    })
+  }, [data, filterDiscipline])
 
   const recentRequests = [...data.requests].slice(-5).reverse()
 
@@ -216,53 +233,128 @@ export function AdminDashboardPage() {
         </article>
       </div>
 
-      {/* Gráficos interactivos Recharts */}
-      <div className="admin-charts">
-        <section className="chart-card" aria-labelledby="chart-status-title">
-          <div className="chart-header">
-            <h2 id="chart-status-title">Solicitudes por estado</h2>
-            <span className="chart-badge">Total: {data.requests.length}</span>
+      {/* Sección Analítica: 3 Gráficas Obligatorias y Filtros Interactivos */}
+      <section className="admin-charts-section" aria-labelledby="admin-analytics-title">
+        <div className="admin-charts-section-header">
+          <div>
+            <h2 id="admin-analytics-title">Métricas y Visualizaciones del Sistema</h2>
+            <p>Monitoreo cuantitativo de solicitudes, disciplinas artísticas y actividad temporal.</p>
           </div>
-          <ResponsiveContainer width="100%" height={260}>
-            <BarChart data={requestsByStatus}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
-              <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#1E192B' }} />
-              <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: '#1E192B' }} />
-              <Tooltip
-                contentStyle={{ background: '#FFF', border: '2px solid #1E192B', borderRadius: '4px', fontWeight: 'bold' }}
-              />
-              <Bar dataKey="total" fill="#8B5CF6" radius={[4, 4, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </section>
+          <div className="admin-charts-header-badges">
+            <span className="demo-data-badge">
+              JSON Server + Datos Demostrativos
+            </span>
+          </div>
+        </div>
 
-        <section className="chart-card" aria-labelledby="chart-roles-title">
-          <div className="chart-header">
-            <h2 id="chart-roles-title">Distribución de usuarios</h2>
-            <span className="chart-badge">{data.users.length} cuentas</span>
+        {/* Barra de Filtros Funcionales */}
+        <div className="admin-charts-filters-bar" role="search" aria-label="Filtros para las gráficas analíticas">
+          {/* Filtro de Periodo */}
+          <div className="chart-filter-item">
+            <label htmlFor="filter-chart-period">
+              <Calendar size={14} aria-hidden="true" /> Periodo:
+            </label>
+            <select
+              id="filter-chart-period"
+              className="chart-filter-select"
+              value={filterPeriod}
+              onChange={(e) => setFilterPeriod(e.target.value)}
+              aria-label="Seleccionar periodo temporal para las gráficas"
+            >
+              <option value="all">Todo el histórico</option>
+              <option value="7d">Últimos 7 días</option>
+              <option value="30d">Últimos 30 días</option>
+              <option value="12m">Últimos 12 meses</option>
+            </select>
           </div>
-          <ResponsiveContainer width="100%" height={260}>
-            <PieChart>
-              <Pie
-                data={usersByRole}
-                dataKey="value"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                outerRadius={85}
-                innerRadius={35}
-                paddingAngle={4}
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-              >
-                {usersByRole.map((entry) => (
-                  <Cell key={entry.name} fill={entry.color} stroke="#1E192B" strokeWidth={1.5} />
-                ))}
-              </Pie>
-              <Tooltip contentStyle={{ background: '#FFF', border: '2px solid #1E192B' }} />
-            </PieChart>
-          </ResponsiveContainer>
-        </section>
-      </div>
+
+          {/* Filtro de Estado de Solicitud */}
+          <div className="chart-filter-item">
+            <label htmlFor="filter-chart-status">
+              <Filter size={14} aria-hidden="true" /> Estado:
+            </label>
+            <select
+              id="filter-chart-status"
+              className="chart-filter-select"
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+              aria-label="Filtrar por estado de solicitud"
+            >
+              <option value="all">Todos los estados</option>
+              <option value="pending">Pendientes</option>
+              <option value="waitlist">En lista de espera</option>
+              <option value="accepted">Aceptadas</option>
+              <option value="in_progress">En progreso</option>
+              <option value="completed">Completadas</option>
+              <option value="rejected">Rechazadas</option>
+            </select>
+          </div>
+
+          {/* Filtro de Disciplina */}
+          <div className="chart-filter-item">
+            <label htmlFor="filter-chart-discipline">
+              <Layers size={14} aria-hidden="true" /> Disciplina:
+            </label>
+            <select
+              id="filter-chart-discipline"
+              className="chart-filter-select"
+              value={filterDiscipline}
+              onChange={(e) => setFilterDiscipline(e.target.value)}
+              aria-label="Filtrar por disciplina artística"
+            >
+              <option value="all">Todas las disciplinas</option>
+              <option value="Ilustración 2D">Ilustración 2D</option>
+              <option value="Modelado 3D">Modelado 3D</option>
+              <option value="Animación">Animación</option>
+              <option value="Pixel Art">Pixel Art</option>
+              <option value="Emotes">Emotes</option>
+              <option value="Concept Art">Concept Art</option>
+              <option value="Retrato">Retrato</option>
+              <option value="Diseño de personajes">Diseño de personajes</option>
+              <option value="Fondos y escenarios">Fondos y escenarios</option>
+              <option value="Arte 3D">Arte 3D</option>
+              <option value="Render">Render</option>
+            </select>
+          </div>
+
+          {(filterPeriod !== 'all' || filterStatus !== 'all' || filterDiscipline !== 'all') && (
+            <button
+              type="button"
+              className="chart-filter-reset"
+              onClick={resetFilters}
+              aria-label="Restablecer todos los filtros a sus valores predeterminados"
+            >
+              <RotateCcw size={12} aria-hidden="true" />
+              Restablecer filtros
+            </button>
+          )}
+        </div>
+
+        {/* Cuadrícula Responsive: 3 columnas escritorio, 2 tablet, 1 móvil */}
+        <div className="admin-charts-grid" aria-label="Cuadrícula de gráficas administrativas">
+          {/* 1. Gráfica de barras: Solicitudes por estado */}
+          <RequestsStatusChart
+            requests={filteredRequests}
+            loading={loading}
+            error={error}
+          />
+
+          {/* 2. Gráfica circular / dona: Artistas por disciplina */}
+          <ArtistsDisciplineChart
+            artists={filteredArtists}
+            loading={loading}
+            error={error}
+          />
+
+          {/* 3. Gráfica de líneas: Actividad de solicitudes */}
+          <RequestsActivityChart
+            requests={filteredRequests}
+            period={filterPeriod}
+            loading={loading}
+            error={error}
+          />
+        </div>
+      </section>
 
       {/* Fila intermedia: Alertas del sistema y Estado de Plataforma */}
       <div className="admin-status-row">
