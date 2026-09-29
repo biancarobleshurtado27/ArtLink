@@ -38,8 +38,10 @@ export function LoginPage() {
     setError('')
     setSubmitting(true)
     try {
-      await loginWithCredentials(form.email.trim(), form.passwordDemo)
-      navigate(location.state?.from?.pathname || '/solicitudes', { replace: true })
+      const loggedUser = await loginWithCredentials(form.email.trim(), form.passwordDemo)
+      const isAdmin = loggedUser?.role === ROLES.ADMIN || loggedUser?.role === 'admin' || loggedUser?.role === 'administrador'
+      const fallback = isAdmin ? '/admin' : '/solicitudes'
+      navigate(location.state?.from?.pathname || fallback, { replace: true })
     } catch {
       setError('No pudimos iniciar sesión. Revisa tu correo y contraseña demo.')
     } finally {

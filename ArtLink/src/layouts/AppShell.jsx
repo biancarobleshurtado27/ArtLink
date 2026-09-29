@@ -231,18 +231,32 @@ export default function AppShell() {
 
         {/* 7-9. SECCIÓN INFERIOR (Panel Creador + Botón Opciones Usuario) */}
         <div className="sidebar-footer">
-          {/* Icono de Creador / Panel de Artista */}
-          <NavLink
-            to={user?.role === ROLES.ARTIST ? "/artista/panel" : "/registro?role=artist"}
-            onClick={closeMenus}
-            aria-label={user?.role === ROLES.ARTIST ? "Panel de artista" : "Unirse como creador"}
-            className={({ isActive }) => (isActive ? 'sidebar-nav-item is-active' : 'sidebar-nav-item')}
-          >
-            <Star size={26} className="sidebar-icon" aria-hidden="true" />
-            <span className="sidebar-tooltip" role="tooltip">
-              {user?.role === ROLES.ARTIST ? 'Panel de artista' : 'Convertirse en creador'}
-            </span>
-          </NavLink>
+          {/* Icono de Creador / Panel de Artista o Consola Admin */}
+          {(user?.role === ROLES.ADMIN || user?.role === 'admin' || user?.role === 'administrador') ? (
+            <NavLink
+              to="/admin"
+              onClick={closeMenus}
+              aria-label="Panel administrativo"
+              className={({ isActive }) => (isActive ? 'sidebar-nav-item is-active' : 'sidebar-nav-item')}
+            >
+              <LayoutDashboard size={26} className="sidebar-icon" aria-hidden="true" />
+              <span className="sidebar-tooltip" role="tooltip">
+                Panel administrativo
+              </span>
+            </NavLink>
+          ) : (
+            <NavLink
+              to={user?.role === ROLES.ARTIST ? "/artista/panel" : "/registro?role=artist"}
+              onClick={closeMenus}
+              aria-label={user?.role === ROLES.ARTIST ? "Panel de artista" : "Unirse como creador"}
+              className={({ isActive }) => (isActive ? 'sidebar-nav-item is-active' : 'sidebar-nav-item')}
+            >
+              <Star size={26} className="sidebar-icon" aria-hidden="true" />
+              <span className="sidebar-tooltip" role="tooltip">
+                {user?.role === ROLES.ARTIST ? 'Panel de artista' : 'Convertirse en creador'}
+              </span>
+            </NavLink>
+          )}
 
           {/* Botón de Menú de Usuario (Tres Puntos) */}
           <div className="sidebar-user-wrap" ref={userAreaRef}>
@@ -336,7 +350,12 @@ export default function AppShell() {
                     <ExternalLink size={16} className="user-popover-external-icon" aria-hidden="true" />
                   </a>
 
-                  {user?.role === ROLES.ARTIST ? (
+                  {(user?.role === ROLES.ADMIN || user?.role === 'admin' || user?.role === 'administrador') ? (
+                    <NavLink to="/admin" role="menuitem" onClick={closeMenus} className="user-popover-item is-admin-link">
+                      <LayoutDashboard size={18} className="user-popover-icon" aria-hidden="true" />
+                      <span>Panel administrativo</span>
+                    </NavLink>
+                  ) : user?.role === ROLES.ARTIST ? (
                     <NavLink to="/artista/panel" role="menuitem" onClick={closeMenus} className="user-popover-item">
                       <Star size={18} className="user-popover-icon" aria-hidden="true" />
                       <span>Panel de artista</span>

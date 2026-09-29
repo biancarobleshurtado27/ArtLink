@@ -26,7 +26,7 @@ export default function AppRouter() {
     <BrowserRouter>
       <Routes>
         {/* Rutas exclusivas del Administrador con Layout dedicado */}
-        <Route element={<RoleRoute allowedRoles={[ROLES.ADMIN]} />}>
+        <Route element={<RoleRoute allowedRoles={[ROLES.ADMIN, 'admin', 'administrador']} />}>
           <Route element={<AdminLayout />}>
             <Route path="/admin" element={<AdminDashboardPage />} />
             <Route path="/admin/usuarios" element={<AdminResourcePage resource="usuarios" />} />
