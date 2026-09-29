@@ -191,7 +191,7 @@ export default function AdminLayout() {
       )}
 
       {/* Contenedor Principal */}
-      <div className="admin-shell-body">
+      <div className="admin-main admin-shell-body">
         {/* Encabezado Superior de Administración */}
         <header className="admin-topbar" aria-label="Barra superior de administración">
           <div className="admin-topbar-left">
