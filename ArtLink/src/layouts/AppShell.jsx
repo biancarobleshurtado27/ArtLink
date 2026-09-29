@@ -25,6 +25,7 @@ import {
   User,
   UserRound,
   X,
+  ArrowLeft,
 } from 'lucide-react'
 import logoArtLink from '../assets/logo-artlink.png'
 import useAuth from '../hooks/useAuth'
@@ -101,6 +102,35 @@ export default function AppShell() {
     { to: '/mensajes', label: 'Mensajes', icon: MessageCircle },
     { to: '/perfil', label: 'Perfil', icon: UserRound },
   ]
+
+  const isAdmin = user?.role === ROLES.ADMIN || user?.role === 'admin' || user?.role === 'administrador'
+  const isSettingsPage = location.pathname === '/ajustes'
+
+  // Si un administrador entra a /ajustes, se elimina el navbar y el sidebar
+  // para mostrar exclusivamente la interfaz de ajustes
+  if (isAdmin && isSettingsPage) {
+    return (
+      <div className="app-shell app-shell-public app-shell-settings-clean">
+        <a className="skip-link" href="#main-content">Saltar al contenido principal</a>
+
+        <div className="app-main-layout app-main-public">
+          <main id="main-content" className="main-content">
+            <PageContainer>
+              <div className="admin-return-link-bar" style={{ padding: '1.25rem 0 0.5rem', display: 'flex', justifyContent: 'flex-start' }}>
+                <Link to="/admin" className="admin-public-switch" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none' }}>
+                  <ArrowLeft size={16} aria-hidden="true" />
+                  <span>Volver al panel administrativo</span>
+                </Link>
+              </div>
+              <Outlet />
+            </PageContainer>
+          </main>
+          <Footer />
+          <AssistantWidget />
+        </div>
+      </div>
+    )
+  }
 
   // Si no hay usuario autenticado, renderizar la vista pública estándar (sin sidebar)
   if (!user) {
