@@ -118,12 +118,26 @@ export default function ArtistProfilePage() {
           <Link to="/explorar" className="artist-v2-banner-pill">
             <ArrowLeft size={13} aria-hidden="true" /> Directorio de artistas
           </Link>
-          <span className="artist-v2-banner-pill">
-            <BadgeCheck size={14} color="#10B981" aria-hidden="true" />
-            100% ARTISTA VERIFICADO
-          </span>
+          {profile.isDemo ? (
+            <span className="artist-v2-banner-pill" style={{ background: '#FECDD3', color: '#881337', borderColor: '#881337' }}>
+              <Sparkles size={14} color="#881337" aria-hidden="true" />
+              MODO DEMOSTRACIÓN VISUAL
+            </span>
+          ) : (
+            <span className="artist-v2-banner-pill">
+              <BadgeCheck size={14} color="#10B981" aria-hidden="true" />
+              100% ARTISTA VERIFICADO
+            </span>
+          )}
         </div>
       </section>
+
+      {profile.isDemo && (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', background: '#BE123C', color: '#FFF', padding: '0.8rem', textAlign: 'center', fontSize: '0.9rem', fontWeight: 'bold' }}>
+          <Sparkles size={16} aria-hidden="true" />
+          <span>DEMOSTRACIÓN VISUAL: {profile.demoDisclaimer || 'Este es un perfil generado para propósitos de demostración. Esta no es una oferta comercial real.'}</span>
+        </div>
+      )}
 
       {/* ── 2. TARJETA DE ENCABEZADO CON AVATAR EN LA LÍNEA DEL BANNER ── */}
       <section className="artist-v2-header-card" aria-label={`Información de ${profile.displayName}`}>

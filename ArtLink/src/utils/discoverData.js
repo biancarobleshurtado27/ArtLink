@@ -101,6 +101,7 @@ export function buildArtworkCards(portfolioItems = [], artists = [], categories 
         artistPrice: toNumber(artist.basePrice),
         artistRating: toNumber(artist.rating),
         availability: getAvailabilityStatus(artist),
+        isDemo: artist.isDemo || false,
         categoryIds: (categories || [])
           .filter((category) => categoryMatches(category.name, item.category))
           .map((category) => category.id),
@@ -203,6 +204,7 @@ export function buildShowcaseCards(artists = [], portfolioItems = [], { limit = 
       image: item.image,
       tapeClass: tapes[slot % tapes.length],
       badgeClass: badges[(slot + seed) % badges.length],
+      isDemo: artist.isDemo || false,
     }
   })
 }

@@ -3,6 +3,7 @@ import { getArtistById } from '../services/artistService'
 import { getCommissions } from '../services/commissionService'
 import { getPortfolioItems } from '../services/portfolioService'
 import { getReviewsByArtistId } from '../services/reviewService'
+import { getRealArtistProfile, getRealArtistPortfolio, getRealArtistCommissions, getRealArtistReviews } from '../services/realArtistsService'
 
 export default function useArtistProfile(artistId) {
   const [profile, setProfile] = useState(null)
@@ -14,12 +15,24 @@ export default function useArtistProfile(artistId) {
 
   useEffect(() => {
     let active = true
-    Promise.all([
-      getArtistById(artistId),
-      getPortfolioItems({ artistId }),
-      getCommissions({ artistId }),
-      getReviewsByArtistId(artistId).catch(() => []),
-    ])
+    
+    const isExternal = artistId && artistId.startsWith('ext-')
+    
+    const fetchPromises = isExternal
+      ? [
+          getRealArtistProfile(artistId),
+          getRealArtistPortfolio(artistId),
+          getRealArtistCommissions(artistId),
+          getRealArtistReviews(artistId),
+        ]
+      : [
+          getArtistById(artistId),
+          getPortfolioItems({ artistId }),
+          getCommissions({ artistId }),
+          getReviewsByArtistId(artistId).catch(() => []),
+        ]
+
+    Promise.all(fetchPromises)
       .then(([artist, items, artistCommissions, artistReviews]) => {
         if (!active) return
         setProfile(artist)

@@ -145,7 +145,13 @@ export default function NewRequestPage() {
         status: 'waitlist',
         createdAt: new Date().toISOString(),
       }
-      const request = await createRequest(requestPayload)
+      
+      let request;
+      if (profile.isDemo) {
+        request = { ...requestPayload, id: 'demo-req-123' };
+      } else {
+        request = await createRequest(requestPayload)
+      }
       setCreatedRequest(request)
     } catch (err) {
       setSubmitError(err.message || 'Ocurrió un error al procesar la propuesta de comisión.')
@@ -219,10 +225,12 @@ export default function NewRequestPage() {
               <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
                 <CheckCircle2 size={56} style={{ margin: '0 auto 1rem', color: '#8B5CF6' }} aria-hidden="true" />
                 <h1 autoFocus tabIndex={-1} style={{ fontSize: '1.8rem', fontWeight: 800, marginBottom: '0.5rem', color: '#1E192B' }}>
-                  Propuesta enviada
+                  {profile.isDemo ? 'Demostración completada' : 'Propuesta enviada'}
                 </h1>
                 <p style={{ color: '#4B5563', fontSize: '1.05rem', margin: 0 }}>
-                  Tu propuesta fue enviada al artista y quedó en lista de espera.
+                  {profile.isDemo
+                    ? 'Has completado el flujo visual de demostración. No se creó ninguna solicitud real ni cargos en tu cuenta.'
+                    : 'Tu propuesta fue enviada al artista y quedó en lista de espera.'}
                 </p>
               </div>
 
@@ -285,6 +293,13 @@ export default function NewRequestPage() {
           <span className="badge badge-mint">● Custodia Bancaria Activa: Escrow 100% Blindado</span>
         </div>
       </header>
+
+      {profile.isDemo && (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', background: '#BE123C', color: '#FFF', padding: '1rem', textAlign: 'center', fontSize: '1rem', fontWeight: 'bold', borderRadius: '8px', marginBottom: '1rem', border: '2px solid #881337' }}>
+          <Sparkles size={18} aria-hidden="true" />
+          <span>AVISO DE DEMOSTRACIÓN VISUAL: Esta pantalla es únicamente para visualizar cómo luciría una comisión con este artista real histórico. No se realizará ninguna transacción, cargo o contrato.</span>
+        </div>
+      )}
 
       {/* ── STEP PROGRESS BAR ── */}
       <div className="checkout-steps-bar" role="tablist" aria-label="Pasos de la comisión">
@@ -652,6 +667,8 @@ export default function NewRequestPage() {
                   ? 'Enviando propuesta…'
                   : isSelfRequest
                   ? 'No puedes solicitarte a ti mismo'
+                  : profile.isDemo
+                  ? `SIMULAR COMISIÓN ($${totalPrice} USD)`
                   : `Enviar propuesta de comisión ($${totalPrice} USD)`}
               </span>
             </button>

@@ -3,7 +3,7 @@ import { getArtists } from '../services/artistService'
 import { getCategories } from '../services/categoryService'
 import { getPortfolioItems } from '../services/portfolioService'
 import { getRequests } from '../services/requestService'
-import { getExternalArtists } from '../services/externalService'
+import { getRealExternalArtists, getDemoArtistProfiles, getDemoPortfolioItems } from '../services/realArtistsService'
 import {
   buildArtistRanking,
   buildArtworkCards,
@@ -15,12 +15,20 @@ import {
 const EMPTY_SOURCES = { artists: [], portfolioItems: [], categories: [], requests: [] }
 
 function request(active, setSources, setError, setLoading) {
-  Promise.all([getArtists(), getPortfolioItems(), getCategories(), getRequests(), getExternalArtists()])
-    .then(([artists, portfolioItems, categories, requests, publicArtworks]) => {
+  Promise.all([
+    getArtists(), 
+    getPortfolioItems(), 
+    getCategories(), 
+    getRequests(), 
+    getRealExternalArtists(),
+    getDemoArtistProfiles(),
+    getDemoPortfolioItems()
+  ])
+    .then(([artists, portfolioItems, categories, requests, publicArtworks, demoArtists, demoPortfolio]) => {
       if (!active) return
       setSources({
-        artists: artists || [],
-        portfolioItems: portfolioItems || [],
+        artists: [...(artists || []), ...(demoArtists || [])],
+        portfolioItems: [...(portfolioItems || []), ...(demoPortfolio || [])],
         categories: categories || [],
         requests: requests || [],
         publicArtworks: publicArtworks || [],
