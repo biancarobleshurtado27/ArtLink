@@ -27,28 +27,7 @@ import useArtistProfile from '../hooks/useArtistProfile'
 import useAuth from '../hooks/useAuth'
 import { handleImageError } from '../utils/imageFallback'
 
-const SAMPLE_TOOLS = ['Clip Studio Paint EX', 'Adobe Photoshop', 'Procreate', 'Blender 3D']
 
-const DEFAULT_REVIEWS = [
-  {
-    id: 'rev-sample-1',
-    clientName: 'Alex R. (@alex_art)',
-    clientAvatar: 'https://i.pravatar.cc/150?img=33',
-    commissionTitle: 'Comisión Verificada · Ilustración de Personaje',
-    rating: 5,
-    comment: '¡Increíble trabajar con este artista! Captó de inmediato la personalidad y estética que buscaba. Me envió bocetos en tiempo récord y el resultado final superó todas las expectativas.',
-    timeAgo: 'Entregado hace 3 días',
-  },
-  {
-    id: 'rev-sample-2',
-    clientName: 'Gael Morales',
-    clientAvatar: 'https://i.pravatar.cc/150?img=12',
-    commissionTitle: 'Comisión Verificada · Ilustración Escénica',
-    rating: 5,
-    comment: 'La calidad del render, el detalle de fondos y el manejo del color son excepcionales. El sistema Escrow de ArtLink dio máxima tranquilidad en todo momento.',
-    timeAgo: 'Entregado hace 2 semanas',
-  },
-]
 
 export default function ArtistProfilePage() {
   const { id } = useParams()
@@ -88,20 +67,16 @@ export default function ArtistProfilePage() {
     return portfolio.filter((item) => item.category === selectedCategory)
   }, [portfolio, selectedCategory])
 
-  // Combinación de reseñas reales de db.json con predeterminadas
   const displayedReviews = useMemo(() => {
-    if (reviews && reviews.length > 0) {
-      return reviews.map((r, idx) => ({
-        id: r.id || `rev-db-${idx}`,
-        clientName: r.clientName || 'Cliente ArtLink Verificado',
-        clientAvatar: r.clientAvatar || `https://i.pravatar.cc/150?img=${40 + (idx % 25)}`,
-        commissionTitle: 'Comisión Verificada con Custodia Escrow',
-        rating: r.rating || 5,
-        comment: r.comment,
-        timeAgo: 'Completado recientemente',
-      }))
-    }
-    return DEFAULT_REVIEWS
+    return reviews.map((r, idx) => ({
+      id: r.id || `rev-db-${idx}`,
+      clientName: r.clientName || 'Cliente ArtLink Verificado',
+      clientAvatar: r.clientAvatar || `https://i.pravatar.cc/150?img=${40 + (idx % 25)}`,
+      commissionTitle: r.commissionTitle || 'Comisión Verificada con Custodia Escrow',
+      rating: r.rating || 5,
+      comment: r.comment,
+      timeAgo: r.createdAt ? new Date(r.createdAt).toLocaleDateString() : 'Completado recientemente',
+    }))
   }, [reviews])
 
   function toggleLike(artworkId) {
@@ -231,16 +206,16 @@ export default function ArtistProfilePage() {
         {/* IDENTIDAD DEL ARTISTA */}
         <div className="artist-v2-identity">
           <div className="artist-v2-name-row">
-            <h1 className="artist-v2-name">{profile.displayName}</h1>
-            <span className="artist-v2-handle">@{profile.username}</span>
+            <h1 className="artist-v2-name">{profile.displayName || profile.name}</h1>
+            <span className="artist-v2-handle">@{profile.username || profile.email?.split('@')[0]}</span>
             <span className="artist-v2-rating-pill">
               <Star size={13} fill="#8B5CF6" color="#8B5CF6" aria-hidden="true" />
-              {profile.rating?.toFixed(1) || '5.0'} ({displayedReviews.length} reseñas)
+              {profile.rating ? profile.rating.toFixed(1) : 'Sin calificación'} ({displayedReviews.length} reseñas)
             </span>
           </div>
 
           <p className="artist-v2-tagline">
-            {profile.bio || 'Ilustrador/a y creador/a visual independiente en ArtLink.'}
+            {profile.bio || 'Biografía no disponible.'}
           </p>
 
           <div className="artist-v2-meta-bar">
@@ -260,7 +235,7 @@ export default function ArtistProfilePage() {
             </span>
             <span className="artist-v2-availability-pill">
               <span className="artist-v2-pulse-dot" aria-hidden="true" />
-              {profile.slots || 2} CUPOS ABIERTOS · Entrega en {commissions[0]?.deliveryDays || '5-10'} días
+              {profile.slots || 0} CUPOS ABIERTOS {commissions.length > 0 && `· Entrega en ${commissions[0]?.deliveryDays || 0} días`}
             </span>
           </div>
         </div>
@@ -529,7 +504,7 @@ export default function ArtistProfilePage() {
             </p>
 
             <div className="artist-v2-big-score">
-              {profile.rating?.toFixed(1) || '5.0'}
+              {profile.rating ? profile.rating.toFixed(1) : '0.0'}
             </div>
 
             <div style={{ display: 'flex', gap: '0.2rem', marginBottom: '0.4rem' }}>
@@ -576,41 +551,45 @@ export default function ArtistProfilePage() {
 
           {/* Listado de reseñas verificadas */}
           <div className="artist-v2-reviews-list">
-            {displayedReviews.map((rev) => (
-              <div key={rev.id} className="artist-v2-review-card">
-                <div className="artist-v2-review-top">
-                  <div className="artist-v2-review-user">
-                    <img
-                      className="artist-v2-review-avatar"
-                      src={rev.clientAvatar}
-                      onError={handleImageError}
-                      alt={rev.clientName}
-                    />
-                    <div>
-                      <strong style={{ fontSize: '0.9rem', display: 'block' }}>{rev.clientName}</strong>
-                      <span style={{ fontSize: '0.72rem', color: 'var(--violet-dark)', fontWeight: 700 }}>
-                        {rev.commissionTitle}
-                      </span>
+            {displayedReviews.length === 0 ? (
+              <p style={{ fontStyle: 'italic', color: 'var(--muted)', marginTop: '2rem' }}>Aún no hay suficientes datos para generar este ranking.</p>
+            ) : (
+              displayedReviews.map((rev) => (
+                <div key={rev.id} className="artist-v2-review-card">
+                  <div className="artist-v2-review-top">
+                    <div className="artist-v2-review-user">
+                      <img
+                        className="artist-v2-review-avatar"
+                        src={rev.clientAvatar}
+                        onError={handleImageError}
+                        alt={rev.clientName}
+                      />
+                      <div>
+                        <strong style={{ fontSize: '0.9rem', display: 'block' }}>{rev.clientName}</strong>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--violet-dark)', fontWeight: 700 }}>
+                          {rev.commissionTitle}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '0.15rem' }}>
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <Star
+                          key={star}
+                          size={14}
+                          fill={star <= rev.rating ? '#8B5CF6' : 'none'}
+                          color="#8B5CF6"
+                          aria-hidden="true"
+                        />
+                      ))}
                     </div>
                   </div>
 
-                  <div style={{ display: 'flex', gap: '0.15rem' }}>
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star
-                        key={star}
-                        size={14}
-                        fill={star <= rev.rating ? '#8B5CF6' : 'none'}
-                        color="#8B5CF6"
-                        aria-hidden="true"
-                      />
-                    ))}
-                  </div>
+                  <p className="artist-v2-review-text">&ldquo;{rev.comment}&rdquo;</p>
+                  <span className="artist-v2-review-date">{rev.timeAgo}</span>
                 </div>
-
-                <p className="artist-v2-review-text">&ldquo;{rev.comment}&rdquo;</p>
-                <span className="artist-v2-review-date">{rev.timeAgo}</span>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
       </section>
@@ -732,7 +711,7 @@ export default function ArtistProfilePage() {
               Conoce a {profile.displayName}
             </h2>
             <p style={{ fontSize: '0.92rem', color: '#374151', lineHeight: 1.65, margin: '0 0 1.2rem' }}>
-              {profile.bio || 'Artista visual apasionado/a por la creación de personajes originales, narrativa gráfica y concept art.'}
+              {profile.bio || 'Sin biografía.'}
             </p>
 
             <div>
@@ -740,7 +719,7 @@ export default function ArtistProfilePage() {
                 Disciplinas y Especialidades
               </strong>
               <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginBottom: '1.2rem' }}>
-                {(profile.disciplines || ['Ilustración 2D', 'Concept art']).map((d) => (
+                {(profile.disciplines || []).map((d) => (
                   <Badge key={d} tone="violet">{d}</Badge>
                 ))}
                 {(profile.styles || []).map((s) => (
@@ -754,11 +733,15 @@ export default function ArtistProfilePage() {
                 Software y Herramientas de Trabajo
               </strong>
               <div className="artist-v2-tools-grid">
-                {SAMPLE_TOOLS.map((tool) => (
-                  <span key={tool} className="artist-v2-tool-pill">
-                    <Check size={12} color="var(--violet-dark)" aria-hidden="true" /> {tool}
-                  </span>
-                ))}
+                {(profile.skills || profile.tools || []).length === 0 ? (
+                  <span style={{ fontSize: '0.85rem', color: 'var(--muted)' }}>No hay herramientas especificadas.</span>
+                ) : (
+                  (profile.skills || profile.tools || []).map((tool) => (
+                    <span key={tool} className="artist-v2-tool-pill">
+                      <Check size={12} color="var(--violet-dark)" aria-hidden="true" /> {tool}
+                    </span>
+                  ))
+                )}
               </div>
             </div>
           </div>
@@ -766,7 +749,7 @@ export default function ArtistProfilePage() {
           <div className="artist-v2-cta-card">
             <h3>¿Listo para comenzar?</h3>
             <p>
-              Solo hay <strong>{profile.slots || 2} cupos</strong> disponibles para este ciclo. Reserva tu encargo para asegurar tu fecha de entrega.
+              Solo hay <strong>{profile.slots || 0} cupos</strong> disponibles para este ciclo. Reserva tu encargo para asegurar tu fecha de entrega.
             </p>
 
             {!isSelf && !isClosed ? (

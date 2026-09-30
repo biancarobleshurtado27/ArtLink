@@ -22,56 +22,7 @@ import useArtistProfile from '../hooks/useArtistProfile'
 import useAuth from '../hooks/useAuth'
 import { createRequest } from '../services/requestService'
 
-const DEFAULT_FORMATS = [
-  {
-    id: 'busto',
-    title: 'Busto / Retrato Digital',
-    description: 'Enfoque expresivo hombros hacia arriba. Ideal para avatares de Twitch, Discord o pósters de personaje.',
-    deliveryDays: 3,
-    revisions: '2 revisiones',
-    price: 45,
-    popular: false,
-  },
-  {
-    id: 'medio-cuerpo',
-    title: 'Medio Cuerpo a Todo Color',
-    description: 'Cintura hacia arriba, iluminación volumétrica cinemática, render estilizado y fondo de gradiente sutil.',
-    deliveryDays: 7,
-    revisions: '3 rondas de feedback',
-    price: 85,
-    popular: true,
-  },
-  {
-    id: 'ilustracion-completa',
-    title: 'Ilustración Completa con Fondo Complejo',
-    description: 'Cuerpo entero, perspectiva dinámica, escenario ambiental detallado (arquitectura, naturaleza o ciencia ficción).',
-    deliveryDays: 14,
-    revisions: 'Revisiones ilimitadas',
-    price: 160,
-    popular: false,
-  },
-]
 
-const DEFAULT_ADDONS = [
-  {
-    id: 'commercial',
-    title: '+ Uso Comercial y Merchandising',
-    description: 'Monetización en YouTube, portadas de libros, prints o prendas',
-    price: 40,
-  },
-  {
-    id: 'psd-source',
-    title: '+ Archivo Fuente PSD en Capas',
-    description: 'Capas organizadas con líneas limpias, color base y efectos FX',
-    price: 20,
-  },
-  {
-    id: 'alt-background',
-    title: '+ Fondo Alternativo o Versión Noche',
-    description: 'Segunda versión con iluminación nocturna y paleta neón',
-    price: 25,
-  },
-]
 
 export default function NewRequestPage() {
   const { artistId } = useParams()
@@ -89,16 +40,15 @@ export default function NewRequestPage() {
         deliveryDays: c.deliveryDays || 5,
         revisions: c.revisions || '2 revisiones',
         price: c.price,
-        popular: idx === 1,
+        popular: idx === 1 || c.featured,
       }))
     }
-    return DEFAULT_FORMATS
+    return []
   }, [commissions])
 
-  const initialFormatId = searchParams.get('commissionId') || availableFormats[1]?.id || availableFormats[0]?.id || 'medio-cuerpo'
+  const initialFormatId = searchParams.get('commissionId') || availableFormats[0]?.id || ''
 
   const [selectedFormatId, setSelectedFormatId] = useState(initialFormatId)
-  const [selectedAddons, setSelectedAddons] = useState(['commercial'])
   const [description, setDescription] = useState('')
   const [desiredDate, setDesiredDate] = useState('')
   const [paymentMethod, setPaymentMethod] = useState('card')
@@ -114,13 +64,8 @@ export default function NewRequestPage() {
     return availableFormats.find((f) => f.id === selectedFormatId) || availableFormats[0]
   }, [availableFormats, selectedFormatId])
 
-  const formatPrice = selectedFormat ? selectedFormat.price : 0
-  const addonsPrice = selectedAddons.reduce((acc, addonId) => {
-    const item = DEFAULT_ADDONS.find((a) => a.id === addonId)
-    return acc + (item ? item.price : 0)
-  }, 0)
-
-  const subtotal = formatPrice + addonsPrice
+  const formatPrice = selectedFormat ? Number(selectedFormat.price) : 0
+  const subtotal = formatPrice
   const escrowFee = Math.round(subtotal * 0.035 * 100) / 100
   const totalPrice = (subtotal + escrowFee).toFixed(2)
 
@@ -139,12 +84,6 @@ export default function NewRequestPage() {
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [createdRequest])
-
-  function toggleAddon(addonId) {
-    setSelectedAddons((prev) =>
-      prev.includes(addonId) ? prev.filter((id) => id !== addonId) : [...prev, addonId]
-    )
-  }
 
   function handleFileSelect(e) {
     const files = Array.from(e.target.files || [])
@@ -224,7 +163,18 @@ export default function NewRequestPage() {
         <Link className="back-link" to={`/artista/${profile.id}`}>
           <ArrowLeft size={16} aria-hidden="true" /> Volver al perfil de {profile.displayName}
         </Link>
-        <ErrorState message={`@${profile.handle || profile.displayName} tiene la agenda cerrada en este momento y no acepta nuevos encargos.`} />
+        <ErrorState message={`@${profile.handle || profile.displayName || profile.name} tiene la agenda cerrada en este momento y no acepta nuevos encargos.`} />
+      </section>
+    )
+  }
+
+  if (availableFormats.length === 0) {
+    return (
+      <section className="request-page">
+        <Link className="back-link" to={`/artista/${profile.id}`}>
+          <ArrowLeft size={16} aria-hidden="true" /> Volver al perfil de {profile.displayName || profile.name}
+        </Link>
+        <ErrorState message={`@${profile.handle || profile.displayName || profile.name} no tiene paquetes de comisiones disponibles por el momento.`} />
       </section>
     )
   }
@@ -370,7 +320,7 @@ export default function NewRequestPage() {
             <CheckCircle2 size={18} className="text-violet" aria-label="Artista verificado" />
             <span className="badge badge-violet">PRO</span>
           </div>
-          <p className="artist-handle-tag">@{profile.handle || 'SofiArt'} · {profile.discipline || 'Ilustradora Concept & Webtoons'} • Top Seller</p>
+          <p className="artist-handle-tag">@{profile.handle || profile.username || 'artista'} · {profile.discipline || 'Ilustrador/a'}</p>
           <div className="artist-badges-row">
             <span className="badge badge-open">● Comisiones abiertas (3 cupos)</span>
             <span className="badge badge-soft">
@@ -435,41 +385,7 @@ export default function NewRequestPage() {
             </div>
           </section>
 
-          {/* PASO 2: ADD-ONS OPCIONALES */}
-          <section className="checkout-section-box paper-card" aria-labelledby="paso-2-title">
-            <div className="section-box-header">
-              <div>
-                <span className="step-subtag">PASO 2</span>
-                <h3 id="paso-2-title">Complementos Opcionales (Add-ons)</h3>
-              </div>
-              <span className="text-muted-small">Personaliza tu entrega</span>
-            </div>
 
-            <div className="addons-list">
-              {DEFAULT_ADDONS.map((addon) => {
-                const isChecked = selectedAddons.includes(addon.id)
-                return (
-                  <label
-                    key={addon.id}
-                    className={`addon-option-card ${isChecked ? 'is-checked' : ''}`}
-                  >
-                    <div className="addon-checkbox-group">
-                      <input
-                        type="checkbox"
-                        checked={isChecked}
-                        onChange={() => toggleAddon(addon.id)}
-                      />
-                      <div>
-                        <strong>{addon.title}</strong>
-                        <p>{addon.description}</p>
-                      </div>
-                    </div>
-                    <span className="addon-price">+${addon.price}.00 USD</span>
-                  </label>
-                )
-              })}
-            </div>
-          </section>
 
           {/* PASO 3: BRIEF Y REFERENCIAS */}
           <section className="checkout-section-box paper-card" aria-labelledby="paso-3-title">
@@ -479,7 +395,7 @@ export default function NewRequestPage() {
                 <h3 id="paso-3-title">Brief Creativo y Referencias</h3>
               </div>
               <span className="badge badge-soft">
-                <Lock size={12} aria-hidden="true" /> Privado entre tú y @{profile.handle || 'SofiArt'}
+                <Lock size={12} aria-hidden="true" /> Privado entre tú y @{profile.handle || profile.username || 'artista'}
               </span>
             </div>
 
@@ -643,19 +559,7 @@ export default function NewRequestPage() {
                 <span>${selectedFormat.price}.00</span>
               </div>
 
-              {selectedAddons.map((addonId) => {
-                const add = DEFAULT_ADDONS.find((a) => a.id === addonId)
-                if (!add) return null
-                return (
-                  <div className="summary-line-item" key={addonId}>
-                    <div>
-                      <strong>{add.title.replace('+ ', '')}</strong>
-                      <small>Incluido en la entrega</small>
-                    </div>
-                    <span>${add.price}.00</span>
-                  </div>
-                )
-              })}
+
 
               <div className="summary-line-item fee-item">
                 <div>
