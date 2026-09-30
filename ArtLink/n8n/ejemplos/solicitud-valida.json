@@ -1,0 +1,10 @@
+{
+  "artistId": "artist-001",
+  "clientId": "user-client-001",
+  "commissionId": "commission-001",
+  "commissionTitle": "Retrato ilustrado",
+  "budget": 95,
+  "description": "Retrato digital de mi personaje con vestimenta victoriana y detalles dorados en alta resolución.",
+  "desiredDate": "2026-11-20",
+  "references": []
+}

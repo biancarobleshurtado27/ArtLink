@@ -1,0 +1,10 @@
+{
+  "artistId": "artist-001",
+  "clientId": "user-client-001",
+  "commissionId": "commission-001",
+  "commissionTitle": "Retrato ilustrado",
+  "budget": 25,
+  "description": "Quiero una ilustración completa con fondo complejo pero mi presupuesto máximo son 25 dólares.",
+  "desiredDate": "2026-11-20",
+  "references": []
+}

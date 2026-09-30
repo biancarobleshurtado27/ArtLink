@@ -18,6 +18,11 @@ const sections = {
     title: 'Política de privacidad',
     intro: 'Así tratamos la información en este proyecto académico.',
   },
+  '/comunidad': {
+    eyebrow: 'Legal / Comunidad',
+    title: 'Políticas de comunidad',
+    intro: 'Pautas de respeto, convivencia y buenas prácticas para creadores y clientes en ArtLink.',
+  },
   '/contacto': {
     eyebrow: 'Soporte / Contacto',
     title: 'Contacto',
@@ -87,6 +92,24 @@ const legalText = {
     {
       h: '4. Contacto',
       p: 'Para consultas sobre tus datos puedes escribir a soporte@artlink.demo.',
+    },
+  ],
+  '/comunidad': [
+    {
+      h: '1. Respeto mutuo y trato profesional',
+      p: 'Toda interacción en ArtLink debe regirse por el respeto. No se toleran discursos de odio, acoso, amenazas ni tratos despectivos entre clientes y artistas.',
+    },
+    {
+      h: '2. Originalidad y autoría del arte',
+      p: 'Los artistas deben ofrecer obras originales y declarar expresamente si utilizan herramientas de apoyo. Está estrictamente prohibido comercializar arte ajeno sin autorización.',
+    },
+    {
+      h: '3. Compromiso en encargos y pagos',
+      p: 'Los clientes se comprometen a definir alcances claros y cumplir las fases de revisión acordadas. Todo encargo debe respetar los tiempos de creación pactados.',
+    },
+    {
+      h: '4. Reportes y mediación',
+      p: 'Cualquier conducta contraria a estas políticas puede ser reportada al equipo de administración para su revisión y eventual suspensión de la cuenta.',
     },
   ],
 }

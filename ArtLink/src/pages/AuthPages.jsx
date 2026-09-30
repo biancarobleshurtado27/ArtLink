@@ -105,6 +105,7 @@ export function RegisterPage() {
     email: '',
     passwordDemo: '',
     role: searchParams.get('role') === 'artist' ? ROLES.ARTIST : ROLES.CLIENT,
+    acceptTerms: false,
   })
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
@@ -112,6 +113,12 @@ export function RegisterPage() {
   async function handleSubmit(event) {
     event.preventDefault()
     setError('')
+
+    if (!form.acceptTerms) {
+      setError('Debes aceptar las condiciones para crear tu cuenta.')
+      return
+    }
+
     setSubmitting(true)
     try {
       await register(form)
@@ -143,7 +150,7 @@ export function RegisterPage() {
         <p className="eyebrow">ArtLink / acceso</p>
         <h1 id="register-title">Crear cuenta</h1>
         <p className="auth-subtitle">Regístrate como cliente o artista. Si vienes desde “Para artistas”, el rol ya viene elegido.</p>
-        <form className="auth-form" onSubmit={handleSubmit}>
+        <form className="auth-form" onSubmit={handleSubmit} noValidate>
           <label htmlFor="register-name">Nombre<input id="register-name" type="text" autoComplete="name" required value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} /></label>
           <label htmlFor="register-email">Correo electrónico<input id="register-email" type="email" autoComplete="email" required value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} /></label>
           <label htmlFor="register-password">Contraseña demo<input id="register-password" type="password" autoComplete="new-password" minLength="6" required value={form.passwordDemo} onChange={(event) => setForm({ ...form, passwordDemo: event.target.value })} /></label>
@@ -166,8 +173,56 @@ export function RegisterPage() {
               ))}
             </div>
           </fieldset>
-          {error && <p className="form-message form-error" role="alert">{error}</p>}
-          <button className="button button-primary" type="submit" disabled={submitting}>{submitting ? 'Creando cuenta...' : 'Crear cuenta'} <UserPlus size={16} aria-hidden="true" /></button>
+
+          <div className={`terms-checkbox-group ${error && !form.acceptTerms ? 'has-error' : ''}`}>
+            <input
+              id="acceptTerms"
+              name="acceptTerms"
+              type="checkbox"
+              required
+              checked={form.acceptTerms}
+              onChange={(event) => {
+                const checked = event.target.checked
+                setForm((prev) => ({ ...prev, acceptTerms: checked }))
+                if (checked && error === 'Debes aceptar las condiciones para crear tu cuenta.') {
+                  setError('')
+                }
+              }}
+              aria-invalid={Boolean(error && !form.acceptTerms)}
+              aria-describedby={error ? 'terms-error-message' : undefined}
+              className="terms-checkbox-input"
+            />
+            <label htmlFor="acceptTerms" className="terms-checkbox-label">
+              Acepto los{' '}
+              <Link to="/terminos" target="_blank" rel="noopener noreferrer" className="terms-link">
+                Términos de uso
+              </Link>
+              , la{' '}
+              <Link to="/privacidad" target="_blank" rel="noopener noreferrer" className="terms-link">
+                Política de privacidad
+              </Link>{' '}
+              y las{' '}
+              <Link to="/comunidad" target="_blank" rel="noopener noreferrer" className="terms-link">
+                Políticas de comunidad
+              </Link>{' '}
+              de ArtLink.
+            </label>
+          </div>
+
+          {error && (
+            <p id="terms-error-message" className="form-message form-error" role="alert" aria-live="polite">
+              {error}
+            </p>
+          )}
+
+          <button
+            className="button button-primary"
+            type="submit"
+            disabled={submitting}
+            aria-disabled={!form.acceptTerms}
+          >
+            {submitting ? 'Creando cuenta...' : 'Crear cuenta'} <UserPlus size={16} aria-hidden="true" />
+          </button>
         </form>
         <p className="auth-switch">¿Ya tienes cuenta? <Link to="/login">Iniciar sesión</Link> · <Link to="/como-funciona">Ver cómo funciona <ArrowRight size={13} aria-hidden="true" /></Link></p>
       </div>

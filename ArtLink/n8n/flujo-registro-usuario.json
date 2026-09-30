@@ -1,0 +1,314 @@
+{
+  "name": "ArtLink - Flujo Registro de Usuario con Gmail",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "artlink-registro-usuario",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-registro",
+      "name": "Webhook Registro ArtLink",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        100,
+        300
+      ],
+      "webhookId": "artlink-registro-usuario"
+    },
+    {
+      "parameters": {
+        "language": "javaScript",
+        "jsCode": "const item = $input.first().json;\nconst body = item.body || item;\nconst name = (body.name || '').trim();\nconst email = (body.email || '').toLowerCase().trim();\nconst role = body.role === 'artista' ? 'artista' : 'cliente';\nconst passwordDemo = body.passwordDemo || '';\n\nconst emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;\nconst isValidEmail = email && emailRegex.test(email);\nconst acceptTerms = Boolean(body.acceptTerms === true || body.acceptTerms === 'true');\nconst hasBasicFields = Boolean(name && isValidEmail && passwordDemo.length >= 6);\nconst hasRequired = Boolean(hasBasicFields && acceptTerms);\n\nlet validationError = null;\nif (!acceptTerms) {\n  validationError = 'Debes aceptar las condiciones para crear tu cuenta.';\n} else if (!hasBasicFields) {\n  validationError = 'Faltan campos obligatorios: se requiere nombre, correo válido y contraseña de al menos 6 caracteres.';\n}\n\nreturn [{\n  json: {\n    ...body,\n    name,\n    email,\n    role,\n    passwordDemo,\n    acceptTerms,\n    termsAccepted: true,\n    termsAcceptedAt: body.termsAcceptedAt || new Date().toISOString(),\n    termsVersion: body.termsVersion || '1.0',\n    isValid: hasRequired,\n    validationError\n  }\n}];"
+      },
+      "id": "code-validar-registro",
+      "name": "Validar Payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        320,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.isValid }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "if-registro-valido",
+      "name": "¿Datos Válidos?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        540,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ success: false, error: $json.validationError, code: 'INVALID_PAYLOAD' }) }}",
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "id": "respond-400-validacion",
+      "name": "Responder 400 Validación",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        760,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "language": "javaScript",
+        "jsCode": "const payload = $('Validar Payload').item.json;\nlet users = [];\ntry {\n  users = await this.helpers.httpRequest({\n    method: 'GET',\n    url: 'http://localhost:3000/users?email=' + encodeURIComponent(payload.email)\n  });\n} catch (error) {\n  users = [];\n}\n\nconst isDuplicate = Array.isArray(users) && users.length > 0;\n\nreturn [{\n  json: {\n    ...payload,\n    isDuplicate\n  }\n}];"
+      },
+      "id": "code-consultar-correo",
+      "name": "Consultar Correo en DB",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        760,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.isDuplicate }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "if-correo-duplicado",
+      "name": "¿Correo Duplicado?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        980,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ success: false, error: 'El correo electrónico ya se encuentra registrado en ArtLink', email: $('Validar Payload').item.json.email, code: 'USER_ALREADY_EXISTS' }) }}",
+        "options": {
+          "responseCode": 409
+        }
+      },
+      "id": "respond-409-duplicado",
+      "name": "Responder 409 Duplicado",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1420,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:3000/users",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ name: $('Validar Payload').item.json.name, email: $('Validar Payload').item.json.email, role: $('Validar Payload').item.json.role, passwordDemo: $('Validar Payload').item.json.passwordDemo, avatar: 'https://i.pravatar.cc/150?u=' + $('Validar Payload').item.json.email, active: true, createdAt: new Date().toISOString(), termsAccepted: $('Validar Payload').item.json.termsAccepted, termsAcceptedAt: $('Validar Payload').item.json.termsAcceptedAt, termsVersion: $('Validar Payload').item.json.termsVersion }) }}",
+        "options": {}
+      },
+      "id": "http-insertar-usuario",
+      "name": "Insertar Usuario en DB",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1200,
+        140
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Validar Payload').item.json.email }}",
+        "subject": "¡Bienvenido/a a ArtLink, {{ $('Validar Payload').item.json.name }}!",
+        "emailType": "html",
+        "message": "<div style=\"font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; border: 2.5px solid #1E192B; border-radius: 16px; background: #FAF9F6; box-shadow: 4px 4px 0px #1E192B;\"><h1 style=\"color: #6D28D9; font-size: 24px; margin-top: 0;\">ArtLink Studio Platform</h1><h2 style=\"color: #1E192B; font-size: 18px;\">¡Hola, {{ $('Validar Payload').item.json.name }}!</h2><p style=\"color: #374151; font-size: 15px; line-height: 1.6;\">Tu cuenta con rol de <strong>{{ $('Validar Payload').item.json.role }}</strong> ha sido creada exitosamente en ArtLink.</p><div style=\"background: #EDE9FE; border: 1.5px solid #1E192B; border-radius: 10px; padding: 14px 18px; margin: 20px 0; box-shadow: 2px 2px 0px #1E192B;\"><strong style=\"color: #5B21B6; display: block; margin-bottom: 4px;\">Garantía Escrow ArtLink:</strong><p style=\"margin: 0; font-size: 13px; color: #4C1D95; line-height: 1.5;\">Todos los encargos y fondos monetarios se procesan mediante custodia neutral garantizada. Ningún fondo es liberado hasta la aprobación final del cliente.</p></div><p style=\"color: #6B7280; font-size: 13px; line-height: 1.5;\">Has aceptado los Términos de uso, la Política de privacidad y las Políticas de comunidad de ArtLink (Versión 1.0).</p><p style=\"color: #374151; font-size: 14px;\">Ya puedes ingresar a la plataforma, descubrir artistas independientes o gestionar tus encargos.</p><a href=\"http://localhost:5173/explorar\" style=\"display: inline-block; background: #8B5CF6; color: #FFFFFF; padding: 12px 24px; text-decoration: none; border-radius: 999px; font-weight: bold; border: 2px solid #1E192B; box-shadow: 3px 3px 0px #1E192B;\">Explorar Directorio de Artistas</a><hr style=\"margin: 24px 0; border: 0; border-top: 1px dashed #D1D5DB;\" /><p style=\"color: #9CA3AF; font-size: 12px; margin: 0;\">ArtLink Platform &copy; 2026 - Diseñado para creadores independientes</p></div>",
+        "options": {}
+      },
+      "id": "gmail-bienvenida",
+      "name": "Enviar Bienvenida con Gmail",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1420,
+        140
+      ],
+      "continueOnFail": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "A7VW5UcIX39miqyo",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ success: true, message: 'Usuario registrado exitosamente mediante N8N con notificación enviada', user: $('Insertar Usuario en DB').item.json, emailNotificationSent: true }) }}",
+        "options": {
+          "responseCode": 201
+        }
+      },
+      "id": "respond-201-exito",
+      "name": "Responder 201 Éxito",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1640,
+        140
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Validar Payload').item.json.email }}",
+        "subject": "Aviso de intento de registro en ArtLink",
+        "emailType": "html",
+        "message": "<div style=\"font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; border: 2.5px solid #1E192B; border-radius: 16px; background: #FAF9F6; box-shadow: 4px 4px 0px #1E192B;\"><h1 style=\"color: #6D28D9; font-size: 24px; margin-top: 0;\">ArtLink Studio Platform</h1><h2 style=\"color: #1E192B; font-size: 18px;\">Hola, {{ $('Validar Payload').item.json.name || 'usuario' }}.</h2><p style=\"color: #374151; font-size: 15px; line-height: 1.6;\">Hemos detectado un intento de registro con tu correo electrónico, pero este correo ya está asociado a una cuenta existente en ArtLink.</p><p style=\"color: #374151; font-size: 14px;\">Si fuiste tú, puedes iniciar sesión directamente. Si olvidaste tu contraseña, utiliza la opción de recuperación de contraseña en la página de inicio de sesión.</p><a href=\"http://localhost:5173/login\" style=\"display: inline-block; background: #8B5CF6; color: #FFFFFF; padding: 12px 24px; text-decoration: none; border-radius: 999px; font-weight: bold; border: 2px solid #1E192B; box-shadow: 3px 3px 0px #1E192B;\">Iniciar Sesión</a><hr style=\"margin: 24px 0; border: 0; border-top: 1px dashed #D1D5DB;\" /><p style=\"color: #9CA3AF; font-size: 12px; margin: 0;\">ArtLink Platform &copy; 2026 - Diseñado para creadores independientes</p></div>",
+        "options": {}
+      },
+      "id": "gmail-aviso-duplicado",
+      "name": "Enviar Aviso Duplicado con Gmail",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1200,
+        360
+      ],
+      "continueOnFail": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "A7VW5UcIX39miqyo",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook Registro ArtLink": {
+      "main": [
+        [
+          {
+            "node": "Validar Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar Payload": {
+      "main": [
+        [
+          {
+            "node": "¿Datos Válidos?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Datos Válidos?": {
+      "main": [
+        [
+          {
+            "node": "Consultar Correo en DB",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Responder 400 Validación",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consultar Correo en DB": {
+      "main": [
+        [
+          {
+            "node": "¿Correo Duplicado?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Correo Duplicado?": {
+      "main": [
+        [
+          {
+            "node": "Enviar Aviso Duplicado con Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Insertar Usuario en DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insertar Usuario en DB": {
+      "main": [
+        [
+          {
+            "node": "Enviar Bienvenida con Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar Bienvenida con Gmail": {
+      "main": [
+        [
+          {
+            "node": "Responder 201 Éxito",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar Aviso Duplicado con Gmail": {
+      "main": [
+        [
+          {
+            "node": "Responder 409 Duplicado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

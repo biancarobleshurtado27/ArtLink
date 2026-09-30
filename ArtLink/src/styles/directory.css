@@ -1272,3 +1272,1004 @@
 @media (max-width: 30rem) {
   .directory-grid, .samples-grid { grid-template-columns: 1fr; }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   ARTIST PROFILE V2 - LAYOUT INSPIRADO EN LAS REFERENCIAS
+   ══════════════════════════════════════════════════════════════ */
+.artist-profile-page-v2 {
+  margin: 0 auto;
+  max-width: 82rem;
+  padding: 0 1rem 4rem;
+}
+
+/* 1. BANNER DEL ARTISTA */
+.artist-v2-banner {
+  position: relative;
+  width: 100%;
+  height: clamp(14rem, 24vw, 22rem);
+  border-radius: 20px;
+  border: 2.5px solid var(--ink);
+  overflow: hidden;
+  background: #C4B5FD;
+  box-shadow: 4px 4px 0px var(--ink);
+}
+
+.artist-v2-banner-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.artist-v2-banner-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(30, 25, 43, 0.1) 0%, rgba(30, 25, 43, 0.4) 100%);
+  pointer-events: none;
+}
+
+.artist-v2-banner-top-badges {
+  position: absolute;
+  top: 1.2rem;
+  left: 1.4rem;
+  right: 1.4rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: none;
+}
+
+.artist-v2-banner-pill {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  font-family: var(--badge);
+  box-shadow: 2px 2px 0 var(--ink);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+/* 2. TARJETA DE ENCABEZADO CON ICONO INTERSECTANDO EL BANNER */
+.artist-v2-header-card {
+  position: relative;
+  background: var(--paper);
+  border: 2.5px solid var(--ink);
+  border-radius: 20px;
+  box-shadow: 4px 4px 0px var(--ink);
+  margin-top: 1.5rem;
+  padding: 1.6rem 2.2rem 2.2rem;
+}
+
+/* El icono circular se ubica entre el banner y la tarjeta del perfil */
+.artist-v2-avatar-wrap {
+  position: absolute;
+  top: -5rem;
+  left: 2.2rem;
+  z-index: 10;
+  width: clamp(7.5rem, 12vw, 9.5rem);
+  height: clamp(7.5rem, 12vw, 9.5rem);
+  border-radius: 50%;
+  border: 4.5px solid #FFFFFF;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.16), 0 0 0 2.5px var(--ink);
+  background: var(--rose);
+}
+
+.artist-v2-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+
+.artist-v2-avatar-badge {
+  position: absolute;
+  bottom: 0.2rem;
+  right: 0.2rem;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 50%;
+  background: #10B981;
+  border: 2.5px solid #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.25);
+}
+
+.artist-v2-header-actions-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  min-height: clamp(3.2rem, 5.5vw, 4.6rem);
+  margin-bottom: 0.8rem;
+}
+
+.artist-v2-header-spacer {
+  width: clamp(7.5rem, 12vw, 9.5rem);
+  flex-shrink: 0;
+}
+
+.artist-v2-actions-group {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.artist-v2-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: var(--violet);
+  color: #FFFFFF !important;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  padding: 0.65rem 1.4rem;
+  font-weight: 800;
+  font-size: 0.85rem;
+  box-shadow: 3px 3px 0 var(--ink);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.artist-v2-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 4px 4px 0 var(--ink);
+}
+
+.artist-v2-btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: var(--paper);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  padding: 0.6rem 1.1rem;
+  font-weight: 700;
+  font-size: 0.82rem;
+  box-shadow: 2px 2px 0 var(--ink);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.artist-v2-btn-outline:hover {
+  transform: translateY(-2px);
+  background: var(--cream);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+.artist-v2-social-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.3rem;
+  height: 2.3rem;
+  background: var(--cream);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  box-shadow: 2px 2px 0 var(--ink);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.artist-v2-social-btn:hover {
+  transform: translateY(-2px);
+  background: var(--yellow);
+}
+
+.artist-v2-identity {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.artist-v2-name-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.artist-v2-name {
+  font-family: var(--heading);
+  font-size: clamp(1.8rem, 3.8vw, 2.7rem);
+  font-weight: 900;
+  margin: 0;
+  line-height: 1.15;
+  color: var(--ink);
+}
+
+.artist-v2-handle {
+  font-family: var(--badge);
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.artist-v2-rating-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: #EDE9FE;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: var(--violet-dark);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+.artist-v2-tagline {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #4B5563;
+  margin: 0.4rem 0 0.8rem;
+  max-width: 58rem;
+  line-height: 1.5;
+}
+
+.artist-v2-meta-bar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  font-size: 0.82rem;
+  color: var(--muted);
+  font-weight: 600;
+  margin-top: 0.25rem;
+}
+
+.artist-v2-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.artist-v2-availability-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: var(--mint);
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  font-family: var(--badge);
+  color: #065F46;
+  box-shadow: 2px 2px 0 var(--ink);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.artist-v2-pulse-dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: #059669;
+  display: inline-block;
+  box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.3);
+}
+
+/* 3. BARRA DE NAVEGACIÓN POR PESTAÑAS */
+.artist-v2-tabs-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  background: var(--paper);
+  border: 2.5px solid var(--ink);
+  border-radius: 16px;
+  box-shadow: 4px 4px 0 var(--ink);
+  padding: 0.6rem 1rem;
+  margin: 2rem 0 2.8rem;
+  position: sticky;
+  top: 1rem;
+  z-index: 20;
+}
+
+.artist-v2-tabs-list {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.artist-v2-tab-btn {
+  background: transparent;
+  border: 1.5px solid transparent;
+  border-radius: 999px;
+  padding: 0.45rem 1rem;
+  font-family: var(--badge);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--ink);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.artist-v2-tab-btn:hover {
+  background: var(--cream);
+}
+
+.artist-v2-tab-btn.is-active {
+  background: var(--violet);
+  color: #FFFFFF;
+  border-color: var(--ink);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+.artist-v2-escrow-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #ECFDF5;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #047857;
+  font-family: var(--badge);
+}
+
+/* 4. SECCIÓN COMISIONES ABIERTAS */
+.artist-v2-section {
+  margin-bottom: 3.5rem;
+  scroll-margin-top: 6rem;
+}
+
+.artist-v2-section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.artist-v2-section-title {
+  font-family: var(--heading);
+  font-size: clamp(1.6rem, 3.2vw, 2.2rem);
+  font-weight: 900;
+  margin: 0;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.artist-v2-section-sub {
+  color: var(--muted);
+  font-size: 0.95rem;
+  margin: 0.3rem 0 0;
+}
+
+.artist-v2-commissions-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+}
+
+.artist-v2-comm-card {
+  position: relative;
+  background: var(--paper);
+  border: 2.5px solid var(--ink);
+  border-radius: 18px;
+  box-shadow: 4px 4px 0 var(--ink);
+  padding: 1.3rem;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.artist-v2-comm-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 6px 6px 0 var(--ink);
+}
+
+.artist-v2-comm-badge {
+  display: inline-block;
+  align-self: flex-start;
+  background: #FFE2EC;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  padding: 0.25rem 0.75rem;
+  font-family: var(--badge);
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-bottom: 0.8rem;
+  color: #9D174D;
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+.artist-v2-comm-badge.popular {
+  background: #8B5CF6;
+  color: #FFFFFF;
+}
+
+.artist-v2-comm-thumb {
+  width: 100%;
+  height: 12rem;
+  border-radius: 12px;
+  border: 2px solid var(--ink);
+  overflow: hidden;
+  margin-bottom: 1rem;
+  background: var(--cream);
+}
+
+.artist-v2-comm-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.artist-v2-comm-title {
+  font-family: var(--heading);
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin: 0 0 0.4rem;
+}
+
+.artist-v2-comm-desc {
+  font-size: 0.85rem;
+  color: #4B5563;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.artist-v2-comm-specs {
+  background: var(--cream);
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  padding: 0.75rem 0.9rem;
+  margin: 1rem 0;
+  display: grid;
+  gap: 0.45rem;
+  font-size: 0.78rem;
+}
+
+.artist-v2-comm-spec-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.artist-v2-comm-spec-label {
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.artist-v2-comm-spec-value {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.artist-v2-comm-price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: auto;
+  padding-top: 0.8rem;
+  border-top: 1.5px dashed var(--line);
+}
+
+.artist-v2-comm-price {
+  font-family: var(--heading);
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--violet-dark);
+}
+
+.artist-v2-comm-order-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 100%;
+  background: var(--violet);
+  color: #FFFFFF !important;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  padding: 0.7rem 1rem;
+  font-weight: 800;
+  font-size: 0.85rem;
+  box-shadow: 2px 2px 0 var(--ink);
+  margin-top: 0.85rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.artist-v2-comm-order-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+.artist-v2-comm-escrow-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-top: 0.6rem;
+  font-weight: 600;
+}
+
+/* 5. SECCIÓN GALERÍA / PORTAFOLIO */
+.artist-v2-portfolio-filters {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.artist-v2-filter-pill {
+  background: var(--paper);
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  padding: 0.35rem 0.8rem;
+  font-family: var(--badge);
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.artist-v2-filter-pill.is-active {
+  background: var(--violet);
+  color: #FFFFFF;
+}
+
+.artist-v2-portfolio-grid {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+}
+
+.artist-v2-artwork-card {
+  background: var(--paper);
+  border: 2.5px solid var(--ink);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 4px 4px 0 var(--ink);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  cursor: pointer;
+}
+
+.artist-v2-artwork-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 6px 6px 0 var(--ink);
+}
+
+.artist-v2-artwork-img-box {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-bottom: 2px solid var(--ink);
+  background: var(--cream);
+}
+
+.artist-v2-artwork-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.25s ease;
+}
+
+.artist-v2-artwork-card:hover .artist-v2-artwork-img {
+  transform: scale(1.04);
+}
+
+.artist-v2-artwork-body {
+  padding: 0.85rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.artist-v2-artwork-title {
+  font-weight: 700;
+  font-size: 0.88rem;
+  margin: 0;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 11rem;
+}
+
+.artist-v2-artwork-like-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: var(--cream);
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  padding: 0.25rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.artist-v2-artwork-like-btn.liked {
+  background: #FFE2EC;
+  color: #BE185D;
+}
+
+/* 6. SECCIÓN REPUTACIÓN Y RESEÑAS */
+.artist-v2-reviews-layout {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: 21rem 1fr;
+}
+
+.artist-v2-reputation-card {
+  background: var(--paper);
+  border: 2.5px solid var(--ink);
+  border-radius: 20px;
+  box-shadow: 4px 4px 0 var(--ink);
+  padding: 1.6rem;
+  height: fit-content;
+}
+
+.artist-v2-big-score {
+  font-family: var(--heading);
+  font-size: 3.6rem;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--ink);
+  margin: 0.8rem 0 0.4rem;
+}
+
+.artist-v2-metric-bar-group {
+  margin-top: 1.5rem;
+  display: grid;
+  gap: 0.8rem;
+}
+
+.artist-v2-metric-label-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.artist-v2-metric-track {
+  width: 100%;
+  height: 0.6rem;
+  background: var(--cream);
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.artist-v2-metric-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--mint);
+}
+
+.artist-v2-metric-fill.purple {
+  background: var(--violet);
+}
+
+.artist-v2-reviews-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.artist-v2-review-card {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 16px;
+  box-shadow: 3px 3px 0 var(--ink);
+  padding: 1.2rem 1.4rem;
+}
+
+.artist-v2-review-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.8rem;
+}
+
+.artist-v2-review-user {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.artist-v2-review-avatar {
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 50%;
+  border: 1.5px solid var(--ink);
+  object-fit: cover;
+}
+
+.artist-v2-review-text {
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: #374151;
+  font-style: italic;
+  margin: 0 0 0.6rem;
+}
+
+.artist-v2-review-date {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+/* 7. SECCIÓN PROCESO DE TRABAJO & ESCROW */
+.artist-v2-workflow-layout {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: 1fr 1fr;
+}
+
+.artist-v2-workflow-card {
+  background: var(--paper);
+  border: 2.5px solid var(--ink);
+  border-radius: 20px;
+  box-shadow: 4px 4px 0 var(--ink);
+  padding: 1.8rem;
+}
+
+.artist-v2-step-list {
+  margin-top: 1.2rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.artist-v2-step-item {
+  display: flex;
+  gap: 0.8rem;
+  align-items: flex-start;
+}
+
+.artist-v2-step-num {
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 50%;
+  background: var(--rose);
+  border: 1.5px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--badge);
+  font-size: 0.82rem;
+  font-weight: 800;
+  flex-shrink: 0;
+  color: var(--ink);
+}
+
+.artist-v2-step-content strong {
+  display: block;
+  font-size: 0.92rem;
+  margin-bottom: 0.15rem;
+}
+
+.artist-v2-step-content p {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.45;
+}
+
+.artist-v2-escrow-card {
+  background: #7C3AED;
+  color: #FFFFFF;
+  border: 2.5px solid var(--ink);
+  border-radius: 20px;
+  box-shadow: 4px 4px 0 var(--ink);
+  padding: 1.8rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.artist-v2-escrow-card h3 {
+  font-family: var(--heading);
+  font-size: 1.6rem;
+  margin: 0 0 0.4rem;
+  color: #FFFFFF;
+}
+
+.artist-v2-escrow-card > p {
+  font-size: 0.85rem;
+  color: #EDE9FE;
+  margin: 0 0 1.4rem;
+}
+
+.artist-v2-escrow-benefits {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1.8rem;
+}
+
+.artist-v2-benefit-item {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.artist-v2-benefit-icon {
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.artist-v2-benefit-text strong {
+  display: block;
+  font-size: 0.9rem;
+  margin-bottom: 0.2rem;
+}
+
+.artist-v2-benefit-text p {
+  font-size: 0.8rem;
+  color: #E9D5FF;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.artist-v2-escrow-footer {
+  margin-top: auto;
+  padding-top: 1.2rem;
+  border-top: 1.5px solid rgba(255, 255, 255, 0.25);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+.artist-v2-btn-white {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #FFFFFF;
+  color: var(--ink) !important;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  padding: 0.55rem 1.1rem;
+  font-weight: 800;
+  font-size: 0.82rem;
+  box-shadow: 2px 2px 0 var(--ink);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.artist-v2-btn-white:hover {
+  transform: translateY(-2px);
+  background: var(--yellow);
+}
+
+/* 8. SECCIÓN SOBRE MÍ & CTA FINAL */
+.artist-v2-about-layout {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: 1fr 22rem;
+}
+
+.artist-v2-about-card {
+  background: var(--paper);
+  border: 2.5px solid var(--ink);
+  border-radius: 20px;
+  box-shadow: 4px 4px 0 var(--ink);
+  padding: 1.8rem;
+}
+
+.artist-v2-cta-card {
+  background: var(--yellow);
+  border: 2.5px solid var(--ink);
+  border-radius: 20px;
+  box-shadow: 4px 4px 0 var(--ink);
+  padding: 1.8rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+.artist-v2-cta-card h3 {
+  font-family: var(--heading);
+  font-size: 1.6rem;
+  margin: 0 0 0.5rem;
+}
+
+.artist-v2-cta-card p {
+  font-size: 0.88rem;
+  color: #374151;
+  margin: 0 0 1.2rem;
+  line-height: 1.5;
+}
+
+.artist-v2-tools-grid {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.8rem;
+}
+
+.artist-v2-tool-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: var(--cream);
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+/* RESPONSIVE V2 */
+@media (max-width: 64rem) {
+  .artist-v2-reviews-layout {
+    grid-template-columns: 1fr;
+  }
+  .artist-v2-workflow-layout {
+    grid-template-columns: 1fr;
+  }
+  .artist-v2-about-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 48rem) {
+  .artist-v2-header-card {
+    padding: 1.5rem 1.2rem;
+  }
+  .artist-v2-avatar-wrap {
+    left: 1.2rem;
+    top: -4rem;
+    width: 6.5rem;
+    height: 6.5rem;
+  }
+  .artist-v2-header-spacer {
+    width: 6.5rem;
+  }
+  .artist-v2-actions-group {
+    justify-content: flex-start;
+    margin-top: 0.5rem;
+    width: 100%;
+  }
+  .artist-v2-tabs-bar {
+    position: static;
+  }
+}

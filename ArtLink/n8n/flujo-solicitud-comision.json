@@ -1,0 +1,312 @@
+{
+  "name": "ArtLink - Flujo Solicitud de Comisión con Alerta Gmail",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "artlink-solicitud-comision",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-solicitud",
+      "name": "Webhook Solicitud ArtLink",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        100,
+        300
+      ],
+      "webhookId": "artlink-solicitud-comision"
+    },
+    {
+      "parameters": {
+        "language": "javaScript",
+        "jsCode": "const item = $input.first().json;\nconst body = item.body || item;\nconst { artistId, clientId, budget, description, desiredDate, commissionId, commissionTitle } = body;\n\nconst numBudget = Number(budget);\nconst validDesc = Boolean(description && description.trim().length >= 20);\nconst validFields = Boolean(artistId && numBudget > 0 && validDesc);\n\nreturn [{\n  json: {\n    ...body,\n    artistId,\n    clientId: clientId || 'cliente-anonimo',\n    commissionId: commissionId || null,\n    commissionTitle: commissionTitle || 'Comisión personalizada',\n    budget: numBudget,\n    description: (description || '').trim(),\n    desiredDate: desiredDate || new Date().toISOString().split('T')[0],\n    isValid: validFields,\n    validationError: !validFields\n      ? 'La solicitud requiere artistId, presupuesto mayor a 0 y descripción explicativa de al menos 20 caracteres.'\n      : null\n  }\n}];"
+      },
+      "id": "code-validar-solicitud",
+      "name": "Validar Campos Solicitud",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        320,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.isValid }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "if-solicitud-valida",
+      "name": "¿Campos Válidos?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        540,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ success: false, error: $json.validationError, code: 'INVALID_REQUEST_PAYLOAD' }) }}",
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "id": "respond-400-validacion-com",
+      "name": "Responder 400 Validación Solicitud",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        760,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=http://localhost:3000/artistProfiles/{{ $('Validar Campos Solicitud').item.json.artistId }}",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          }
+        }
+      },
+      "id": "http-consultar-artista",
+      "name": "Consultar Artista",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        760,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "language": "javaScript",
+        "jsCode": "const artistData = $input.first().json;\nconst req = $('Validar Campos Solicitud').item.json;\nconst basePrice = Number(artistData.basePrice || 0);\nconst offeredBudget = Number(req.budget || 0);\nconst isBudgetAcceptable = basePrice === 0 || offeredBudget >= basePrice;\n\nreturn [{\n  json: {\n    ...req,\n    artistUserId: artistData.userId || null,\n    artistDisplayName: artistData.displayName || 'Artista ArtLink',\n    artistBasePrice: basePrice,\n    isBudgetAcceptable,\n    budgetError: !isBudgetAcceptable\n      ? `El presupuesto ofrecido ($${offeredBudget} USD) es inferior a la tarifa base del artista ($${basePrice} USD).`\n      : null\n  }\n}];"
+      },
+      "id": "code-evaluar-presupuesto",
+      "name": "Evaluar Presupuesto",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        980,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.isBudgetAcceptable }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "if-presupuesto-aceptable",
+      "name": "¿Presupuesto Aceptable?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ success: false, error: $json.budgetError, minRequired: $json.artistBasePrice, offered: $json.budget, code: 'BUDGET_BELOW_MINIMUM' }) }}",
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "id": "respond-400-presupuesto",
+      "name": "Responder 400 Presupuesto",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1420,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:3000/requests",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ artistId: $json.artistId, clientId: $json.clientId, commissionId: $json.commissionId, commissionTitle: $json.commissionTitle, budget: $json.budget, price: $json.budget, description: $json.description, desiredDate: $json.desiredDate, references: $json.references || [], status: 'waitlist', escrowStatus: 'held_in_escrow', n8nProcessed: true, createdAt: new Date().toISOString() }) }}",
+        "options": {}
+      },
+      "id": "http-crear-solicitud-db",
+      "name": "Crear Solicitud en DB",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1420,
+        140
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Evaluar Presupuesto').item.json.artistUserId ? 'notificaciones@artlink.demo' : 'artlink.notificaciones@gmail.com' }}",
+        "subject": "Nueva solicitud de comisión - ${{ $('Validar Campos Solicitud').item.json.budget }} USD en custodia Escrow",
+        "emailType": "html",
+        "message": "<div style=\"font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; border: 2.5px solid #1E192B; border-radius: 16px; background: #FAF9F6; box-shadow: 4px 4px 0px #1E192B;\"><h1 style=\"color: #6D28D9; font-size: 24px; margin-top: 0;\">ArtLink Escrow Shield</h1><h2 style=\"color: #1E192B; font-size: 18px;\">¡Tienes una nueva solicitud de encargo!</h2><p style=\"color: #374151; font-size: 15px;\">Un cliente ha registrado una propuesta formal para <strong>{{ $('Evaluar Presupuesto').item.json.artistDisplayName }}</strong> con fondos asegurados:</p><table style=\"width: 100%; border-collapse: collapse; margin: 18px 0; background: #FFFFFF; border: 1.5px solid #1E192B; border-radius: 10px;\"><tr><td style=\"padding: 10px 14px; border-bottom: 1px solid #E5E7EB; font-weight: bold; color: #4B5563;\">Paquete / Formato:</td><td style=\"padding: 10px 14px; border-bottom: 1px solid #E5E7EB; font-weight: bold;\">{{ $('Validar Campos Solicitud').item.json.commissionTitle }}</td></tr><tr><td style=\"padding: 10px 14px; border-bottom: 1px solid #E5E7EB; font-weight: bold; color: #4B5563;\">Presupuesto en custodia:</td><td style=\"padding: 10px 14px; border-bottom: 1px solid #E5E7EB; color: #059669; font-weight: 900; font-size: 16px;\">${{ $('Validar Campos Solicitud').item.json.budget }} USD</td></tr><tr><td style=\"padding: 10px 14px; border-bottom: 1px solid #E5E7EB; font-weight: bold; color: #4B5563;\">Fecha deseada:</td><td style=\"padding: 10px 14px; border-bottom: 1px solid #E5E7EB;\">{{ $('Validar Campos Solicitud').item.json.desiredDate }}</td></tr><tr><td style=\"padding: 10px 14px; font-weight: bold; color: #4B5563; vertical-align: top;\">Descripción:</td><td style=\"padding: 10px 14px; font-style: italic;\">{{ $('Validar Campos Solicitud').item.json.description }}</td></tr></table><div style=\"background: #C8F5E0; border: 1.5px solid #1E192B; border-radius: 10px; padding: 14px 18px; margin: 20px 0; box-shadow: 2px 2px 0px #1E192B;\"><strong style=\"color: #065F46; display: block; margin-bottom: 4px;\">Protección Escrow Garantizada:</strong><p style=\"margin: 0; font-size: 13px; color: #065F46; line-height: 1.5;\">Los fondos se encuentran temporalmente retenidos de forma segura. No envíes los archivos originales en alta calidad hasta que el cliente apruebe la entrega final.</p></div><a href=\"http://localhost:5173/artista/solicitudes\" style=\"display: inline-block; background: #8B5CF6; color: #FFFFFF; padding: 12px 24px; text-decoration: none; border-radius: 999px; font-weight: bold; border: 2px solid #1E192B; box-shadow: 3px 3px 0px #1E192B;\">Revisar Solicitud en el Panel</a></div>",
+        "options": {}
+      },
+      "id": "gmail-alerta-artista",
+      "name": "Enviar Alerta con Gmail",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1640,
+        140
+      ],
+      "continueOnFail": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "A7VW5UcIX39miqyo",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ success: true, message: 'Solicitud de comisión procesada, registrada en custodia y notificada por N8N', request: $('Crear Solicitud en DB').item.json, emailNotificationSent: true }) }}",
+        "options": {
+          "responseCode": 201
+        }
+      },
+      "id": "respond-201-solicitud",
+      "name": "Responder 201 Solicitud",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1860,
+        140
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Solicitud ArtLink": {
+      "main": [
+        [
+          {
+            "node": "Validar Campos Solicitud",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar Campos Solicitud": {
+      "main": [
+        [
+          {
+            "node": "¿Campos Válidos?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Campos Válidos?": {
+      "main": [
+        [
+          {
+            "node": "Consultar Artista",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Responder 400 Validación Solicitud",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consultar Artista": {
+      "main": [
+        [
+          {
+            "node": "Evaluar Presupuesto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evaluar Presupuesto": {
+      "main": [
+        [
+          {
+            "node": "¿Presupuesto Aceptable?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Presupuesto Aceptable?": {
+      "main": [
+        [
+          {
+            "node": "Crear Solicitud en DB",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Responder 400 Presupuesto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Crear Solicitud en DB": {
+      "main": [
+        [
+          {
+            "node": "Enviar Alerta con Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar Alerta con Gmail": {
+      "main": [
+        [
+          {
+            "node": "Responder 201 Solicitud",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "id": "YmVvSP7J1J1zvfex"
+}

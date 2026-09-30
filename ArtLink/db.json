@@ -225,6 +225,159 @@
       "active": true,
       "createdAt": "2026-09-30T14:32:00.444Z",
       "id": "4h0bXvpIoK8"
+    },
+    {
+      "name": "liejhfjeowp[erflgk",
+      "email": "dmnhfgbhjqwllekj@gamil.com",
+      "passwordDemo": "1234567890",
+      "role": "cliente",
+      "active": true,
+      "createdAt": "2026-09-30T17:15:48.195Z",
+      "id": "GqAsJNxCcoY"
+    },
+    {
+      "name": "Bianca Robles Hurtado",
+      "email": "biancarobleshurtado20@gmail.com",
+      "passwordDemo": "1234567890",
+      "role": "artista",
+      "active": true,
+      "createdAt": "2026-09-30T17:23:35.993Z",
+      "id": "xUsI0240NpE"
+    },
+    {
+      "name": "1234567",
+      "email": "biancaroblado27@gmail.com",
+      "passwordDemo": "234567",
+      "role": "artista",
+      "active": true,
+      "createdAt": "2026-09-30T19:07:24.956Z",
+      "id": "aMpaFDZbVjY"
+    },
+    {
+      "name": "2345",
+      "email": "biancarortado27@gmail.com",
+      "passwordDemo": "123456",
+      "role": "artista",
+      "active": true,
+      "createdAt": "2026-09-30T19:08:04.736Z",
+      "id": "xcA5VQhrMm0"
+    },
+    {
+      "name": "asdfghjol;'",
+      "email": "biarobleshurtado27@gmail.com",
+      "passwordDemo": "1234567890-",
+      "role": "artista",
+      "acceptTerms": true,
+      "termsAccepted": true,
+      "termsAcceptedAt": "2026-09-30T19:22:25.834Z",
+      "termsVersion": "1.0",
+      "active": true,
+      "createdAt": "2026-09-30T19:22:26.127Z",
+      "id": "Nhm1g42kg6c"
+    },
+    {
+      "name": "Bianca Robles Hurtado",
+      "email": "biancarobleshurtado29@gmail.com",
+      "passwordDemo": "artista123",
+      "role": "cliente",
+      "acceptTerms": true,
+      "termsAccepted": true,
+      "termsAcceptedAt": "2026-09-30T19:47:01.575Z",
+      "termsVersion": "1.0",
+      "active": true,
+      "createdAt": "2026-09-30T19:47:01.887Z",
+      "id": "qSU7aGs2Vuo"
+    },
+    {
+      "name": "Bianca Robles Hurtado",
+      "email": "biancarobleshurtado30@gmail.com",
+      "passwordDemo": "cliente123",
+      "role": "cliente",
+      "acceptTerms": true,
+      "termsAccepted": true,
+      "termsAcceptedAt": "2026-09-30T19:47:30.872Z",
+      "termsVersion": "1.0",
+      "active": true,
+      "createdAt": "2026-09-30T19:47:31.011Z",
+      "id": "U2rft0dKRJc"
+    },
+    {
+      "name": "Bianca Robles Hurtadokk",
+      "email": "biancarobleshurtado288@gmail.com",
+      "passwordDemo": "artista123",
+      "role": "artista",
+      "acceptTerms": true,
+      "termsAccepted": true,
+      "termsAcceptedAt": "2026-09-30T20:05:33.997Z",
+      "termsVersion": "1.0",
+      "active": true,
+      "createdAt": "2026-09-30T20:05:34.199Z",
+      "id": "UkXjzRLx88c"
+    },
+    {
+      "name": "Bianca Robles Hurtado",
+      "email": "cliente@artlink",
+      "passwordDemo": "cliente123",
+      "role": "cliente",
+      "acceptTerms": true,
+      "termsAccepted": true,
+      "termsAcceptedAt": "2026-09-30T20:06:02.047Z",
+      "termsVersion": "1.0",
+      "active": true,
+      "createdAt": "2026-09-30T20:06:02.228Z",
+      "id": "eqQCifng2ng"
+    },
+    {
+      "name": "Juan",
+      "email": "juan.nuevo.14@artlink.demo",
+      "role": "cliente",
+      "passwordDemo": "123456",
+      "avatar": "https://i.pravatar.cc/150?u=juan.nuevo.14@artlink.demo",
+      "active": true,
+      "createdAt": "2026-09-30T21:15:03.408Z",
+      "termsAccepted": true,
+      "termsAcceptedAt": "2026-09-30T21:15:03.282Z",
+      "termsVersion": "1.0",
+      "id": "08CiWp8RoYk"
+    },
+    {
+      "name": "wertyujk",
+      "email": "biancrtado27@gmail.com",
+      "role": "cliente",
+      "passwordDemo": "sdfghjkl",
+      "avatar": "https://i.pravatar.cc/150?u=biancrtado27@gmail.com",
+      "active": true,
+      "createdAt": "2026-09-30T21:16:53.245Z",
+      "termsAccepted": true,
+      "termsAcceptedAt": "2026-09-30T21:16:52.759Z",
+      "termsVersion": "1.0",
+      "id": "4BOkw08semQ"
+    },
+    {
+      "name": "Juan Final",
+      "email": "juan.final.test@artlink.demo",
+      "role": "cliente",
+      "passwordDemo": "123456",
+      "avatar": "https://i.pravatar.cc/150?u=juan.final.test@artlink.demo",
+      "active": true,
+      "createdAt": "2026-09-30T21:18:14.239Z",
+      "termsAccepted": true,
+      "termsAcceptedAt": "2026-09-30T21:18:14.117Z",
+      "termsVersion": "1.0",
+      "id": "uPsb8PzEXMI"
+    },
+    {
+      "name": "Bianca Robles Hurtado",
+      "email": "biahurtado27@gmail.com",
+      "role": "artista",
+      "passwordDemo": "123456789",
+      "avatar": "https://i.pravatar.cc/150?u=biahurtado27@gmail.com",
+      "active": true,
+      "createdAt": "2026-09-30T21:20:48.723Z",
+      "termsAccepted": true,
+      "termsAcceptedAt": "2026-09-30T21:20:48.407Z",
+      "termsVersion": "1.0",
+      "id": "ocNq4heiynM"
     }
   ],
   "artistProfiles": [
@@ -708,6 +861,110 @@
       "basePrice": 0,
       "socialLinks": {},
       "id": "Z9ETagM8Axs"
+    },
+    {
+      "userId": "xUsI0240NpE",
+      "displayName": "Bianca Robles Hurtado",
+      "username": "biancarobleshurtado20",
+      "bio": "Perfil nuevo en ArtLink.",
+      "disciplines": [],
+      "styles": [],
+      "location": "",
+      "availability": "open",
+      "slots": 1,
+      "rating": 0,
+      "verified": false,
+      "basePrice": 0,
+      "socialLinks": {},
+      "id": "tZmMA-R82vM"
+    },
+    {
+      "userId": "aMpaFDZbVjY",
+      "displayName": "1234567",
+      "username": "biancaroblado27",
+      "bio": "Perfil nuevo de artista en ArtLink.",
+      "disciplines": [
+        "Ilustración"
+      ],
+      "styles": [
+        "Digital"
+      ],
+      "location": "",
+      "availability": "open",
+      "slots": 3,
+      "rating": 5,
+      "verified": false,
+      "basePrice": 50,
+      "socialLinks": {},
+      "id": "Wi9Kwf8NvJ4"
+    },
+    {
+      "userId": "xcA5VQhrMm0",
+      "displayName": "2345",
+      "username": "biancarortado27",
+      "bio": "Perfil nuevo en ArtLink.",
+      "disciplines": [],
+      "styles": [],
+      "location": "",
+      "availability": "open",
+      "slots": 1,
+      "rating": 0,
+      "verified": false,
+      "basePrice": 0,
+      "socialLinks": {},
+      "id": "NCv0h2nAkDk"
+    },
+    {
+      "userId": "Nhm1g42kg6c",
+      "displayName": "asdfghjol;'",
+      "username": "biarobleshurtado27",
+      "bio": "Perfil nuevo en ArtLink.",
+      "disciplines": [],
+      "styles": [],
+      "location": "",
+      "availability": "open",
+      "slots": 1,
+      "rating": 0,
+      "verified": false,
+      "basePrice": 0,
+      "socialLinks": {},
+      "id": "u_jYvwiz7LA"
+    },
+    {
+      "userId": "UkXjzRLx88c",
+      "displayName": "Bianca Robles Hurtadokk",
+      "username": "biancarobleshurtado288",
+      "bio": "Perfil nuevo de artista en ArtLink.",
+      "disciplines": [
+        "Ilustración"
+      ],
+      "styles": [
+        "Digital"
+      ],
+      "location": "",
+      "availability": "open",
+      "slots": 3,
+      "rating": 5,
+      "verified": false,
+      "basePrice": 50,
+      "socialLinks": {},
+      "id": "UVPiQCjGfXY"
+    },
+    {
+      "userId": "ocNq4heiynM",
+      "displayName": "Bianca Robles Hurtado",
+      "username": "biahurtado27",
+      "bio": "Perfil nuevo en ArtLink.",
+      "disciplines": [],
+      "styles": [],
+      "location": "",
+      "availability": "open",
+      "slots": 1,
+      "rating": 0,
+      "verified": false,
+      "basePrice": 0,
+      "socialLinks": {},
+      "id": "dWWxN2rBxCo"
     }
   ],
   "portfolioItems": [
@@ -2097,6 +2354,21 @@
       "references": [],
       "status": "rejected",
       "createdAt": "2026-06-30T18:00:00.000Z"
+    },
+    {
+      "clientId": "cliente-anonimo",
+      "commissionId": 1,
+      "commissionTitle": "Comisión personalizada",
+      "budget": null,
+      "price": null,
+      "description": "",
+      "desiredDate": "2026-09-30",
+      "references": [],
+      "status": "waitlist",
+      "escrowStatus": "held_in_escrow",
+      "n8nProcessed": true,
+      "createdAt": "2026-09-30T21:16:39.032Z",
+      "id": "tJI7VFMPDiQ"
     }
   ],
   "messages": [

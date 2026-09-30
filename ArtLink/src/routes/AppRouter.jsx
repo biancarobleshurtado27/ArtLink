@@ -49,6 +49,7 @@ export default function AppRouter() {
           <Route path="/ayuda" element={<LegalPage />} />
           <Route path="/terminos" element={<LegalPage />} />
           <Route path="/privacidad" element={<LegalPage />} />
+          <Route path="/comunidad" element={<LegalPage />} />
           <Route path="/contacto" element={<LegalPage />} />
           <Route path="/acceso-denegado" element={<AccessDeniedPage />} />
 
