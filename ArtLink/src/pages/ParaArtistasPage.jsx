@@ -15,10 +15,13 @@ import {
   Wallet,
 } from 'lucide-react'
 import useAuth from '../hooks/useAuth'
+import useArtists from '../hooks/useArtists'
 import { ROLES } from '../utils/roles'
+import { RANKING_EMPTY_MESSAGE, getAvailabilityStatus } from '../utils/discoverData'
 import AvailabilityBadge from '../components/AvailabilityBadge'
 import Badge from '../components/Badge'
 import DecorativeStar from '../components/DecorativeStar'
+import { handleImageError } from '../utils/imageFallback'
 
 const artistBenefits = [
   {
@@ -189,6 +192,10 @@ function FaqItem({ item, open, onToggle, index }) {
 
 export default function ParaArtistasPage() {
   const { user } = useAuth()
+  const { artists, loading: artistsLoading } = useArtists()
+  const previewArtist = artists.find((artist) => artist.basePrice > 0 && artist.availability === 'open')
+    || artists.find((artist) => artist.basePrice > 0)
+    || artists[0]
   const [openFaqIndex, setOpenFaqIndex] = useState(0)
 
   // Enrutamiento inteligente de botones principales
@@ -272,57 +279,81 @@ export default function ParaArtistasPage() {
           </div>
         </div>
 
-        {/* Mockup visual de perfil */}
-        <div className="space-preview mock-panel" aria-label="Vista previa de perfil de artista demostrativo" style={{ minHeight: 'auto', padding: '1.4rem' }}>
+        {/* Vista previa construida con un perfil real de la plataforma */}
+        {previewArtist ? (
+        <div className="space-preview mock-panel" aria-label="Vista previa de un perfil real de ArtLink" style={{ minHeight: 'auto', padding: '1.4rem' }}>
           <div className="preview-tape" />
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', marginBottom: '1rem' }}>
-            <span className="avatar avatar-medium avatar-fallback" style={{ background: '#2DD4BF', color: '#1E192B' }}>MR</span>
+            {previewArtist.avatar ? (
+              <img
+                src={previewArtist.avatar}
+                alt={previewArtist.displayName}
+                onError={handleImageError}
+                style={{ width: '2.75rem', height: '2.75rem', borderRadius: '50%', objectFit: 'cover' }}
+              />
+            ) : (
+              <span className="avatar avatar-medium avatar-fallback" aria-hidden="true">
+                {(previewArtist.displayName || '?').slice(0, 2).toUpperCase()}
+              </span>
+            )}
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                <strong style={{ fontFamily: 'var(--font-heading)', fontSize: '1.15rem' }}>Mateo Ríos</strong>
-                <BadgeCheck size={17} color="#8B5CF6" aria-label="Artista verificado" />
+                <strong style={{ fontFamily: 'var(--font-heading)', fontSize: '1.15rem' }}>{previewArtist.displayName}</strong>
+                {previewArtist.verified && <BadgeCheck size={17} color="#8B5CF6" aria-label="Artista verificado" />}
               </div>
-              <small style={{ color: 'var(--muted)', display: 'block', fontSize: '0.75rem' }}>@mateorios.art · Ilustración 2D</small>
+              <small style={{ color: 'var(--muted)', display: 'block', fontSize: '0.75rem' }}>
+                @{previewArtist.username} · {(previewArtist.disciplines || []).join(' · ')}
+              </small>
             </div>
             <div style={{ marginLeft: 'auto' }}>
-              <AvailabilityBadge status="open" label="3 CUPOS LIBRES" />
+              <AvailabilityBadge status={previewArtist.availability} />
             </div>
           </div>
 
           <div className="mock-panel-cards" style={{ margin: '0.8rem 0 1rem' }}>
             <div className="mock-panel-card" style={{ padding: '0.65rem' }}>
-              <strong style={{ fontSize: '1.15rem' }}>3</strong>
+              <strong style={{ fontSize: '1.15rem' }}>{previewArtist.slots || 0}</strong>
               <span>Cupos libres</span>
             </div>
             <div className="mock-panel-card" style={{ padding: '0.65rem' }}>
-              <strong style={{ fontSize: '1.15rem' }}>$45+</strong>
+              <strong style={{ fontSize: '1.15rem' }}>
+                {previewArtist.basePrice > 0 ? `$${previewArtist.basePrice}+` : 'Sin tarifa'}
+              </strong>
               <span>Tarifa base</span>
             </div>
             <div className="mock-panel-card" style={{ padding: '0.65rem' }}>
               <strong style={{ fontSize: '1.15rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.2rem' }}>
-                <Star size={14} fill="#8B5CF6" color="#8B5CF6" /> 4.9
+                <Star size={14} fill="#8B5CF6" color="#8B5CF6" /> {previewArtist.rating || '—'}
               </strong>
-              <span>18 pedidos</span>
+              <span>{previewArtist.verified ? 'Perfil verificado' : 'Sin verificar'}</span>
             </div>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.55rem', marginTop: '0.8rem' }}>
             <div style={{ background: 'var(--paper)', border: '1.5px solid var(--ink)', borderRadius: 'var(--radius-sm)', padding: '0.65rem 0.85rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
-                <strong style={{ fontSize: '0.85rem', display: 'block' }}>Retrato digital / Busto</strong>
-                <small style={{ color: 'var(--muted)', fontSize: '0.7rem' }}>5 días de entrega · 2 revisiones</small>
+                <strong style={{ fontSize: '0.85rem', display: 'block' }}>{getAvailabilityStatus(previewArtist).label}</strong>
+                <small style={{ color: 'var(--muted)', fontSize: '0.7rem' }}>{previewArtist.location || 'Ubicación no publicada'}</small>
               </div>
-              <Badge tone="violet">$45 USD</Badge>
+              <Badge tone="violet">{previewArtist.basePrice > 0 ? `$${previewArtist.basePrice} USD` : 'Sin tarifa'}</Badge>
             </div>
-            <div style={{ background: 'var(--paper)', border: '1.5px solid var(--ink)', borderRadius: 'var(--radius-sm)', padding: '0.65rem 0.85rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Link
+              to={`/artista/${previewArtist.id}`}
+              style={{ background: 'var(--paper)', border: '1.5px solid var(--ink)', borderRadius: 'var(--radius-sm)', padding: '0.65rem 0.85rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+            >
               <div>
-                <strong style={{ fontSize: '0.85rem', display: 'block' }}>Ilustración completa con fondo</strong>
-                <small style={{ color: 'var(--muted)', fontSize: '0.7rem' }}>12 días de entrega · 3 revisiones</small>
+                <strong style={{ fontSize: '0.85rem', display: 'block' }}>Ver su portafolio real</strong>
+                <small style={{ color: 'var(--muted)', fontSize: '0.7rem' }}>Obras y disponibilidad publicadas</small>
               </div>
-              <Badge tone="violet">$95 USD</Badge>
-            </div>
+              <Badge tone="mint">Ver perfil</Badge>
+            </Link>
           </div>
         </div>
+        ) : (
+          <div className="space-preview mock-panel" aria-label="Vista previa de un perfil real de ArtLink" style={{ minHeight: 'auto', padding: '1.4rem' }}>
+            <p>{artistsLoading ? 'Cargando perfiles de la plataforma...' : RANKING_EMPTY_MESSAGE}</p>
+          </div>
+        )}
       </section>
 
       {/* 4. SECCIÓN DE PASOS DE CONFIGURACIÓN */}

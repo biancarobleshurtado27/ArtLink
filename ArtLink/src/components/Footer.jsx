@@ -35,21 +35,6 @@ export default function Footer() {
   return (
     <footer className="artlink-studio-footer" role="contentinfo">
       <div className="studio-footer-inner">
-        {/* BARRA SUPERIOR: BRAND Y BADGES */}
-        <div className="studio-footer-top">
-          <div className="studio-brand-row">
-            <span className="studio-green-dot" aria-hidden="true" />
-            <strong className="studio-brand-name">ArtLink Studio Platform</strong>
-          </div>
-          <div className="studio-badges-row">
-            <span className="studio-badge badge-mint">
-              100% Hecho para Artistas
-            </span>
-            <span className="studio-badge badge-pink">
-              Fondos Protegidos Escrow
-            </span>
-          </div>
-        </div>
 
         {/* 4 COLUMNAS DE ENLACES */}
         <div className="studio-footer-columns">

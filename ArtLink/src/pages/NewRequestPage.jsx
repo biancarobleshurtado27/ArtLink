@@ -102,10 +102,7 @@ export default function NewRequestPage() {
   const [description, setDescription] = useState('')
   const [desiredDate, setDesiredDate] = useState('')
   const [paymentMethod, setPaymentMethod] = useState('card')
-  const [refFiles, setRefFiles] = useState([
-    'https://picsum.photos/seed/art-reference-1/600/400',
-    'https://picsum.photos/seed/art-reference-2/600/400',
-  ])
+  const [refFiles, setRefFiles] = useState([])
   const [termsAccepted, setTermsAccepted] = useState(true)
 
   const [fieldErrors, setFieldErrors] = useState({})

@@ -83,10 +83,10 @@ export default function AppShell() {
     }
   }, [userMenuOpen])
 
-  const userName = user?.name || user?.email?.split('@')[0] || 'Bianca Robles Hurtado'
-  const userEmail = user?.email || 'biancarobleshurtado27@gmail.com'
-  const userAvatar = user?.avatar || 'https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&w=120&q=80'
-  const initials = userName.split(' ').map((part) => part[0]).slice(0, 2).join('').toUpperCase()
+  const userName = user?.name || user?.email?.split('@')[0] || 'Invitado'
+  const userEmail = user?.email || 'Inicia sesión para ver tu perfil'
+  const userAvatar = user?.avatar || ''
+  const initials = userName.split(' ').map((part) => part[0]).filter(Boolean).slice(0, 2).join('').toUpperCase()
 
   // Enlaces de la cabecera pública cuando no hay sesión
   const publicLinks = [
@@ -318,8 +318,8 @@ export default function AppShell() {
               <div className="sidebar-user-popover" role="menu" aria-label="Opciones de cuenta">
                 {/* 1. PERFIL: AVATAR FLOR, NOMBRE Y CORREO */}
                 <div className="user-popover-header">
-                  {avatarError ? (
-                    <span className="user-popover-avatar-fallback">{initials}</span>
+                  {!userAvatar || avatarError ? (
+                    <span className="user-popover-avatar-fallback">{initials || '?'}</span>
                   ) : (
                     <img
                       src={userAvatar}

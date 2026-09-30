@@ -207,6 +207,24 @@
       "avatar": "/images/hero/thumbs/shop-1.jpg",
       "createdAt": "2026-01-12T10:00:00.000Z",
       "active": true
+    },
+    {
+      "name": "Bianca Robles Hurtado",
+      "email": "biancarobleshurtado27@gmail.com",
+      "passwordDemo": "1234567890",
+      "role": "artista",
+      "active": true,
+      "createdAt": "2026-09-30T14:29:46.754Z",
+      "id": "wSuyjmWg_Uw"
+    },
+    {
+      "name": "Bianca Robles Hurtado",
+      "email": "biancarobleshurtado@gmail.com",
+      "passwordDemo": "1234567890",
+      "role": "cliente",
+      "active": true,
+      "createdAt": "2026-09-30T14:32:00.444Z",
+      "id": "4h0bXvpIoK8"
     }
   ],
   "artistProfiles": [
@@ -674,6 +692,22 @@
       "socialLinks": {
         "instagram": "https://instagram.com/poly_lola"
       }
+    },
+    {
+      "userId": "wSuyjmWg_Uw",
+      "displayName": "Bianca Robles Hurtado",
+      "username": "biancarobleshurtado27",
+      "bio": "Perfil nuevo en ArtLink.",
+      "disciplines": [],
+      "styles": [],
+      "location": "",
+      "availability": "open",
+      "slots": 1,
+      "rating": 0,
+      "verified": false,
+      "basePrice": 0,
+      "socialLinks": {},
+      "id": "Z9ETagM8Axs"
     }
   ],
   "portfolioItems": [
@@ -684,7 +718,9 @@
       "image": "/images/hero/portfolio/forest-guardian.jpg",
       "category": "Ilustración",
       "description": "Personaje editorial para una novela juvenil.",
-      "featured": true
+      "featured": true,
+      "likes": 775,
+      "createdAt": "2026-04-03T00:00:00.000Z"
     },
     {
       "id": "portfolio-002",
@@ -693,7 +729,9 @@
       "image": "/images/hero/portfolio/sky-sanctuary.jpg",
       "category": "Concept art",
       "description": "Mapa ilustrado de un universo de fantasía.",
-      "featured": true
+      "featured": true,
+      "likes": 1248,
+      "createdAt": "2026-06-21T00:00:00.000Z"
     },
     {
       "id": "portfolio-003",
@@ -702,7 +740,9 @@
       "image": "/images/hero/portfolio/winter-portrait.jpg",
       "category": "Retrato",
       "description": "Retrato digital con iluminación cinematográfica.",
-      "featured": true
+      "featured": true,
+      "likes": 1787,
+      "createdAt": "2026-07-06T00:00:00.000Z"
     },
     {
       "id": "portfolio-004",
@@ -711,7 +751,9 @@
       "image": "/images/hero/portfolio/fantasy-girl.jpg",
       "category": "Diseño de personajes",
       "description": "Hoja de personaje para una aventura espacial.",
-      "featured": false
+      "featured": false,
+      "likes": 302,
+      "createdAt": "2026-01-10T00:00:00.000Z"
     },
     {
       "id": "portfolio-005",
@@ -720,7 +762,9 @@
       "image": "/images/hero/portfolio/form-lamp.jpg",
       "category": "Arte 3D",
       "description": "Visualización de producto para una colección de diseño.",
-      "featured": true
+      "featured": true,
+      "likes": 841,
+      "createdAt": "2026-07-12T00:00:00.000Z"
     },
     {
       "id": "portfolio-006",
@@ -729,7 +773,9 @@
       "image": "/images/hero/portfolio/cozy-workshop.jpg",
       "category": "Render",
       "description": "Escena arquitectónica de estilo minimalista.",
-      "featured": false
+      "featured": false,
+      "likes": 1314,
+      "createdAt": "2026-03-21T00:00:00.000Z"
     },
     {
       "id": "portfolio-007",
@@ -738,7 +784,9 @@
       "image": "https://picsum.photos/seed/secret-valley/900/700",
       "category": "Ilustración",
       "description": "Portada e interiores para antología de relatos fantásticos.",
-      "featured": false
+      "featured": false,
+      "likes": 1853,
+      "createdAt": "2026-04-11T00:00:00.000Z"
     },
     {
       "id": "portfolio-008",
@@ -747,7 +795,9 @@
       "image": "https://picsum.photos/seed/sunset-glow/900/700",
       "category": "Retrato",
       "description": "Estudio de color y luz cálida para personaje femenino.",
-      "featured": false
+      "featured": false,
+      "likes": 104,
+      "createdAt": "2026-07-19T00:00:00.000Z"
     },
     {
       "id": "portfolio-009",
@@ -756,7 +806,9 @@
       "image": "https://picsum.photos/seed/sound-chair/900/700",
       "category": "Arte 3D",
       "description": "Concepto de mobiliario acústico para oficina moderna.",
-      "featured": false
+      "featured": false,
+      "likes": 643,
+      "createdAt": "2026-04-15T00:00:00.000Z"
     },
     {
       "id": "portfolio-010",
@@ -765,7 +817,9 @@
       "image": "https://picsum.photos/seed/sky-temple/900/700",
       "category": "Fondos y escenarios",
       "description": "Concept art ambiental para un videojuego de aventura mística.",
-      "featured": true
+      "featured": true,
+      "likes": 1765,
+      "createdAt": "2026-05-07T00:00:00.000Z"
     },
     {
       "id": "portfolio-011",
@@ -774,7 +828,9 @@
       "image": "https://picsum.photos/seed/ice-citadel/900/700",
       "category": "Concept art",
       "description": "Pintura digital de una fortaleza en un risco ártico.",
-      "featured": true
+      "featured": true,
+      "likes": 1226,
+      "createdAt": "2025-10-22T00:00:00.000Z"
     },
     {
       "id": "portfolio-012",
@@ -783,7 +839,9 @@
       "image": "https://picsum.photos/seed/glowing-ruins/900/700",
       "category": "Ilustración 2D",
       "description": "Entorno nocturno con vegetación brillante y ruinas ancestrales.",
-      "featured": false
+      "featured": false,
+      "likes": 753,
+      "createdAt": "2025-12-08T00:00:00.000Z"
     },
     {
       "id": "portfolio-013",
@@ -792,7 +850,9 @@
       "image": "https://picsum.photos/seed/neo-kyoto-pixel/900/700",
       "category": "Pixel Art",
       "description": "Escenario cyberpunk detallado para metroidvania retro.",
-      "featured": true
+      "featured": true,
+      "likes": 214,
+      "createdAt": "2026-03-21T00:00:00.000Z"
     },
     {
       "id": "portfolio-014",
@@ -801,7 +861,9 @@
       "image": "https://picsum.photos/seed/warriors-pixel/900/700",
       "category": "Diseño de personajes",
       "description": "Sprites animados en 32x32 píxeles con 8 direcciones.",
-      "featured": true
+      "featured": true,
+      "likes": 1699,
+      "createdAt": "2025-09-13T00:00:00.000Z"
     },
     {
       "id": "portfolio-015",
@@ -810,7 +872,9 @@
       "image": "https://picsum.photos/seed/tavern-pixel/900/700",
       "category": "Pixel Art",
       "description": "Tileset interior completo para RPG clásico en vista cenital.",
-      "featured": false
+      "featured": false,
+      "likes": 1160,
+      "createdAt": "2026-01-22T00:00:00.000Z"
     },
     {
       "id": "portfolio-016",
@@ -819,7 +883,9 @@
       "image": "https://picsum.photos/seed/fox-teapot/900/700",
       "category": "Ilustración editorial",
       "description": "Doble página para álbum ilustrado publicado en Francia.",
-      "featured": true
+      "featured": true,
+      "likes": 687,
+      "createdAt": "2025-12-30T00:00:00.000Z"
     },
     {
       "id": "portfolio-017",
@@ -828,7 +894,9 @@
       "image": "https://picsum.photos/seed/winter-garden/900/700",
       "category": "Ilustración 2D",
       "description": "Postal botánica con técnicas mixtas y texturas de gouache digital.",
-      "featured": true
+      "featured": true,
+      "likes": 148,
+      "createdAt": "2026-05-18T00:00:00.000Z"
     },
     {
       "id": "portfolio-018",
@@ -837,7 +905,9 @@
       "image": "https://picsum.photos/seed/grandpa-lighthouse/900/700",
       "category": "Ilustración editorial",
       "description": "Portada de libro infantil con tonos cálidos y marina serena.",
-      "featured": false
+      "featured": false,
+      "likes": 1633,
+      "createdAt": "2026-03-26T00:00:00.000Z"
     },
     {
       "id": "portfolio-019",
@@ -846,7 +916,9 @@
       "image": "https://picsum.photos/seed/transformation-anim/900/700",
       "category": "Animación",
       "description": "Keyframes y animación intercalada en 24 fps estilo anime clásico.",
-      "featured": true
+      "featured": true,
+      "likes": 1094,
+      "createdAt": "2025-09-08T00:00:00.000Z"
     },
     {
       "id": "portfolio-020",
@@ -855,7 +927,9 @@
       "image": "https://picsum.photos/seed/lofi-loop/900/700",
       "category": "Animación",
       "description": "Bucle animado continuo de viaje en tren para canal de música.",
-      "featured": true
+      "featured": true,
+      "likes": 874,
+      "createdAt": "2026-04-30T00:00:00.000Z"
     },
     {
       "id": "portfolio-021",
@@ -864,7 +938,9 @@
       "image": "https://picsum.photos/seed/water-wind-study/900/700",
       "category": "Ilustración 2D",
       "description": "Hojas de modelado de efectos elementales animados a mano.",
-      "featured": false
+      "featured": false,
+      "likes": 335,
+      "createdAt": "2025-10-17T00:00:00.000Z"
     },
     {
       "id": "portfolio-022",
@@ -873,7 +949,9 @@
       "image": "https://picsum.photos/seed/cat-emotes/900/700",
       "category": "Emotes",
       "description": "Pack de 6 expresiones tiernas y legibles en tamaños pequeños.",
-      "featured": true
+      "featured": true,
+      "likes": 1886,
+      "createdAt": "2026-03-21T00:00:00.000Z"
     },
     {
       "id": "portfolio-023",
@@ -882,7 +960,9 @@
       "image": "https://picsum.photos/seed/crystal-badges/900/700",
       "category": "Emotes",
       "description": "Set de sub badges evolutivos para canal de Twitch.",
-      "featured": true
+      "featured": true,
+      "likes": 1347,
+      "createdAt": "2026-07-18T00:00:00.000Z"
     },
     {
       "id": "portfolio-024",
@@ -891,7 +971,9 @@
       "image": "https://picsum.photos/seed/chibi-streamer/900/700",
       "category": "Diseño de personajes",
       "description": "Diseño de personaje chibi para branding de creadora de contenido.",
-      "featured": false
+      "featured": false,
+      "likes": 940,
+      "createdAt": "2025-12-19T00:00:00.000Z"
     },
     {
       "id": "portfolio-025",
@@ -900,7 +982,9 @@
       "image": "https://picsum.photos/seed/colossal-minotaur/900/700",
       "category": "Modelado 3D",
       "description": "Escultura en ZBrush preparada para impresión 3D en resina.",
-      "featured": true
+      "featured": true,
+      "likes": 401,
+      "createdAt": "2026-05-23T00:00:00.000Z"
     },
     {
       "id": "portfolio-026",
@@ -909,7 +993,9 @@
       "image": "https://picsum.photos/seed/elf-sorceress/900/700",
       "category": "Arte 3D",
       "description": "Modelo coleccionable con microdetalle de piel y telas.",
-      "featured": true
+      "featured": true,
+      "likes": 1952,
+      "createdAt": "2026-05-06T00:00:00.000Z"
     },
     {
       "id": "portfolio-027",
@@ -918,7 +1004,9 @@
       "image": "https://picsum.photos/seed/dragon-pet/900/700",
       "category": "Diseño de personajes",
       "description": "Modelo 3D optimizado para juego móvil con topología limpia.",
-      "featured": false
+      "featured": false,
+      "likes": 1413,
+      "createdAt": "2026-01-15T00:00:00.000Z"
     },
     {
       "id": "portfolio-028",
@@ -927,7 +1015,9 @@
       "image": "https://picsum.photos/seed/cloud-forest-spirit/900/700",
       "category": "Ilustración 2D",
       "description": "Pintura digital inspirada en orquídeas y aves andinas.",
-      "featured": true
+      "featured": true,
+      "likes": 742,
+      "createdAt": "2026-06-17T00:00:00.000Z"
     },
     {
       "id": "portfolio-029",
@@ -936,7 +1026,9 @@
       "image": "https://picsum.photos/seed/botanical-beasts/900/700",
       "category": "Concept art",
       "description": "Serie de tres criaturas nacidas de plantas carnívoras.",
-      "featured": true
+      "featured": true,
+      "likes": 203,
+      "createdAt": "2026-04-19T00:00:00.000Z"
     },
     {
       "id": "portfolio-030",
@@ -945,7 +1037,9 @@
       "image": "https://picsum.photos/seed/hummingbird-lady/900/700",
       "category": "Ilustración 2D",
       "description": "Retrato mitológico con rica paleta de verdes y dorados.",
-      "featured": false
+      "featured": false,
+      "likes": 797,
+      "createdAt": "2026-03-06T00:00:00.000Z"
     },
     {
       "id": "portfolio-031",
@@ -954,7 +1048,9 @@
       "image": "https://picsum.photos/seed/metropolis-2099/900/700",
       "category": "Fondos y escenarios",
       "description": "Paisaje vertical con rascacielos modulares y tráfico aéreo.",
-      "featured": true
+      "featured": true,
+      "likes": 258,
+      "createdAt": "2026-04-28T00:00:00.000Z"
     },
     {
       "id": "portfolio-032",
@@ -963,7 +1059,9 @@
       "image": "https://picsum.photos/seed/helios-station/900/700",
       "category": "Concept art",
       "description": "Diseño ambiental exterior para producción de ciencia ficción.",
-      "featured": true
+      "featured": true,
+      "likes": 1809,
+      "createdAt": "2025-10-21T00:00:00.000Z"
     },
     {
       "id": "portfolio-033",
@@ -972,7 +1070,9 @@
       "image": "https://picsum.photos/seed/neon-bazaar/900/700",
       "category": "Fondos y escenarios",
       "description": "Composición con iluminación focalizada y texturas de lluvia ácida.",
-      "featured": false
+      "featured": false,
+      "likes": 1270,
+      "createdAt": "2025-12-17T00:00:00.000Z"
     },
     {
       "id": "portfolio-034",
@@ -981,7 +1081,9 @@
       "image": "https://picsum.photos/seed/earthy-portrait/900/700",
       "category": "Retrato",
       "description": "Óleo digital con pinceladas visibles y expresión melancólica.",
-      "featured": true
+      "featured": true,
+      "likes": 731,
+      "createdAt": "2025-10-21T00:00:00.000Z"
     },
     {
       "id": "portfolio-035",
@@ -990,7 +1092,9 @@
       "image": "https://picsum.photos/seed/fashion-editorial/900/700",
       "category": "Ilustración editorial",
       "description": "Serie de 4 figurines estilizados para revista de tendencias.",
-      "featured": true
+      "featured": true,
+      "likes": 192,
+      "createdAt": "2025-09-28T00:00:00.000Z"
     },
     {
       "id": "portfolio-036",
@@ -999,7 +1103,9 @@
       "image": "https://picsum.photos/seed/jewelry-study/900/700",
       "category": "Retrato",
       "description": "Detalle realista de texturas metálicas, sedas y luz difusa.",
-      "featured": false
+      "featured": false,
+      "likes": 1743,
+      "createdAt": "2026-07-16T00:00:00.000Z"
     },
     {
       "id": "portfolio-037",
@@ -1008,7 +1114,9 @@
       "image": "https://picsum.photos/seed/solar-paladin/900/700",
       "category": "Diseño de personajes",
       "description": "Vistas frontal, tres cuartos y posterior con desglose de armadura.",
-      "featured": true
+      "featured": true,
+      "likes": 1204,
+      "createdAt": "2026-04-10T00:00:00.000Z"
     },
     {
       "id": "portfolio-038",
@@ -1017,7 +1125,9 @@
       "image": "https://picsum.photos/seed/tide-summoner/900/700",
       "category": "Concept art",
       "description": "Splash art dinámico de personaje para pantalla de carga.",
-      "featured": true
+      "featured": true,
+      "likes": 929,
+      "createdAt": "2025-12-14T00:00:00.000Z"
     },
     {
       "id": "portfolio-039",
@@ -1026,7 +1136,9 @@
       "image": "https://picsum.photos/seed/jade-ranger/900/700",
       "category": "Diseño de personajes",
       "description": "Exploración de atuendos, armas y expresiones faciales.",
-      "featured": false
+      "featured": false,
+      "likes": 390,
+      "createdAt": "2026-05-18T00:00:00.000Z"
     },
     {
       "id": "portfolio-040",
@@ -1035,7 +1147,9 @@
       "image": "https://picsum.photos/seed/nordic-loft/900/700",
       "category": "Render",
       "description": "Visualización 3D fotorrealista con iluminación solar natural.",
-      "featured": true
+      "featured": true,
+      "likes": 1314,
+      "createdAt": "2026-01-12T00:00:00.000Z"
     },
     {
       "id": "portfolio-041",
@@ -1044,7 +1158,9 @@
       "image": "https://picsum.photos/seed/glass-pavilion/900/700",
       "category": "Modelado 3D",
       "description": "Modelado paramétrico de estructura arquitectónica contemporánea.",
-      "featured": true
+      "featured": true,
+      "likes": 775,
+      "createdAt": "2025-10-05T00:00:00.000Z"
     },
     {
       "id": "portfolio-042",
@@ -1053,7 +1169,9 @@
       "image": "https://picsum.photos/seed/botanic-render/900/700",
       "category": "Arte 3D",
       "description": "Render de envase cosmético con gotas de agua y fondo orgánico.",
-      "featured": false
+      "featured": false,
+      "likes": 302,
+      "createdAt": "2025-09-02T00:00:00.000Z"
     },
     {
       "id": "portfolio-kuro-001",
@@ -1062,7 +1180,9 @@
       "image": "/images/hero/soramoon.jpg",
       "category": "VTuber Model",
       "description": "Modelo VTuber 2D con rigging completo y expresiones faciales dinámicas.",
-      "featured": true
+      "featured": true,
+      "likes": 1039,
+      "createdAt": "2025-12-28T00:00:00.000Z"
     },
     {
       "id": "portfolio-kuro-002",
@@ -1071,7 +1191,9 @@
       "image": "/images/hero/thumbs/sora-1.jpg",
       "category": "VTuber Model",
       "description": "Hoja de expresiones y detalles del modelo.",
-      "featured": true
+      "featured": true,
+      "likes": 1578,
+      "createdAt": "2025-11-03T00:00:00.000Z"
     },
     {
       "id": "portfolio-kuro-003",
@@ -1080,7 +1202,9 @@
       "image": "/images/hero/thumbs/sora-2.jpg",
       "category": "Ilustración 2D",
       "description": "Arte promocional de alta resolución.",
-      "featured": false
+      "featured": false,
+      "likes": 2117,
+      "createdAt": "2026-02-02T00:00:00.000Z"
     },
     {
       "id": "portfolio-kuro-004",
@@ -1089,7 +1213,9 @@
       "image": "/images/hero/thumbs/sora-3.jpg",
       "category": "Live2D",
       "description": "Variación chibi para alertas de streaming.",
-      "featured": false
+      "featured": false,
+      "likes": 566,
+      "createdAt": "2026-04-10T00:00:00.000Z"
     },
     {
       "id": "portfolio-kuro-005",
@@ -1098,7 +1224,9 @@
       "image": "/images/hero/thumbs/sora-4.jpg",
       "category": "Concept art",
       "description": "Boceto y paleta de color aprobada.",
-      "featured": false
+      "featured": false,
+      "likes": 1105,
+      "createdAt": "2026-02-20T00:00:00.000Z"
     },
     {
       "id": "portfolio-dan-001",
@@ -1107,7 +1235,9 @@
       "image": "/images/hero/azure_isles.jpg",
       "category": "Concept art",
       "description": "Concept art de castillos flotantes y explorador en el confín de las islas celestes.",
-      "featured": true
+      "featured": true,
+      "likes": 1083,
+      "createdAt": "2026-05-21T00:00:00.000Z"
     },
     {
       "id": "portfolio-dan-002",
@@ -1116,7 +1246,9 @@
       "image": "/images/hero/thumbs/azure-1.jpg",
       "category": "Concept art",
       "description": "Estudio de las ruinas y torres flotantes.",
-      "featured": true
+      "featured": true,
+      "likes": 1622,
+      "createdAt": "2025-10-06T00:00:00.000Z"
     },
     {
       "id": "portfolio-dan-003",
@@ -1125,7 +1257,9 @@
       "image": "/images/hero/thumbs/azure-2.jpg",
       "category": "Concept art",
       "description": "Vista lejana del horizonte de nubes.",
-      "featured": false
+      "featured": false,
+      "likes": 71,
+      "createdAt": "2025-11-26T00:00:00.000Z"
     },
     {
       "id": "portfolio-poly-001",
@@ -1134,7 +1268,9 @@
       "image": "/images/hero/magic_shop.jpg",
       "category": "Blender 3D",
       "description": "Diorama isométrico 3D de invernadero de pociones y herbolaria mágica.",
-      "featured": true
+      "featured": true,
+      "likes": 1028,
+      "createdAt": "2025-12-21T00:00:00.000Z"
     },
     {
       "id": "portfolio-poly-002",
@@ -1143,7 +1279,9 @@
       "image": "/images/hero/thumbs/shop-1.jpg",
       "category": "Blender 3D",
       "description": "Detalle de los frascos iluminados y mesa de trabajo.",
-      "featured": true
+      "featured": true,
+      "likes": 489,
+      "createdAt": "2025-09-11T00:00:00.000Z"
     },
     {
       "id": "portfolio-poly-003",
@@ -1152,7 +1290,9 @@
       "image": "/images/hero/thumbs/shop-2.jpg",
       "category": "Blender 3D",
       "description": "Estructura de madera y biblioteca botánica.",
-      "featured": false
+      "featured": false,
+      "likes": 2040,
+      "createdAt": "2026-02-27T00:00:00.000Z"
     },
     {
       "id": "portfolio-poly-004",
@@ -1161,7 +1301,9 @@
       "image": "/images/hero/thumbs/shop-3.jpg",
       "category": "Blender 3D",
       "description": "Plantas en maceta y enredaderas del ventanal.",
-      "featured": false
+      "featured": false,
+      "likes": 1633,
+      "createdAt": "2026-03-08T00:00:00.000Z"
     },
     {
       "id": "portfolio-poly-005",
@@ -1170,7 +1312,9 @@
       "image": "/images/hero/thumbs/shop-4.jpg",
       "category": "Blender 3D",
       "description": "Iluminación cálida con niebla volumétrica.",
-      "featured": false
+      "featured": false,
+      "likes": 1094,
+      "createdAt": "2026-02-21T00:00:00.000Z"
     }
   ],
   "commissions": [
@@ -2011,7 +2155,6 @@
       "id": "Gxon3m_aCOk"
     }
   ],
-  "$schema": "./node_modules/json-server/schema.json",
   "conversations": [
     {
       "id": "conv-request-001",
@@ -2704,5 +2847,62 @@
       "description": "Iluminación cálida con niebla volumétrica.",
       "featured": false
     }
-  ]
+  ],
+  "reviews": [
+    {
+      "id": "review-001",
+      "artistId": "artist-001",
+      "clientId": "user-client-001",
+      "requestId": "request-demo-018",
+      "rating": 5,
+      "comment": "Increíble trabajo de Mateo en el concept art de la nave. Comunicación constante y entrega puntual de todos los bocetos.",
+      "createdAt": "2026-07-22T14:30:00.000Z"
+    },
+    {
+      "id": "review-002",
+      "artistId": "artist-008",
+      "clientId": "user-client-001",
+      "requestId": "request-demo-016",
+      "rating": 5,
+      "comment": "Los emotes para Twitch quedaron perfectos, adaptados a la paleta del canal y listos para subir.",
+      "createdAt": "2026-09-24T18:10:00.000Z"
+    },
+    {
+      "id": "review-003",
+      "artistId": "artist-010",
+      "clientId": "user-client-001",
+      "requestId": "request-demo-017",
+      "rating": 5,
+      "comment": "Excelente diseño de personaje con poses dinámicas y guía de color detallada.",
+      "createdAt": "2026-08-28T09:45:00.000Z"
+    },
+    {
+      "id": "review-004",
+      "artistId": "artist-003",
+      "clientId": "user-client-001",
+      "requestId": "request-demo-019",
+      "rating": 5,
+      "comment": "El render 3D superó las expectativas del equipo de arquitectura. Texturas y luces impecables.",
+      "createdAt": "2026-06-12T11:20:00.000Z"
+    },
+    {
+      "id": "review-005",
+      "artistId": "artist-002",
+      "clientId": "4h0bXvpIoK8",
+      "requestId": "request-demo-014",
+      "rating": 5,
+      "comment": "Ilustración de avatar impecable con la estética oscura y tonos cian solicitados.",
+      "createdAt": "2026-09-29T20:15:00.000Z"
+    },
+    {
+      "id": "review-006",
+      "artistId": "artist-007",
+      "clientId": "user-client-001",
+      "requestId": "request-demo-020",
+      "rating": 5,
+      "comment": "Animación fluida en bucle para fondo musical, entregada con gran nivel de detalle.",
+      "createdAt": "2026-05-03T16:00:00.000Z"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {
   ArrowRight,
@@ -13,171 +13,16 @@ import {
   Lock,
   Eye,
   CheckCircle2,
-  Check,
   ShoppingBag,
   Palette,
   Star,
 } from 'lucide-react'
-import { getArtists } from '../services/artistService'
-import { getPortfolioItems } from '../services/portfolioService'
-import { handleImageError } from '../utils/imageFallback'
 import DecorativeStar from '../components/DecorativeStar'
-
-// Cálculo de métricas 100% reales a partir de los datos vivos de la plataforma
-function computePlatformMetrics(artists = [], portfolio = []) {
-  const totalArtists = artists.length
-
-  const validPrices = artists
-    .map((a) => Number(a.basePrice))
-    .filter((p) => !isNaN(p) && p > 0)
-  const avgBasePrice = validPrices.length > 0
-    ? Math.round(validPrices.reduce((sum, p) => sum + p, 0) / validPrices.length)
-    : 144
-
-  const validRatings = artists
-    .map((a) => Number(a.rating))
-    .filter((r) => !isNaN(r) && r > 0)
-  const avgRating = validRatings.length > 0
-    ? (validRatings.reduce((sum, r) => sum + r, 0) / validRatings.length).toFixed(1)
-    : '4.9'
-
-  const totalWorks = portfolio.length || 55
-
-  return [
-    {
-      id: 'm1',
-      number: totalArtists > 0 ? `${totalArtists}` : '18',
-      label: 'Creadores Activos',
-      icon: 'purple',
-    },
-    {
-      id: 'm2',
-      number: `$${avgBasePrice} USD`,
-      label: 'Tarifa Base Promedio',
-      icon: 'green',
-    },
-    {
-      id: 'm3',
-      number: '100%',
-      label: 'Custodia Escrow',
-      icon: 'pink',
-    },
-    {
-      id: 'm4',
-      number: `${avgRating} / 5`,
-      label: `${totalWorks} Obras en Portafolio`,
-      icon: 'yellow',
-    },
-  ]
-}
-
-const QUICK_CHIPS = [
-  { label: 'Ilustración 2D', param: 'discipline=Ilustración 2D' },
-  { label: 'Live2D & VTuber', param: 'discipline=Animación' },
-  { label: 'Modelado 3D', param: 'discipline=Modelado 3D' },
-  { label: 'Pixel Art', param: 'discipline=Pixel Art' },
-  { label: 'Emotes', param: 'discipline=Emotes' },
-  { label: 'Fantasía & Sci-Fi', param: 'discipline=Concept Art' },
-]
-
-const CATEGORIES_MOCK = [
-  {
-    title: 'Concept Art & Fantasía',
-    subtitle: 'Diseño de personajes, mundos e historias',
-    count: '7 Creadores',
-    slug: 'Ilustración 2D',
-    match: ['concept', 'fantas', 'ilustra'],
-    image: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&auto=format&fit=crop&q=80',
-  },
-  {
-    title: 'VTuber & Live2D Rigging',
-    subtitle: 'Modelos listos para streaming y rigging',
-    count: '3 Creadores',
-    slug: 'Animación',
-    match: ['animaci', 'vtuber', 'live2d', 'rigging'],
-    image: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop&q=80',
-  },
-  {
-    title: 'Emotes & Ilustración Chibi',
-    subtitle: 'Packs para Discord, Twitch y merchandising',
-    count: '2 Creadores',
-    slug: 'Emotes',
-    match: ['emote', 'chibi', 'sticker'],
-    image: 'https://images.unsplash.com/photo-1563089145-599997674d42?w=600&auto=format&fit=crop&q=80',
-  },
-  {
-    title: 'Escultura 3D & Blender',
-    subtitle: 'Modelos para videojuegos e impresión 3D',
-    count: '4 Creadores',
-    slug: 'Modelado 3D',
-    match: ['3d', 'modelado', 'blender', 'escultura'],
-    image: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=600&auto=format&fit=crop&q=80',
-  },
-  {
-    title: 'Pixel Art & Assets',
-    subtitle: 'Animaciones y assets para videojuegos',
-    count: '1 Creador',
-    slug: 'Pixel Art',
-    match: ['pixel'],
-    image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&auto=format&fit=crop&q=80',
-  },
-  {
-    title: 'Retratos & Regalos',
-    subtitle: 'Ilustraciones personalizadas y cuadros de autor',
-    count: '6 Creadores',
-    slug: 'Ilustración 2D',
-    match: ['retrato', 'personalizado', 'editorial', 'figurativo'],
-    image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=600&auto=format&fit=crop&q=80',
-  },
-]
-
-const FEATURED_CREATORS_STATIC = [
-  {
-    id: 'artist-001',
-    name: 'Mateo Ríos',
-    handle: '@mateorios | Ilustración 2D',
-    status: 'CUPOS DISPONIBLES',
-    statusClass: 'status-open',
-    bio: 'Ilustrador editorial especializado en mundos narrativos y personajes expresivos.',
-    avatar: 'https://i.pravatar.cc/150?img=12',
-    thumbnails: [
-      'https://picsum.photos/seed/forest-guardian/900/700',
-      'https://picsum.photos/seed/floating-islands/900/700',
-      'https://picsum.photos/seed/secret-valley/900/700',
-    ],
-    startingPrice: '$80 USD',
-  },
-  {
-    id: 'artist-002',
-    name: 'Sofía Nakamura',
-    handle: '@sofinaka | Diseño de personajes',
-    status: 'ÚLTIMOS CUPOS',
-    statusClass: 'status-waitlist',
-    bio: 'Diseñadora de personajes y retratos digitales con una paleta suave y cinematográfica.',
-    avatar: 'https://i.pravatar.cc/150?img=32',
-    thumbnails: [
-      'https://picsum.photos/seed/winter-portrait/900/700',
-      'https://picsum.photos/seed/lunar-explorer/900/700',
-      'https://picsum.photos/seed/sunset-glow/900/700',
-    ],
-    startingPrice: '$120 USD',
-  },
-  {
-    id: 'artist-003',
-    name: 'Diego Álvarez',
-    handle: '@diegoalvarez3d | Modelado 3D',
-    status: 'EN REVISIÓN DE BRIEF',
-    statusClass: 'status-review',
-    bio: 'Artista 3D enfocado en producto, arquitectura y escenas para marcas independientes.',
-    avatar: 'https://i.pravatar.cc/150?img=68',
-    thumbnails: [
-      'https://picsum.photos/seed/form-lamp/900/700',
-      'https://picsum.photos/seed/concrete-study/900/700',
-      'https://picsum.photos/seed/sound-chair/900/700',
-    ],
-    startingPrice: '$200 USD',
-  },
-]
+import ErrorState from '../components/ErrorState'
+import LoadingState from '../components/LoadingState'
+import useDiscoverData from '../hooks/useDiscoverData'
+import { handleImageError } from '../utils/imageFallback'
+import { RANKING_EMPTY_MESSAGE } from '../utils/discoverData'
 
 // Componente SVG para las estrellitas de fondo (4 puntas limpias con color vibrante)
 function HeroSparkleStar({ size = 24, color = '#F472B6' }) {
@@ -237,121 +82,45 @@ const HERO_SPARKLES_DATA = [
   { id: 'sp-extra-8', bottom: '6rem', right: '18%', size: 17, color: '#2DD4BF', anim: 'anim-star-float-1', delay: '0.6s' },
 ]
 
-// Obtiene una semilla numérica para el día actual (cambia a la medianoche UTC)
-const getDaySeed = () => {
-  const d = new Date()
-  return Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86400000)
-}
-
-// Pool de obras de artistas de ArtLink para rotación diaria
-const HERO_ARTIST_WORKS_POOL = [
-  {
-    artistId: 'artist-kuro',
-    artistName: 'Kuro Illust',
-    category: 'VTuber Model',
-    workTitle: 'Airi Hoshino - Live2D',
-    image: '/images/hero/soramoon.jpg',
-    badgeClass: 'badge-pill-purple',
-  },
-  {
-    artistId: 'artist-dan',
-    artistName: 'Dan Artworks',
-    category: 'Concept Art',
-    workTitle: 'The Azure Isles',
-    image: '/images/hero/azure_isles.jpg',
-    badgeClass: 'badge-pill-mint',
-  },
-  {
-    artistId: 'artist-poly',
-    artistName: 'Poly Lola',
-    category: 'Modelado 3D',
-    workTitle: 'Magic Shop 3D',
-    image: '/images/hero/magic_shop.jpg',
-    badgeClass: 'badge-pill-rose',
-  },
-  {
-    artistId: 'artist-001',
-    artistName: 'Mateo Ríos',
-    category: 'Ilustración 2D',
-    workTitle: 'La Guardiana del Bosque',
-    image: '/images/hero/portfolio/forest-guardian.jpg',
-    badgeClass: 'badge-pill-purple',
-  },
-  {
-    artistId: 'artist-002',
-    artistName: 'Sofía Nakamura',
-    category: 'Retrato & Anime',
-    workTitle: 'Retrato de Invierno',
-    image: '/images/hero/portfolio/winter-portrait.jpg',
-    badgeClass: 'badge-pill-rose',
-  },
-  {
-    artistId: 'artist-003',
-    artistName: 'Diego Álvarez',
-    category: 'Arte 3D & Render',
-    workTitle: 'Estudio de Hormigón',
-    image: '/images/hero/portfolio/cozy-workshop.jpg',
-    badgeClass: 'badge-pill-mint',
-  },
-  {
-    artistId: 'artist-004',
-    artistName: 'Elena Rostova',
-    category: 'Fondos & Escenarios',
-    workTitle: 'Templo en las Alturas',
-    image: 'https://picsum.photos/seed/sky-temple/900/700',
-    badgeClass: 'badge-pill-purple',
-  },
-  {
-    artistId: 'artist-005',
-    artistName: 'Lucas Mendoza',
-    category: 'Pixel Art',
-    workTitle: 'Callejón Neo-Kyoto 16-bit',
-    image: 'https://picsum.photos/seed/neo-kyoto-pixel/900/700',
-    badgeClass: 'badge-pill-mint',
-  },
-  {
-    artistId: 'artist-009',
-    artistName: 'Álvaro Sola',
-    category: 'Modelado 3D',
-    workTitle: 'Minotauro Colosal 3D',
-    image: 'https://picsum.photos/seed/colossal-minotaur/900/700',
-    badgeClass: 'badge-pill-rose',
-  },
-]
-
-// Genera las 3 tarjetas destacadas del día actual
-function getDailyShowcaseCards(pool, seed = getDaySeed()) {
-  if (!pool || pool.length === 0) return []
-  const count = pool.length
-  const tapes = ['tape-yellow tape-left', 'tape-pink tape-center', 'tape-yellow tape-right']
-  const badges = ['badge-pill-purple', 'badge-pill-mint', 'badge-pill-rose', 'badge-pill-yellow']
-
-  return [0, 1, 2].map((slot) => {
-    const itemIndex = ((seed * 3) + slot) % count
-    const item = pool[itemIndex]
-    return {
-      ...item,
-      id: `showcase-orbit-${item.artistId}-${slot}-${seed}`,
-      tapeClass: tapes[slot],
-      badgeClass: item.badgeClass || badges[(slot + seed) % badges.length],
-    }
-  })
+const CREATOR_STATUS_CLASS = {
+  open: 'status-open',
+  waitlist: 'status-waitlist',
+  closed: 'status-review',
+  unknown: 'status-review',
 }
 
 export default function HomePage() {
   const [query, setQuery] = useState('')
   const [area, setArea] = useState('all')
-  const [allCreators, setAllCreators] = useState([])
   const [carouselIndex, setCarouselIndex] = useState(0)
-  const [featuredCreators, setFeaturedCreators] = useState(FEATURED_CREATORS_STATIC)
-  const [dailyCards, setDailyCards] = useState(() => getDailyShowcaseCards(HERO_ARTIST_WORKS_POOL))
-  const [activeOrbitIndex, setActiveOrbitIndex] = useState(1) // Comienza con la tarjeta central en frente
+  const [activeOrbitIndex, setActiveOrbitIndex] = useState(1)
   const [isPausedOrbit, setIsPausedOrbit] = useState(false)
-  const [platformMetrics, setPlatformMetrics] = useState(() => computePlatformMetrics([], []))
-  const [popularCategories, setPopularCategories] = useState(CATEGORIES_MOCK)
   const navigate = useNavigate()
+  const {
+    categoryOptions,
+    ranking,
+    metrics: platformMetrics,
+    showcaseCards: dailyCards,
+    loading,
+    error,
+    reload,
+  } = useDiscoverData()
 
-  // Rotación circular automática entre las tarjetas cada 4 segundos
+  // Ventana movil de creadores destacados construida sobre el ranking real
+  const featuredCreators = useMemo(() => {
+    if (ranking.length === 0) return []
+    const start = ranking.length <= 3 ? 0 : carouselIndex % ranking.length
+    return [...ranking.slice(start, start + 3), ...ranking.slice(0, start)].slice(0, 3)
+  }, [ranking, carouselIndex])
+
+  const popularCategories = useMemo(
+    () => categoryOptions.filter((category) => category.id !== 'all').slice(0, 6),
+    [categoryOptions]
+  )
+
+  const quickChips = popularCategories.slice(0, 6)
+
+  // Rotacion circular automatica entre las tarjetas cada 4 segundos
   useEffect(() => {
     if (isPausedOrbit || dailyCards.length === 0) return
     const timer = setInterval(() => {
@@ -360,117 +129,21 @@ export default function HomePage() {
     return () => clearInterval(timer)
   }, [isPausedOrbit, dailyCards.length])
 
-  useEffect(() => {
-    let mounted = true
-    Promise.all([
-      getArtists(),
-      getPortfolioItems(),
-    ])
-      .then(([artists, portfolio]) => {
-        if (!mounted || !artists || artists.length === 0) return
-
-        // Actualizar métricas reales calculadas desde la base de datos viva
-        setPlatformMetrics(computePlatformMetrics(artists, portfolio || []))
-
-        // Actualizar contadores de creadores reales por categoría
-        setPopularCategories((prev) =>
-          prev.map((cat) => {
-            const count = artists.filter((a) => {
-              const allTags = (a.disciplines || []).concat(a.styles || []).join(' ').toLowerCase()
-              return cat.match?.some((term) => allTags.includes(term))
-            }).length
-            return {
-              ...cat,
-              count: `${count} Creador${count === 1 ? '' : 'es'}`,
-            }
-          })
-        )
-
-        const portfolioByArtist = {}
-        portfolio?.forEach((item) => {
-          if (!portfolioByArtist[item.artistId]) portfolioByArtist[item.artistId] = []
-          portfolioByArtist[item.artistId].push(item.image)
-        })
-
-        const mapped = artists.map((artist, idx) => {
-          const thumbs = portfolioByArtist[artist.id] || []
-          const fallbackThumbs = [
-            `https://picsum.photos/seed/art-${artist.id}-1/900/700`,
-            `https://picsum.photos/seed/art-${artist.id}-2/900/700`,
-            `https://picsum.photos/seed/art-${artist.id}-3/900/700`,
-          ]
-          const statusMap = {
-            open: { label: 'CUPOS DISPONIBLES', cls: 'status-open' },
-            waitlist: { label: 'ÚLTIMOS CUPOS', cls: 'status-waitlist' },
-            closed: { label: 'EN REVISIÓN DE BRIEF', cls: 'status-review' },
-          }
-          const currentStatus = statusMap[artist.availability] || statusMap.open
-          const mainDiscipline = artist.disciplines?.[0] || 'Arte Digital'
-
-          return {
-            id: artist.id,
-            name: artist.displayName || artist.name,
-            handle: `@${artist.username} | ${mainDiscipline}`,
-            status: currentStatus.label,
-            statusClass: currentStatus.cls,
-            bio: artist.bio || 'Creador digital activo en ArtLink.',
-            avatar: artist.avatar || `https://i.pravatar.cc/150?img=${(idx % 70) + 1}`,
-            thumbnails: thumbs.length >= 3 ? thumbs.slice(0, 3) : [...thumbs, ...fallbackThumbs].slice(0, 3),
-            startingPrice: `$${artist.basePrice || 50} USD`,
-          }
-        })
-        setAllCreators(mapped)
-        setFeaturedCreators(mapped.slice(0, 3))
-
-        // Construir tarjetas del carrusel hero con obras de artistas del día
-        const activeArtistWorks = []
-        artists.forEach((artist) => {
-          const works = portfolioByArtist[artist.id]
-          if (works && works.length > 0) {
-            const daySeed = getDaySeed()
-            const fullWorks = portfolio.filter((p) => p.artistId === artist.id)
-            const chosen = fullWorks[daySeed % fullWorks.length]
-            if (chosen) {
-              activeArtistWorks.push({
-                artistId: artist.id,
-                artistName: artist.displayName || artist.name,
-                category: chosen.category || artist.disciplines?.[0] || 'Arte Digital',
-                workTitle: chosen.title || '',
-                image: chosen.image,
-              })
-            }
-          }
-        })
-
-        if (activeArtistWorks.length >= 3) {
-          setDailyCards(getDailyShowcaseCards(activeArtistWorks, getDaySeed()))
-        }
-      })
-      .catch(() => {})
-    return () => {
-      mounted = false
-    }
-  }, [])
-
   const handlePrevCreators = () => {
-    if (allCreators.length <= 3) return
-    const newIdx = (carouselIndex - 3 + allCreators.length) % allCreators.length
-    setCarouselIndex(newIdx)
-    setFeaturedCreators(allCreators.slice(newIdx, newIdx + 3))
+    if (ranking.length <= 3) return
+    setCarouselIndex((carouselIndex - 3 + ranking.length) % ranking.length)
   }
 
   const handleNextCreators = () => {
-    if (allCreators.length <= 3) return
-    const newIdx = (carouselIndex + 3) % allCreators.length
-    setCarouselIndex(newIdx)
-    setFeaturedCreators(allCreators.slice(newIdx, newIdx + 3))
+    if (ranking.length <= 3) return
+    setCarouselIndex((carouselIndex + 3) % ranking.length)
   }
 
   function handleSearchSubmit(event) {
     event.preventDefault()
     const params = new URLSearchParams()
     if (query.trim()) params.set('q', query.trim())
-    if (area !== 'all') params.set('discipline', area)
+    if (area !== 'all') params.set('categoria', area)
     navigate(`/explorar?${params.toString()}`)
   }
 
@@ -530,11 +203,9 @@ export default function HomePage() {
                 aria-label="Seleccionar área"
               >
                 <option value="all">Todas las áreas</option>
-                <option value="Ilustración 2D">Ilustración 2D</option>
-                <option value="Modelado 3D">Modelado 3D</option>
-                <option value="Animación">Animación & VTuber</option>
-                <option value="Pixel Art">Pixel Art</option>
-                <option value="Emotes">Emotes & Chibi</option>
+                {popularCategories.map((category) => (
+                  <option key={category.id} value={category.id}>{category.label}</option>
+                ))}
               </select>
               <ChevronDown size={14} className="search-chevron" aria-hidden="true" />
             </div>
@@ -560,15 +231,19 @@ export default function HomePage() {
           {/* Quick Trends */}
           <div className="hero-trends-row">
             <span className="trends-label">Explorar por:</span>
-            {QUICK_CHIPS.map(({ label, param }) => (
-              <Link
-                key={label}
-                to={`/explorar?${param}`}
-                className="trend-tag"
-              >
-                #{label.replace(/\s+/g, '')}
-              </Link>
-            ))}
+            {quickChips.length > 0 ? (
+              quickChips.map((category) => (
+                <Link
+                  key={category.id}
+                  to={`/explorar?categoria=${encodeURIComponent(category.id)}`}
+                  className="trend-tag"
+                >
+                  #{category.label.replace(/\s+/g, '')}
+                </Link>
+              ))
+            ) : (
+              <span className="trends-label">{RANKING_EMPTY_MESSAGE}</span>
+            )}
           </div>
 
           {/* 4 Metric Cards */}
@@ -582,7 +257,7 @@ export default function HomePage() {
                   {m.icon === 'yellow' && <Star size={18} fill="#D97706" color="#D97706" />}
                 </div>
                 <div className="metric-text-box">
-                  <strong>{m.number}</strong>
+                  <strong>{m.number ?? '—'}</strong>
                   <span>{m.label}</span>
                 </div>
               </div>
@@ -598,7 +273,12 @@ export default function HomePage() {
             onTouchEnd={() => setIsPausedOrbit(false)}
             aria-label="Carrusel circular de artistas destacados del día"
           >
-            {dailyCards.map((card, idx) => {
+            {loading && <LoadingState label="Cargando.obras destacadas" />}
+            {!loading && error && <ErrorState message={error.message} onRetry={reload} />}
+            {!loading && !error && dailyCards.length === 0 && (
+              <p className="section-subtitle-text">{RANKING_EMPTY_MESSAGE}</p>
+            )}
+            {!loading && !error && dailyCards.map((card, idx) => {
               // Calcular posición en el círculo respecto a activeOrbitIndex
               const diff = (idx - activeOrbitIndex + dailyCards.length) % dailyCards.length
               const orbitClass =
@@ -767,7 +447,9 @@ export default function HomePage() {
                 Categorías Populares
               </h2>
               <p className="section-subtitle-text">
-                Desde proyectos personales y streamers hasta arte comercial de gran envergadura.
+                {categoryOptions.length > 1
+                  ? `${categoryOptions.length - 1} categorías activas con obras publicadas por la comunidad.`
+                  : 'Todavía no hay categorías con obras publicadas.'}
               </p>
             </div>
             <Link to="/explorar" className="header-action-link">
@@ -776,27 +458,33 @@ export default function HomePage() {
           </div>
 
           <div className="categories-grid">
-            {popularCategories.map((cat) => (
-              <Link
-                to={`/explorar?discipline=${encodeURIComponent(cat.slug)}`}
-                className="category-card"
-                key={cat.title}
-              >
-                <div className="category-img-container">
-                  <span className="category-count-pill">{cat.count}</span>
-                  <img src={cat.image} alt={cat.title} onError={handleImageError} />
-                </div>
-                <div className="category-body">
-                  <div className="category-text">
-                    <h3 className="category-name">{cat.title}</h3>
-                    <p className="category-sub">{cat.subtitle}</p>
+            {popularCategories.length === 0 ? (
+              <p className="section-subtitle-text">{RANKING_EMPTY_MESSAGE}</p>
+            ) : (
+              popularCategories.map((cat) => (
+                <Link
+                  to={`/explorar?categoria=${encodeURIComponent(cat.id)}`}
+                  className="category-card"
+                  key={cat.id}
+                >
+                  <div className="category-img-container">
+                    <span className="category-count-pill">
+                      {cat.artistCount} {cat.artistCount === 1 ? 'Creador' : 'Creadores'}
+                    </span>
+                    {cat.cover && <img src={cat.cover} alt={cat.label} onError={handleImageError} />}
                   </div>
-                  <span className="category-arrow-btn">
-                    <ChevronRight size={18} aria-hidden="true" />
-                  </span>
-                </div>
-              </Link>
-            ))}
+                  <div className="category-body">
+                    <div className="category-text">
+                      <h3 className="category-name">{cat.label}</h3>
+                      <p className="category-sub">{cat.count} obras publicadas</p>
+                    </div>
+                    <span className="category-arrow-btn">
+                      <ChevronRight size={18} aria-hidden="true" />
+                    </span>
+                  </div>
+                </Link>
+              ))
+            )}
           </div>
         </div>
       </section>
@@ -804,23 +492,22 @@ export default function HomePage() {
       {/* ── 4. CREADORES DESTACADOS DEL MES ── */}
       <section className="section-featured-creators" aria-labelledby="creators-title">
         <div className="section-content-centered">
-          <div className="section-header-row">
-            <div>
-              <span className="section-pill-tag tag-pink">
-                <DecorativeStar size={11} color="currentColor" /> COMUNIDAD VERIFICADA
-              </span>
-              <h2 id="creators-title" className="section-title-large">
-                Creadores Destacados del Mes
-              </h2>
-              <p className="section-subtitle-text">
-                Explora sus estilos de firma, revisa muestras reales y reserva tu lugar en su lista de espera.
-              </p>
-            </div>
-            <div className="carousel-nav-btns">
+          <div className="section-header-block">
+            <span className="section-pill-tag tag-pink">
+              <DecorativeStar size={11} color="currentColor" /> COMUNIDAD VERIFICADA
+            </span>
+            <h2 id="creators-title" className="section-title-large">
+              Creadores Destacados del Mes
+            </h2>
+            <p className="section-subtitle-text">
+              Ordenados por valoración, encargos completados y portfolio publicado.
+            </p>
+            <div className="carousel-nav-btns" style={{ display: 'flex', justifyContent: 'center', marginTop: '1.2rem', gap: '0.6rem' }}>
               <button
                 className="carousel-btn"
                 aria-label="Anterior"
                 type="button"
+                disabled={ranking.length <= 3}
                 onClick={handlePrevCreators}
               >
                 <ChevronLeft size={18} />
@@ -829,6 +516,7 @@ export default function HomePage() {
                 className="carousel-btn"
                 aria-label="Siguiente"
                 type="button"
+                disabled={ranking.length <= 3}
                 onClick={handleNextCreators}
               >
                 <ChevronRight size={18} />
@@ -837,41 +525,57 @@ export default function HomePage() {
           </div>
 
           <div className="creators-grid">
-            {featuredCreators.map((creator) => (
-              <div key={creator.id} className="creator-item-card">
-                <div className="creator-header">
-                  <img src={creator.avatar} alt={creator.name} className="creator-avatar" onError={handleImageError} />
-                  <div className="creator-info">
-                    <div className="creator-name-line">
-                      <strong className="creator-name">{creator.name}</strong>
-                      <BadgeCheck size={16} className="creator-badge-check" />
+            {featuredCreators.length === 0 ? (
+              <p className="section-subtitle-text">{RANKING_EMPTY_MESSAGE}</p>
+            ) : (
+              featuredCreators.map((creator) => {
+                const name = creator.displayName || creator.name
+                const thumbnails = creator.works.filter((work) => work.image).slice(0, 3)
+                return (
+                  <div key={creator.id} className="creator-item-card">
+                    <div className="creator-header">
+                      {creator.avatar && (
+                        <img src={creator.avatar} alt={name} className="creator-avatar" onError={handleImageError} />
+                      )}
+                      <div className="creator-info">
+                        <div className="creator-name-line">
+                          <strong className="creator-name">{name}</strong>
+                          {creator.verified && <BadgeCheck size={16} className="creator-badge-check" aria-label="Artista verificado" />}
+                        </div>
+                        <span className="creator-handle">
+                          @{creator.username} · {(creator.disciplines || []).join(' · ')}
+                        </span>
+                        <span className={`creator-status-pill ${CREATOR_STATUS_CLASS[creator.availability.tone]}`}>
+                          {creator.availability.label}
+                        </span>
+                      </div>
                     </div>
-                    <span className="creator-handle">{creator.handle}</span>
-                    <span className={`creator-status-pill ${creator.statusClass}`}>
-                      {creator.status}
-                    </span>
+
+                    {creator.bio && <p className="creator-bio-text">{creator.bio}</p>}
+
+                    {thumbnails.length > 0 && (
+                      <div className="creator-thumbs-grid">
+                        {thumbnails.map((thumb) => (
+                          <img key={thumb.id} src={thumb.image} alt={`Obra de ${name}`} onError={handleImageError} />
+                        ))}
+                      </div>
+                    )}
+
+                    <div className="creator-card-bottom">
+                      <div>
+                        <span className="creator-price-label">Tarifa base</span>
+                        <strong className="creator-price-val">
+                          {creator.basePrice > 0 ? `Desde $${creator.basePrice} USD` : 'Sin tarifa publicada'}
+                        </strong>
+                      </div>
+                      <Link to={`/artista/${creator.id}`} className="creator-profile-btn">
+                        Ver perfil
+                      </Link>
+                    </div>
                   </div>
-                </div>
-
-                <p className="creator-bio-text">{creator.bio}</p>
-
-                <div className="creator-thumbs-grid">
-                  {creator.thumbnails.map((thumb, idx) => (
-                    <img key={idx} src={thumb} alt={`Muestra ${idx + 1}`} onError={handleImageError} />
-                  ))}
-                </div>
-
-                <div className="creator-card-bottom">
-                  <div>
-                    <span className="creator-price-label">Tarifa base</span>
-                    <strong className="creator-price-val">Desde {creator.startingPrice}</strong>
-                  </div>
-                  <Link to={`/artista/${creator.id}`} className="creator-profile-btn">
-                    Ver perfil
-                  </Link>
-                </div>
-              </div>
-            ))}
+                )
+              })
+            )}
           </div>
         </div>
       </section>
@@ -953,48 +657,6 @@ export default function HomePage() {
                 Protección transaccional de 14 días + PayPal / Stripe
               </p>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── BANNER PROMOCIONAL: VITRINA DE CREADORES & ARTISTAS ── */}
-      <section className="home-promo-banner-wrap" style={{ maxWidth: '1240px', margin: '3.5rem auto 1rem auto', padding: '0 1.5rem' }} aria-label="Vitrina de creadores">
-        <div className="explore-promo-banner" aria-labelledby="home-promo-banner-title" style={{ margin: 0 }}>
-          <div className="promo-banner-left">
-            <span className="promo-banner-eyebrow">
-              ✦ CREADORES & ARTISTAS ✦
-            </span>
-            <h2 id="home-promo-banner-title" className="promo-banner-title">
-              Muestra tu portafolio y cobra de forma segura en cualquier país
-            </h2>
-            <p className="promo-banner-desc">
-              Gestiona colas de comisiones, aprueba bocetos con marcas de agua automáticas
-              y recibe pagos asegurados sin sufrir cancelaciones fraudulentas.
-            </p>
-
-            <div className="promo-features-row">
-              <span className="promo-feature-pill">
-                <Check size={14} color="#10B981" aria-hidden="true" />
-                <span>0% comisiones ocultas</span>
-              </span>
-              <span className="promo-feature-pill">
-                <Check size={14} color="#10B981" aria-hidden="true" />
-                <span>Pagos en Escrow Shield</span>
-              </span>
-              <span className="promo-feature-pill">
-                <Check size={14} color="#10B981" aria-hidden="true" />
-                <span>Gestor de revisiones integrado</span>
-              </span>
-            </div>
-          </div>
-
-          <div className="promo-banner-actions">
-            <Link to="/registro?role=artist" className="promo-btn-primary">
-              Abrir mi vitrina gratis
-            </Link>
-            <Link to="/como-funciona" className="promo-btn-secondary">
-              Conoce tarifas y planes
-            </Link>
           </div>
         </div>
       </section>

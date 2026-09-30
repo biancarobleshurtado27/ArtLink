@@ -14,6 +14,7 @@ import RequestsStatusChart from '../components/admin/RequestsStatusChart'
 import ArtistsDisciplineChart from '../components/admin/ArtistsDisciplineChart'
 import RequestsActivityChart from '../components/admin/RequestsActivityChart'
 import { filterRequests, normalizeDisciplineName } from '../utils/adminChartUtils'
+import { getArtistOptions } from '../utils/artistFilters'
 import { getUsers, createUser, updateUser, deleteUser } from '../services/userService'
 import { getArtists, createArtist, updateArtist, deleteArtist } from '../services/artistService'
 import { getCategories, createCategory, updateCategory, deleteCategory } from '../services/categoryService'
@@ -260,9 +261,15 @@ export function AdminDashboardPage() {
     })
   }, [data, filterDiscipline])
 
+  // Disciplinas presentes en los perfiles de artista registrados
+  const disciplineOptions = useMemo(() => {
+    if (!data) return []
+    return getArtistOptions(data.artists, 'disciplines').map(normalizeDisciplineName)
+  }, [data])
+
   // Cálculo de la Categoría más utilizada
   const topCategoryData = useMemo(() => {
-    if (!data || !data.artists) return { name: 'Ilustración 2D', count: 0 }
+    if (!data || !data.artists) return { name: null, count: 0 }
     const counts = {}
     data.artists.forEach((a) => {
       (a.disciplines || []).forEach((d) => {
@@ -270,7 +277,7 @@ export function AdminDashboardPage() {
         counts[norm] = (counts[norm] || 0) + 1
       })
     })
-    let bestName = 'Ilustración 2D'
+    let bestName = null
     let bestCount = 0
     Object.entries(counts).forEach(([name, count]) => {
       if (count > bestCount) {
@@ -283,17 +290,13 @@ export function AdminDashboardPage() {
 
   // Fecha actual formateada para la cabecera
   const formattedDate = useMemo(() => {
-    try {
-      const d = new Intl.DateTimeFormat('es-ES', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      }).format(new Date())
-      return d.charAt(0).toUpperCase() + d.slice(1)
-    } catch {
-      return 'Septiembre 2026'
-    }
+    const d = new Intl.DateTimeFormat('es-ES', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    }).format(new Date())
+    return d.charAt(0).toUpperCase() + d.slice(1)
   }, [])
 
   if (loading) return <LoadingState label="Cargando panel de control administrativo..." />
@@ -309,6 +312,27 @@ export function AdminDashboardPage() {
   const completedRequestsCount = data.requests.filter((r) => r.status === 'completed').length
   const pendingRequestsCount = data.requests.filter((r) => r.status === 'pending').length
   const recentRequests = [...data.requests].slice(-5).reverse()
+  const recentUsers = [...data.users].slice(-3).reverse()
+  const alerts = [
+    pendingRequestsCount > 0 && {
+      tone: 'alert-warning',
+      Icon: Clock,
+      title: 'Solicitudes pendientes de respuesta',
+      detail: `Hay ${pendingRequestsCount} solicitudes esperando confirmación de los artistas.`,
+    },
+    recentUsers.length > 0 && {
+      tone: 'alert-info',
+      Icon: UserCheck,
+      title: 'Cuentas registradas recientemente',
+      detail: `${recentUsers.length} cuentas aparecen en los últimos registros.`,
+    },
+    data.categories.length > 0 && {
+      tone: 'alert-success',
+      Icon: CheckCircle2,
+      title: 'Catálogo de categorías',
+      detail: `${data.categories.length} categorías disponibles para la búsqueda pública.`,
+    },
+  ].filter(Boolean)
 
   return (
     <div className="admin-console-view" aria-labelledby="admin-title">
@@ -443,10 +467,12 @@ export function AdminDashboardPage() {
             <div className="admin-metric-icon metric-icon-violet">
               <Palette size={22} aria-hidden="true" />
             </div>
-            <strong className="admin-metric-val font-compact">{topCategoryData.name}</strong>
+            <strong className="admin-metric-val font-compact">{topCategoryData.name || 'Sin datos'}</strong>
           </div>
           <p className="admin-metric-ctx">
-            {topCategoryData.count} artistas especializados
+            {topCategoryData.count > 0
+              ? `${topCategoryData.count} artistas especializados`
+              : 'Aún no hay suficientes datos para generar este ranking.'}
           </p>
         </article>
       </div>
@@ -521,17 +547,9 @@ export function AdminDashboardPage() {
               aria-label="Filtrar por disciplina artística"
             >
               <option value="all">Todas las disciplinas</option>
-              <option value="Ilustración 2D">Ilustración 2D</option>
-              <option value="Modelado 3D">Modelado 3D</option>
-              <option value="Animación">Animación</option>
-              <option value="Pixel Art">Pixel Art</option>
-              <option value="Emotes">Emotes</option>
-              <option value="Concept Art">Concept Art</option>
-              <option value="Retrato">Retrato</option>
-              <option value="Diseño de personajes">Diseño de personajes</option>
-              <option value="Fondos y escenarios">Fondos y escenarios</option>
-              <option value="Arte 3D">Arte 3D</option>
-              <option value="Render">Render</option>
+              {disciplineOptions.map((discipline) => (
+                <option key={discipline} value={discipline}>{discipline}</option>
+              ))}
             </select>
           </div>
 
@@ -624,55 +642,55 @@ export function AdminDashboardPage() {
         <section className="admin-panel-card" aria-labelledby="alerts-title">
           <div className="panel-card-header">
             <h2 id="alerts-title"><AlertTriangle size={18} className="icon-warn" aria-hidden="true" /> Alertas del sistema</h2>
-            <span className="badge badge-yellow">3 activas</span>
+            <span className="badge badge-yellow">{alerts.length} {alerts.length === 1 ? 'activa' : 'activas'}</span>
           </div>
           <div className="alert-list">
-            <div className="alert-item alert-warning">
-              <Clock size={16} aria-hidden="true" />
-              <div>
-                <strong>Solicitudes pendientes de respuesta</strong>
-                <p>Hay {pendingRequestsCount} solicitudes esperando confirmación de los artistas.</p>
+            {alerts.length > 0 ? (
+              alerts.map(({ tone, Icon, title, detail }) => (
+                <div key={title} className={`alert-item ${tone}`}>
+                  <Icon size={16} aria-hidden="true" />
+                  <div>
+                    <strong>{title}</strong>
+                    <p>{detail}</p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="alert-item alert-success">
+                <CheckCircle2 size={16} aria-hidden="true" />
+                <div>
+                  <strong>Sin alertas activas</strong>
+                  <p>No hay solicitudes pendientes ni incidencias registradas en los datos.</p>
+                </div>
               </div>
-            </div>
-            <div className="alert-item alert-info">
-              <UserCheck size={16} aria-hidden="true" />
-              <div>
-                <strong>Nuevos registros en plataforma</strong>
-                <p>Se registraron {data.users.slice(-3).length} cuentas recientemente verificadas.</p>
-              </div>
-            </div>
-            <div className="alert-item alert-success">
-              <CheckCircle2 size={16} aria-hidden="true" />
-              <div>
-                <strong>Catálogo verificado</strong>
-                <p>Las {data.categories.length} categorías están optimizadas para la búsqueda pública.</p>
-              </div>
-            </div>
+            )}
           </div>
         </section>
 
-        {/* Estado de infraestructura */}
+        {/* Estado de los datos de la plataforma */}
         <section className="admin-panel-card" aria-labelledby="server-status-title">
           <div className="panel-card-header">
-            <h2 id="server-status-title"><Server size={18} aria-hidden="true" /> Estado de infraestructura</h2>
-            <span className="badge badge-mint">Operacional</span>
+            <h2 id="server-status-title"><Server size={18} aria-hidden="true" /> Estado de los datos</h2>
+            <span className={`badge ${totalUsers > 0 ? 'badge-mint' : 'badge-yellow'}`}>
+              {totalUsers > 0 ? 'Con registros' : 'Sin registros'}
+            </span>
           </div>
           <div className="system-health-grid">
             <div className="health-row">
-              <span>API Services (Express Mock):</span>
-              <strong className="status-online">200 OK</strong>
+              <span>Usuarios registrados:</span>
+              <strong className={totalUsers > 0 ? 'status-online' : ''}>{totalUsers}</strong>
             </div>
             <div className="health-row">
-              <span>Base de Datos JSON-Server:</span>
-              <strong className="status-online">Conectada (0.4ms)</strong>
+              <span>Perfiles de artista:</span>
+              <strong className={totalArtists > 0 ? 'status-online' : ''}>{totalArtists}</strong>
             </div>
             <div className="health-row">
-              <span>Almacenamiento de Assets:</span>
-              <strong className="status-online">100% Disponible</strong>
+              <span>Solicitudes gestionadas:</span>
+              <strong className={totalRequests > 0 ? 'status-online' : ''}>{totalRequests}</strong>
             </div>
             <div className="health-row">
-              <span>Disponibilidad del Sistema (SLA):</span>
-              <strong>99.98%</strong>
+              <span>Categorías publicadas:</span>
+              <strong className={data.categories.length > 0 ? 'status-online' : ''}>{data.categories.length}</strong>
             </div>
           </div>
         </section>

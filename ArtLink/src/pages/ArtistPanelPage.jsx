@@ -185,9 +185,11 @@ export default function ArtistPanelPage() {
 
   const activeRequests = requests.filter((r) => !['completed', 'rejected'].includes(r.status))
   const activeCommissionsCount = commissions.filter((c) => c.status === 'active').length
-  const totalRevenueEstimate = requests
-    .filter((r) => r.status === 'completed' || r.status === 'accepted' || r.status === 'in_progress')
-    .reduce((sum, r) => sum + (Number(r.budget) || 0), 0)
+  const completedRequests = requests.filter((r) => r.status === 'completed')
+  const totalRevenueEstimate = completedRequests.reduce((sum, r) => sum + (Number(r.budget) || 0), 0)
+  const clientCount = new Set(
+    requests.filter((r) => r.status !== 'rejected').map((r) => r.clientId).filter(Boolean)
+  ).size
 
   return (
     <section className="artist-workspace" aria-labelledby="workspace-title">
@@ -222,7 +224,7 @@ export default function ArtistPanelPage() {
       {/* Sección: Resumen (Overview) */}
       {section === 'overview' && (
         <>
-          {/* Métricas con indicativo demostrativo */}
+          {/* Métricas calculadas sobre los datos reales del panel */}
           <section className="metrics-grid" aria-label="Métricas de rendimiento" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
             <Metric
               icon={Inbox}
@@ -233,9 +235,9 @@ export default function ArtistPanelPage() {
             />
             <Metric
               icon={DollarSign}
-              label="Ingresos proyectados (Simulado)"
-              value={price(totalRevenueEstimate || 850)}
-              subtitle="Basado en solicitudes aceptadas"
+              label="Ingresos completados"
+              value={price(totalRevenueEstimate)}
+              subtitle={`${completedRequests.length} encargos completados`}
             />
             <Metric
               icon={Layers}
@@ -245,9 +247,9 @@ export default function ArtistPanelPage() {
             />
             <Metric
               icon={Eye}
-              label="Visitas al perfil (Simulado)"
-              value="420 este mes"
-              subtitle="Tráfico demostrado"
+              label="Clientes atendidos"
+              value={clientCount}
+              subtitle={`${requests.length} solicitudes recibidas en total`}
             />
           </section>
 

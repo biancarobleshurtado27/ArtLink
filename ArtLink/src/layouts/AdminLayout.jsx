@@ -18,6 +18,7 @@ import {
 } from 'lucide-react'
 import logoArtLink from '../assets/logo-artlink.png'
 import useAuth from '../hooks/useAuth'
+import { roleLabels } from '../utils/roles'
 
 /**
  * Layout exclusivo de Administración para ArtLink.
@@ -169,7 +170,7 @@ export default function AdminLayout() {
           <div className="admin-user-profile-row">
             <div className="admin-user-info">
               <span className="admin-user-name">{user?.name || 'Administrador'}</span>
-              <span className="admin-user-role">Super Admin</span>
+              <span className="admin-user-role">{roleLabels[user?.role] || 'Sin rol asignado'}</span>
             </div>
             <button
               type="button"

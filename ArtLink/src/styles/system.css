@@ -3497,7 +3497,7 @@ p.admin-subtitle {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 2.5rem;
-  padding: 2.5rem 0 3rem;
+  padding: 0.5rem 0 2.5rem;
 }
 
 .studio-col h4 {
