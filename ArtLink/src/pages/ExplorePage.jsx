@@ -41,6 +41,7 @@ export default function ExplorePage() {
   const [searchParams] = useSearchParams()
   const {
     artworks,
+    publicArtworks,
     categoryOptions,
     ranking,
     loading,
@@ -474,6 +475,57 @@ export default function ExplorePage() {
           )}
         </section>
 
+        {/* 6.5 SECCIÓN: CATÁLOGO DE REFERENCIA CULTURAL (EXTERNAL) */}
+        {publicArtworks && publicArtworks.length > 0 && (
+          <section className="destacadas-section" aria-labelledby="external-catalog-title">
+            <div className="destacadas-header">
+              <div className="destacadas-title-wrap">
+                <h2 id="external-catalog-title">Catálogo de Referencia Cultural</h2>
+                <span className="destacadas-counter-badge">Verificado</span>
+              </div>
+              <p style={{ marginTop: '0.5rem', color: 'var(--color-text-secondary)', fontSize: '0.9rem' }}>
+                Artistas y obras de instituciones culturales globales (Open Access). 
+                Estos registros son de referencia y no representan perfiles en la plataforma.
+              </p>
+            </div>
+
+            <div className="destacadas-grid is-list">
+              {publicArtworks.map((artist) => (
+                <article key={artist.sourceUrl} className="destacada-card" style={{ padding: '1rem', border: '1px solid var(--color-border)' }}>
+                  <div className="destacada-info" style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                    {artist.imageUrl && (
+                      <img 
+                        src={artist.imageUrl} 
+                        alt={artist.name} 
+                        style={{ width: '120px', height: '120px', objectFit: 'cover', borderRadius: '8px' }} 
+                        onError={handleImageError} 
+                      />
+                    )}
+                    <div style={{ flex: 1 }}>
+                      <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.2rem', fontWeight: 'bold' }}>{artist.name}</h3>
+                      <p style={{ margin: '0 0 0.5rem', fontSize: '0.9rem', color: 'var(--color-text-secondary)' }}>
+                        {artist.nationality} {artist.birthDate && `(${artist.birthDate} - ${artist.deathDate})`}
+                      </p>
+                      <p style={{ margin: '0 0 0.5rem', fontSize: '0.95rem' }}>{artist.biography}</p>
+                      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                        <span className="badge-mint">Fuente: {artist.sourceName}</span>
+                        <span className="badge-lilac">{artist.license}</span>
+                        <a href={artist.sourceUrl} target="_blank" rel="noreferrer" style={{ fontSize: '0.9rem', color: 'var(--color-accent-primary)', textDecoration: 'none' }}>Ver fuente original</a>
+                      </div>
+                    </div>
+                  </div>
+                  {artist.artworks && artist.artworks.length > 0 && (
+                    <div style={{ marginTop: '1rem', borderTop: '1px solid var(--color-border)', paddingTop: '1rem' }}>
+                      <h4 style={{ margin: '0 0 0.5rem', fontSize: '1rem' }}>Obra Destacada:</h4>
+                      <p style={{ margin: 0, fontSize: '0.9rem', fontWeight: '500' }}>{artist.artworks[0].title} ({artist.artworks[0].date})</p>
+                      <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>{artist.artworks[0].medium}</p>
+                    </div>
+                  )}
+                </article>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* 7. PAGINACIÓN DINÁMICA */}
         {totalPages > 1 && (

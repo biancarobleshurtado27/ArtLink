@@ -3,6 +3,7 @@ import { getArtists } from '../services/artistService'
 import { getCategories } from '../services/categoryService'
 import { getPortfolioItems } from '../services/portfolioService'
 import { getRequests } from '../services/requestService'
+import { getExternalArtists } from '../services/externalService'
 import {
   buildArtistRanking,
   buildArtworkCards,
@@ -14,14 +15,15 @@ import {
 const EMPTY_SOURCES = { artists: [], portfolioItems: [], categories: [], requests: [] }
 
 function request(active, setSources, setError, setLoading) {
-  Promise.all([getArtists(), getPortfolioItems(), getCategories(), getRequests()])
-    .then(([artists, portfolioItems, categories, requests]) => {
+  Promise.all([getArtists(), getPortfolioItems(), getCategories(), getRequests(), getExternalArtists()])
+    .then(([artists, portfolioItems, categories, requests, publicArtworks]) => {
       if (!active) return
       setSources({
         artists: artists || [],
         portfolioItems: portfolioItems || [],
         categories: categories || [],
         requests: requests || [],
+        publicArtworks: publicArtworks || [],
       })
     })
     .catch((requestError) => { if (active) setError(requestError) })
