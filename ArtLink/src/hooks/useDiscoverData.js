@@ -3,7 +3,6 @@ import { getArtists } from '../services/artistService'
 import { getCategories } from '../services/categoryService'
 import { getPortfolioItems } from '../services/portfolioService'
 import { getRequests } from '../services/requestService'
-import { getRealExternalArtists, getDemoArtistProfiles, getDemoPortfolioItems } from '../services/realArtistsService'
 import {
   buildArtistRanking,
   buildArtworkCards,
@@ -19,19 +18,15 @@ function request(active, setSources, setError, setLoading) {
     getArtists(), 
     getPortfolioItems(), 
     getCategories(), 
-    getRequests(), 
-    getRealExternalArtists(),
-    getDemoArtistProfiles(),
-    getDemoPortfolioItems()
+    getRequests()
   ])
-    .then(([artists, portfolioItems, categories, requests, publicArtworks, demoArtists, demoPortfolio]) => {
+    .then(([artists, portfolioItems, categories, requests]) => {
       if (!active) return
       setSources({
-        artists: [...(artists || []), ...(demoArtists || [])],
-        portfolioItems: [...(portfolioItems || []), ...(demoPortfolio || [])],
+        artists: artists || [],
+        portfolioItems: portfolioItems || [],
         categories: categories || [],
         requests: requests || [],
-        publicArtworks: publicArtworks || [],
       })
     })
     .catch((requestError) => { if (active) setError(requestError) })
@@ -62,8 +57,6 @@ export default function useDiscoverData() {
     [sources.portfolioItems, sources.artists, sources.categories]
   )
 
-  const publicArtworks = sources.publicArtworks || []
-
   const categoryOptions = useMemo(
     () => buildCategoryOptions(sources.categories, artworks),
     [sources.categories, artworks]
@@ -84,5 +77,5 @@ export default function useDiscoverData() {
     [sources.artists, sources.portfolioItems]
   )
 
-  return { ...sources, artworks, publicArtworks, categoryOptions, ranking, metrics, showcaseCards, loading, error, reload }
+  return { ...sources, artworks, categoryOptions, ranking, metrics, showcaseCards, loading, error, reload }
 }

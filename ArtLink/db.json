@@ -1,13 +1,285 @@
 {
-  "users": [],
-  "artistProfiles": [],
-  "portfolioItems": [],
-  "commissions": [],
-  "categories": [],
-  "requests": [],
+  "users": [
+    {
+      "id": "admin-1",
+      "name": "Administrador",
+      "email": "admin@artlink.com",
+      "password": "admin",
+      "role": "admin",
+      "avatar": "https://ui-avatars.com/api/?name=Admin&background=random"
+    },
+    {
+      "id": "client-1",
+      "name": "Cliente Prueba",
+      "email": "cliente@artlink.com",
+      "password": "123",
+      "role": "client",
+      "avatar": "https://ui-avatars.com/api/?name=Cliente&background=random"
+    },
+    {
+      "id": "artist-demo-1",
+      "name": "Nova Creativa (Demostración)",
+      "email": "nova@demo.artlink.com",
+      "password": "123",
+      "role": "artist",
+      "avatar": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&q=80"
+    },
+    {
+      "id": "artist-demo-2",
+      "name": "Pixel Forge (Demostración)",
+      "email": "pixel@demo.artlink.com",
+      "password": "123",
+      "role": "artist",
+      "avatar": "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=400&q=80"
+    },
+    {
+      "id": "artist-demo-3",
+      "name": "Lumina Art (Demostración)",
+      "email": "lumina@demo.artlink.com",
+      "password": "123",
+      "role": "artist",
+      "avatar": "https://images.unsplash.com/photo-1533134486753-c833f0ed4866?w=400&q=80"
+    }
+  ],
+  "artistProfiles": [
+    {
+      "id": "artist-demo-1",
+      "userId": "artist-demo-1",
+      "displayName": "Nova Creativa [DEMO]",
+      "username": "novacreativa",
+      "avatar": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&q=80",
+      "banner": "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=1200&q=80",
+      "bio": "[PERFIL DE DEMOSTRACIÓN] Soy Nova, una entidad creativa ficticia diseñada para probar ArtLink. Especializada en paisajes abstractos y vibrantes.",
+      "disciplines": [
+        "Arte Digital",
+        "Abstracto"
+      ],
+      "styles": [
+        "Vibrante",
+        "Geométrico"
+      ],
+      "location": "Metaverso",
+      "availability": "open",
+      "slots": 3,
+      "rating": 4.8,
+      "verified": true,
+      "basePrice": 150,
+      "socialLinks": {
+        "twitter": "https://twitter.com"
+      }
+    },
+    {
+      "id": "artist-demo-2",
+      "userId": "artist-demo-2",
+      "displayName": "Pixel Forge [DEMO]",
+      "username": "pixelforge",
+      "avatar": "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=400&q=80",
+      "banner": "https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?w=1200&q=80",
+      "bio": "[PERFIL DE DEMOSTRACIÓN] Creador de personajes de fantasía y arte pixelado. Este usuario no es real.",
+      "disciplines": [
+        "Ilustración",
+        "Concept Art"
+      ],
+      "styles": [
+        "Fantasía",
+        "Pixel Art"
+      ],
+      "location": "Servidor 01",
+      "availability": "waitlist",
+      "slots": 0,
+      "rating": 4.9,
+      "verified": true,
+      "basePrice": 200,
+      "socialLinks": {
+        "instagram": "https://instagram.com"
+      }
+    },
+    {
+      "id": "artist-demo-3",
+      "userId": "artist-demo-3",
+      "displayName": "Lumina Art [DEMO]",
+      "username": "lumina",
+      "avatar": "https://images.unsplash.com/photo-1533134486753-c833f0ed4866?w=400&q=80",
+      "banner": "https://images.unsplash.com/photo-1499781350541-7783f6c6a0c8?w=1200&q=80",
+      "bio": "[PERFIL DE DEMOSTRACIÓN] Artista enfocada en diseño tipográfico y branding conceptual.",
+      "disciplines": [
+        "Diseño Gráfico",
+        "Tipografía"
+      ],
+      "styles": [
+        "Minimalista",
+        "Moderno"
+      ],
+      "location": "Digital",
+      "availability": "open",
+      "slots": 5,
+      "rating": 5,
+      "verified": true,
+      "basePrice": 100,
+      "socialLinks": {
+        "dribbble": "https://dribbble.com"
+      }
+    }
+  ],
+  "categories": [
+    {
+      "id": "cat-1",
+      "name": "Arte Digital",
+      "slug": "arte-digital",
+      "color": "#3B82F6"
+    },
+    {
+      "id": "cat-2",
+      "name": "Ilustración",
+      "slug": "ilustracion",
+      "color": "#8B5CF6"
+    },
+    {
+      "id": "cat-3",
+      "name": "Diseño Gráfico",
+      "slug": "diseno-grafico",
+      "color": "#10B981"
+    },
+    {
+      "id": "cat-4",
+      "name": "Abstracto",
+      "slug": "abstracto",
+      "color": "#EC4899"
+    }
+  ],
+  "portfolioItems": [
+    {
+      "id": "art-1",
+      "artistId": "artist-demo-1",
+      "title": "[DEMO] Sueños Geométricos",
+      "category": "Abstracto",
+      "image": "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=800&q=80",
+      "description": "Exploración de formas. Obra ficticia de demostración.",
+      "likes": 120,
+      "createdAt": "2024-01-10T12:00:00Z"
+    },
+    {
+      "id": "art-2",
+      "artistId": "artist-demo-1",
+      "title": "[DEMO] Horizonte Neón",
+      "category": "Arte Digital",
+      "image": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&q=80",
+      "description": "Paisaje sintético. Obra ficticia de demostración.",
+      "likes": 85,
+      "createdAt": "2024-02-15T12:00:00Z"
+    },
+    {
+      "id": "art-3",
+      "artistId": "artist-demo-1",
+      "title": "[DEMO] Resonancia",
+      "category": "Abstracto",
+      "image": "https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=800&q=80",
+      "description": "Composición de texturas. Obra ficticia.",
+      "likes": 210,
+      "createdAt": "2024-03-01T12:00:00Z"
+    },
+    {
+      "id": "art-4",
+      "artistId": "artist-demo-2",
+      "title": "[DEMO] Guerrero Digital",
+      "category": "Ilustración",
+      "image": "https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?w=800&q=80",
+      "description": "Personaje RPG. Obra de demostración.",
+      "likes": 340,
+      "createdAt": "2024-03-20T12:00:00Z"
+    },
+    {
+      "id": "art-5",
+      "artistId": "artist-demo-2",
+      "title": "[DEMO] Bosque Glitch",
+      "category": "Arte Digital",
+      "image": "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=800&q=80",
+      "description": "Entorno pixelado. Demostración.",
+      "likes": 150,
+      "createdAt": "2024-04-10T12:00:00Z"
+    },
+    {
+      "id": "art-6",
+      "artistId": "artist-demo-3",
+      "title": "[DEMO] Branding Futura",
+      "category": "Diseño Gráfico",
+      "image": "https://images.unsplash.com/photo-1499781350541-7783f6c6a0c8?w=800&q=80",
+      "description": "Concepto de marca. Obra ficticia.",
+      "likes": 95,
+      "createdAt": "2024-05-05T12:00:00Z"
+    }
+  ],
+  "commissions": [
+    {
+      "id": "comm-1",
+      "artistId": "artist-demo-1",
+      "title": "[DEMO] Ilustración Abstracta Personalizada",
+      "description": "Crearé una composición abstracta con tus colores favoritos.",
+      "price": 150,
+      "deliveryDays": 7,
+      "revisions": 2,
+      "includes": "Archivos en alta resolución",
+      "featured": true,
+      "category": "Arte Digital"
+    },
+    {
+      "id": "comm-2",
+      "artistId": "artist-demo-2",
+      "title": "[DEMO] Diseño de Personaje RPG",
+      "description": "Ilustraré tu personaje en estilo fantasía digital.",
+      "price": 200,
+      "deliveryDays": 14,
+      "revisions": 3,
+      "includes": "Boceto, línea y color final",
+      "featured": true,
+      "category": "Ilustración"
+    },
+    {
+      "id": "comm-3",
+      "artistId": "artist-demo-3",
+      "title": "[DEMO] Logotipo Tipográfico",
+      "description": "Diseño minimalista para tu nueva marca.",
+      "price": 100,
+      "deliveryDays": 5,
+      "revisions": 1,
+      "includes": "Vectores SVG",
+      "featured": true,
+      "category": "Diseño Gráfico"
+    }
+  ],
+  "requests": [
+    {
+      "id": "req-1",
+      "clientId": "client-1",
+      "artistId": "artist-demo-1",
+      "packageId": "comm-1",
+      "status": "completed",
+      "budget": 150,
+      "createdAt": "2024-05-15T12:00:00Z"
+    },
+    {
+      "id": "req-2",
+      "clientId": "client-1",
+      "artistId": "artist-demo-2",
+      "packageId": "comm-2",
+      "status": "in_progress",
+      "budget": 200,
+      "createdAt": "2024-06-01T12:00:00Z"
+    }
+  ],
+  "reviews": [
+    {
+      "id": "rev-1",
+      "artistId": "artist-demo-1",
+      "clientName": "Cliente Prueba",
+      "clientAvatar": "https://ui-avatars.com/api/?name=Cliente&background=random",
+      "commissionTitle": "[DEMO] Ilustración Abstracta Personalizada",
+      "rating": 5,
+      "comment": "¡Excelente resultado! Totalmente recomendado (Review de demostración).",
+      "createdAt": "2024-05-25T12:00:00Z"
+    }
+  ],
   "messages": [],
   "conversations": [],
-  "portfolio": [],
-  "reviews": [],
-  "$schema": "./node_modules/json-server/schema.json"
+  "portfolio": []
 }

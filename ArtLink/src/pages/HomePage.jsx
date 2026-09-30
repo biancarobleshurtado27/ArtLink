@@ -337,11 +337,6 @@ export default function HomePage() {
                       <span className={`badge-pill ${card.badgeClass}`}>
                         {card.category}
                       </span>
-                      {card.isDemo && (
-                        <span className="badge-pill badge-pill-rose" style={{ background: '#FECDD3', color: '#881337', marginLeft: '0.5rem', display: 'inline-flex', alignItems: 'center', gap: '0.2rem' }}>
-                          <Sparkles size={10} /> DEMO
-                        </span>
-                      )}
                     </div>
 
                     <h3 className="showcase-clean-artist">
@@ -545,12 +540,7 @@ export default function HomePage() {
                       <div className="creator-info">
                         <div className="creator-name-line">
                           <strong className="creator-name">{name}</strong>
-                          {creator.verified && !creator.isDemo && <BadgeCheck size={16} className="creator-badge-check" aria-label="Artista verificado" />}
-                          {creator.isDemo && (
-                            <span style={{ fontSize: '0.65rem', background: '#FECDD3', color: '#881337', padding: '0.1rem 0.4rem', borderRadius: '12px', display: 'inline-flex', alignItems: 'center', gap: '0.2rem', fontWeight: 700, marginLeft: '0.3rem' }}>
-                              <Sparkles size={10} /> DEMO
-                            </span>
-                          )}
+                          {creator.verified && <BadgeCheck size={16} className="creator-badge-check" aria-label="Artista verificado" />}
                         </div>
                         <span className="creator-handle">
                           @{creator.username} · {(creator.disciplines || []).join(' · ')}

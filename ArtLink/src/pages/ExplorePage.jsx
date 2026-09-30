@@ -332,14 +332,7 @@ export default function ExplorePage() {
                     />
                   )}
                   <div>
-                    <h3 className="momento-artist-name">
-                      {name}
-                      {artist.isDemo && (
-                        <span style={{ fontSize: '0.65rem', background: '#FECDD3', color: '#881337', padding: '0.1rem 0.4rem', borderRadius: '12px', display: 'inline-flex', alignItems: 'center', gap: '0.2rem', fontWeight: 700, marginLeft: '0.4rem', verticalAlign: 'middle' }}>
-                          <Sparkles size={10} /> DEMO
-                        </span>
-                      )}
-                    </h3>
+                    <h3 className="momento-artist-name">{name}</h3>
                     <p className="momento-artist-tag">{(artist.disciplines || []).join(' · ')}</p>
                   </div>
                 </div>
@@ -459,11 +452,6 @@ export default function ExplorePage() {
                         )}
                         <span className="destacada-artist-handle">
                           {art.artistHandle || art.artistName}
-                          {art.isDemo && (
-                            <span style={{ fontSize: '0.65rem', background: '#FECDD3', color: '#881337', padding: '0.1rem 0.4rem', borderRadius: '12px', display: 'inline-flex', alignItems: 'center', gap: '0.2rem', fontWeight: 700, marginLeft: '0.4rem', verticalAlign: 'middle' }}>
-                              <Sparkles size={10} /> DEMO
-                            </span>
-                          )}
                         </span>
                       </div>
 
