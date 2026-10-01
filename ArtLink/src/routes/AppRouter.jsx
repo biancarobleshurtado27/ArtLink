@@ -57,6 +57,8 @@ export default function AppRouter() {
             <Route path="/perfil" element={<ProfilePage />} />
             <Route path="/solicitudes" element={<PrivateRequestsPage />} />
             <Route path="/mensajes" element={<MessagesPage />} />
+            <Route path="/mensajes/:conversationId" element={<MessagesPage />} />
+            <Route path="/mensajes/nuevo" element={<MessagesPage />} />
             <Route path="/solicitudes/nueva" element={<NewRequestPage />} />
             <Route path="/solicitudes/nueva/:artistId" element={<NewRequestPage />} />
             <Route path="/nueva-solicitud" element={<NewRequestPage />} />

@@ -28,6 +28,7 @@ import {
   unfollowArtist,
   getArtistFollowerCount,
 } from '../services/followService'
+import { findConversationBetweenUsers } from '../services/conversationService'
 import {
   getAllLikes,
   likeArtwork,
@@ -79,6 +80,10 @@ export default function ArtistProfilePage() {
   const [newComment, setNewComment] = useState('')
   const [reviewSubmitting, setReviewSubmitting] = useState(false)
   const [reviewError, setReviewError] = useState(null)
+
+  // Estado para acción de mensaje directo
+  const [messageLoading, setMessageLoading] = useState(false)
+  const [messageNotice, setMessageNotice] = useState(null)
 
   // Cargar borrador persistente de reseña al montar
   useEffect(() => {
@@ -242,6 +247,47 @@ export default function ArtistProfilePage() {
       setFollowError(err.message || 'Error al actualizar seguimiento')
     } finally {
       setFollowLoading(false)
+    }
+  }
+
+  // Manejar apertura de conversación directa desde el perfil
+  async function handleOpenMessageChat() {
+    setMessageNotice(null)
+
+    // 1. Verificar que haya sesión
+    if (!user || !user.id) {
+      setMessageNotice('Inicia sesión para enviar mensajes.')
+      return
+    }
+
+    // 2. Verificar que el artista tenga un userId
+    const artistUserId = profile?.userId || profile?.user_id
+    if (!artistUserId) {
+      setMessageNotice('No se pudo abrir el chat porque este perfil no tiene un usuario asociado.')
+      return
+    }
+
+    // 3. Evitar que el usuario se escriba a sí mismo
+    if (String(user.id) === String(artistUserId) || isSelf) {
+      setMessageNotice('No puedes enviarte un mensaje a ti mismo.')
+      return
+    }
+
+    // 4. Buscar una conversación existente
+    setMessageLoading(true)
+    try {
+      const existing = await findConversationBetweenUsers(user.id, artistUserId)
+      if (existing && existing.id) {
+        // 5. Abrir la conversación si existe
+        navigate(`/mensajes/${existing.id}`)
+      } else {
+        // 6 & 7. Redirigir a chat nuevo con parámetros reales
+        navigate(`/mensajes/nuevo?recipientId=${encodeURIComponent(artistUserId)}&artistProfileId=${encodeURIComponent(profile.id)}`)
+      }
+    } catch {
+      setMessageNotice('No se pudo abrir el chat. Inténtalo de nuevo.')
+    } finally {
+      setMessageLoading(false)
     }
   }
 
@@ -435,10 +481,16 @@ export default function ArtistProfilePage() {
               </Link>
             )}
 
-            <Link className="artist-v2-btn-outline" to="/mensajes">
+            <button
+              type="button"
+              className="artist-v2-btn-outline"
+              onClick={handleOpenMessageChat}
+              disabled={messageLoading}
+              aria-label={`Enviar mensaje a ${profile.displayName || 'artista'}`}
+            >
               <MessageSquare size={15} aria-hidden="true" />
-              Mensaje
-            </Link>
+              <span>{messageLoading ? 'Abriendo...' : 'Mensaje'}</span>
+            </button>
 
             {/* BOTÓN SEGUIR FUNCIONAL CON ESTADO Y CONTADOR REAL */}
             {!isSelf && (
@@ -475,6 +527,24 @@ export default function ArtistProfilePage() {
         {followError && (
           <div style={{ color: '#DC2626', fontSize: '0.85rem', padding: '0.4rem 1rem', fontWeight: 600 }}>
             {followError}
+          </div>
+        )}
+
+        {messageNotice && (
+          <div
+            role="alert"
+            style={{
+              color: '#DC2626',
+              background: 'rgba(220, 38, 38, 0.08)',
+              border: '1px solid rgba(220, 38, 38, 0.25)',
+              borderRadius: '8px',
+              fontSize: '0.875rem',
+              padding: '0.5rem 1rem',
+              margin: '0.5rem 1rem',
+              fontWeight: 500,
+            }}
+          >
+            {messageNotice}
           </div>
         )}
 
