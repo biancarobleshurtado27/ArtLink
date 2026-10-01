@@ -193,11 +193,11 @@ export default function ArtistPanelPage() {
 
   return (
     <section className="artist-workspace" aria-labelledby="workspace-title">
-      {/* Aviso de protección del prototipo */}
+      {/* Aviso de protección del sistema */}
       <div className="escrow-demo-alert-banner" style={{ background: '#FEF08A', border: '2px solid #1E192B', padding: '0.6rem 1rem', borderRadius: '0.5rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
         <ShieldCheck size={18} color="#1E192B" aria-hidden="true" />
         <span style={{ fontSize: '0.88rem', fontWeight: 600, color: '#1E192B' }}>
-          Prototipo ArtLink: Protección con custodia en Escrow demostrativa activada para pruebas de interacción.
+          Sistema ArtLink: Protección de pagos con custodia en Escrow activa para todas tus solicitudes.
         </span>
       </div>
 

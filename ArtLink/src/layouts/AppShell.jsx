@@ -42,6 +42,7 @@ export default function AppShell() {
   const location = useLocation()
   const navigate = useNavigate()
   const [prevPath, setPrevPath] = useState(location.pathname)
+  const isMessagesPage = location.pathname.startsWith('/mensajes')
 
   const closeMenus = () => {
     setDrawerOpen(false)
@@ -122,8 +123,8 @@ export default function AppShell() {
         <a className="skip-link" href="#main-content">Saltar al contenido principal</a>
 
         <div className="app-main-layout app-main-public">
-          <main id="main-content" className="main-content">
-            <PageContainer>
+          <main id="main-content" className={`main-content ${isMessagesPage ? 'main-content-chat' : ''}`}>
+            <PageContainer className={isMessagesPage ? 'page-container-chat' : ''}>
               <div className="admin-return-link-bar" style={{ padding: '1.25rem 0 0.5rem', display: 'flex', justifyContent: 'flex-start' }}>
                 <Link to="/admin" className="admin-public-switch" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none' }}>
                   <ArrowLeft size={16} aria-hidden="true" />
@@ -133,7 +134,6 @@ export default function AppShell() {
               <Outlet />
             </PageContainer>
           </main>
-          <Footer />
           <AssistantWidget />
         </div>
       </div>
@@ -201,11 +201,11 @@ export default function AppShell() {
           <div className="mobile-drawer-overlay" onClick={closeMenus} aria-hidden="true" />
         )}
 
-        <div className="app-main-layout app-main-public">
-          <main id="main-content" className="main-content">
-            <PageContainer><Outlet /></PageContainer>
+        <div className={`app-main-layout app-main-public ${isMessagesPage ? 'is-chat-layout' : ''}`}>
+          <main id="main-content" className={`main-content ${isMessagesPage ? 'main-content-chat' : ''}`}>
+            <PageContainer className={isMessagesPage ? 'page-container-chat' : ''}><Outlet /></PageContainer>
           </main>
-          <Footer />
+          {!user && !isMessagesPage && <Footer />}
           <AssistantWidget />
         </div>
       </div>
@@ -433,11 +433,11 @@ export default function AppShell() {
       </aside>
 
       {/* ÁREA PRINCIPAL CON MARGIN-LEFT EN ESCRITORIO */}
-      <div className="app-main-layout">
-        <main id="main-content" className="main-content">
-          <PageContainer><Outlet /></PageContainer>
+      <div className={`app-main-layout ${isMessagesPage ? 'is-chat-layout' : ''}`}>
+        <main id="main-content" className={`main-content ${isMessagesPage ? 'main-content-chat' : ''}`}>
+          <PageContainer className={isMessagesPage ? 'page-container-chat' : ''}><Outlet /></PageContainer>
         </main>
-        <Footer />
+        {!user && !isMessagesPage && <Footer />}
         <AssistantWidget />
         <BottomNavigation links={mobileLinks} />
       </div>

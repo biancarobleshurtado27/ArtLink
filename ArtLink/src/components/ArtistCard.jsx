@@ -28,7 +28,7 @@ export default function ArtistCard({ artist, favorited = false, onFavorite }) {
         <div className="artist-card-top">
           <div className="artist-name-row">
             <h3>{artist.displayName}</h3>
-            {artist.verified && <Badge tone="mint">Verificado</Badge>}
+            {artist.verified && <Badge tone="mint">Artista destacado</Badge>}
           </div>
           <div className="artist-top-actions">
             {onFavorite && (

@@ -2194,3 +2194,138 @@
     position: static;
   }
 }
+
+/* ==========================================================================
+   PROTECCIÓN VISUAL DE IMÁGENES DE PORTAFOLIO Y RESPONSIVE
+   ========================================================================== */
+.protected-artwork-img,
+.artist-v2-artwork-img,
+.modal-artwork-image,
+.portfolio-card img,
+.artwork-preview img {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-drag: none;
+  user-drag: none;
+  -webkit-touch-callout: none;
+}
+
+.artist-v2-artwork-img-box {
+  position: relative;
+  overflow: hidden;
+}
+
+.artwork-protection-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(30, 25, 43, 0.78);
+  backdrop-filter: blur(4px);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  padding: 2px 7px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  pointer-events: none;
+  user-select: none;
+  transition: opacity 0.2s ease;
+}
+
+.artist-v2-artwork-card:hover .artwork-protection-badge {
+  background: rgba(139, 92, 246, 0.88);
+}
+
+/* RESPONSIVE DESIGN - CHECKOUT, AJUSTES Y PORTAFOLIO */
+@media (max-width: 64rem) {
+  .checkout-main-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+  }
+
+  .checkout-summary-col {
+    position: static !important;
+  }
+}
+
+@media (max-width: 48rem) {
+  .artist-v2-portfolio-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .checkout-header-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .checkout-steps-bar {
+    grid-template-columns: 1fr !important;
+    gap: 0.5rem;
+  }
+
+  .form-two-columns {
+    grid-template-columns: 1fr !important;
+  }
+
+  .artist-checkout-card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .artist-name-line {
+    justify-content: center;
+  }
+
+  .artist-badges-row {
+    justify-content: center;
+  }
+
+  .settings-shell {
+    grid-template-columns: 1fr !important;
+  }
+
+  .settings-nav-pills {
+    display: flex !important;
+    overflow-x: auto !important;
+    padding-bottom: 0.5rem;
+    scrollbar-width: thin;
+  }
+
+  .settings-pill-btn {
+    white-space: nowrap;
+  }
+
+  .settings-footer-actions {
+    flex-direction: column-reverse;
+  }
+
+  .settings-footer-actions .button {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 30rem) {
+  .format-card-header {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .format-price {
+    font-size: 1.15rem;
+  }
+
+  .payment-buttons-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}

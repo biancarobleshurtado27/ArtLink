@@ -1,0 +1,7 @@
+{
+  "name": "Usuario Sin Aceptar",
+  "email": "sin.terminos@artlink.test",
+  "role": "cliente",
+  "passwordDemo": "demo123456",
+  "acceptTerms": false
+}

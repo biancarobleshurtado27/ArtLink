@@ -486,7 +486,7 @@ export function AdminDashboardPage() {
           </div>
           <div className="admin-charts-header-badges">
             <span className="demo-data-badge">
-              JSON Server + Datos Demostrativos
+              Base de datos interna + Artistas destacados
             </span>
           </div>
         </div>

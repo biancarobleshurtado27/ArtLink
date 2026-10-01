@@ -50,8 +50,8 @@ function HelpHub() {
         <span>Ir a contacto <ArrowLeft className="rotate-180" size={15} aria-hidden="true" /></span>
       </Link>
       <div className="help-note">
-        <h2>Datos de prueba</h2>
-        <p>Inicia sesión con <strong>lucia@artlink.demo</strong> / <strong>cliente123</strong> (cliente), <strong>mateo@artlink.demo</strong> / <strong>artista123</strong> (artista) o <strong>ana@artlink.demo</strong> / <strong>admin123</strong> (administrador).</p>
+        <h2>Cuentas de acceso</h2>
+        <p>Inicia sesión con <strong>cliente@artlink.com</strong> / <strong>123</strong> (cliente), <strong>pixelfoundry@artlink.local</strong> / <strong>123</strong> (artista) o <strong>admin@artlink.com</strong> / <strong>admin</strong> (administrador).</p>
       </div>
     </div>
   )
@@ -61,37 +61,37 @@ const legalText = {
   '/terminos': [
     {
       h: '1. Naturaleza del servicio',
-      p: 'ArtLink es un prototipo académico que simula una plataforma para encargar arte digital. No procesa pagos reales, no gestiona contratos vinculantes y no actúa como intermediario de transacciones.',
+      p: 'ArtLink es una plataforma para encargar y comisionar arte digital entre clientes y creadores independientes con custodia segura de fondos.',
     },
     {
       h: '2. Solicitudes y encargos',
-      p: 'Enviar una solicitud no genera un compromiso de compra. El precio final, alcance, fechas y derechos de uso se confirman directamente con el artista. El estado de cada encargo es orientativo.',
+      p: 'Enviar una solicitud permite iniciar la cotización formal. El precio final, alcance, fechas y derechos de uso se confirman directamente con el artista.',
     },
     {
       h: '3. Contenido de artistas',
-      p: 'Los portafolios, tarifas y textos son responsabilidad de cada artista. La disponibilidad mostrada es declarada por el artista y puede cambiar.',
+      p: 'Los portafolios, tarifas y textos son responsabilidad de cada artista. La disponibilidad mostrada es declarada por el artista.',
     },
     {
       h: '4. Disponibilidad del servicio',
-      p: 'El servicio se ofrece “tal cual”, para fines educativos. Los datos pueden reiniciarse y las funcionalidades evolucionan sin previo aviso.',
+      p: 'El servicio se ofrece para gestionar solicitudes artísticas de forma transparente y protegida.',
     },
   ],
   '/privacidad': [
     {
       h: '1. Datos que tratamos',
-      p: 'Los datos de los usuarios viven en una base local (JSON Server) para demostrar las funcionalidades. No se envían datos a servicios externos salvo fotografías de prueba y citas de inspiración.',
+      p: 'Los datos de los usuarios viven en la base de datos de la plataforma para procesar las solicitudes y perfiles. No se envían datos a servicios externos no autorizados.',
     },
     {
       h: '2. Almacenamiento local',
       p: 'Tu sesión, preferencias visuales y artistas favoritos se guardan en el almacenamiento local de tu navegador. Puedes borrarlos cerrando sesión o limpiando los datos del sitio.',
     },
     {
-      h: '3. Uso con fines académicos',
-      p: 'Este prototipo no comercializa datos, no usa cookies de seguimiento y no comparte información con terceros.',
+      h: '3. Protección de información',
+      p: 'Esta plataforma no comercializa datos ni comparte información con terceros no autorizados.',
     },
     {
       h: '4. Contacto',
-      p: 'Para consultas sobre tus datos puedes escribir a soporte@artlink.demo.',
+      p: 'Para consultas sobre tus datos puedes escribir a soporte@artlink.com.',
     },
   ],
   '/comunidad': [

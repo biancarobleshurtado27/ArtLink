@@ -360,26 +360,18 @@ export default function ArtistProfilePage() {
           <Link to="/explorar" className="artist-v2-banner-pill">
             <ArrowLeft size={13} aria-hidden="true" /> Directorio de artistas
           </Link>
-          {profile.isDemo ? (
-            <span className="artist-v2-banner-pill" style={{ background: '#FECDD3', color: '#881337', borderColor: '#881337' }}>
-              <Sparkles size={14} color="#881337" aria-hidden="true" />
-              MODO DEMOSTRACIÓN VISUAL
-            </span>
-          ) : (
-            <span className="artist-v2-banner-pill">
-              <BadgeCheck size={14} color="#10B981" aria-hidden="true" />
-              100% ARTISTA VERIFICADO
+          {profile.verified && (
+            <span
+              className="artist-v2-banner-pill"
+              title="Validación interna basada en actividad, encargos y reputación dentro de ArtLink"
+              style={{ background: '#FFFDF8', color: 'var(--ink)' }}
+            >
+              <BadgeCheck size={14} color="#8B5CF6" aria-hidden="true" />
+              Artista destacado
             </span>
           )}
         </div>
       </section>
-
-      {profile.isDemo && (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', background: '#BE123C', color: '#FFF', padding: '0.8rem', textAlign: 'center', fontSize: '0.9rem', fontWeight: 'bold' }}>
-          <Sparkles size={16} aria-hidden="true" />
-          <span>DEMOSTRACIÓN VISUAL: {profile.demoDisclaimer || 'Este es un perfil generado para propósitos de demostración. Esta no es una oferta comercial real.'}</span>
-        </div>
-      )}
 
       {/* ── 2. TARJETA DE ENCABEZADO CON AVATAR EN LA LÍNEA DEL BANNER ── */}
       <section className="artist-v2-header-card" aria-label={`Información de ${profile.displayName}`}>
@@ -391,7 +383,7 @@ export default function ArtistProfilePage() {
             alt={`Avatar de ${profile.displayName}`}
           />
           {profile.verified && (
-            <span className="artist-v2-avatar-badge" title="Artista verificado por ArtLink">
+            <span className="artist-v2-avatar-badge" title="Artista destacado · Validación interna basada en actividad y reputación en ArtLink">
               <BadgeCheck size={18} aria-hidden="true" />
             </span>
           )}
@@ -627,7 +619,7 @@ export default function ArtistProfilePage() {
               Portafolio & Galería
             </h2>
             <p className="artist-v2-section-sub">
-              Explora las obras de demostración publicadas por el artista.
+              Explora las obras publicadas por el artista.
             </p>
           </div>
 
@@ -671,12 +663,18 @@ export default function ArtistProfilePage() {
                 >
                   <div className="artist-v2-artwork-img-box">
                     <img
-                      className="artist-v2-artwork-img"
+                      className="artist-v2-artwork-img protected-artwork-img"
                       src={item.image}
                       onError={handleImageError}
                       alt={item.title}
                       loading="lazy"
+                      onContextMenu={(e) => e.preventDefault()}
+                      onDragStart={(e) => e.preventDefault()}
                     />
+                    <div className="artwork-protection-badge" title="Obra protegida por derechos de autor en ArtLink">
+                      <ShieldCheck size={11} aria-hidden="true" />
+                      <span>Protegido</span>
+                    </div>
                   </div>
 
                   <div className="artist-v2-artwork-body">
@@ -721,7 +719,7 @@ export default function ArtistProfilePage() {
           {/* Tarjeta de reputación calculada */}
           <div className="artist-v2-reputation-card">
             <span className="artist-v2-comm-badge" style={{ background: '#C8F5E0', color: '#065F46' }}>
-              REPUTACIÓN VERIFICADA
+              REPUTACIÓN EN LA PLATAFORMA
             </span>
             <h2 id="reviews-section-title" style={{ fontFamily: 'var(--heading)', fontSize: '1.5rem', margin: '0.4rem 0' }}>
               Reputación de ArtLink
@@ -842,7 +840,7 @@ export default function ArtistProfilePage() {
               <>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
                   <span style={{ fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 700 }}>
-                    {localReviews.length} {localReviews.length === 1 ? 'reseña verificada' : 'reseñas verificadas'}
+                    {localReviews.length} {localReviews.length === 1 ? 'reseña de cliente' : 'reseñas de clientes'}
                   </span>
                   {!isSelf && (
                     <button
@@ -983,19 +981,32 @@ export default function ArtistProfilePage() {
       >
         {selectedWork && (
           <div>
-            <img
-              src={selectedWork.image}
-              onError={handleImageError}
-              alt={selectedWork.title || ''}
-              style={{
-                width: '100%',
-                maxHeight: '60vh',
-                objectFit: 'contain',
-                borderRadius: '12px',
-                border: '2px solid var(--ink)',
-                background: '#FAF9F6',
-              }}
-            />
+            <div style={{ position: 'relative' }}>
+              <img
+                src={selectedWork.image}
+                onError={handleImageError}
+                alt={selectedWork.title || ''}
+                className="modal-artwork-image protected-artwork-img"
+                onContextMenu={(e) => e.preventDefault()}
+                onDragStart={(e) => e.preventDefault()}
+                style={{
+                  width: '100%',
+                  maxHeight: '60vh',
+                  objectFit: 'contain',
+                  borderRadius: '12px',
+                  border: '2px solid var(--ink)',
+                  background: '#FAF9F6',
+                  display: 'block',
+                }}
+              />
+              <div
+                className="artwork-protection-badge"
+                style={{ position: 'absolute', bottom: '12px', right: '12px', zIndex: 10 }}
+              >
+                <ShieldCheck size={12} aria-hidden="true" />
+                <span>Obra protegida · ArtLink</span>
+              </div>
+            </div>
             {selectedWork.description && (
               <p style={{ marginTop: '1rem', color: 'var(--ink)', fontSize: '0.92rem' }}>
                 {selectedWork.description}

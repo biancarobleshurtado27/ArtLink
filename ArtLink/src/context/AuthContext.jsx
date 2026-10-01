@@ -18,6 +18,10 @@ function sanitizeUser(user) {
   if (!user) return null
   const safeUser = { ...user }
   delete safeUser.passwordDemo
+  delete safeUser.password
+  if (safeUser.role === 'client') safeUser.role = 'cliente'
+  if (safeUser.role === 'artist') safeUser.role = 'artista'
+  if (safeUser.role === 'admin') safeUser.role = 'administrador'
   return safeUser
 }
 
@@ -45,6 +49,7 @@ export function AuthProvider({ children }) {
         const createdUser = await registerUser(userData)
         return saveSession(createdUser)
       },
+      updateUser: (newData) => saveSession({ ...user, ...newData }),
       logout: () => saveSession(null),
     }),
     [user],

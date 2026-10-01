@@ -10,6 +10,8 @@ function readSettingsFromStorage() {
       ...DEFAULT_SETTINGS,
       ...parsed,
       notifications: { ...DEFAULT_SETTINGS.notifications, ...(parsed.notifications || {}) },
+      privacy: { ...DEFAULT_SETTINGS.privacy, ...(parsed.privacy || {}) },
+      preferences: { ...DEFAULT_SETTINGS.preferences, ...(parsed.preferences || {}) },
     }
   } catch {
     return DEFAULT_SETTINGS
@@ -35,11 +37,14 @@ export function SettingsProvider({ children }) {
     root.dataset.textSize = st.fontSize
     root.dataset.fontSize = st.fontSize
     root.dataset.contrast = st.contrast
+    root.dataset.density = st.density || 'comfortable'
     root.dataset.colorMode = st.colorMode
     root.dataset.reduceMotion = st.reduceMotion ? 'true' : 'false'
     root.dataset.readableFont = st.readableFont ? 'true' : 'false'
     root.dataset.textToSpeech = st.textToSpeech ? 'true' : 'false'
     root.dataset.showLabels = st.showLabels ? 'true' : 'false'
+    root.dataset.focusVisible = st.focusVisible ? 'true' : 'false'
+    root.dataset.nonColorIndicators = st.nonColorIndicators ? 'true' : 'false'
 
     try {
       localStorage.setItem('artlink_theme', effTheme)
@@ -91,6 +96,36 @@ export function SettingsProvider({ children }) {
     })
   }
 
+  function updatePrivacy(key, value) {
+    setSettings((prev) => {
+      const next = {
+        ...prev,
+        privacy: { ...prev.privacy, [key]: value },
+      }
+      try {
+        localStorage.setItem(SETTINGS_KEY, JSON.stringify(next))
+      } catch (err) {
+        void err
+      }
+      return next
+    })
+  }
+
+  function updatePreferences(key, value) {
+    setSettings((prev) => {
+      const next = {
+        ...prev,
+        preferences: { ...prev.preferences, [key]: value },
+      }
+      try {
+        localStorage.setItem(SETTINGS_KEY, JSON.stringify(next))
+      } catch (err) {
+        void err
+      }
+      return next
+    })
+  }
+
   function saveSettings() {
     try {
       localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings))
@@ -124,6 +159,8 @@ export function SettingsProvider({ children }) {
         settings,
         updateSetting,
         updateNotifications,
+        updatePrivacy,
+        updatePreferences,
         saveSettings,
         resetSettings,
         statusMessage,

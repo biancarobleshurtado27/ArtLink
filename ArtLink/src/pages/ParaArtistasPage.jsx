@@ -299,7 +299,7 @@ export default function ParaArtistasPage() {
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                 <strong style={{ fontFamily: 'var(--font-heading)', fontSize: '1.15rem' }}>{previewArtist.displayName}</strong>
-                {previewArtist.verified && <BadgeCheck size={17} color="#8B5CF6" aria-label="Artista verificado" />}
+                {previewArtist.verified && <BadgeCheck size={17} color="#8B5CF6" aria-label="Artista destacado" />}
               </div>
               <small style={{ color: 'var(--muted)', display: 'block', fontSize: '0.75rem' }}>
                 @{previewArtist.username} · {(previewArtist.disciplines || []).join(' · ')}
@@ -325,7 +325,7 @@ export default function ParaArtistasPage() {
               <strong style={{ fontSize: '1.15rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.2rem' }}>
                 <Star size={14} fill="#8B5CF6" color="#8B5CF6" /> {previewArtist.rating || '—'}
               </strong>
-              <span>{previewArtist.verified ? 'Perfil verificado' : 'Sin verificar'}</span>
+              <span>{previewArtist.verified ? 'Artista destacado' : 'En evaluación'}</span>
             </div>
           </div>
 

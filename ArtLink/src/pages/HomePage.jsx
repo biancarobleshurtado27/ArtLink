@@ -494,7 +494,7 @@ export default function HomePage() {
         <div className="section-content-centered">
           <div className="section-header-block">
             <span className="section-pill-tag tag-pink">
-              <DecorativeStar size={11} color="currentColor" /> COMUNIDAD VERIFICADA
+              <DecorativeStar size={11} color="currentColor" /> ARTISTAS DESTACADOS
             </span>
             <h2 id="creators-title" className="section-title-large">
               Creadores Destacados del Mes
@@ -540,7 +540,7 @@ export default function HomePage() {
                       <div className="creator-info">
                         <div className="creator-name-line">
                           <strong className="creator-name">{name}</strong>
-                          {creator.verified && <BadgeCheck size={16} className="creator-badge-check" aria-label="Artista verificado" />}
+                          {creator.verified && <BadgeCheck size={16} className="creator-badge-check" aria-label="Artista destacado" />}
                         </div>
                         <span className="creator-handle">
                           @{creator.username} · {(creator.disciplines || []).join(' · ')}

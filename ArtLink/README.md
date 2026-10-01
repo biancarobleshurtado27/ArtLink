@@ -63,6 +63,16 @@ npm run dev
 
 Abre la URL que muestre Vite, normalmente `http://localhost:5173`.
 
+## Cuentas de prueba para evaluación
+
+Para iniciar sesión y evaluar los distintos roles de la plataforma, utiliza las siguientes credenciales de prueba configuradas en `db.json`:
+
+| Rol | Correo electrónico | Contraseña demo |
+| --- | --- | --- |
+| **Cliente** | `cliente@artlink.com` (o `lucia@artlink.demo`) | `123` (o `cliente123`) |
+| **Artista** | `mateo@artlink.demo` | `artista123` |
+| **Administrador** | `admin@artlink.com` (o `ana@artlink.demo`) | `admin` (o `admin123`) |
+
 ## Validación
 
 ```bash

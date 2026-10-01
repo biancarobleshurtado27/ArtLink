@@ -513,7 +513,7 @@ export default function ExplorePage() {
                         <div>
                           <h3 className="destacada-title" style={{ margin: 0, fontSize: '1.1rem' }}>
                             <Link to={`/artista/${artist.id}`} style={{ color: 'inherit', textDecoration: 'none' }}>
-                              {name.includes('[DEMO]') ? name : `Artista: ${name}`}
+                              {`Artista: ${name.replace(/\s*\[DEMO\]/gi, '')}`}
                             </Link>
                           </h3>
                           <span className="destacada-artist-handle">
@@ -565,7 +565,15 @@ export default function ExplorePage() {
                               style={{ position: 'relative', flex: 1, height: '46px', borderRadius: '5px', overflow: 'hidden', border: '1px solid #D1D5DB' }}
                               title={w.title}
                             >
-                              <img src={w.image} alt={w.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={handleImageError} />
+                              <img
+                                src={w.image}
+                                alt={w.title}
+                                className="protected-artwork-img"
+                                onContextMenu={(e) => e.preventDefault()}
+                                onDragStart={(e) => e.preventDefault()}
+                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                onError={handleImageError}
+                              />
                             </div>
                           ))}
                         </div>
@@ -610,7 +618,7 @@ export default function ExplorePage() {
             <div className="destacadas-header">
               <div className="destacadas-title-wrap">
                 <h2 id="external-catalog-title">Catálogo de Referencia Cultural</h2>
-                <span className="destacadas-counter-badge">Verificado</span>
+                <span className="destacadas-counter-badge">Artista destacado</span>
               </div>
               <p style={{ marginTop: '0.5rem', color: 'var(--color-text-secondary)', fontSize: '0.9rem' }}>
                 Artistas y obras de instituciones culturales globales (Open Access). 

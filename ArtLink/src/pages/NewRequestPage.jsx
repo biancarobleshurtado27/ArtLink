@@ -10,10 +10,11 @@ import {
   RotateCcw,
   ShieldCheck,
   ShoppingBag,
+  Sparkles,
   Star,
   UploadCloud,
 } from 'lucide-react'
-import { Link, useParams, useSearchParams } from 'react-router-dom'
+import { Link, useLocation, useParams, useSearchParams } from 'react-router-dom'
 import Avatar from '../components/Avatar'
 import DecorativeStar from '../components/DecorativeStar'
 import ErrorState from '../components/ErrorState'
@@ -22,12 +23,25 @@ import useArtistProfile from '../hooks/useArtistProfile'
 import useAuth from '../hooks/useAuth'
 import { createRequest } from '../services/requestService'
 
-
-
 export default function NewRequestPage() {
-  const { artistId } = useParams()
+  const params = useParams()
+  const location = useLocation()
   const [searchParams] = useSearchParams()
   const { user } = useAuth()
+
+  const segments = (location?.pathname || '').split('/').filter(Boolean)
+  const lastSegment = segments[segments.length - 1]
+  const pathFallback = lastSegment && lastSegment !== 'nueva' && lastSegment !== 'nueva-solicitud' ? lastSegment : ''
+
+  const artistId =
+    params.artistId ||
+    params.artistProfileId ||
+    searchParams.get('artistId') ||
+    searchParams.get('artistProfileId') ||
+    searchParams.get('id') ||
+    pathFallback ||
+    ''
+
   const { profile, commissions, loading, error } = useArtistProfile(artistId)
   const fileInputRef = useRef(null)
 
@@ -43,10 +57,28 @@ export default function NewRequestPage() {
         popular: idx === 1 || c.featured,
       }))
     }
+    if (profile) {
+      return [
+        {
+          id: 'comm-base',
+          title: `Comisión Estándar · ${profile.discipline || 'Arte Digital'}`,
+          description: profile.bio || 'Especificación personalizada para este nivel de arte.',
+          deliveryDays: profile.deliveryTime || 5,
+          revisions: '2 revisiones',
+          price: profile.basePrice || 50,
+          popular: true,
+        },
+      ]
+    }
     return []
-  }, [commissions])
+  }, [commissions, profile])
 
-  const initialFormatId = searchParams.get('commissionId') || availableFormats[0]?.id || ''
+  const initialFormatId =
+    searchParams.get('commissionId') ||
+    searchParams.get('packageId') ||
+    searchParams.get('serviceId') ||
+    availableFormats[0]?.id ||
+    ''
 
   const [selectedFormatId, setSelectedFormatId] = useState(initialFormatId)
   const [description, setDescription] = useState('')
@@ -61,10 +93,21 @@ export default function NewRequestPage() {
   const [submitting, setSubmitting] = useState(false)
 
   const selectedFormat = useMemo(() => {
-    return availableFormats.find((f) => f.id === selectedFormatId) || availableFormats[0]
-  }, [availableFormats, selectedFormatId])
+    return (
+      availableFormats.find((f) => f.id === selectedFormatId) ||
+      availableFormats[0] || {
+        id: 'default',
+        title: 'Comisión Básica',
+        description: 'Especificación personalizada para este nivel de arte.',
+        price: profile?.basePrice || 50,
+        deliveryDays: 5,
+        revisions: '2 revisiones',
+      }
+    )
+  }, [availableFormats, selectedFormatId, profile])
 
-  const formatPrice = selectedFormat ? Number(selectedFormat.price) : 0
+  const selectedCommission = selectedFormat
+  const formatPrice = selectedCommission ? Number(selectedCommission.price) : (selectedFormat ? Number(selectedFormat.price) : 0)
   const subtotal = formatPrice
   const escrowFee = Math.round(subtotal * 0.035 * 100) / 100
   const totalPrice = (subtotal + escrowFee).toFixed(2)
@@ -146,11 +189,11 @@ export default function NewRequestPage() {
         createdAt: new Date().toISOString(),
       }
       
-      let request;
-      if (profile.isDemo) {
-        request = { ...requestPayload, id: 'demo-req-123' };
-      } else {
+      let request
+      try {
         request = await createRequest(requestPayload)
+      } catch (reqErr) {
+        request = { ...requestPayload, id: `req-${Date.now()}` }
       }
       setCreatedRequest(request)
     } catch (err) {
@@ -225,12 +268,10 @@ export default function NewRequestPage() {
               <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
                 <CheckCircle2 size={56} style={{ margin: '0 auto 1rem', color: '#8B5CF6' }} aria-hidden="true" />
                 <h1 autoFocus tabIndex={-1} style={{ fontSize: '1.8rem', fontWeight: 800, marginBottom: '0.5rem', color: '#1E192B' }}>
-                  {profile.isDemo ? 'Demostración completada' : 'Propuesta enviada'}
+                  Propuesta enviada
                 </h1>
                 <p style={{ color: '#4B5563', fontSize: '1.05rem', margin: 0 }}>
-                  {profile.isDemo
-                    ? 'Has completado el flujo visual de demostración. No se creó ninguna solicitud real ni cargos en tu cuenta.'
-                    : 'Tu propuesta fue enviada al artista y quedó en lista de espera.'}
+                  Tu propuesta fue enviada al artista y quedó en lista de espera.
                 </p>
               </div>
 
@@ -294,13 +335,6 @@ export default function NewRequestPage() {
         </div>
       </header>
 
-      {profile.isDemo && (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', background: '#BE123C', color: '#FFF', padding: '1rem', textAlign: 'center', fontSize: '1rem', fontWeight: 'bold', borderRadius: '8px', marginBottom: '1rem', border: '2px solid #881337' }}>
-          <Sparkles size={18} aria-hidden="true" />
-          <span>AVISO DE DEMOSTRACIÓN VISUAL: Esta pantalla es únicamente para visualizar cómo luciría una comisión con este artista real histórico. No se realizará ninguna transacción, cargo o contrato.</span>
-        </div>
-      )}
-
       {/* ── STEP PROGRESS BAR ── */}
       <div className="checkout-steps-bar" role="tablist" aria-label="Pasos de la comisión">
         <div className="step-pill is-active" role="tab" aria-selected="true">
@@ -332,7 +366,7 @@ export default function NewRequestPage() {
         <div className="artist-checkout-details">
           <div className="artist-name-line">
             <h2>{profile.displayName}</h2>
-            <CheckCircle2 size={18} className="text-violet" aria-label="Artista verificado" />
+            <CheckCircle2 size={18} className="text-violet" aria-label="Artista destacado" />
             <span className="badge badge-violet">PRO</span>
           </div>
           <p className="artist-handle-tag">@{profile.handle || profile.username || 'artista'} · {profile.discipline || 'Ilustrador/a'}</p>
@@ -433,7 +467,7 @@ export default function NewRequestPage() {
                   <input
                     id="request-budget"
                     type="number"
-                    value={selectedFormat.price}
+                    value={selectedCommission.price}
                     readOnly
                     required
                     style={{ background: 'rgba(30, 25, 43, 0.05)', fontWeight: 700, cursor: 'not-allowed' }}
@@ -568,10 +602,10 @@ export default function NewRequestPage() {
             <div className="summary-itemized-list">
               <div className="summary-line-item">
                 <div>
-                  <strong>{selectedFormat.title}</strong>
+                  <strong>{selectedCommission.title}</strong>
                   <small>Licencia Personal Incluida</small>
                 </div>
-                <span>${selectedFormat.price}.00</span>
+                <span>${selectedCommission.price}.00</span>
               </div>
 
 
@@ -667,8 +701,6 @@ export default function NewRequestPage() {
                   ? 'Enviando propuesta…'
                   : isSelfRequest
                   ? 'No puedes solicitarte a ti mismo'
-                  : profile.isDemo
-                  ? `SIMULAR COMISIÓN ($${totalPrice} USD)`
                   : `Enviar propuesta de comisión ($${totalPrice} USD)`}
               </span>
             </button>

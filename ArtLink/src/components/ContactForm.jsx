@@ -82,7 +82,7 @@ export default function ContactForm() {
       {error && <p className="form-message form-error" role="alert">{error}</p>}
       <div className="contact-form-actions">
         <Button type="submit"><Send size={16} aria-hidden="true" /> Enviar mensaje</Button>
-        <p><Mail size={14} aria-hidden="true" /> Alternativa: soporte@artlink.demo</p>
+        <p><Mail size={14} aria-hidden="true" /> Alternativa: soporte@artlink.com</p>
       </div>
     </form>
   )
