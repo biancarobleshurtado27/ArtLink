@@ -35,6 +35,11 @@ import {
 } from '../services/likeService'
 import { getRequests, createRequest } from '../services/requestService'
 import { createReview } from '../services/reviewService'
+import {
+  getReviewDraft,
+  removeReviewDraft,
+  saveReviewDraft,
+} from '../services/persistence/syncService'
 
 const ratingLabels = {
   1: '1 estrella (Deficiente)',
@@ -74,6 +79,26 @@ export default function ArtistProfilePage() {
   const [newComment, setNewComment] = useState('')
   const [reviewSubmitting, setReviewSubmitting] = useState(false)
   const [reviewError, setReviewError] = useState(null)
+
+  // Cargar borrador persistente de reseña al montar
+  useEffect(() => {
+    if (!profile?.id) return
+    const draft = getReviewDraft(user?.id, profile.id)
+    if (draft) {
+      if (draft.comment) setNewComment(draft.comment)
+      if (draft.rating) setNewRating(draft.rating)
+    }
+  }, [profile?.id, user?.id])
+
+  // Guardar borrador de reseña automáticamente
+  useEffect(() => {
+    if (!profile?.id) return
+    if (!newComment.trim()) return
+    saveReviewDraft(user?.id, profile.id, {
+      rating: newRating,
+      comment: newComment,
+    })
+  }, [user?.id, profile?.id, newRating, newComment])
 
   // Comprobar si el usuario conectado es el propio artista
   const isSelf = Boolean(
@@ -319,6 +344,7 @@ export default function ArtistProfilePage() {
       }
 
       const saved = await createReview(newRev)
+      removeReviewDraft(user?.id, profile.id)
       setLocalReviews((prev) => [saved, ...prev])
       setReviewModalOpen(false)
       setNewComment('')

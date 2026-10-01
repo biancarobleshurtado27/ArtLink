@@ -42,6 +42,14 @@ import {
 } from '../services/presenceService'
 import artieAvatar from '../assets/artie-avatar.png'
 import '../styles/chatPop.css'
+import { readLocal, saveLocal } from '../services/persistence/localStorageService'
+import { getUserScopedKey } from '../services/persistence/storageKeys'
+import {
+  getMessageDraft,
+  saveMessageDraft,
+  removeMessageDraft,
+} from '../services/persistence/syncService'
+import { createMessage } from '../services/messageService'
 
 const EMOJI_LIST = [
   '😀', '😁', '😂', '🤣', '😃', '😄', '😅',
@@ -354,6 +362,32 @@ export default function MessagesPage() {
   const [sidebarSearch, setSidebarSearch] = useState('')
   const [messageInput, setMessageInput] = useState('')
   const [isBotThinking, setIsBotThinking] = useState(false)
+
+  // Cargar conversaciones guardadas previamente para el usuario
+  useEffect(() => {
+    const saved = readLocal(getUserScopedKey(user?.id, 'chat_conversations'), null)
+    if (saved && Array.isArray(saved) && saved.length > 0) {
+      setConversations(saved)
+    }
+  }, [user?.id])
+
+  // Persistir conversaciones modificadas para evitar pérdida de mensajes al recargar
+  useEffect(() => {
+    if (conversations && conversations.length > 0) {
+      saveLocal(getUserScopedKey(user?.id, 'chat_conversations'), conversations)
+    }
+  }, [conversations, user?.id])
+
+  // Cargar y sincronizar borrador de mensaje de la conversación activa
+  useEffect(() => {
+    const draft = getMessageDraft(user?.id, selectedConvoId)
+    setMessageInput(draft || '')
+  }, [selectedConvoId, user?.id])
+
+  function handleDraftChange(val) {
+    setMessageInput(val)
+    saveMessageDraft(user?.id, selectedConvoId, val)
+  }
 
   // Registro de presencia en tiempo real para artistas y clientes ("En línea" / "Desconectado")
   const [presenceRegistry, setPresenceRegistry] = useState(getPresenceRegistry)
@@ -764,7 +798,21 @@ export default function MessagesPage() {
     )
 
     setMessageInput('')
+    removeMessageDraft(user?.id, currentConvoId)
     setAttachments([])
+
+    // Persistir mensaje enviado en JSON Server
+    try {
+      createMessage({
+        conversationId: currentConvoId,
+        senderId: user?.id || 'guest',
+        senderRole: user?.role || 'client',
+        text: text,
+        time: newMsg.time,
+        attachments: attachments.map((a) => ({ name: a.name, type: a.type })),
+        createdAt: new Date().toISOString(),
+      }).catch((err) => console.warn('JSON Server message sync notice:', err))
+    } catch {}
 
     if (chatSettings.soundEnabled) {
       playNotificationSound()
@@ -782,6 +830,17 @@ export default function MessagesPage() {
           suggestedFilters: aiResponse?.suggestedFilters,
           time: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
         }
+
+        try {
+          createMessage({
+            conversationId: currentConvoId,
+            senderId: 'artie_ai',
+            senderName: 'Artie AI',
+            text: botMsg.text,
+            time: botMsg.time,
+            createdAt: new Date().toISOString(),
+          }).catch(() => {})
+        } catch {}
 
         setConversations((prev) =>
           prev.map((c) => {
@@ -1654,7 +1713,7 @@ export default function MessagesPage() {
                     : `Escribe tu mensaje a ${activeConvo.artist.name}...`
                 }
                 value={messageInput}
-                onChange={(e) => setMessageInput(e.target.value)}
+                onChange={(e) => handleDraftChange(e.target.value)}
                 onKeyDown={(e) => {
                   if (chatSettings.sendOnEnter && e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault()
@@ -1709,7 +1768,7 @@ export default function MessagesPage() {
                             key={emoji}
                             type="button"
                             className="chat-emoji-btn"
-                            onClick={() => setMessageInput((prev) => prev + emoji)}
+                            onClick={() => handleDraftChange(messageInput + emoji)}
                           >
                             {emoji}
                           </button>

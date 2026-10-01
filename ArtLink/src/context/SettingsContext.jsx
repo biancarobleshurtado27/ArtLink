@@ -1,20 +1,18 @@
 import { useCallback, useEffect, useState } from 'react'
 import { DEFAULT_SETTINGS, SETTINGS_KEY, SettingsContext } from './settings'
+import { readLocal } from '../services/persistence/localStorageService'
+import { getAppSettings, saveAppSettings } from '../services/persistence/syncService'
+import { GLOBAL_SETTINGS_KEY } from '../services/persistence/storageKeys'
 
 function readSettingsFromStorage() {
-  try {
-    const stored = localStorage.getItem(SETTINGS_KEY)
-    if (!stored) return DEFAULT_SETTINGS
-    const parsed = JSON.parse(stored)
-    return {
-      ...DEFAULT_SETTINGS,
-      ...parsed,
-      notifications: { ...DEFAULT_SETTINGS.notifications, ...(parsed.notifications || {}) },
-      privacy: { ...DEFAULT_SETTINGS.privacy, ...(parsed.privacy || {}) },
-      preferences: { ...DEFAULT_SETTINGS.preferences, ...(parsed.preferences || {}) },
-    }
-  } catch {
-    return DEFAULT_SETTINGS
+  const stored = readLocal(GLOBAL_SETTINGS_KEY, null) || readLocal(SETTINGS_KEY, null)
+  if (!stored) return DEFAULT_SETTINGS
+  return {
+    ...DEFAULT_SETTINGS,
+    ...stored,
+    notifications: { ...DEFAULT_SETTINGS.notifications, ...(stored.notifications || {}) },
+    privacy: { ...DEFAULT_SETTINGS.privacy, ...(stored.privacy || {}) },
+    preferences: { ...DEFAULT_SETTINGS.preferences, ...(stored.preferences || {}) },
   }
 }
 
@@ -36,22 +34,17 @@ export function SettingsProvider({ children }) {
     root.dataset.theme = effTheme
     root.dataset.textSize = st.fontSize
     root.dataset.fontSize = st.fontSize
-    root.dataset.contrast = st.contrast
-    root.dataset.density = st.density || 'comfortable'
-    root.dataset.colorMode = st.colorMode
-    root.dataset.reduceMotion = st.reduceMotion ? 'true' : 'false'
+    root.dataset.contrast = st.highContrast ? 'high' : st.contrast || 'normal'
+    root.dataset.highContrast = st.highContrast ? 'true' : 'false'
+    root.dataset.density = st.compactDensity ? 'compact' : st.density || 'comfortable'
+    root.dataset.compactDensity = st.compactDensity ? 'true' : 'false'
+    root.dataset.colorMode = st.colorMode || 'normal'
+    root.dataset.reduceMotion = st.reducedMotion || st.reduceMotion ? 'true' : 'false'
     root.dataset.readableFont = st.readableFont ? 'true' : 'false'
     root.dataset.textToSpeech = st.textToSpeech ? 'true' : 'false'
     root.dataset.showLabels = st.showLabels ? 'true' : 'false'
     root.dataset.focusVisible = st.focusVisible ? 'true' : 'false'
     root.dataset.nonColorIndicators = st.nonColorIndicators ? 'true' : 'false'
-
-    try {
-      localStorage.setItem('artlink_theme', effTheme)
-      localStorage.setItem('artlink_text_size', st.fontSize)
-    } catch (err) {
-      void err
-    }
   }, [getEffectiveTheme])
 
   useEffect(() => {
@@ -72,11 +65,7 @@ export function SettingsProvider({ children }) {
     setSettings((prev) => {
       const next = { ...prev, [key]: value }
       applySettingsToDOM(next)
-      try {
-        localStorage.setItem(SETTINGS_KEY, JSON.stringify(next))
-      } catch (err) {
-        void err
-      }
+      saveAppSettings(null, next)
       return next
     })
   }
@@ -87,11 +76,7 @@ export function SettingsProvider({ children }) {
         ...prev,
         notifications: { ...prev.notifications, [key]: value },
       }
-      try {
-        localStorage.setItem(SETTINGS_KEY, JSON.stringify(next))
-      } catch (err) {
-        void err
-      }
+      saveAppSettings(null, next)
       return next
     })
   }
@@ -102,11 +87,7 @@ export function SettingsProvider({ children }) {
         ...prev,
         privacy: { ...prev.privacy, [key]: value },
       }
-      try {
-        localStorage.setItem(SETTINGS_KEY, JSON.stringify(next))
-      } catch (err) {
-        void err
-      }
+      saveAppSettings(null, next)
       return next
     })
   }
@@ -117,21 +98,14 @@ export function SettingsProvider({ children }) {
         ...prev,
         preferences: { ...prev.preferences, [key]: value },
       }
-      try {
-        localStorage.setItem(SETTINGS_KEY, JSON.stringify(next))
-      } catch (err) {
-        void err
-      }
+      saveAppSettings(null, next)
       return next
     })
   }
 
   function saveSettings() {
     try {
-      localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings))
-      const effTheme = getEffectiveTheme(settings.theme)
-      localStorage.setItem('artlink_theme', effTheme)
-      localStorage.setItem('artlink_text_size', settings.fontSize)
+      saveAppSettings(null, settings)
       setStatusMessage('Preferencias guardadas correctamente.')
       setTimeout(() => setStatusMessage(''), 4000)
     } catch {
@@ -141,13 +115,7 @@ export function SettingsProvider({ children }) {
 
   function resetSettings() {
     setSettings(DEFAULT_SETTINGS)
-    try {
-      localStorage.setItem(SETTINGS_KEY, JSON.stringify(DEFAULT_SETTINGS))
-      localStorage.setItem('artlink_theme', 'light')
-      localStorage.setItem('artlink_text_size', 'normal')
-    } catch (err) {
-      void err
-    }
+    saveAppSettings(null, DEFAULT_SETTINGS)
     applySettingsToDOM(DEFAULT_SETTINGS)
     setStatusMessage('Preferencias restauradas a los valores predeterminados.')
     setTimeout(() => setStatusMessage(''), 4000)
@@ -164,10 +132,6 @@ export function SettingsProvider({ children }) {
         saveSettings,
         resetSettings,
         statusMessage,
-        theme: settings.theme,
-        textSize: settings.fontSize,
-        setTheme: (t) => updateSetting('theme', t),
-        setTextSize: (s) => updateSetting('fontSize', s),
       }}
     >
       {children}

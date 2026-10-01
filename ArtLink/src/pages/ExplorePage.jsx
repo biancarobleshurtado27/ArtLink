@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import {
   Search,
@@ -17,6 +17,10 @@ import EmptyState from '../components/EmptyState'
 import ErrorState from '../components/ErrorState'
 import LoadingState from '../components/LoadingState'
 import useDiscoverData from '../hooks/useDiscoverData'
+import useAuth from '../hooks/useAuth'
+import useFavorites from '../hooks/useFavorites'
+import { getLikesByUser, likeArtwork, unlikeArtwork } from '../services/likeService'
+import { getCatalogFilters, saveCatalogFilters } from '../services/persistence/syncService'
 import { handleImageError } from '../utils/imageFallback'
 import { RANKING_EMPTY_MESSAGE, getAvailabilityStatus, getArtistWorks } from '../utils/discoverData'
 
@@ -43,25 +47,71 @@ export default function ExplorePage() {
     reload,
   } = useDiscoverData()
 
-  // Estados de búsqueda y filtros
-  const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '')
-  const [openSlotsOnly, setOpenSlotsOnly] = useState(false)
-  const [selectedSort, setSelectedSort] = useState('popular')
-  const [viewMode, setViewMode] = useState('grid')
-  const [selectedCategory, setSelectedCategory] = useState(searchParams.get('categoria') || 'all')
+  const { user } = useAuth()
+  const favorites = useFavorites()
+  const initialSavedFilters = useMemo(() => getCatalogFilters(user?.id, {}), [user?.id])
+
+  // Estados de búsqueda y filtros persistentes
+  const [searchQuery, setSearchQuery] = useState(() => searchParams.get('q') || initialSavedFilters.searchQuery || '')
+  const [openSlotsOnly, setOpenSlotsOnly] = useState(() => initialSavedFilters.openSlotsOnly ?? false)
+  const [selectedSort, setSelectedSort] = useState(() => initialSavedFilters.selectedSort || 'popular')
+  const [viewMode, setViewMode] = useState(() => initialSavedFilters.viewMode || 'grid')
+  const [selectedCategory, setSelectedCategory] = useState(() => searchParams.get('categoria') || initialSavedFilters.selectedCategory || 'all')
   const [filterModalOpen, setFilterModalOpen] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
 
-  // Estados interactivos de Likes y Bookmarks
+  // Guardar filtros en almacenamiento persistente al cambiar
+  useEffect(() => {
+    saveCatalogFilters(user?.id, {
+      searchQuery,
+      openSlotsOnly,
+      selectedSort,
+      viewMode,
+      selectedCategory,
+    })
+  }, [user?.id, searchQuery, openSlotsOnly, selectedSort, viewMode, selectedCategory])
+
+  // Estados de Likes persistentes sincronizados con JSON Server
   const [likedMap, setLikedMap] = useState({})
-  const [bookmarkedMap, setBookmarkedMap] = useState({})
 
-  function toggleLike(id) {
-    setLikedMap((prev) => ({ ...prev, [id]: !prev[id] }))
-  }
+  useEffect(() => {
+    let active = true
+    if (!user?.id) return
 
-  function toggleBookmark(id) {
-    setBookmarkedMap((prev) => ({ ...prev, [id]: !prev[id] }))
+    getLikesByUser(user.id)
+      .then((likes) => {
+        if (!active) return
+        const map = {}
+        ;(likes || []).forEach((l) => {
+          map[l.portfolioItemId] = true
+        })
+        setLikedMap(map)
+      })
+      .catch(() => {})
+
+    return () => {
+      active = false
+    }
+  }, [user?.id])
+
+  async function toggleLike(id) {
+    const isCurrentlyLiked = Boolean(likedMap[id])
+    // Actualización optimista
+    setLikedMap((prev) => ({ ...prev, [id]: !isCurrentlyLiked }))
+
+    if (!user?.id) return
+
+    try {
+      if (isCurrentlyLiked) {
+        await unlikeArtwork(user.id, id)
+      } else {
+        await likeArtwork(user.id, id)
+      }
+    } catch (err) {
+      console.error('[ExplorePage] Error al sincronizar me gusta, revirtiendo:', err)
+      // Revertir cambio
+      setLikedMap((prev) => ({ ...prev, [id]: isCurrentlyLiked }))
+    }
   }
 
   function handleCategorySelect(id) {
@@ -459,7 +509,7 @@ export default function ExplorePage() {
           <div className={`destacadas-grid ${viewMode === 'list' ? 'is-list' : ''}`}>
             {paginatedArtists.map((artist) => {
               const isLiked = Boolean(likedMap[artist.id])
-              const isBookmarked = Boolean(bookmarkedMap[artist.id])
+              const isBookmarked = favorites.isFavorite(artist.id)
               const name = artist.displayName || artist.name || 'Artista'
               const coverImg = artist.banner || artist.avatar || artist.works?.[0]?.image
 
@@ -490,8 +540,8 @@ export default function ExplorePage() {
                       </button>
                       <button
                         type="button"
-                        className="destacada-action-btn"
-                        onClick={() => toggleBookmark(artist.id)}
+                        className={`destacada-action-btn ${isBookmarked ? 'is-bookmarked' : ''}`}
+                        onClick={() => favorites.toggle(artist.id)}
                         aria-label={`Guardar a ${name} en favoritos`}
                       >
                         <Bookmark size={14} fill={isBookmarked ? '#8B5CF6' : 'none'} aria-hidden="true" />

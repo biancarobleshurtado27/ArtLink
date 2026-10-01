@@ -10,6 +10,7 @@ import {
   FileText,
   HelpCircle,
   Lock,
+  Plus,
   Radio,
   RefreshCw,
   RotateCcw,
@@ -21,40 +22,40 @@ import {
   User,
   X,
 } from 'lucide-react'
+import useAuth from '../hooks/useAuth'
 import {
-  clearPersistedChatHistory,
-  loadPersistedChatHistory,
-  savePersistedChatHistory,
-  sendMessageToChatbot,
-} from '../services/n8nChatService'
+  addMessageToConversation,
+  createNewConversation,
+  formatChatMessage,
+  getActiveConversation,
+  saveLocalConversation,
+  updateMessageInConversation,
+} from '../services/chatPersistenceService'
+import { sendMessageToChatbot } from '../services/n8nChatService'
 import { checkN8nHealth } from '../services/n8nService'
 import artieAvatar from '../assets/artie-avatar.png'
 
-function getFormattedTime() {
-  const now = new Date()
-  const hours = String(now.getHours()).padStart(2, '0')
-  const minutes = String(now.getMinutes()).padStart(2, '0')
+function getFormattedTime(dateInput) {
+  const date = dateInput ? new Date(dateInput) : new Date()
+  const hours = String(date.getHours()).padStart(2, '0')
+  const minutes = String(date.getMinutes()).padStart(2, '0')
   return `${hours}:${minutes}`
 }
 
-const initialMessage = {
-  id: 'welcome',
-  role: 'assistant',
-  content:
-    '¡Hola, creador! Soy el Agente de IA oficial de ArtLink. Puedo ayudarte a explorar artistas, gestionar comisiones y responder dudas educativas sobre dibujo, modelado 3D, VTubers y teoría del arte.',
-  time: `Hoy a las ${getFormattedTime()}`,
-  provider: 'system',
-  suggestions: [
-    '¿Cómo solicito una comisión en ArtLink?',
-    'Buscar artistas de modelado 3D o VTuber',
-    '¿Qué es el cel shading en arte digital?',
-  ],
-  quickReplies: [
-    'Explorar artistas',
-    'Cómo pedir comisión',
-    'Teoría del color',
-  ],
-}
+const INITIAL_WELCOME_CONTENT =
+  '¡Hola, creador! Soy el Agente de IA oficial de ArtLink. Puedo ayudarte a explorar artistas, gestionar comisiones y responder dudas educativas sobre dibujo, modelado 3D, VTubers y teoría del arte.'
+
+const INITIAL_SUGGESTIONS = [
+  '¿Cómo solicito una comisión en ArtLink?',
+  'Buscar artistas de modelado 3D o VTuber',
+  '¿Qué es el cel shading en arte digital?',
+]
+
+const INITIAL_QUICK_REPLIES = [
+  'Explorar artistas',
+  'Cómo pedir comisión',
+  'Teoría del color',
+]
 
 const QUICK_PROMPTS = [
   {
@@ -85,17 +86,18 @@ const QUICK_PROMPTS = [
 
 export default function AssistantPanel({ onClose }) {
   const navigate = useNavigate()
+  const { user } = useAuth()
+  const userId = user?.id || 'guest'
+
   const closeButtonRef = useRef(null)
   const historyRef = useRef(null)
   const panelRef = useRef(null)
   const abortControllerRef = useRef(null)
-  const sessionIdRef = useRef(`session-${Date.now()}`)
-  const conversationIdRef = useRef(`artlink-chat-${Date.now()}`)
 
-  // Cargar historial previo de localStorage para conservar la conversación al recargar
-  const [messages, setMessages] = useState(() => {
-    return loadPersistedChatHistory() || [initialMessage]
-  })
+  // Estado de la conversación persistente
+  const [conversation, setConversation] = useState(null)
+  const [loadingConversation, setLoadingConversation] = useState(true)
+
   const [input, setInput] = useState('')
   const [thinking, setThinking] = useState(false)
   const [error, setError] = useState('')
@@ -106,12 +108,45 @@ export default function AssistantPanel({ onClose }) {
   const [size, setSize] = useState({ width: 410, height: 590 })
   const [position, setPosition] = useState({ x: 0, y: 0 })
 
-  // Guardar historial en almacenamiento local cada vez que cambien los mensajes
+  // Cargar o inicializar la conversación activa para este usuario / invitado
   useEffect(() => {
-    savePersistedChatHistory(messages)
-  }, [messages])
+    let active = true
+    setLoadingConversation(true)
 
-  // Verificar disponibilidad de N8N al montar
+    getActiveConversation(userId, window.location?.pathname || '/')
+      .then((convo) => {
+        if (!active) return
+
+        // Si la conversación viene completamente vacía, insertar mensaje inicial de bienvenida
+        if (!convo.messages || convo.messages.length === 0) {
+          const welcomeMsg = formatChatMessage({
+            id: 'welcome',
+            role: 'assistant',
+            content: INITIAL_WELCOME_CONTENT,
+            provider: 'system',
+            status: 'sent',
+            suggestions: INITIAL_SUGGESTIONS,
+            quickReplies: INITIAL_QUICK_REPLIES,
+          })
+          const initialized = addMessageToConversation(convo, welcomeMsg)
+          setConversation(initialized)
+        } else {
+          setConversation(convo)
+        }
+      })
+      .catch((err) => {
+        console.error('[AssistantPanel] Error al recuperar conversación:', err)
+      })
+      .finally(() => {
+        if (active) setLoadingConversation(false)
+      })
+
+    return () => {
+      active = false
+    }
+  }, [userId])
+
+  // Verificar disponibilidad del webhook de N8N
   useEffect(() => {
     let isMounted = true
     checkN8nHealth()
@@ -126,7 +161,24 @@ export default function AssistantPanel({ onClose }) {
     }
   }, [])
 
-  // Mover la ventana al arrastrar desde el encabezado
+  // Auto-scroll al final del historial al recibir mensajes o cambiar estados
+  useEffect(() => {
+    if (historyRef.current) {
+      historyRef.current.scrollTop = historyRef.current.scrollHeight
+    }
+  }, [conversation?.messages, thinking, error])
+
+  // Atajo de teclado Escape para cerrar
+  useEffect(() => {
+    closeButtonRef.current?.focus()
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') onClose?.()
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [onClose])
+
+  // Arrastrar la ventana desde el encabezado
   function handleHeaderMouseDown(e) {
     if (e.target.closest('button')) return
     e.preventDefault()
@@ -201,36 +253,24 @@ export default function AssistantPanel({ onClose }) {
     document.addEventListener('mouseup', onMouseUp)
   }
 
-  useEffect(() => {
-    closeButtonRef.current?.focus()
-    const handleKeyDown = (event) => {
-      if (event.key === 'Escape') onClose?.()
-    }
-    document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [onClose])
-
-  useEffect(() => {
-    if (historyRef.current) {
-      historyRef.current.scrollTop = historyRef.current.scrollHeight
-    }
-  }, [messages, thinking, error])
-
-  // Envío del mensaje al webhook del Agente LangChain en N8N
+  // Envío de mensaje con persistencia inmediata y actualización de estados
   async function handleSendText(text) {
     const trimmed = text.trim()
-    if (!trimmed || thinking) return
+    if (!trimmed || thinking || !conversation) return
 
-    const currentTime = getFormattedTime()
-    setMessages((current) => [
-      ...current,
-      {
-        id: `user-${Date.now()}`,
-        role: 'user',
-        content: trimmed,
-        time: currentTime,
-      },
-    ])
+    const userMessageId = `user-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`
+
+    // 1. Guardar mensaje del usuario antes de llamar a Gemini con estado 'sending'
+    const pendingUserMsg = formatChatMessage({
+      id: userMessageId,
+      role: 'user',
+      content: trimmed,
+      status: 'sending',
+    })
+
+    const withUserMsg = addMessageToConversation(conversation, pendingUserMsg)
+    setConversation(withUserMsg)
+
     setInput('')
     setError('')
     setLastFailedMessage(null)
@@ -239,9 +279,9 @@ export default function AssistantPanel({ onClose }) {
     const controller = new AbortController()
     abortControllerRef.current = controller
 
-    // Historial limitado a un máximo de 10 mensajes previos
-    const historyPayload = messages
-      .filter((m) => m.id !== 'welcome')
+    // Historial limitado a los últimos 10 turnos necesarios para el webhook
+    const historyPayload = (withUserMsg.messages || [])
+      .filter((m) => m.id !== 'welcome' && m.id !== userMessageId)
       .slice(-10)
       .map((m) => ({
         role: m.role === 'assistant' ? 'assistant' : 'user',
@@ -249,10 +289,15 @@ export default function AssistantPanel({ onClose }) {
       }))
 
     try {
+      // 2. Llamar al Agente Gemini a través de N8N
       const result = await sendMessageToChatbot({
         message: trimmed,
-        sessionId: sessionIdRef.current,
-        conversationId: conversationIdRef.current,
+        sessionId: withUserMsg.id,
+        conversationId: withUserMsg.id,
+        userId: user?.id || 'guest',
+        userName: user?.name || 'Creador',
+        role: user?.role === 'artista' ? 'artist' : 'client',
+        page: window.location?.pathname || '/',
         history: historyPayload,
         signal: controller.signal,
       })
@@ -263,44 +308,60 @@ export default function AssistantPanel({ onClose }) {
         setN8nAvailable(true)
       }
 
+      // Marcar mensaje del usuario como 'sent'
+      const conversationWithUserSent = updateMessageInConversation(withUserMsg, userMessageId, {
+        status: 'sent',
+      })
+
       if (!result.success && !result.isFallback) {
         setError(result.message || 'Error al comunicarse con el Agente de IA.')
         setLastFailedMessage(trimmed)
+        // Guardar error en la conversación
+        const errorAssistantMsg = formatChatMessage({
+          role: 'assistant',
+          content: result.message || 'No se pudo obtener respuesta del Agente.',
+          provider: 'local-fallback',
+          status: 'error',
+        })
+        const updatedWithError = addMessageToConversation(conversationWithUserSent, errorAssistantMsg)
+        setConversation(updatedWithError)
       } else {
-        setMessages((current) => [
-          ...current,
-          {
-            id: `assistant-${Date.now()}`,
-            role: 'assistant',
-            content: result.message,
-            provider: result.provider || 'gemini',
-            model: result.model || 'gemini-1.5-flash',
-            intent: result.intent,
-            knowledgeDomain: result.knowledgeDomain,
-            suggestions: result.suggestions || [],
-            quickReplies: result.quickReplies || [],
-            actions: result.actions || [],
-            requiresConfirmation: Boolean(result.requiresConfirmation),
-            isFallback: Boolean(result.isFallback),
-            time: getFormattedTime(),
-          },
-        ])
+        // 3. Guardar la respuesta exitosa de Gemini
+        const assistantMsg = formatChatMessage({
+          role: 'assistant',
+          content: result.message,
+          provider: result.provider || 'gemini',
+          status: 'sent',
+          intent: result.intent,
+          suggestions: result.suggestions || [],
+          quickReplies: result.quickReplies || [],
+          actions: result.actions || [],
+        })
+        const updatedWithAssistant = addMessageToConversation(conversationWithUserSent, assistantMsg)
+        setConversation(updatedWithAssistant)
       }
     } catch (requestError) {
       if (requestError.name === 'AbortError') {
-        setMessages((current) => [
-          ...current,
-          {
-            id: `assistant-cancelled-${Date.now()}`,
-            role: 'assistant',
-            content: 'Consulta cancelada por el usuario.',
-            isCancelled: true,
-            time: getFormattedTime(),
-          },
-        ])
+        const cancelledMsg = formatChatMessage({
+          role: 'assistant',
+          content: 'Consulta cancelada por el usuario.',
+          provider: 'system',
+          status: 'sent',
+        })
+        const updatedCancelled = addMessageToConversation(withUserMsg, cancelledMsg)
+        setConversation(updatedCancelled)
       } else {
+        // 4. Guardar errores controlados
         setError(requestError.message || 'Ocurrió un error al conectar con el Asistente.')
         setLastFailedMessage(trimmed)
+        const errorMsg = formatChatMessage({
+          role: 'assistant',
+          content: `Error al procesar: ${requestError.message}`,
+          provider: 'local-fallback',
+          status: 'error',
+        })
+        const updatedError = addMessageToConversation(withUserMsg, errorMsg)
+        setConversation(updatedError)
       }
     } finally {
       setThinking(false)
@@ -323,6 +384,33 @@ export default function AssistantPanel({ onClose }) {
       setError('')
       handleSendText(msg)
     }
+  }
+
+  // Iniciar una conversación completamente nueva
+  function handleNewConversation() {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort()
+      abortControllerRef.current = null
+    }
+    const freshConvo = createNewConversation({
+      userId,
+      page: window.location?.pathname || '/',
+    })
+    const welcomeMsg = formatChatMessage({
+      id: `welcome-${Date.now()}`,
+      role: 'assistant',
+      content: INITIAL_WELCOME_CONTENT,
+      provider: 'system',
+      status: 'sent',
+      suggestions: INITIAL_SUGGESTIONS,
+      quickReplies: INITIAL_QUICK_REPLIES,
+    })
+    const initialized = addMessageToConversation(freshConvo, welcomeMsg)
+    setConversation(initialized)
+    setInput('')
+    setError('')
+    setLastFailedMessage(null)
+    setThinking(false)
   }
 
   function handleExecuteAction(action) {
@@ -357,12 +445,8 @@ export default function AssistantPanel({ onClose }) {
     }
   }
 
-  function handleConfirmAction(confirmation) {
+  function handleConfirmAction() {
     handleSendText('Sí, confirmo la acción para continuar.')
-  }
-
-  function handleRejectAction() {
-    handleSendText('No, cancelar esta solicitud.')
   }
 
   function submit(event) {
@@ -370,26 +454,7 @@ export default function AssistantPanel({ onClose }) {
     handleSendText(input)
   }
 
-  function handleReset() {
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort()
-      abortControllerRef.current = null
-    }
-    clearPersistedChatHistory()
-    sessionIdRef.current = `session-${Date.now()}`
-    conversationIdRef.current = `artlink-chat-${Date.now()}`
-    setMessages([
-      {
-        ...initialMessage,
-        id: `welcome-${Date.now()}`,
-        time: `Hoy a las ${getFormattedTime()}`,
-      },
-    ])
-    setInput('')
-    setError('')
-    setLastFailedMessage(null)
-    setThinking(false)
-  }
+  const messagesList = conversation?.messages || []
 
   return (
     <section
@@ -404,343 +469,287 @@ export default function AssistantPanel({ onClose }) {
         transform: `translate(${position.x}px, ${position.y}px)`,
       }}
     >
-      {/* ── ZONAS INVISIBLES DE REDIMENSIONAMIENTO ── */}
-      <div
-        className="chatbot-edge-top"
-        onMouseDown={(e) => startResize(e, 'top')}
-        aria-hidden="true"
-      />
-      <div
-        className="chatbot-edge-right"
-        onMouseDown={(e) => startResize(e, 'right')}
-        aria-hidden="true"
-      />
-      <div
-        className="chatbot-edge-left"
-        onMouseDown={(e) => startResize(e, 'left')}
-        aria-hidden="true"
-      />
-      <div
-        className="chatbot-corner-tr"
-        onMouseDown={(e) => startResize(e, 'top-right')}
-        aria-hidden="true"
-      />
-      <div
-        className="chatbot-corner-tl"
-        onMouseDown={(e) => startResize(e, 'top-left')}
-        aria-hidden="true"
-      />
+      {/* Tiradores para redimensionar */}
+      <div className="resize-handle resize-top" onMouseDown={(e) => startResize(e, 'top')} />
+      <div className="resize-handle resize-right" onMouseDown={(e) => startResize(e, 'right')} />
+      <div className="resize-handle resize-bottom" onMouseDown={(e) => startResize(e, 'bottom')} />
+      <div className="resize-handle resize-left" onMouseDown={(e) => startResize(e, 'left')} />
+      <div className="resize-handle resize-top-left" onMouseDown={(e) => startResize(e, 'top-left')} />
+      <div className="resize-handle resize-top-right" onMouseDown={(e) => startResize(e, 'top-right')} />
+      <div className="resize-handle resize-bottom-left" onMouseDown={(e) => startResize(e, 'bottom-left')} />
+      <div className="resize-handle resize-bottom-right" onMouseDown={(e) => startResize(e, 'bottom-right')} />
 
-      {/* ── 1. ENCABEZADO SUPERIOR (Arrastrable) ── */}
-      <header className="artie-chat-header" onMouseDown={handleHeaderMouseDown}>
-        <div className="artie-brand-left">
-          <div className="artie-avatar-box">
-            <img src={artieAvatar} alt="Asistente de ArtLink" className="artie-avatar-img" />
-            <span
-              className={`artie-online-dot ${n8nAvailable ? 'is-active' : 'is-fallback'}`}
-              aria-label={n8nAvailable ? 'N8N en línea' : 'Modo respaldo'}
-            />
+      {/* Encabezado arrastrable */}
+      <header className="assistant-header-premium" onMouseDown={handleHeaderMouseDown}>
+        <div className="artie-avatar-frame-wrap">
+          <div className="artie-avatar-ring">
+            <img src={artieAvatar} alt="ArtLink AI Agent" className="artie-avatar-img" />
           </div>
-          <div className="artie-brand-text">
-            <div className="artie-title-row">
-              <h2 id="assistant-title" className="artie-bot-name">
-                Asistente de ArtLink
-              </h2>
-              <span className="artie-pill-badge">
-                Gemini Agent <Sparkles size={9} color="#7C3AED" aria-hidden="true" />
-              </span>
-            </div>
-            <div className="artie-sub-text">
-              <span className={`artie-status-pill ${n8nAvailable ? 'is-connected' : 'is-offline'}`}>
-                <Radio size={9} aria-hidden="true" />
-                {n8nAvailable ? 'Agente ArtLink en línea' : 'N8N no disponible (Respaldo local)'}
-              </span>
-            </div>
-          </div>
+          <span
+            className={`artie-status-ping ${n8nAvailable ? 'status-ping-online' : 'status-ping-fallback'}`}
+            title={n8nAvailable ? 'Agente Gemini Conectado' : 'Modo local de respaldo'}
+          />
         </div>
 
-        <div className="artie-header-actions">
+        <div className="assistant-header-meta">
+          <div className="artie-name-badge-row">
+            <h2 id="assistant-title" className="assistant-name-text">
+              ArtLink AI
+            </h2>
+            <span className="artie-pro-pill">Agente</span>
+          </div>
+          <p className="artie-status-desc">
+            {thinking ? 'Pensando y consultando datos...' : n8nAvailable ? 'En línea con Gemini' : 'Modo respaldo local'}
+          </p>
+        </div>
+
+        <div className="assistant-header-controls">
           <button
             type="button"
-            className="artie-icon-btn"
-            onClick={handleReset}
-            title="Reiniciar conversación"
-            aria-label="Reiniciar conversación"
+            className="artie-ctrl-btn"
+            onClick={handleNewConversation}
+            title="Nueva conversación"
+            aria-label="Nueva conversación"
           >
-            <RotateCcw size={13} aria-hidden="true" />
+            <Plus size={15} aria-hidden="true" />
           </button>
           <button
             ref={closeButtonRef}
             type="button"
-            className="artie-icon-btn artie-close-btn"
+            className="artie-ctrl-btn artie-close-btn"
             onClick={onClose}
             title="Cerrar asistente"
             aria-label="Cerrar asistente"
           >
-            <X size={14} aria-hidden="true" />
+            <X size={16} aria-hidden="true" />
           </button>
         </div>
       </header>
 
-      {/* ── 2. HISTORIAL DE MENSAJES & ACCIONES RÁPIDAS ── */}
-      <div className="artie-chat-history" ref={historyRef} aria-live="polite">
-        {messages.map((message) => {
-          const isAssistant = message.role === 'assistant'
-          return (
-            <div
-              key={message.id}
-              className={`artie-message-row ${isAssistant ? 'is-artie' : 'is-user'}`}
-            >
-              <div className="artie-msg-avatar" aria-hidden="true">
-                {isAssistant ? (
-                  <img src={artieAvatar} alt="Asistente de ArtLink" className="artie-msg-avatar-img" />
-                ) : (
-                  <User size={13} />
+      {/* Banner de aviso cuando N8N opera en contingencia */}
+      {!n8nAvailable && (
+        <div className="artie-health-warning" role="alert">
+          <AlertCircle size={13} aria-hidden="true" />
+          <span>El agente opera con respuestas locales de respaldo.</span>
+        </div>
+      )}
+
+      {/* Historial de conversación */}
+      <div ref={historyRef} className="artie-messages-viewport" tabIndex={0} aria-label="Historial de mensajes">
+        {loadingConversation ? (
+          <div className="artie-loading-box">
+            <RefreshCw size={20} className="artie-spin-icon" />
+            <p>Cargando historial guardado...</p>
+          </div>
+        ) : (
+          messagesList.map((message) => {
+            const isUser = message.role === 'user'
+
+            return (
+              <div
+                key={message.id}
+                className={`artie-chat-row ${isUser ? 'artie-row-user' : 'artie-row-assistant'} ${
+                  message.isCancelled ? 'artie-row-cancelled' : ''
+                }`}
+              >
+                {!isUser && (
+                  <div className="artie-msg-avatar-mini" aria-hidden="true">
+                    <img src={artieAvatar} alt="" />
+                  </div>
+                )}
+
+                <div className="artie-msg-bubble-wrap">
+                  <article className="artie-msg-bubble">
+                    <p className="artie-msg-text">{message.content}</p>
+
+                    {/* Sugerencias contextuales */}
+                    {Array.isArray(message.suggestions) && message.suggestions.length > 0 && (
+                      <ul className="artie-agent-suggestions-list">
+                        {message.suggestions.map((sug, i) => (
+                          <li key={i} className="artie-suggestion-item">
+                            <span>{sug}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+
+                    {/* Acciones sugeridas en la interfaz */}
+                    {Array.isArray(message.actions) && message.actions.length > 0 && (
+                      <div className="artie-agent-actions-group">
+                        {message.actions.map((act, idx) => (
+                          <button
+                            key={idx}
+                            type="button"
+                            className="artie-agent-action-pill"
+                            onClick={() => handleExecuteAction(act)}
+                          >
+                            <ExternalLink size={11} aria-hidden="true" />
+                            <span>{act.label || 'Ver en ArtLink'}</span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Respuestas rápidas interactivas (Quick Replies) */}
+                    {Array.isArray(message.quickReplies) && message.quickReplies.length > 0 && (
+                      <div className="artie-agent-quick-replies-group">
+                        {message.quickReplies.map((reply, ridx) => (
+                          <button
+                            key={ridx}
+                            type="button"
+                            className="artie-quick-reply-pill"
+                            onClick={() => handleSendText(reply)}
+                            disabled={thinking}
+                          >
+                            <span>{reply}</span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Confirmación de Seguridad */}
+                    {message.requiresConfirmation && (
+                      <div className="artie-agent-confirm-card">
+                        <div className="artie-agent-confirm-title">
+                          <ShieldCheck size={14} color="#059669" />
+                          <strong>Confirmación de Seguridad ArtLink</strong>
+                        </div>
+                        <p className="artie-agent-confirm-prompt">
+                          Esta acción requiere tu confirmación explícita para continuar.
+                        </p>
+                        <div className="artie-agent-confirm-btns">
+                          <button
+                            type="button"
+                            className="artie-confirm-yes-btn"
+                            onClick={handleConfirmAction}
+                          >
+                            <Check size={12} />
+                            <span>Confirmar</span>
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </article>
+
+                  <div className="artie-msg-time-row">
+                    <span className="artie-msg-time">{getFormattedTime(message.createdAt)}</span>
+                    {isUser && (
+                      <span className="artie-msg-check">
+                        {message.status === 'sending' ? (
+                          <RefreshCw size={10} className="artie-spin-icon" title="Enviando..." />
+                        ) : message.status === 'error' ? (
+                          <AlertCircle size={10} color="#ef4444" title="Error en el envío" />
+                        ) : (
+                          <CheckCheck size={11} aria-hidden="true" />
+                        )}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {isUser && (
+                  <div className="artie-msg-avatar-mini artie-user-avatar" aria-hidden="true">
+                    <User size={13} />
+                  </div>
                 )}
               </div>
-
-              <div className="artie-msg-bubble-wrap">
-                <article className="artie-msg-bubble">
-                  {/* Texto seguro sin renderizar HTML sin escapar */}
-                  <p className="artie-msg-text">{message.content}</p>
-
-                  {/* Sugerencias contextuales */}
-                  {Array.isArray(message.suggestions) && message.suggestions.length > 0 && (
-                    <ul className="artie-agent-suggestions-list">
-                      {message.suggestions.map((sug, i) => (
-                        <li key={i} className="artie-suggestion-item">
-                          <span>{sug}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-
-                  {/* Acciones sugeridas en la interfaz */}
-                  {Array.isArray(message.actions) && message.actions.length > 0 && (
-                    <div className="artie-agent-actions-group">
-                      {message.actions.map((act, idx) => (
-                        <button
-                          key={idx}
-                          type="button"
-                          className="artie-agent-action-pill"
-                          onClick={() => handleExecuteAction(act)}
-                        >
-                          <ExternalLink size={11} aria-hidden="true" />
-                          <span>{act.label || 'Ver en ArtLink'}</span>
-                        </button>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Respuestas rápidas interactivas (Quick Replies) */}
-                  {Array.isArray(message.quickReplies) && message.quickReplies.length > 0 && (
-                    <div className="artie-agent-quick-replies-group">
-                      {message.quickReplies.map((reply, ridx) => (
-                        <button
-                          key={ridx}
-                          type="button"
-                          className="artie-quick-reply-pill"
-                          onClick={() => handleSendText(reply)}
-                          disabled={thinking}
-                        >
-                          <span>{reply}</span>
-                        </button>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Tarjeta de Confirmación de Seguridad */}
-                  {message.requiresConfirmation && (
-                    <div className="artie-agent-confirm-card">
-                      <div className="artie-agent-confirm-title">
-                        <ShieldCheck size={14} color="#059669" />
-                        <strong>Confirmación de Seguridad ArtLink</strong>
-                      </div>
-                      <p className="artie-agent-confirm-prompt">
-                        Esta acción requiere tu confirmación explícita para continuar.
-                      </p>
-                      <div className="artie-agent-confirm-btns">
-                        <button
-                          type="button"
-                          className="artie-confirm-yes-btn"
-                          onClick={() => handleConfirmAction(message)}
-                        >
-                          <Check size={12} />
-                          <span>Confirmar</span>
-                        </button>
-                        <button
-                          type="button"
-                          className="artie-confirm-no-btn"
-                          onClick={handleRejectAction}
-                        >
-                          <X size={12} />
-                          <span>Cancelar</span>
-                        </button>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Distinción explícita de origen de la respuesta */}
-                  {message.isFallback && (
-                    <div className="artie-msg-fallback-tag">
-                      <AlertCircle size={11} aria-hidden="true" />
-                      <span>Respuesta local de respaldo; Gemini no está disponible.</span>
-                    </div>
-                  )}
-
-                  {message.provider === 'gemini' && (
-                    <div className="artie-msg-provider-tag">
-                      <Sparkles size={10} aria-hidden="true" />
-                      <span>Gemini ({message.model || 'Flash'}) vía N8N</span>
-                    </div>
-                  )}
-                </article>
-
-                <div className="artie-msg-meta">
-                  <span>{message.time || getFormattedTime()}</span>
-                  {!isAssistant && (
-                    <CheckCheck size={13} className="artie-check-icon" aria-hidden="true" />
-                  )}
-                </div>
-              </div>
-            </div>
-          )
-        })}
-
-        {/* Sugerencias Rápidas Iniciales */}
-        {messages.length === 1 && (
-          <div className="artie-quick-prompts-group">
-            {QUICK_PROMPTS.map((prompt) => {
-              const Icon = prompt.icon
-              return (
-                <button
-                  key={prompt.id}
-                  type="button"
-                  className={`artie-quick-prompt-pill ${prompt.styleClass}`}
-                  onClick={() => handleSendText(prompt.text)}
-                  disabled={thinking}
-                >
-                  <Icon size={13} aria-hidden="true" />
-                  <span>{prompt.text}</span>
-                </button>
-              )
-            })}
-          </div>
+            )
+          })
         )}
 
-        {/* Indicador de carga con botón de cancelación */}
+        {/* Indicador de pensamiento */}
         {thinking && (
-          <div className="artie-message-row is-artie">
-            <div className="artie-msg-avatar" aria-hidden="true">
-              <img src={artieAvatar} alt="Procesando" className="artie-msg-avatar-img" />
+          <div className="artie-chat-row artie-row-assistant artie-thinking-row" aria-live="polite">
+            <div className="artie-msg-avatar-mini" aria-hidden="true">
+              <img src={artieAvatar} alt="" />
             </div>
-            <div className="artie-msg-bubble-wrap">
-              <div className="artie-msg-bubble artie-thinking-bubble">
-                <span className="artie-thinking-dot dot-1" />
-                <span className="artie-thinking-dot dot-2" />
-                <span className="artie-thinking-dot dot-3" />
-                <span className="sr-only">Consultando al Agente Gemini en N8N...</span>
+            <div className="artie-thinking-bubble">
+              <div className="artie-typing-dots">
+                <span className="artie-dot dot-1" />
+                <span className="artie-dot dot-2" />
+                <span className="artie-dot dot-3" />
               </div>
-              <div className="artie-thinking-cancel-row">
-                <button
-                  type="button"
-                  className="artie-cancel-req-btn"
-                  onClick={handleCancel}
-                  title="Cancelar solicitud en curso"
-                >
-                  <Square size={10} aria-hidden="true" />
-                  <span>Cancelar</span>
-                </button>
-              </div>
+              <span className="artie-thinking-label">Consultando datos con Gemini...</span>
+              <button
+                type="button"
+                className="artie-cancel-btn"
+                onClick={handleCancel}
+                title="Detener respuesta"
+              >
+                <Square size={10} aria-hidden="true" />
+                <span>Detener</span>
+              </button>
             </div>
           </div>
         )}
 
-        {/* Error controlado con botón de reintento */}
+        {/* Indicador de error recuperable */}
         {error && (
-          <div className="artie-error-card" role="alert">
-            <div className="artie-error-header">
-              <AlertCircle size={15} color="#DC2626" aria-hidden="true" />
-              <strong>No se pudo completar la consulta</strong>
-            </div>
-            <p className="artie-error-desc">{error}</p>
-            {lastFailedMessage && (
-              <div className="artie-error-actions">
-                <button
-                  type="button"
-                  className="artie-retry-action-btn"
-                  onClick={handleRetry}
-                  disabled={thinking}
-                >
-                  <RefreshCw size={12} aria-hidden="true" />
-                  <span>Reintentar</span>
-                </button>
+          <div className="artie-chat-row artie-row-assistant" role="alert">
+            <div className="artie-error-banner">
+              <AlertCircle size={14} className="artie-error-icon" aria-hidden="true" />
+              <div className="artie-error-content">
+                <p className="artie-error-text">{error}</p>
+                {lastFailedMessage && (
+                  <button type="button" className="artie-retry-btn" onClick={handleRetry}>
+                    <RotateCcw size={12} aria-hidden="true" />
+                    <span>Reintentar envío</span>
+                  </button>
+                )}
               </div>
-            )}
+            </div>
           </div>
         )}
       </div>
 
-      {/* ── 3. CÁPSULA DE ENTRADA (Input directo + Botón Enviar) ── */}
-      <form className="artie-input-form" onSubmit={submit}>
-        <div className="artie-input-capsule">
-          <label className="sr-only" htmlFor="artie-input-field">
-            Escribe tu consulta sobre arte, creadores o comisiones
-          </label>
+      {/* Prompts Rápidos (solo si hay pocos mensajes) */}
+      {messagesList.length <= 2 && !thinking && (
+        <nav className="artie-quick-prompts-bar" aria-label="Sugerencias iniciales">
+          {QUICK_PROMPTS.map((prompt) => {
+            const Icon = prompt.icon
+            return (
+              <button
+                key={prompt.id}
+                type="button"
+                className={`prompt-pill ${prompt.styleClass}`}
+                onClick={() => handleSendText(prompt.text)}
+              >
+                <Icon size={12} aria-hidden="true" />
+                <span>{prompt.text}</span>
+              </button>
+            )
+          })}
+        </nav>
+      )}
+
+      {/* Pie con formulario de envío */}
+      <footer className="artie-composer-area">
+        <form onSubmit={submit} className="artie-composer-form">
           <input
-            id="artie-input-field"
-            className="artie-text-input"
+            type="text"
+            className="artie-input-field"
+            placeholder="Escribe tu mensaje a la IA..."
             value={input}
-            onChange={(event) => setInput(event.target.value)}
-            placeholder={
-              thinking
-                ? 'El Agente de ArtLink está procesando...'
-                : 'Escribe tu consulta sobre arte, creadores o comisiones'
-            }
+            onChange={(e) => setInput(e.target.value)}
             disabled={thinking}
             maxLength={2000}
+            aria-label="Mensaje para el agente"
           />
+          <button
+            type="submit"
+            className="artie-send-btn"
+            disabled={!input.trim() || thinking}
+            aria-label="Enviar mensaje"
+          >
+            <Send size={15} aria-hidden="true" />
+          </button>
+        </form>
 
-          {input.trim() && !thinking && (
-            <button
-              type="button"
-              className="artie-clear-btn"
-              onClick={() => setInput('')}
-              aria-label="Limpiar campo"
-            >
-              <X size={13} aria-hidden="true" />
-            </button>
-          )}
-
-          {thinking ? (
-            <button
-              type="button"
-              className="artie-send-button artie-cancel-submit-btn"
-              onClick={handleCancel}
-              title="Cancelar solicitud"
-            >
-              <Square size={13} aria-hidden="true" />
-              <span>Cancelar</span>
-            </button>
-          ) : (
-            <button
-              type="submit"
-              className="artie-send-button"
-              disabled={!input.trim()}
-              aria-label="Enviar consulta"
-            >
-              <span>Enviar</span>
-              <Send size={14} aria-hidden="true" />
-            </button>
-          )}
+        <div className="artie-security-notice">
+          <Lock size={10} aria-hidden="true" />
+          <span>Tus datos y comisiones están protegidos bajo custodia Escrow de ArtLink.</span>
         </div>
-      </form>
-
-      {/* ── 4. PIE DE PÁGINA DE SEGURIDAD ── */}
-      <div className="artie-security-footnote">
-        <Lock size={11} aria-hidden="true" />
-        <span>Agente oficial ArtLink con Gemini. Las llamadas y memoria se procesan de forma segura en N8N.</span>
-      </div>
+      </footer>
     </section>
   )
 }

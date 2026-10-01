@@ -22,6 +22,11 @@ import LoadingState from '../components/LoadingState'
 import useArtistProfile from '../hooks/useArtistProfile'
 import useAuth from '../hooks/useAuth'
 import { createRequest } from '../services/requestService'
+import {
+  getCommissionDraft,
+  removeCommissionDraft,
+  saveCommissionDraft,
+} from '../services/persistence/syncService'
 
 export default function NewRequestPage() {
   const params = useParams()
@@ -86,6 +91,32 @@ export default function NewRequestPage() {
   const [paymentMethod, setPaymentMethod] = useState('card')
   const [refFiles, setRefFiles] = useState([])
   const [termsAccepted, setTermsAccepted] = useState(true)
+
+  // Cargar borrador persistente al inicializar
+  useEffect(() => {
+    if (!artistId) return
+    const draft = getCommissionDraft(user?.id, artistId, selectedFormatId)
+    if (draft) {
+      if (draft.description) setDescription(draft.description)
+      if (draft.desiredDate) setDesiredDate(draft.desiredDate)
+      if (draft.paymentMethod) setPaymentMethod(draft.paymentMethod)
+      if (draft.selectedFormatId && draft.selectedFormatId !== selectedFormatId) {
+        setSelectedFormatId(draft.selectedFormatId)
+      }
+    }
+  }, [artistId, user?.id])
+
+  // Guardar cambios en el borrador automáticamente (sin archivos binarios)
+  useEffect(() => {
+    if (!artistId) return
+    if (!description && !desiredDate) return
+    saveCommissionDraft(user?.id, artistId, selectedFormatId, {
+      description,
+      desiredDate,
+      paymentMethod,
+      selectedFormatId,
+    })
+  }, [user?.id, artistId, selectedFormatId, description, desiredDate, paymentMethod])
 
   const [fieldErrors, setFieldErrors] = useState({})
   const [submitError, setSubmitError] = useState('')
@@ -195,6 +226,7 @@ export default function NewRequestPage() {
       } catch (reqErr) {
         request = { ...requestPayload, id: `req-${Date.now()}` }
       }
+      removeCommissionDraft(user?.id, profile.id, selectedFormat.id)
       setCreatedRequest(request)
     } catch (err) {
       setSubmitError(err.message || 'Ocurrió un error al procesar la propuesta de comisión.')
