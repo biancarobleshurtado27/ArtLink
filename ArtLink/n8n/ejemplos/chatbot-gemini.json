@@ -1,0 +1,7 @@
+{
+  "message": "¿Cómo solicito una comisión?",
+  "conversationId": "test-conversation",
+  "role": "client",
+  "page": "/explorar",
+  "history": []
+}

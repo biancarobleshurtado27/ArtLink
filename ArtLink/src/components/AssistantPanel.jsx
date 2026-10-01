@@ -1,21 +1,22 @@
 import { useEffect, useRef, useState } from 'react'
 import {
-  Check,
+  AlertCircle,
   CheckCheck,
   FileText,
   Lock,
+  Radio,
+  RefreshCw,
   RotateCcw,
   Search,
   Send,
   ShieldCheck,
   Sparkles,
+  Square,
   User,
   X,
 } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
-import { interpretNeed } from '../services/aiService'
-import Button from './Button'
-import DecorativeStar from './DecorativeStar'
+import { sendMessageToChatbot } from '../services/n8nChatService'
+import { checkN8nHealth } from '../services/n8nService'
 import artieAvatar from '../assets/artie-avatar.png'
 
 function getFormattedTime() {
@@ -29,53 +30,70 @@ const initialMessage = {
   id: 'welcome',
   role: 'assistant',
   content:
-    '¡Hola, creador! Soy Artie. ¿Buscas un ilustrador para tu proyecto, necesitas calcular el presupuesto de un encargo o resolver dudas sobre el sistema de custodia Escrow Shield?',
+    '¡Hola, creador! Soy el Asistente de ArtLink con tecnología Gemini. ¿Buscas un ilustrador para tu proyecto, necesitas calcular el presupuesto de un encargo o resolver dudas sobre el sistema de custodia Escrow Shield?',
   time: `Hoy a las ${getFormattedTime()}`,
-  mode: 'info',
+  provider: 'system',
 }
 
 const QUICK_PROMPTS = [
   {
     id: 'anime',
     icon: Search,
-    text: 'Encontrar ilustradores de anime/manga',
+    text: 'Encontrar ilustradores de anime o manga',
     styleClass: 'prompt-pill-pink',
   },
   {
     id: 'escrow',
     icon: ShieldCheck,
-    text: '¿Cómo funciona el pago seguro Escrow?',
+    text: '¿Cómo funciona el pago seguro Escrow Shield?',
     styleClass: 'prompt-pill-mint',
   },
   {
     id: 'fast',
     icon: Sparkles,
-    text: 'Artistas con cupos abiertos y entrega rápida',
+    text: 'Artistas con comisiones abiertas y entrega rápida',
     styleClass: 'prompt-pill-lavender',
   },
   {
     id: 'brief',
     icon: FileText,
-    text: 'Ayúdame a redactar el brief de mi encargo',
+    text: '¿Cómo solicito una comisión y redacto el brief?',
     styleClass: 'prompt-pill-yellow',
   },
 ]
 
 export default function AssistantPanel({ onClose }) {
-  const navigate = useNavigate()
   const closeButtonRef = useRef(null)
   const historyRef = useRef(null)
   const panelRef = useRef(null)
+  const abortControllerRef = useRef(null)
+  const conversationIdRef = useRef(`artlink-chat-${Date.now()}`)
 
   const [messages, setMessages] = useState([initialMessage])
   const [input, setInput] = useState('')
   const [thinking, setThinking] = useState(false)
   const [error, setError] = useState('')
-  const [suggestion, setSuggestion] = useState(null)
+  const [lastFailedMessage, setLastFailedMessage] = useState(null)
+  const [n8nAvailable, setN8nAvailable] = useState(true)
 
   // Estado de tamaño y posición de la ventana
   const [size, setSize] = useState({ width: 410, height: 590 })
   const [position, setPosition] = useState({ x: 0, y: 0 })
+
+  // Verificar disponibilidad de N8N al montar
+  useEffect(() => {
+    let isMounted = true
+    checkN8nHealth()
+      .then((isHealthy) => {
+        if (isMounted) setN8nAvailable(isHealthy)
+      })
+      .catch(() => {
+        if (isMounted) setN8nAvailable(false)
+      })
+    return () => {
+      isMounted = false
+    }
+  }, [])
 
   // Mover la ventana al arrastrar desde el encabezado
   function handleHeaderMouseDown(e) {
@@ -104,7 +122,7 @@ export default function AssistantPanel({ onClose }) {
     document.addEventListener('mouseup', onMouseUp)
   }
 
-  // Redimensionar suavemente por los bordes y esquinas (sin cuadros visibles)
+  // Redimensionar suavemente por los bordes y esquinas
   function startResize(e, direction) {
     e.preventDefault()
     e.stopPropagation()
@@ -128,12 +146,10 @@ export default function AssistantPanel({ onClose }) {
       let newX = startPosX
       let newY = startPosY
 
-      // Cambio vertical desde borde superior
       if (direction.includes('top')) {
         newH = Math.min(Math.max(minH, startH - deltaY), maxH)
       }
 
-      // Cambio horizontal desde borde izquierdo o derecho
       if (direction.includes('left')) {
         newW = Math.min(Math.max(minW, startW - deltaX), maxW)
       } else if (direction.includes('right')) {
@@ -167,8 +183,9 @@ export default function AssistantPanel({ onClose }) {
     if (historyRef.current) {
       historyRef.current.scrollTop = historyRef.current.scrollHeight
     }
-  }, [messages, thinking])
+  }, [messages, thinking, error])
 
+  // Envío del mensaje al webhook de N8N que conecta con Gemini
   async function handleSendText(text) {
     const trimmed = text.trim()
     if (!trimmed || thinking) return
@@ -185,27 +202,88 @@ export default function AssistantPanel({ onClose }) {
     ])
     setInput('')
     setError('')
-    setSuggestion(null)
+    setLastFailedMessage(null)
     setThinking(true)
 
+    const controller = new AbortController()
+    abortControllerRef.current = controller
+
+    // Historial limitado a un máximo de 10 mensajes previos
+    const historyPayload = messages
+      .filter((m) => m.id !== 'welcome')
+      .slice(-10)
+      .map((m) => ({
+        role: m.role === 'assistant' ? 'assistant' : 'user',
+        content: m.content,
+      }))
+
     try {
-      const result = await interpretNeed(trimmed)
-      setSuggestion(result)
-      setMessages((current) => [
-        ...current,
-        {
-          id: `assistant-${Date.now()}`,
-          role: 'assistant',
-          content: result.summary,
-          explanation: result.explanation,
-          mode: result.mode,
-          time: getFormattedTime(),
-        },
-      ])
+      const result = await sendMessageToChatbot({
+        message: trimmed,
+        conversationId: conversationIdRef.current,
+        history: historyPayload,
+        signal: controller.signal,
+      })
+
+      if (result.isFallback) {
+        setN8nAvailable(false)
+      } else {
+        setN8nAvailable(true)
+      }
+
+      if (!result.success && !result.isFallback) {
+        setError(result.message || 'Error al comunicarse con el asistente de IA.')
+        setLastFailedMessage(trimmed)
+      } else {
+        setMessages((current) => [
+          ...current,
+          {
+            id: `assistant-${Date.now()}`,
+            role: 'assistant',
+            content: result.message,
+            provider: result.provider,
+            model: result.model,
+            isFallback: Boolean(result.isFallback),
+            time: getFormattedTime(),
+          },
+        ])
+      }
     } catch (requestError) {
-      setError(requestError.message)
+      if (requestError.name === 'AbortError') {
+        setMessages((current) => [
+          ...current,
+          {
+            id: `assistant-cancelled-${Date.now()}`,
+            role: 'assistant',
+            content: 'Consulta cancelada por el usuario.',
+            isCancelled: true,
+            time: getFormattedTime(),
+          },
+        ])
+      } else {
+        setError(requestError.message || 'Ocurrió un error al conectar con el Asistente.')
+        setLastFailedMessage(trimmed)
+      }
     } finally {
       setThinking(false)
+      abortControllerRef.current = null
+    }
+  }
+
+  function handleCancel() {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort('Cancelado por el usuario')
+      abortControllerRef.current = null
+    }
+    setThinking(false)
+  }
+
+  function handleRetry() {
+    if (lastFailedMessage) {
+      const msg = lastFailedMessage
+      setLastFailedMessage(null)
+      setError('')
+      handleSendText(msg)
     }
   }
 
@@ -215,6 +293,11 @@ export default function AssistantPanel({ onClose }) {
   }
 
   function handleReset() {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort()
+      abortControllerRef.current = null
+    }
+    conversationIdRef.current = `artlink-chat-${Date.now()}`
     setMessages([
       {
         ...initialMessage,
@@ -224,26 +307,9 @@ export default function AssistantPanel({ onClose }) {
     ])
     setInput('')
     setError('')
-    setSuggestion(null)
+    setLastFailedMessage(null)
+    setThinking(false)
   }
-
-  function applyFilters() {
-    if (!suggestion) return
-    const params = new URLSearchParams()
-    const filters = suggestion.suggestedFilters
-    if (filters.disciplines[0]) params.set('discipline', filters.disciplines[0])
-    if (filters.styles[0]) params.set('style', filters.styles[0])
-    if (filters.maxPrice) params.set('maxPrice', filters.maxPrice)
-    if (filters.availability) params.set('availability', filters.availability)
-    navigate(`/explorar?${params.toString()}`)
-    onClose?.()
-  }
-
-  const hasFilters =
-    suggestion &&
-    Object.values(suggestion.suggestedFilters).some((value) =>
-      Array.isArray(value) ? value.length : value,
-    )
 
   return (
     <section
@@ -258,7 +324,7 @@ export default function AssistantPanel({ onClose }) {
         transform: `translate(${position.x}px, ${position.y}px)`,
       }}
     >
-      {/* ── ZONAS INVISIBLES DE REDIMENSIONAMIENTO (Sin cuadros ni iconos) ── */}
+      {/* ── ZONAS INVISIBLES DE REDIMENSIONAMIENTO ── */}
       <div
         className="chatbot-edge-top"
         onMouseDown={(e) => startResize(e, 'top')}
@@ -285,25 +351,31 @@ export default function AssistantPanel({ onClose }) {
         aria-hidden="true"
       />
 
-      {/* ── 1. ENCABEZADO SUPERIOR (Arrastrable para mover la ventana) ── */}
+      {/* ── 1. ENCABEZADO SUPERIOR (Arrastrable) ── */}
       <header className="artie-chat-header" onMouseDown={handleHeaderMouseDown}>
         <div className="artie-brand-left">
           <div className="artie-avatar-box">
-            <img src={artieAvatar} alt="Artie avatar" className="artie-avatar-img" />
-            <span className="artie-online-dot" aria-label="Estado en línea" />
+            <img src={artieAvatar} alt="Asistente de ArtLink" className="artie-avatar-img" />
+            <span
+              className={`artie-online-dot ${n8nAvailable ? 'is-active' : 'is-fallback'}`}
+              aria-label={n8nAvailable ? 'N8N en línea' : 'Modo respaldo'}
+            />
           </div>
           <div className="artie-brand-text">
             <div className="artie-title-row">
               <h2 id="assistant-title" className="artie-bot-name">
-                Artie
+                Asistente de ArtLink
               </h2>
               <span className="artie-pill-badge">
-                AI Bot <DecorativeStar size={8} color="#7C3AED" />
+                Gemini AI <Sparkles size={9} color="#7C3AED" aria-hidden="true" />
               </span>
             </div>
-            <span className="artie-sub-text">
-              En línea • Búsqueda de arte & gestión de encargos
-            </span>
+            <div className="artie-sub-text">
+              <span className={`artie-status-pill ${n8nAvailable ? 'is-connected' : 'is-offline'}`}>
+                <Radio size={9} aria-hidden="true" />
+                {n8nAvailable ? 'N8N + Gemini en línea' : 'N8N no disponible (Respaldo local)'}
+              </span>
+            </div>
           </div>
         </div>
 
@@ -341,7 +413,7 @@ export default function AssistantPanel({ onClose }) {
             >
               <div className="artie-msg-avatar" aria-hidden="true">
                 {isAssistant ? (
-                  <img src={artieAvatar} alt="Artie" className="artie-msg-avatar-img" />
+                  <img src={artieAvatar} alt="Asistente de ArtLink" className="artie-msg-avatar-img" />
                 ) : (
                   <User size={13} />
                 )}
@@ -350,8 +422,20 @@ export default function AssistantPanel({ onClose }) {
               <div className="artie-msg-bubble-wrap">
                 <article className="artie-msg-bubble">
                   <p className="artie-msg-text">{message.content}</p>
-                  {message.explanation && (
-                    <small className="artie-msg-explanation">{message.explanation}</small>
+
+                  {/* Distinción explícita de origen de la respuesta */}
+                  {message.isFallback && (
+                    <div className="artie-msg-fallback-tag">
+                      <AlertCircle size={11} aria-hidden="true" />
+                      <span>Respuesta local de respaldo; Gemini no está disponible.</span>
+                    </div>
+                  )}
+
+                  {message.provider === 'gemini' && (
+                    <div className="artie-msg-provider-tag">
+                      <Sparkles size={10} aria-hidden="true" />
+                      <span>Gemini ({message.model || 'Flash'}) vía N8N</span>
+                    </div>
                   )}
                 </article>
 
@@ -366,7 +450,7 @@ export default function AssistantPanel({ onClose }) {
           )
         })}
 
-        {/* Sugerencias Rápidas / Pills si solo está el mensaje de bienvenida */}
+        {/* Sugerencias Rápidas */}
         {messages.length === 1 && (
           <div className="artie-quick-prompts-group">
             {QUICK_PROMPTS.map((prompt) => {
@@ -377,6 +461,7 @@ export default function AssistantPanel({ onClose }) {
                   type="button"
                   className={`artie-quick-prompt-pill ${prompt.styleClass}`}
                   onClick={() => handleSendText(prompt.text)}
+                  disabled={thinking}
                 >
                   <Icon size={13} aria-hidden="true" />
                   <span>{prompt.text}</span>
@@ -386,51 +471,56 @@ export default function AssistantPanel({ onClose }) {
           </div>
         )}
 
-        {/* Indicador de respuesta en curso */}
+        {/* Indicador de carga con botón de cancelación */}
         {thinking && (
           <div className="artie-message-row is-artie">
             <div className="artie-msg-avatar" aria-hidden="true">
-              <img src={artieAvatar} alt="Artie pensando" className="artie-msg-avatar-img" />
+              <img src={artieAvatar} alt="Procesando" className="artie-msg-avatar-img" />
             </div>
             <div className="artie-msg-bubble-wrap">
               <div className="artie-msg-bubble artie-thinking-bubble">
                 <span className="artie-thinking-dot dot-1" />
                 <span className="artie-thinking-dot dot-2" />
                 <span className="artie-thinking-dot dot-3" />
-                <span className="sr-only">Artie está pensando...</span>
+                <span className="sr-only">Consultando a Gemini vía N8N...</span>
+              </div>
+              <div className="artie-thinking-cancel-row">
+                <button
+                  type="button"
+                  className="artie-cancel-req-btn"
+                  onClick={handleCancel}
+                  title="Cancelar solicitud en curso"
+                >
+                  <Square size={10} aria-hidden="true" />
+                  <span>Cancelar</span>
+                </button>
               </div>
             </div>
           </div>
         )}
 
-        {/* Tarjeta de filtros sugeridos por la IA */}
-        {suggestion && hasFilters && (
-          <div className="artie-suggestion-card">
-            <strong>Filtros sugeridos para tu búsqueda</strong>
-            <div className="artie-filter-tags">
-              {suggestion.suggestedFilters.disciplines.map((item) => (
-                <span key={item}>{item}</span>
-              ))}
-              {suggestion.suggestedFilters.styles.map((item) => (
-                <span key={item}>{item}</span>
-              ))}
-              {suggestion.suggestedFilters.maxPrice && (
-                <span>Hasta ${suggestion.suggestedFilters.maxPrice}</span>
-              )}
-              {suggestion.suggestedFilters.availability && (
-                <span>{suggestion.suggestedFilters.availability}</span>
-              )}
-            </div>
-            <Button type="button" variant="secondary" onClick={applyFilters}>
-              <Check size={14} aria-hidden="true" /> Ver artistas con estos filtros
-            </Button>
-          </div>
-        )}
-
+        {/* Error controlado con botón de reintento */}
         {error && (
-          <p className="form-message form-error" role="alert">
-            {error}
-          </p>
+          <div className="artie-error-card" role="alert">
+            <div className="artie-error-header">
+              <AlertCircle size={15} color="#DC2626" aria-hidden="true" />
+              <strong>No se pudo completar la consulta</strong>
+            </div>
+            <p className="artie-error-desc">{error}</p>
+            {lastFailedMessage && (
+              <div className="artie-error-actions">
+                <button
+                  type="button"
+                  className="artie-retry-action-btn"
+                  onClick={handleRetry}
+                  disabled={thinking}
+                >
+                  <RefreshCw size={12} aria-hidden="true" />
+                  <span>Reintentar</span>
+                </button>
+              </div>
+            )}
+          </div>
         )}
       </div>
 
@@ -438,18 +528,23 @@ export default function AssistantPanel({ onClose }) {
       <form className="artie-input-form" onSubmit={submit}>
         <div className="artie-input-capsule">
           <label className="sr-only" htmlFor="artie-input-field">
-            Escribe tu consulta sobre arte, creadores o presupuesto
+            Escribe tu consulta sobre arte, creadores o comisiones
           </label>
           <input
             id="artie-input-field"
             className="artie-text-input"
             value={input}
             onChange={(event) => setInput(event.target.value)}
-            placeholder="Escribe tu consulta sobre arte, creadores o presupuesto"
+            placeholder={
+              thinking
+                ? 'Esperando respuesta de Gemini...'
+                : 'Escribe tu consulta sobre arte, creadores o comisiones'
+            }
             disabled={thinking}
+            maxLength={2000}
           />
 
-          {input.trim() && (
+          {input.trim() && !thinking && (
             <button
               type="button"
               className="artie-clear-btn"
@@ -460,22 +555,34 @@ export default function AssistantPanel({ onClose }) {
             </button>
           )}
 
-          <button
-            type="submit"
-            className="artie-send-button"
-            disabled={thinking || !input.trim()}
-            aria-label="Enviar consulta"
-          >
-            <span>Enviar</span>
-            <Send size={14} aria-hidden="true" />
-          </button>
+          {thinking ? (
+            <button
+              type="button"
+              className="artie-send-button artie-cancel-submit-btn"
+              onClick={handleCancel}
+              title="Cancelar solicitud"
+            >
+              <Square size={13} aria-hidden="true" />
+              <span>Cancelar</span>
+            </button>
+          ) : (
+            <button
+              type="submit"
+              className="artie-send-button"
+              disabled={!input.trim()}
+              aria-label="Enviar consulta"
+            >
+              <span>Enviar</span>
+              <Send size={14} aria-hidden="true" />
+            </button>
+          )}
         </div>
       </form>
 
       {/* ── 4. PIE DE PÁGINA DE SEGURIDAD ── */}
       <div className="artie-security-footnote">
         <Lock size={11} aria-hidden="true" />
-        <span>Artie te ayuda a encontrar creadores con transacciones 100% protegidas por Escrow Shield</span>
+        <span>Asistente oficial con Gemini. Las claves y llamadas se procesan de forma segura en N8N.</span>
       </div>
     </section>
   )

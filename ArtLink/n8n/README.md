@@ -1,93 +1,217 @@
-# Integración N8N con Notificaciones Gmail - ArtLink
+# Integración N8N con Chatbot Gemini e IA - ArtLink
 
-Este directorio contiene los flujos de automatización de N8N con integración de **notificaciones por correo electrónico (Gmail)** para el proyecto ArtLink.
+Este directorio contiene los flujos de automatización de N8N para el proyecto ArtLink, incluyendo la integración del **Chatbot con Inteligencia Artificial Gemini** y los flujos con notificaciones por correo Gmail.
 
 ---
 
-## 1. Arquitectura de Integración con Gmail
+## 1. Arquitectura del Chatbot con Gemini
 
 ```text
-[ ArtLink Frontend ]
-         |
-         v  HTTP POST
-  [ Webhook N8N (http://localhost:5678) ]
-         |
-    +----+----------------------------------+
-    |                                       |
-    v                                       v
-[ Flujo 1: Registro de Usuario ]    [ Flujo 2: Solicitud de Comisión ]
-   1. Validar nombre/correo/clave      1. Validar descripción (>= 20 chars)
-   2. Consultar /users en DB           2. Consultar /artistProfiles/:id
-   3. ¿Correo Duplicado? -> 409        3. ¿Presupuesto < Tarifa Base? -> 400
-   4. Insertar en /users de DB         4. Insertar en /requests (Escrow)
-   5. Enviar Bienvenida por Gmail      5. Enviar Alerta al Artista por Gmail
-   6. Responder 201 Created al Web     6. Responder 201 Created al Web
+React Chatbot (Frontend)
+    │
+    ▼ HTTP POST (sin API keys en el navegador)
+Webhook de N8N (/artlink/chatbot-gemini)
+    │
+    ▼
+Validación y Sanitización del Mensaje
+(1-2000 chars, max 10 historial, anti-datos sensibles)
+    │
+    ▼ HTTP Request seguro
+API Oficial de Google Gemini (v1beta)
+(Utiliza GEMINI_API_KEY y GEMINI_MODEL desde el entorno de N8N)
+    │
+    ▼
+Normalización y Manejo Controlado de Errores
+(400, 401, 403, 429, timeout, respuesta vacía)
+    │
+    ▼ Respond to Webhook (JSON unificado)
+React Chatbot muestra la respuesta
+(o mensaje de respaldo local si N8N está apagado)
+```
+
+> **Principio de Seguridad Estricta:**
+> La clave `GEMINI_API_KEY` reside **únicamente en N8N**. React nunca se conecta directamente a Gemini ni contiene la API key en el código, `.env`, localStorage, `db.json` ni Git.
+
+---
+
+## 2. Flujo de N8N: `flujo-chatbot-gemini.json`
+
+- **Nombre del Workflow:** `ArtLink - Chatbot con Gemini`
+- **Ruta del Webhook:** `POST /webhook/artlink/chatbot-gemini` (o `/webhook-test/artlink/chatbot-gemini` en modo ejecución de prueba interactiva).
+- **Parámetros Validados:**
+  - `message`: Obligatorio, longitud entre 1 y 2000 caracteres.
+  - `history`: Historial previo recortado a los últimos 10 mensajes.
+  - Detección y filtrado de datos sensibles (contraseñas, tokens, tarjetas de crédito).
+- **Prompt del Sistema Configurado:**
+  > Eres el asistente oficial de ArtLink, una plataforma para artistas digitales y clientes.
+  > Responde en español claro y breve. Ayuda únicamente con: explorar artistas, filtrar comisiones, presupuestos Escrow Shield, seguimiento y soporte.
+  > No inventes artistas, precios ni políticas. No solicites contraseñas ni datos bancarios.
+- **Configuración de Gemini:**
+  - Endpoint: `https://generativelanguage.googleapis.com/v1beta/models/{{$env.GEMINI_MODEL}}:generateContent?key={{$env.GEMINI_API_KEY}}`
+  - Temperatura: `0.4`
+  - Max Output Tokens: `800`
+- **Formato Normalizado de Respuesta:**
+  ```json
+  {
+    "success": true,
+    "conversationId": "artlink-chat-123",
+    "message": "Respuesta del asistente.",
+    "provider": "gemini",
+    "model": "gemini-1.5-flash"
+  }
+  ```
+
+---
+
+## 3. Guía Paso a Paso: Configurar e Iniciar N8N
+
+### Paso 1: Configurar Variables de Entorno en N8N
+
+Para que N8N acceda a tu API Key de Gemini de forma segura sin exponerla en el Frontend, define las variables antes de iniciar N8N:
+
+**En Windows (PowerShell):**
+```powershell
+$env:GEMINI_API_KEY="TU_CLAVE_SECRETA_DE_GEMINI"
+$env:GEMINI_MODEL="gemini-1.5-flash"
+n8n start
+```
+
+**En Windows (CMD):**
+```cmd
+set GEMINI_API_KEY=TU_CLAVE_SECRETA_DE_GEMINI
+set GEMINI_MODEL=gemini-1.5-flash
+n8n start
+```
+
+**En Linux / macOS:**
+```bash
+export GEMINI_API_KEY="TU_CLAVE_SECRETA_DE_GEMINI"
+export GEMINI_MODEL="gemini-1.5-flash"
+n8n start
+```
+
+> **Modelo Recomendado:** Puedes usar `gemini-1.5-flash` o `gemini-2.0-flash` para respuestas rápidas y de alta calidad.
+
+---
+
+### Paso 2: Importar el Workflow en N8N
+
+Tienes dos formas de importar el flujo:
+
+#### Opción A: Desde la Interfaz Web de N8N (Recomendada)
+1. Abre tu navegador en `http://localhost:5678`.
+2. En el menú lateral, haz clic en **Workflows**.
+3. Haz clic en **Add Workflow** -> botón de 3 puntos `...` -> **Import from File**.
+4. Selecciona el archivo:
+   `n8n/flujo-chatbot-gemini.json`
+5. Haz clic en **Save** para guardarlo.
+
+#### Opción B: Mediante la CLI de N8N
+```powershell
+n8n import:workflow --input="n8n/flujo-chatbot-gemini.json"
 ```
 
 ---
 
-## 2. Flujos Actualizados con Notificaciones Gmail
+### Paso 3: Activar el Workflow
 
-### Flujo 1: `flujo-registro-usuario.json`
-- **Ruta Webhook:** `POST /webhook-test/artlink-registro-usuario` (Modo Prueba) o `POST /webhook/artlink-registro-usuario` (Modo Producción).
-- **Acción Gmail:** Al registrar exitosamente un nuevo usuario, envía un correo HTML de bienvenida con diseño de ArtLink, informando las garantías de custodia Escrow y un botón de acceso directo a la plataforma.
-
-### Flujo 2: `flujo-solicitud-comision.json`
-- **Ruta Webhook:** `POST /webhook-test/artlink-solicitud-comision` o `POST /webhook/artlink-solicitud-comision`.
-- **Acción Gmail:** Al validarse que el presupuesto cumple la tarifa base del artista y guardarse en base de datos, envía una alerta al correo del artista con la tabla detallada del encargo (presupuesto retenido en custodia, fecha deseada, descripción y botón para revisar en su panel).
-
-> **Nota de Resiliencia:** Los nodos de envío de correo cuentan con `continueOnFail: true`. Esto garantiza que los flujos siempre respondan con éxito (`201 Created`) a la aplicación web, incluso mientras se terminan de configurar las credenciales de Gmail en N8N.
+1. Abre el workflow importado **ArtLink - Chatbot con Gemini** en N8N.
+2. En la esquina superior derecha, activa el interruptor **Active** (debe ponerse en verde).
+3. Esto deja activo el webhook de producción permanente en:
+   `http://localhost:5678/webhook/artlink/chatbot-gemini`
 
 ---
 
-## 3. Configuración de Credenciales de Gmail en N8N (Paso a Paso)
+### Paso 4: Obtener y Verificar la URL del Webhook
 
-La forma más rápida, recomendada y libre de errores para conectar Gmail en N8N local es mediante **SMTP con Contraseña de Aplicación de Google** (no requiere configurar Google Cloud Console):
+En el nodo **Webhook Chatbot ArtLink**:
+- En modo activo (producción):
+  `http://localhost:5678/webhook/artlink/chatbot-gemini`
+- En modo prueba interactivo (al pulsar *Test step* o *Execute workflow*):
+  `http://localhost:5678/webhook-test/artlink/chatbot-gemini`
 
-### Paso A: Generar Contraseña de Aplicación en Google
-1. Ve a tu cuenta de Google: [https://myaccount.google.com/security](https://myaccount.google.com/security).
-2. Asegúrate de tener activada la **Verificación en dos pasos**.
-3. En la barra de búsqueda de tu cuenta de Google escribe: **Contraseñas de aplicaciones**.
-4. En nombre de la aplicación escribe: `ArtLink N8N` y haz clic en **Crear**.
-5. Google te mostrará una clave de 16 letras (por ejemplo: `abcd efgh ijkl mnop`). Cópiala.
-
-### Paso B: Configurar la Credencial en N8N
-1. En N8N (`http://localhost:5678`), ve a la barra lateral izquierda y haz clic en **Credentials**.
-2. Haz clic en **Add Credential** y busca **SMTP**.
-3. Llena los siguientes campos:
-   - **User:** Tu dirección de correo de Gmail (ejemplo: `tu-correo@gmail.com`).
-   - **Password:** La contraseña de 16 letras generada en el Paso A (sin espacios).
-   - **Host:** `smtp.gmail.com`
-   - **Port:** `465`
-   - **SSL/TLS:** Activado (`ON`).
-4. Haz clic en **Save**.
-
-### Paso C: Asignar la Credencial a los Nodos del Flujo
-1. Abre el workflow en N8N.
-2. Haz doble clic en el nodo **Enviar Bienvenida por Gmail** (o **Enviar Alerta por Gmail**).
-3. En el desplegable **Credential for SMTP**, selecciona la credencial guardada.
-4. Guarda el workflow (**Save**).
+El archivo de servicio de React `src/services/n8nChatService.js` toma la base desde `.env`:
+```env
+VITE_N8N_WEBHOOK_BASE_URL=http://localhost:5678/webhook
+VITE_USE_GEMINI_WORKFLOW=true
+```
 
 ---
 
-## 4. Reimportar los Workflows Actualizados en N8N
+## 4. Pruebas del Webhook con cURL y PowerShell
 
-1. Abre N8N en `http://localhost:5678`.
-2. En la sección **Workflows**, selecciona **Import from File**.
-3. Selecciona:
-   - `n8n/flujo-registro-usuario.json`
-   - `n8n/flujo-solicitud-comision.json`
-4. Activa el interruptor **Active** (esquina superior derecha) para habilitar la recepción permanente de webhooks.
+Puedes probar directamente el funcionamiento del endpoint con el archivo de prueba incluido:
+
+### Con cURL (CMD o Bash):
+```bash
+curl -X POST "http://localhost:5678/webhook/artlink/chatbot-gemini" \
+  -H "Content-Type: application/json" \
+  -d @n8n/ejemplos/chatbot-gemini.json
+```
+
+### Con PowerShell:
+```powershell
+$body = Get-Content n8n/ejemplos/chatbot-gemini.json -Raw
+Invoke-RestMethod -Uri "http://localhost:5678/webhook/artlink/chatbot-gemini" -Method Post -Body $body -ContentType "application/json"
+```
+
+### Casos de Prueba Verificados:
+1. **Mensaje válido:** Retorna `{ success: true, message: "...", provider: "gemini", model: "..." }`.
+2. **Mensaje vacío:** Retorna HTTP 400 `{ success: false, error: "VALIDATION_ERROR", message: "El mensaje no puede estar vacío..." }`.
+3. **Mensaje mayor a 2000 caracteres:** Retorna HTTP 400 indicando exceso de longitud.
+4. **Datos sensibles (contraseña/tarjeta):** Retorna advertencia de seguridad sin enviar nada a Gemini.
+5. **API Key inválida o cuota 429:** El nodo de normalización captura el error de Google y devuelve un mensaje controlado para el usuario sin exponer la clave.
+6. **N8N apagado:** React captura la ausencia de red y muestra de inmediato:
+   `Respuesta local de respaldo; Gemini no está disponible.`
 
 ---
 
-## 5. Pruebas con la Aplicación Web
+## 5. Configuración de CORS y Proxy
 
-Con los servidores activos:
-- Frontend: `http://localhost:5173`
-- JSON Server: `http://localhost:3000`
-- N8N: `http://localhost:5678`
+Si tu navegador bloquea las solicitudes entre orígenes (origen `http://localhost:5173` hacia `http://localhost:5678`), puedes:
 
-1. Ingresa a `http://localhost:5173/registro`.
-2. Registra un nuevo usuario con un correo real de Gmail al que tengas acceso.
-3. El frontend enviará los datos al webhook de N8N, N8N validará que no esté duplicado, lo insertará en `db.json`, enviará el correo HTML de bienvenida y responderá a la aplicación.
+1. **Usar el Proxy de Vite ya configurado:**
+   En `.env`, configura:
+   ```env
+   VITE_N8N_WEBHOOK_BASE_URL=/n8n-proxy/webhook
+   ```
+   Vite redirige automáticamente `/n8n-proxy` a `http://localhost:5678` sin problemas de CORS.
+2. **Habilitar CORS en N8N:**
+   Al iniciar N8N, puedes establecer:
+   ```powershell
+   $env:N8N_DEFAULT_BINARY_DATA_MODE="default"
+   $env:WEBHOOK_URL="http://localhost:5678/"
+   ```
+   N8N responderá automáticamente a las solicitudes `OPTIONS` preflight del navegador.
+
+---
+
+## 6. Manejo de Errores y Cuotas
+
+| Código / Escenario | Causa | Mensaje presentado al usuario |
+|---|---|---|
+| **400** | Modelo inválido o formato incorrecto | "La solicitud enviada no es válida para el modelo de IA o el modelo configurado no existe." |
+| **401 / 403** | GEMINI_API_KEY no configurada o expirada | "Error de autenticación con la API de Gemini. Verifica la GEMINI_API_KEY en N8N." |
+| **429** | Límite de cuota gratuita de Google Gemini | "Límite de cuota excedido para el servicio de IA. Intenta de nuevo en unos minutos." |
+| **500 / Timeout** | Servidor de Google no responde a tiempo | "El servicio de Gemini no respondió a tiempo o no está disponible temporalmente." |
+| **N8N Apagado** | Conexión rechazada (`ERR_CONNECTION_REFUSED`) | "Respuesta local de respaldo; Gemini no está disponible." |
+
+---
+
+## 7. Activación del Modo Respaldo (Fallback)
+
+Si deseas forzar el modo de respaldo local para pruebas o demostraciones sin conexión:
+En tu archivo `.env`:
+```env
+VITE_USE_GEMINI_WORKFLOW=false
+```
+El chatbot responderá con:
+`Respuesta local de respaldo; Gemini no está disponible.`
+sin realizar llamadas externas.
+
+---
+
+## 8. Otros Flujos Disponibles en este Directorio
+
+- **`flujo-registro-usuario.json`:** Registro con validación anti-duplicados y envío de correo de bienvenida HTML vía Gmail.
+- **`flujo-solicitud-comision.json`:** Creación de comisiones con cálculo de tarifa base, retención de fondos Escrow Shield y alerta por correo al artista.

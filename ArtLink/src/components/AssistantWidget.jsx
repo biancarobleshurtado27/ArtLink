@@ -27,10 +27,10 @@ export default function AssistantWidget() {
           onClick={() => setOpen((visible) => !visible)}
           aria-expanded={open}
           aria-controls="assistant-panel"
-          aria-label={open ? 'Cerrar Asistente ArtLink' : 'Abrir Asistente ArtLink'}
+          aria-label={open ? 'Cerrar Asistente de ArtLink' : 'Abrir Asistente de ArtLink'}
         >
           <Bot size={21} aria-hidden="true" />
-          <span>Asistente ArtLink</span>
+          <span>Asistente de ArtLink</span>
         </button>
         {open && (
           <div id="assistant-panel">
