@@ -586,6 +586,331 @@ export default function MessagesPage() {
     })
   }, [requests])
 
+  // Conversación seleccionada activa (con fallback garantizado)
+  const activeConvo =
+    conversations.find((c) => c.id === selectedConvoId) ||
+    conversations[0] ||
+    DEFAULT_CONVERSATIONS[0]
+
+  // Color de tema aleatorio por chat
+  const activeTheme = getChatTheme(activeConvo?.id || 'default')
+
+  // Auto-scroll al último mensaje al cambiar de chat o recibir mensaje
+  useEffect(() => {
+    if (chatSettings.autoScroll && typeof threadEndRef.current?.scrollIntoView === 'function') {
+      threadEndRef.current.scrollIntoView({ behavior: 'smooth' })
+    }
+  }, [conversations, selectedConvoId, chatSettings.autoScroll])
+
+  // Filtrar conversaciones de la bandeja (búsqueda unificada y filtro de órdenes activas)
+  const filteredConversations = conversations.filter((c) => {
+    if (chatSettings.onlyActiveOrders && !c.isBot) {
+      if (c.tag?.toLowerCase().includes('finalizado')) return false
+    }
+
+    const q = sidebarSearch.trim().toLowerCase()
+    if (!q) return true
+
+    const matchName = c.artist?.name?.toLowerCase().includes(q)
+    const matchUser = c.artist?.username?.toLowerCase().includes(q)
+    const matchTitle = c.title?.toLowerCase().includes(q)
+    const matchSubtitle = c.subtitle?.toLowerCase().includes(q)
+    const matchTag = c.tag?.toLowerCase().includes(q)
+    const matchOrder = c.orderId?.toLowerCase().includes(q)
+    const matchMsg = c.messages?.some((m) => (m.text || '').toLowerCase().includes(q))
+    return matchName || matchUser || matchTitle || matchSubtitle || matchTag || matchOrder || matchMsg
+  })
+
+  // Seleccionar archivos reales desde el equipo
+  function handleFileSelect(e) {
+    const files = Array.from(e.target.files || [])
+    if (files.length === 0) return
+
+    files.forEach((file) => {
+      const reader = new FileReader()
+      reader.onload = () => {
+        setAttachments((prev) => [
+          ...prev,
+          {
+            id: `att-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+            name: file.name,
+            size: file.size,
+            type: file.type,
+            dataUrl: reader.result,
+            url: reader.result,
+          },
+        ])
+      }
+      reader.readAsDataURL(file)
+    })
+
+    e.target.value = ''
+  }
+
+  // Quitar archivo adjunto de la tira previa
+  function removeAttachment(index) {
+    setAttachments((prev) => prev.filter((_, i) => i !== index))
+  }
+
+  // Enviar mensaje en el chat
+  async function handleSendMessage(e) {
+    if (e && e.preventDefault) e.preventDefault()
+    const text = messageInput.trim()
+    if (!text && attachments.length === 0) return
+    if (isBotThinking) return
+
+    const newMsg = {
+      id: `msg-${Date.now()}`,
+      sender: 'me',
+      text: text,
+      time: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
+      status: 'sent',
+      attachments: [...attachments],
+    }
+
+    const currentConvoId = activeConvo.id
+    const isTargetBot = Boolean(activeConvo.isBot)
+
+    setConversations((prev) =>
+      prev.map((c) => {
+        if (c.id === currentConvoId) {
+          return {
+            ...c,
+            messages: [...(c.messages || []), newMsg],
+            preview: text || (attachments[0]?.name ? `Archivo: ${attachments[0].name}` : 'Archivo adjunto'),
+            time: newMsg.time,
+          }
+        }
+        return c
+      })
+    )
+
+    setMessageInput('')
+    setAttachments([])
+
+    if (chatSettings.soundEnabled) {
+      playNotificationSound()
+    }
+
+    if (isTargetBot) {
+      setIsBotThinking(true)
+      try {
+        const aiResponse = await interpretNeed(text)
+        const botMsg = {
+          id: `bot-reply-${Date.now()}`,
+          sender: 'artist',
+          text: aiResponse?.summary || 'He recibido tu mensaje. ¿Hay algo específico en lo que pueda orientarte sobre encargos o presupuestos?',
+          explanation: aiResponse?.explanation,
+          suggestedFilters: aiResponse?.suggestedFilters,
+          time: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
+        }
+
+        setConversations((prev) =>
+          prev.map((c) => {
+            if (c.id === currentConvoId) {
+              return {
+                ...c,
+                messages: [...(c.messages || []), botMsg],
+                preview: botMsg.text.length > 40 ? botMsg.text.slice(0, 40) + '...' : botMsg.text,
+                time: botMsg.time,
+              }
+            }
+            return c
+          })
+        )
+        if (chatSettings.soundEnabled) {
+          playNotificationSound()
+        }
+      } catch (err) {
+        console.error('Error con Artie AI:', err)
+        const fallbackMsg = {
+          id: `bot-fallback-${Date.now()}`,
+          sender: 'artist',
+          text: 'Puedo orientarte con presupuestos, protección de custodia Escrow Shield o recomendarte ilustradores en nuestro catálogo.',
+          time: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
+        }
+        setConversations((prev) =>
+          prev.map((c) => {
+            if (c.id === currentConvoId) {
+              return {
+                ...c,
+                messages: [...(c.messages || []), fallbackMsg],
+              }
+            }
+            return c
+          })
+        )
+      } finally {
+        setIsBotThinking(false)
+      }
+    }
+  }
+
+  // Enviar prompt predeterminado al Asistente Artie
+  async function handleSendTextMessage(text) {
+    if (!text || isBotThinking) return
+    const newMsg = {
+      id: `msg-${Date.now()}`,
+      sender: 'me',
+      text: text,
+      time: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
+      status: 'sent',
+    }
+
+    const currentConvoId = activeConvo.id
+    const isTargetBot = Boolean(activeConvo.isBot)
+
+    setConversations((prev) =>
+      prev.map((c) => {
+        if (c.id === currentConvoId) {
+          return {
+            ...c,
+            messages: [...(c.messages || []), newMsg],
+            preview: text,
+            time: newMsg.time,
+          }
+        }
+        return c
+      })
+    )
+
+    if (chatSettings.soundEnabled) {
+      playNotificationSound()
+    }
+
+    if (isTargetBot) {
+      setIsBotThinking(true)
+      try {
+        const aiResponse = await interpretNeed(text)
+        const botMsg = {
+          id: `bot-reply-${Date.now()}`,
+          sender: 'artist',
+          text: aiResponse?.summary || 'Entendido. Te muestro las mejores sugerencias para este requerimiento.',
+          explanation: aiResponse?.explanation,
+          suggestedFilters: aiResponse?.suggestedFilters,
+          time: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
+        }
+
+        setConversations((prev) =>
+          prev.map((c) => {
+            if (c.id === currentConvoId) {
+              return {
+                ...c,
+                messages: [...(c.messages || []), botMsg],
+                preview: botMsg.text.length > 40 ? botMsg.text.slice(0, 40) + '...' : botMsg.text,
+                time: botMsg.time,
+              }
+            }
+            return c
+          })
+        )
+        if (chatSettings.soundEnabled) {
+          playNotificationSound()
+        }
+      } catch (err) {
+        console.error('Error con Artie AI:', err)
+      } finally {
+        setIsBotThinking(false)
+      }
+    }
+  }
+
+  // Confirmar aprobación del hito de boceto
+  function handleApproveMilestone() {
+    setConversations((prev) =>
+      prev.map((c) => {
+        if (c.id === activeConvo.id) {
+          const updatedMilestones = (c.milestones || []).map((m) => {
+            if (m.id === 2) return { ...m, status: 'done', badge: 'Aprobado' }
+            if (m.id === 3) return { ...m, status: 'current', badge: 'En progreso' }
+            return m
+          })
+
+          const approvalNotice = {
+            id: `msg-${Date.now()}`,
+            sender: 'me',
+            text: '¡Boceto de la Fase 2 aprobado con éxito! Se autorizó el inicio de la etapa de Color & Sombreado bajo la custodia Escrow.',
+            time: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
+            status: 'read',
+          }
+
+          return {
+            ...c,
+            phase: 'FASE 3 DE 4: COLOR & SOMBREADO',
+            milestones: updatedMilestones,
+            messages: [...(c.messages || []), approvalNotice],
+          }
+        }
+        return c
+      })
+    )
+    setShowApprovalConfirm(false)
+  }
+
+  // Enviar solicitud de ajustes en boceto
+  function handleSubmitAdjustments(e) {
+    if (e && e.preventDefault) e.preventDefault()
+    if (!adjustText.trim()) return
+
+    const adjustMsg = {
+      id: `msg-${Date.now()}`,
+      sender: 'me',
+      text: `Solicitud de Ajustes en Boceto: ${adjustText.trim()}`,
+      time: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
+      status: 'sent',
+    }
+
+    setConversations((prev) =>
+      prev.map((c) => {
+        if (c.id === activeConvo.id) {
+          return {
+            ...c,
+            messages: [...(c.messages || []), adjustMsg],
+          }
+        }
+        return c
+      })
+    )
+    setAdjustText('')
+    setShowAdjustModal(false)
+  }
+
+  // Marcar todos los chats como leídos
+  function handleMarkAllAsRead() {
+    setConversations((prev) =>
+      prev.map((c) => ({
+        ...c,
+        unread: 0,
+      }))
+    )
+    setShowInboxSettings(false)
+  }
+
+  // Reiniciar conversación del bot Artie
+  function handleResetArtieChat() {
+    setConversations((prev) =>
+      prev.map((c) => {
+        if (c.id === 'convo-artie') {
+          return {
+            ...c,
+            messages: [
+              {
+                id: 'bot-welcome',
+                sender: 'artist',
+                text: '¡Hola, creador! Soy Artie. ¿Buscas un ilustrador para tu proyecto, necesitas calcular el presupuesto de un encargo o resolver dudas sobre el sistema de custodia Escrow Shield?',
+                time: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
+              },
+            ],
+            preview: '¡Hola, creador! Soy Artie. ¿En qué puedo orientarte hoy?',
+            time: 'En línea',
+          }
+        }
+        return c
+      })
+    )
+    setShowInboxSettings(false)
+  }
+
   return (
     <div className="chat-view-container">
       {/* ── THREE-COLUMN CHAT GRID ── */}

@@ -63,7 +63,7 @@ export default function AppRouter() {
             <Route path="/nueva-solicitud/:artistId" element={<NewRequestPage />} />
           </Route>
 
-          <Route element={<ProtectedRoute allowedRoles={[ROLES.ARTIST]} />}>
+          <Route element={<ProtectedRoute allowedRoles={[ROLES.ARTIST, ROLES.ADMIN, 'artist', 'artista']} />}>
             <Route path="/artista/panel" element={<ArtistPanelPage />} />
             <Route path="/artista/solicitudes" element={<ArtistPanelPage />} />
             <Route path="/artista/portafolio" element={<ArtistPanelPage />} />

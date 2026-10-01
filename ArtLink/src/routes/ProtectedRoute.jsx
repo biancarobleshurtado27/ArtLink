@@ -6,7 +6,9 @@ export default function ProtectedRoute({ allowedRoles = [] }) {
   const location = useLocation()
 
   if (!user) return <Navigate to="/login" replace state={{ from: location }} />
-  if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) return <Navigate to="/acceso-denegado" replace state={{ requiredRoles: allowedRoles }} />
+  const normalizedRole = user.role === 'artist' ? 'artista' : user.role === 'client' ? 'cliente' : user.role === 'admin' ? 'administrador' : user.role
+  const isAllowed = allowedRoles.length === 0 || allowedRoles.includes(user.role) || allowedRoles.includes(normalizedRole)
+  if (!isAllowed) return <Navigate to="/acceso-denegado" replace state={{ requiredRoles: allowedRoles }} />
 
   return <Outlet />
 }
