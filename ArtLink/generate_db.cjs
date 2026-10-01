@@ -781,6 +781,8 @@ const db = {
     {
       id: "rev-101",
       artistId: "artist-demo-101",
+      requestId: "req-101",
+      clientId: "client-1",
       clientName: "Cliente Prueba",
       clientAvatar: "https://ui-avatars.com/api/?name=Cliente&background=random",
       commissionTitle: "[DEMO] Hoja de Sprites de Personaje 16-Bit",
@@ -791,12 +793,48 @@ const db = {
     {
       id: "rev-102",
       artistId: "artist-demo-108",
+      requestId: "req-103",
+      clientId: "client-1",
       clientName: "Cliente Prueba",
       clientAvatar: "https://ui-avatars.com/api/?name=Cliente&background=random",
       commissionTitle: "[DEMO] Diseño de Personaje Original Completo",
       rating: 5,
       comment: "El diseño del atuendo y la silueta del personaje superaron las expectativas para la prueba.",
       createdAt: "2024-03-26T18:30:00Z"
+    }
+  ],
+  follows: [
+    {
+      id: "fol-101",
+      followerId: "client-1",
+      artistId: "artist-demo-101",
+      createdAt: "2024-03-20T10:00:00.000Z"
+    },
+    {
+      id: "fol-102",
+      followerId: "client-1",
+      artistId: "artist-demo-104",
+      createdAt: "2024-03-22T12:00:00.000Z"
+    }
+  ],
+  likes: [
+    {
+      id: "like-101",
+      userId: "client-1",
+      portfolioItemId: "art-101",
+      createdAt: "2024-03-20T10:00:00.000Z"
+    },
+    {
+      id: "like-102",
+      userId: "client-1",
+      portfolioItemId: "art-102",
+      createdAt: "2024-03-21T11:00:00.000Z"
+    },
+    {
+      id: "like-103",
+      userId: "client-1",
+      portfolioItemId: "art-104",
+      createdAt: "2024-03-22T14:00:00.000Z"
     }
   ],
   messages: [],

@@ -95,6 +95,32 @@
       "password": "123",
       "role": "artist",
       "avatar": "https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400&q=80"
+    },
+    {
+      "name": "Bianca Robles Hurtado",
+      "email": "biancarobleshurtado27@gmail.com",
+      "role": "artista",
+      "passwordDemo": "1234567890",
+      "avatar": "https://i.pravatar.cc/150?u=biancarobleshurtado27@gmail.com",
+      "active": true,
+      "createdAt": "2026-10-01T00:55:34.661Z",
+      "termsAccepted": true,
+      "termsAcceptedAt": "2026-10-01T00:55:30.807Z",
+      "termsVersion": "1.0",
+      "id": "R4LaTb0C73c"
+    },
+    {
+      "name": "Bianca Robles Hurtado",
+      "email": "biancarobleshurtado@gmail.com",
+      "role": "cliente",
+      "passwordDemo": "1234567890",
+      "avatar": "https://i.pravatar.cc/150?u=biancarobleshurtado@gmail.com",
+      "active": true,
+      "createdAt": "2026-10-01T01:05:33.115Z",
+      "termsAccepted": true,
+      "termsAcceptedAt": "2026-10-01T01:05:30.750Z",
+      "termsVersion": "1.0",
+      "id": "NlFFPtqd1uk"
     }
   ],
   "artistProfiles": [
@@ -387,6 +413,22 @@
       "socialLinks": {
         "web": "https://demo.artlink.local/auramatte"
       }
+    },
+    {
+      "userId": "R4LaTb0C73c",
+      "displayName": "Bianca Robles Hurtado",
+      "username": "biancarobleshurtado27",
+      "bio": "Perfil nuevo en ArtLink.",
+      "disciplines": [],
+      "styles": [],
+      "location": "",
+      "availability": "open",
+      "slots": 1,
+      "rating": 0,
+      "verified": false,
+      "basePrice": 0,
+      "socialLinks": {},
+      "id": "9Mu0ilX1KMY"
     }
   ],
   "categories": [
@@ -894,12 +936,30 @@
       "status": "completed",
       "budget": 160,
       "createdAt": "2024-03-20T14:00:00Z"
+    },
+    {
+      "artistId": "artist-demo-108",
+      "clientId": "NlFFPtqd1uk",
+      "commissionId": null,
+      "commissionTitle": "Comisión personalizada",
+      "budget": 160,
+      "price": 160,
+      "description": "",
+      "desiredDate": "2026-10-01",
+      "references": [],
+      "status": "waitlist",
+      "escrowStatus": "held_in_escrow",
+      "n8nProcessed": true,
+      "createdAt": "2026-10-01T01:21:18.663Z",
+      "id": "q_D0R_iTERI"
     }
   ],
   "reviews": [
     {
       "id": "rev-101",
       "artistId": "artist-demo-101",
+      "requestId": "req-101",
+      "clientId": "client-1",
       "clientName": "Cliente Prueba",
       "clientAvatar": "https://ui-avatars.com/api/?name=Cliente&background=random",
       "commissionTitle": "[DEMO] Hoja de Sprites de Personaje 16-Bit",
@@ -910,16 +970,95 @@
     {
       "id": "rev-102",
       "artistId": "artist-demo-108",
+      "requestId": "req-103",
+      "clientId": "client-1",
       "clientName": "Cliente Prueba",
       "clientAvatar": "https://ui-avatars.com/api/?name=Cliente&background=random",
       "commissionTitle": "[DEMO] Diseño de Personaje Original Completo",
       "rating": 5,
       "comment": "El diseño del atuendo y la silueta del personaje superaron las expectativas para la prueba.",
       "createdAt": "2024-03-26T18:30:00Z"
+    },
+    {
+      "id": "NMaubrudo7g",
+      "artistId": "artist-demo-108",
+      "requestId": "q_D0R_iTERI",
+      "clientId": "NlFFPtqd1uk",
+      "clientName": "Bianca Robles Hurtado",
+      "clientAvatar": "https://i.pravatar.cc/150?u=biancarobleshurtado@gmail.com",
+      "commissionTitle": "[DEMO] Diseño de Personaje Original Completo",
+      "rating": 1,
+      "comment": "muy caro todo dislike",
+      "createdAt": "2026-10-01T01:21:19.593Z"
+    }
+  ],
+  "follows": [
+    {
+      "id": "fol-101",
+      "followerId": "client-1",
+      "artistId": "artist-demo-101",
+      "createdAt": "2024-03-20T10:00:00.000Z"
+    },
+    {
+      "id": "fol-102",
+      "followerId": "client-1",
+      "artistId": "artist-demo-104",
+      "createdAt": "2024-03-22T12:00:00.000Z"
+    }
+  ],
+  "likes": [
+    {
+      "id": "like-101",
+      "userId": "client-1",
+      "portfolioItemId": "art-101",
+      "createdAt": "2024-03-20T10:00:00.000Z"
+    },
+    {
+      "id": "like-102",
+      "userId": "client-1",
+      "portfolioItemId": "art-102",
+      "createdAt": "2024-03-21T11:00:00.000Z"
+    },
+    {
+      "id": "like-103",
+      "userId": "client-1",
+      "portfolioItemId": "art-104",
+      "createdAt": "2024-03-22T14:00:00.000Z"
+    },
+    {
+      "id": "iz_oWSIuBl8",
+      "userId": "R4LaTb0C73c",
+      "portfolioItemId": "art-126",
+      "createdAt": "2026-10-01T01:04:41.134Z"
+    },
+    {
+      "id": "EiINwaijY_0",
+      "userId": "R4LaTb0C73c",
+      "portfolioItemId": "art-127",
+      "createdAt": "2026-10-01T01:04:41.906Z"
+    },
+    {
+      "id": "ehY6nv_RsII",
+      "userId": "R4LaTb0C73c",
+      "portfolioItemId": "art-128",
+      "createdAt": "2026-10-01T01:04:42.707Z"
+    },
+    {
+      "id": "rET5ijQheOA",
+      "userId": "NlFFPtqd1uk",
+      "portfolioItemId": "art-128",
+      "createdAt": "2026-10-01T01:09:00.940Z"
+    },
+    {
+      "id": "6qfUKTYljNU",
+      "userId": "NlFFPtqd1uk",
+      "portfolioItemId": "art-127",
+      "createdAt": "2026-10-01T01:09:01.739Z"
     }
   ],
   "messages": [],
   "conversations": [],
   "favorites": [],
-  "portfolio": []
+  "portfolio": [],
+  "$schema": "./node_modules/json-server/schema.json"
 }

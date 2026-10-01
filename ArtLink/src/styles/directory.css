@@ -1671,21 +1671,73 @@
   grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
 }
 
-.artist-v2-comm-card {
+.artist-v2-comm-card,
+.artist-v2-commission-card {
   position: relative;
   background: var(--paper);
   border: 2.5px solid var(--ink);
   border-radius: 18px;
   box-shadow: 4px 4px 0 var(--ink);
-  padding: 1.3rem;
+  padding: 1.5rem;
   display: flex;
   flex-direction: column;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
+  max-width: 26rem;
+  width: 100%;
 }
 
-.artist-v2-comm-card:hover {
+.artist-v2-comm-card:hover,
+.artist-v2-commission-card:hover {
   transform: translateY(-3px);
   box-shadow: 6px 6px 0 var(--ink);
+}
+
+.artist-v2-comm-price-box {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  margin: 1.1rem 0;
+  padding: 0.6rem 0;
+  border-top: 1.5px dashed var(--line);
+  border-bottom: 1.5px dashed var(--line);
+}
+
+.artist-v2-comm-currency {
+  font-family: var(--heading);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--violet-dark);
+}
+
+.artist-v2-comm-amount {
+  font-family: var(--heading);
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--ink);
+  line-height: 1;
+}
+
+.artist-v2-comm-period {
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-weight: 600;
+  margin-left: 0.35rem;
+}
+
+.artist-v2-comm-features {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.85rem;
+}
+
+.artist-v2-comm-feature-item {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: var(--ink);
+  line-height: 1.4;
 }
 
 .artist-v2-comm-badge {
@@ -1949,6 +2001,16 @@
   margin: 0.8rem 0 0.4rem;
 }
 
+.artist-v2-no-score {
+  font-family: var(--heading);
+  font-size: 1.35rem;
+  font-weight: 800;
+  line-height: 1.25;
+  color: var(--ink);
+  margin: 1.1rem 0 0.5rem;
+  word-break: break-word;
+}
+
 .artist-v2-metric-bar-group {
   margin-top: 1.5rem;
   display: grid;
@@ -1975,7 +2037,7 @@
 .artist-v2-metric-fill {
   height: 100%;
   border-radius: 999px;
-  background: var(--mint);
+  background: var(--violet);
 }
 
 .artist-v2-metric-fill.purple {
@@ -1984,7 +2046,8 @@
 
 .artist-v2-reviews-list {
   display: grid;
-  gap: 1rem;
+  gap: 1.2rem;
+  align-content: start;
 }
 
 .artist-v2-review-card {
@@ -1992,7 +2055,13 @@
   border: 2px solid var(--ink);
   border-radius: 16px;
   box-shadow: 3px 3px 0 var(--ink);
-  padding: 1.2rem 1.4rem;
+  padding: 1.3rem 1.5rem;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.artist-v2-review-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 5px 5px 0 var(--ink);
 }
 
 .artist-v2-review-top {
@@ -2029,155 +2098,7 @@
   color: var(--muted);
 }
 
-/* 7. SECCIÓN PROCESO DE TRABAJO & ESCROW */
-.artist-v2-workflow-layout {
-  display: grid;
-  gap: 1.5rem;
-  grid-template-columns: 1fr 1fr;
-}
 
-.artist-v2-workflow-card {
-  background: var(--paper);
-  border: 2.5px solid var(--ink);
-  border-radius: 20px;
-  box-shadow: 4px 4px 0 var(--ink);
-  padding: 1.8rem;
-}
-
-.artist-v2-step-list {
-  margin-top: 1.2rem;
-  display: grid;
-  gap: 1rem;
-}
-
-.artist-v2-step-item {
-  display: flex;
-  gap: 0.8rem;
-  align-items: flex-start;
-}
-
-.artist-v2-step-num {
-  width: 1.9rem;
-  height: 1.9rem;
-  border-radius: 50%;
-  background: var(--rose);
-  border: 1.5px solid var(--ink);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--badge);
-  font-size: 0.82rem;
-  font-weight: 800;
-  flex-shrink: 0;
-  color: var(--ink);
-}
-
-.artist-v2-step-content strong {
-  display: block;
-  font-size: 0.92rem;
-  margin-bottom: 0.15rem;
-}
-
-.artist-v2-step-content p {
-  font-size: 0.82rem;
-  color: var(--muted);
-  margin: 0;
-  line-height: 1.45;
-}
-
-.artist-v2-escrow-card {
-  background: #7C3AED;
-  color: #FFFFFF;
-  border: 2.5px solid var(--ink);
-  border-radius: 20px;
-  box-shadow: 4px 4px 0 var(--ink);
-  padding: 1.8rem;
-  display: flex;
-  flex-direction: column;
-}
-
-.artist-v2-escrow-card h3 {
-  font-family: var(--heading);
-  font-size: 1.6rem;
-  margin: 0 0 0.4rem;
-  color: #FFFFFF;
-}
-
-.artist-v2-escrow-card > p {
-  font-size: 0.85rem;
-  color: #EDE9FE;
-  margin: 0 0 1.4rem;
-}
-
-.artist-v2-escrow-benefits {
-  display: grid;
-  gap: 1rem;
-  margin-bottom: 1.8rem;
-}
-
-.artist-v2-benefit-item {
-  display: flex;
-  gap: 0.75rem;
-  align-items: flex-start;
-}
-
-.artist-v2-benefit-icon {
-  width: 2.2rem;
-  height: 2.2rem;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1.5px solid rgba(255, 255, 255, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.artist-v2-benefit-text strong {
-  display: block;
-  font-size: 0.9rem;
-  margin-bottom: 0.2rem;
-}
-
-.artist-v2-benefit-text p {
-  font-size: 0.8rem;
-  color: #E9D5FF;
-  margin: 0;
-  line-height: 1.4;
-}
-
-.artist-v2-escrow-footer {
-  margin-top: auto;
-  padding-top: 1.2rem;
-  border-top: 1.5px solid rgba(255, 255, 255, 0.25);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.8rem;
-}
-
-.artist-v2-btn-white {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  background: #FFFFFF;
-  color: var(--ink) !important;
-  border: 2px solid var(--ink);
-  border-radius: 999px;
-  padding: 0.55rem 1.1rem;
-  font-weight: 800;
-  font-size: 0.82rem;
-  box-shadow: 2px 2px 0 var(--ink);
-  text-decoration: none;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.artist-v2-btn-white:hover {
-  transform: translateY(-2px);
-  background: var(--yellow);
-}
 
 /* 8. SECCIÓN SOBRE MÍ & CTA FINAL */
 .artist-v2-about-layout {
