@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { AuthContext } from './context'
 import { login as loginWithCredentials, register as registerUser } from '../services/authService'
+import { setUserOffline, setUserOnline } from '../services/presenceService'
 
 export const SESSION_STORAGE_KEY = 'artlink_session'
 
@@ -30,11 +31,37 @@ export function AuthProvider({ children }) {
 
   function saveSession(nextUser) {
     const safeUser = sanitizeUser(nextUser)
-    if (safeUser) localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(safeUser))
-    else localStorage.removeItem(SESSION_STORAGE_KEY)
+    if (safeUser) {
+      localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(safeUser))
+      setUserOnline(safeUser)
+    } else {
+      if (user) setUserOffline(user)
+      localStorage.removeItem(SESSION_STORAGE_KEY)
+    }
     setUser(safeUser)
     return safeUser
   }
+
+  // Heartbeat de presencia activa mientras el usuario mantenga sesión iniciada
+  useEffect(() => {
+    if (!user) return
+
+    setUserOnline(user)
+    const interval = setInterval(() => {
+      setUserOnline(user)
+    }, 20000)
+
+    function handleUnload() {
+      // Al cerrar la pestaña, marcar última desconexión
+      setUserOnline(user)
+    }
+    window.addEventListener('beforeunload', handleUnload)
+
+    return () => {
+      clearInterval(interval)
+      window.removeEventListener('beforeunload', handleUnload)
+    }
+  }, [user])
 
   const value = useMemo(
     () => ({

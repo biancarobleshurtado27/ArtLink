@@ -33,6 +33,13 @@ import {
 import usePrivateRequests from '../hooks/usePrivateRequests'
 import useAuth from '../hooks/useAuth'
 import { interpretNeed } from '../services/aiService'
+import {
+  checkParticipantOnline,
+  getPresenceRegistry,
+  PRESENCE_CHANGE_EVENT,
+  savePresenceRegistry,
+  setUserOnline,
+} from '../services/presenceService'
 import artieAvatar from '../assets/artie-avatar.png'
 import '../styles/chatPop.css'
 
@@ -118,11 +125,13 @@ const DEFAULT_CONVERSATIONS = [
     allOrderIds: ['q_D0R_iTERI', 'req-103'],
     artist: {
       id: 'artist-demo-108',
+      userId: 'artist-demo-108',
       name: 'Mythos Character Forge',
       username: 'mythosforge',
       avatar: 'https://images.unsplash.com/photo-1563089145-599997674d42?w=400&q=80',
       verified: true,
-      statusText: 'En línea',
+      role: 'artista',
+      statusText: 'Desconectado',
     },
     title: 'Diseño de Personaje Original Completo',
     subtitle: 'Modelado y diseño de personajes heroicos, criaturas fantásticas y atuendos estilizados.',
@@ -192,11 +201,13 @@ const DEFAULT_CONVERSATIONS = [
     allOrderIds: ['req-102'],
     artist: {
       id: 'artist-demo-104',
+      userId: 'artist-demo-104',
       name: 'Aether Concept Art',
       username: 'aetherconcept',
       avatar: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&q=80',
       verified: true,
-      statusText: 'En línea',
+      role: 'artista',
+      statusText: 'Desconectado',
     },
     title: 'Ilustración Conceptual Sci-Fi',
     subtitle: 'Conceptualización de mundos de ciencia ficción y atmósferas fantásticas de gran escala.',
@@ -227,11 +238,13 @@ const DEFAULT_CONVERSATIONS = [
     allOrderIds: ['req-101'],
     artist: {
       id: 'artist-demo-101',
+      userId: 'artist-demo-101',
       name: 'Pixel Foundry',
       username: 'pixelfoundry',
       avatar: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&q=80',
       verified: true,
-      statusText: 'En línea',
+      role: 'artista',
+      statusText: 'Desconectado',
     },
     title: 'Hoja de Sprites de Personaje 16-Bit',
     subtitle: 'Taller de creación de pixel art para videojuegos retro, sprites 16-bit e interfaces vintage.',
@@ -262,11 +275,13 @@ const DEFAULT_CONVERSATIONS = [
     allOrderIds: ['comm-102', '102'],
     artist: {
       id: 'artist-demo-102',
+      userId: 'artist-demo-102',
       name: 'Voxel Studio Lab',
       username: 'voxelstudio',
       avatar: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&q=80',
       verified: true,
-      statusText: 'En línea',
+      role: 'artista',
+      statusText: 'Desconectado',
     },
     title: 'Diorama 3D Voxel Art',
     subtitle: 'Laboratorio de experimentación volumétrica y dioramas 3D low-poly para maquetas y juegos.',
@@ -340,6 +355,24 @@ export default function MessagesPage() {
   const [messageInput, setMessageInput] = useState('')
   const [isBotThinking, setIsBotThinking] = useState(false)
 
+  // Registro de presencia en tiempo real para artistas y clientes ("En línea" / "Desconectado")
+  const [presenceRegistry, setPresenceRegistry] = useState(getPresenceRegistry)
+
+  useEffect(() => {
+    function handlePresenceUpdate() {
+      setPresenceRegistry(getPresenceRegistry())
+    }
+    window.addEventListener(PRESENCE_CHANGE_EVENT, handlePresenceUpdate)
+    window.addEventListener('storage', handlePresenceUpdate)
+
+    const timer = setInterval(handlePresenceUpdate, 4000)
+    return () => {
+      window.removeEventListener(PRESENCE_CHANGE_EVENT, handlePresenceUpdate)
+      window.removeEventListener('storage', handlePresenceUpdate)
+      clearInterval(timer)
+    }
+  }, [])
+
   // Ajustes de la bandeja y el chat
   const [chatSettings, setChatSettings] = useState(() => {
     try {
@@ -409,15 +442,34 @@ export default function MessagesPage() {
         map.set(key, { ...c })
       })
 
-      // 2. Mapear cada solicitud al artista correspondiente sin duplicar
+      const isCurrentUserArtist = user?.role === 'artista' || user?.role === 'artist'
+
+      // 2. Mapear cada solicitud al interlocutor correspondiente (si el usuario actual es artista, el interlocutor es el cliente)
       requests.forEach((req) => {
-        const key =
-          req.artistId ||
-          (req.artistUsername ? req.artistUsername.toLowerCase() : String(req.id))
+        const participantId = isCurrentUserArtist
+          ? (req.clientId || `client-${req.id}`)
+          : (req.artistId || `artist-${req.id}`)
+
+        const key = isCurrentUserArtist
+          ? (req.clientId || (req.clientUsername ? req.clientUsername.toLowerCase() : String(req.id)))
+          : (req.artistId || (req.artistUsername ? req.artistUsername.toLowerCase() : String(req.id)))
+
+        const participantName = isCurrentUserArtist
+          ? (req.clientName || 'Cliente ArtLink')
+          : (req.artistName || 'Artista ArtLink')
+
+        const participantUsername = isCurrentUserArtist
+          ? (req.clientUsername || 'cliente')
+          : (req.artistUsername || (req.artistName ? req.artistName.toLowerCase().replace(/\s+/g, '') : 'artista'))
+
+        const participantAvatar = isCurrentUserArtist
+          ? (req.clientAvatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(participantName)}&background=random`)
+          : (req.artistAvatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=80')
+
         const existing = map.get(key)
 
         if (existing) {
-          // Si ya existe conversación con este artista, actualizar datos del encargo y lista de órdenes
+          // Si ya existe conversación con este usuario/artista, actualizar datos del encargo
           const allOrders = new Set(existing.allOrderIds || [existing.orderId, existing.id])
           allOrders.add(String(req.id))
 
@@ -454,24 +506,22 @@ export default function MessagesPage() {
           existing.allOrderIds = Array.from(allOrders)
           map.set(key, existing)
         } else {
-          // Artista nuevo: crear exactamente 1 conversación para él
+          // Contacto nuevo: crear exactamente 1 conversación para él
           const newConvo = {
-            id: `artist-${req.artistId || req.id}`,
+            id: isCurrentUserArtist ? `client-${req.clientId || req.id}` : `artist-${req.artistId || req.id}`,
             orderId: String(req.id),
             allOrderIds: [String(req.id)],
             isRealRequest: true,
             rawCreatedAt: req.createdAt,
             artist: {
-              id: req.artistId || `artist-${req.id}`,
-              name: req.artistName || 'Artista ArtLink',
-              username:
-                req.artistUsername ||
-                (req.artistName ? req.artistName.toLowerCase().replace(/\s+/g, '') : 'artista'),
-              avatar:
-                req.artistAvatar ||
-                'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=80',
-              verified: req.artistVerified ?? true,
-              statusText: 'En línea',
+              id: participantId,
+              userId: isCurrentUserArtist ? req.clientId : req.artistId,
+              name: participantName,
+              username: participantUsername,
+              avatar: participantAvatar,
+              verified: isCurrentUserArtist ? false : (req.artistVerified ?? true),
+              role: isCurrentUserArtist ? 'cliente' : 'artista',
+              statusText: 'Desconectado',
             },
             title: req.commissionTitle || req.title || 'Encargo personalizado',
             subtitle: req.description || 'Especificaciones del encargo acordadas bajo custodia Escrow.',
@@ -584,13 +634,41 @@ export default function MessagesPage() {
 
       return Array.from(map.values())
     })
-  }, [requests])
+  }, [requests, user])
 
   // Conversación seleccionada activa (con fallback garantizado)
   const activeConvo =
     conversations.find((c) => c.id === selectedConvoId) ||
     conversations[0] ||
     DEFAULT_CONVERSATIONS[0]
+
+  // Estado de presencia real del interlocutor del chat activo ("En línea" o "Desconectado")
+  const activePresence = checkParticipantOnline(activeConvo?.artist, presenceRegistry)
+
+  // Conmutar presencia de un contacto manualmente para pruebas en vivo
+  function toggleParticipantPresence(participant) {
+    if (!participant || participant.isBot) return
+    const reg = getPresenceRegistry()
+    const key = participant.userId || participant.id || participant.username
+    const current = checkParticipantOnline(participant, reg)
+    const nextOnline = !current.isOnline
+
+    const entry = {
+      userId: String(key),
+      name: participant.name,
+      role: participant.role || 'artista',
+      isOnline: nextOnline,
+      statusText: nextOnline ? 'En línea' : 'Desconectado',
+      lastSeen: nextOnline ? Date.now() : Date.now() - 360000,
+    }
+
+    reg[String(key)] = entry
+    if (participant.username) reg[participant.username.toLowerCase()] = entry
+    if (participant.id) reg[String(participant.id)] = entry
+
+    savePresenceRegistry(reg)
+    setPresenceRegistry(reg)
+  }
 
   // Color de tema aleatorio por chat
   const activeTheme = getChatTheme(activeConvo?.id || 'default')
@@ -926,7 +1004,24 @@ export default function MessagesPage() {
                 {filteredConversations.length} {filteredConversations.length === 1 ? 'chat' : 'chats'}
               </span>
             </div>
-            <span className="chat-online-dot" title="En línea" />
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.35rem',
+                background: user ? '#F0FDF4' : '#F3F4F6',
+                border: `1.5px solid ${user ? '#10B981' : '#D1D5DB'}`,
+                padding: '0.18rem 0.55rem',
+                borderRadius: 9999,
+                fontSize: '0.72rem',
+                fontWeight: 700,
+                color: user ? '#065F46' : '#6B7280',
+              }}
+              title={user ? `Sesión activa: ${user.name || user.email}` : 'Sin sesión activa'}
+            >
+              <span className={`chat-online-dot ${user ? 'is-online' : 'is-offline'}`} style={{ width: 7, height: 7 }} />
+              <span>{user ? 'En línea' : 'Desconectado'}</span>
+            </div>
           </div>
 
           {/* Barra de búsqueda unificada para chats y mensajes */}
@@ -962,6 +1057,7 @@ export default function MessagesPage() {
             ) : (
               filteredConversations.map((item) => {
                 const isSelected = item.id === activeConvo.id
+                const itemPresence = checkParticipantOnline(item.artist, presenceRegistry)
                 const hasMessageMatch =
                   sidebarSearch &&
                   item.messages?.some((m) =>
@@ -984,7 +1080,10 @@ export default function MessagesPage() {
                       {item.isBot ? (
                         <span className="chat-avatar-bot-tag">BOT</span>
                       ) : (
-                        <span className="chat-avatar-badge-dot" />
+                        <span
+                          className={`chat-avatar-badge-dot ${itemPresence.badgeClass}`}
+                          title={itemPresence.statusText}
+                        />
                       )}
                     </div>
 
@@ -997,11 +1096,36 @@ export default function MessagesPage() {
                               size={14}
                               color="#8B5CF6"
                               fill="#EDE9FE"
-                              aria-label="Artista verificado"
+                              aria-label="Verificado"
+                              title="Verificado"
                             />
                           )}
+                          {item.artist.role === 'cliente' && (
+                            <span
+                              style={{
+                                fontSize: '0.62rem',
+                                padding: '0.05rem 0.35rem',
+                                borderRadius: 4,
+                                background: '#FEF3C7',
+                                color: '#92400E',
+                                fontWeight: 700,
+                                border: '1px solid #1E192B',
+                              }}
+                            >
+                              Cliente
+                            </span>
+                          )}
                         </div>
-                        <span className="chat-convo-time">{item.time}</span>
+                        <span className="chat-convo-time">
+                          {itemPresence.isOnline && !item.isBot ? (
+                            <span style={{ color: '#059669', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
+                              <span className="chat-online-dot is-online" style={{ width: 6, height: 6 }} />
+                              En línea
+                            </span>
+                          ) : (
+                            item.time
+                          )}
+                        </span>
                       </div>
 
                       <p className="chat-convo-preview-msg">{item.preview}</p>
@@ -1040,7 +1164,7 @@ export default function MessagesPage() {
 
           <footer className="chat-sidebar-footer">
             <div className="chat-socket-indicator">
-              <span className="chat-online-dot" />
+              <span className="chat-online-dot is-online" />
               <span>Sincronizado vía Socket ArtLink</span>
             </div>
             <button
@@ -1067,7 +1191,14 @@ export default function MessagesPage() {
                   alt={activeConvo.artist.name}
                   className="chat-active-artist-avatar"
                 />
-                <span className="chat-avatar-badge-dot" />
+                {activeConvo.isBot ? (
+                  <span className="chat-avatar-bot-tag" style={{ top: -2, right: -2 }}>BOT</span>
+                ) : (
+                  <span
+                    className={`chat-avatar-badge-dot ${activePresence.badgeClass}`}
+                    title={activePresence.statusText}
+                  />
+                )}
               </div>
 
               <div className="chat-artist-titles">
@@ -1081,16 +1212,40 @@ export default function MessagesPage() {
                       size={17}
                       color="#8B5CF6"
                       fill="#EDE9FE"
-                      aria-label="Artista verificado"
-                      title="Artista verificado"
+                      aria-label="Verificado"
+                      title="Verificado"
                     />
                   )}
                   <span className="chat-artist-handle-light">@{activeConvo.artist.username}</span>
+                  {activeConvo.artist.role && (
+                    <span
+                      style={{
+                        fontSize: '0.68rem',
+                        padding: '0.1rem 0.45rem',
+                        borderRadius: 9999,
+                        background: activeConvo.artist.role === 'artista' ? '#EDE9FE' : '#FEF3C7',
+                        color: activeConvo.artist.role === 'artista' ? '#6D28D9' : '#92400E',
+                        fontWeight: 700,
+                        border: '1px solid #1E192B',
+                      }}
+                    >
+                      {activeConvo.artist.role === 'artista' ? 'Artista' : 'Cliente'}
+                    </span>
+                  )}
                 </div>
                 <span className="chat-artist-substatus">
-                  <span className="chat-online-dot" style={{ width: 7, height: 7 }} />
-                  {activeConvo.artist.statusText?.replace(/•\s*Tiempo\s*resp[^\n]*/i, '')?.trim() ||
-                    'En línea'}
+                  <span
+                    className={`chat-online-dot ${activePresence.badgeClass}`}
+                    style={{ width: 8, height: 8 }}
+                  />
+                  <span
+                    style={{
+                      color: activePresence.isOnline ? '#059669' : '#6B7280',
+                      fontWeight: activePresence.isOnline ? 700 : 500,
+                    }}
+                  >
+                    {activePresence.statusText}
+                  </span>
                 </span>
               </div>
             </div>
@@ -1973,7 +2128,77 @@ export default function MessagesPage() {
                 </div>
               </div>
 
-              {/* Sección 3: Acciones rápidas de mantenimiento */}
+              {/* Sección 3: Estado de Presencia y Conexión en Tiempo Real */}
+              <div className="chat-settings-section">
+                <h4 className="chat-settings-title">Estado de Presencia y Conexión</h4>
+                <div style={{ background: '#F9FAFB', border: '1.5px solid #1E192B', borderRadius: 8, padding: '0.85rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.65rem' }}>
+                    <div>
+                      <strong style={{ fontSize: '0.85rem', display: 'block' }}>Tu cuenta ({user?.name || user?.email || 'Invitado'}):</strong>
+                      <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.2rem' }}>
+                        <span className={`chat-online-dot ${user ? 'is-online' : 'is-offline'}`} style={{ width: 8, height: 8 }} />
+                        <span style={{ fontSize: '0.8rem', color: user ? '#059669' : '#6B7280', fontWeight: 700 }}>
+                          {user ? 'En línea (Sesión activa en tu cuenta)' : 'Sin sesión iniciada'}
+                        </span>
+                      </div>
+                    </div>
+                    {user && (
+                      <button
+                        type="button"
+                        className="chat-btn-action-white"
+                        style={{ fontSize: '0.74rem', padding: '0.3rem 0.65rem' }}
+                        onClick={() => {
+                          setUserOnline(user, 'En línea')
+                          setPresenceRegistry(getPresenceRegistry())
+                        }}
+                      >
+                        Revalidar mi estado en línea
+                      </button>
+                    )}
+                  </div>
+
+                  <div style={{ borderTop: '1px solid #E5E7EB', paddingTop: '0.65rem' }}>
+                    <strong style={{ fontSize: '0.8rem', display: 'block', marginBottom: '0.35rem' }}>
+                      Conmutar presencia de contactos (Prueba interactiva):
+                    </strong>
+                    <p style={{ margin: '0 0 0.5rem', fontSize: '0.75rem', color: '#6B7280' }}>
+                      Haz clic en cualquier contacto para simular su entrada o salida de la cuenta y comprobar en tiempo real cómo cambia su indicador a "En línea" o "Desconectado":
+                    </p>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
+                      {conversations.filter((c) => !c.isBot).map((c) => {
+                        const p = c.artist
+                        const pStatus = checkParticipantOnline(p, presenceRegistry)
+                        return (
+                          <button
+                            key={c.id}
+                            type="button"
+                            className="chat-btn-action-white"
+                            style={{
+                              fontSize: '0.72rem',
+                              padding: '0.25rem 0.55rem',
+                              borderColor: pStatus.isOnline ? '#059669' : '#D1D5DB',
+                              background: pStatus.isOnline ? '#ECFDF5' : '#FFFFFF',
+                              color: pStatus.isOnline ? '#065F46' : '#6B7280',
+                              fontWeight: 700,
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '0.35rem',
+                              cursor: 'pointer',
+                            }}
+                            onClick={() => toggleParticipantPresence(p)}
+                            title={`Clic para alternar estado de ${p.name}`}
+                          >
+                            <span className={`chat-online-dot ${pStatus.badgeClass}`} style={{ width: 7, height: 7 }} />
+                            <span>{p.name}: {pStatus.isOnline ? 'En línea' : 'Desconectado'}</span>
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Sección 4: Acciones rápidas de mantenimiento */}
               <div className="chat-settings-section">
                 <h4 className="chat-settings-title">Acciones de Mantenimiento</h4>
                 <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>

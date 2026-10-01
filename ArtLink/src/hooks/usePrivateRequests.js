@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import useAuth from './useAuth'
+import apiClient from '../services/apiClient'
 import { getRequests } from '../services/requestService'
 import { createMessage, getMessages, markMessageAsRead } from '../services/messageService'
 import { getArtistById, getArtistByUserId, getArtists } from '../services/artistService'
@@ -16,13 +17,15 @@ export default function usePrivateRequests() {
   const load = useCallback(async () => {
     setLoading(true)
     try {
-      const [all, artists, commissions] = await Promise.all([
+      const [all, artists, commissions, usersList] = await Promise.all([
         getRequests(),
         getArtists().catch(() => []),
         getCommissions().catch(() => []),
+        apiClient.get('/users').then((r) => r.data || []).catch(() => []),
       ])
       const artistsById = new Map(artists.map((a) => [a.id, a]))
       const commissionsById = new Map(commissions.map((c) => [c.id, c]))
+      const usersById = new Map(usersList.map((u) => [u.id, u]))
 
       let artistProfile = null
       if (user) {
@@ -37,12 +40,16 @@ export default function usePrivateRequests() {
       const enriched = all.map((req) => {
         const artistObj = artistsById.get(req.artistId)
         const commObj = commissionsById.get(req.packageId || req.commissionId)
+        const clientObj = usersById.get(req.clientId)
         return {
           ...req,
           artistName: artistObj?.displayName || artistObj?.name || req.artistName || 'Artista ArtLink',
           artistUsername: artistObj?.username || 'artista',
           artistAvatar: artistObj?.avatar || req.artistAvatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=80',
           artistVerified: artistObj?.verified ?? true,
+          clientName: clientObj?.name || req.clientName || 'Cliente ArtLink',
+          clientUsername: clientObj?.email?.split('@')[0] || req.clientUsername || 'cliente',
+          clientAvatar: clientObj?.avatar || req.clientAvatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(clientObj?.name || 'Cliente')}&background=random`,
           commissionTitle: req.commissionTitle || commObj?.title || 'Comisión personalizada',
           commissionDesc: req.description || commObj?.description || 'Especificaciones del encargo acordadas bajo custodia Escrow.',
           budget: req.budget || req.price || commObj?.price || 100,
