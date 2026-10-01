@@ -373,12 +373,22 @@
 }
 
 .chat-sidebar-search-box input {
-  border: none;
-  background: transparent;
-  outline: none;
+  border: none !important;
+  background: transparent !important;
+  outline: none !important;
+  box-shadow: none !important;
   width: 100%;
   font-size: 0.85rem;
   color: #1E192B;
+  font-family: inherit;
+  padding: 0 !important;
+}
+
+.chat-sidebar-search-box input:focus,
+.chat-sidebar-search-box input:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
 }
 
 .chat-search-clear-btn {
@@ -420,6 +430,9 @@
   align-items: flex-start;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
+  flex-shrink: 0 !important;
+  box-sizing: border-box;
+  min-height: 86px;
 }
 
 .chat-convo-item-btn:hover {
@@ -441,6 +454,7 @@
 .chat-conversations-scroll-list.is-compact-inbox .chat-convo-item-btn {
   padding: 0.55rem 0.85rem;
   gap: 0.55rem;
+  min-height: 56px;
 }
 
 .chat-conversations-scroll-list.is-compact-inbox .chat-convo-avatar-img {
@@ -509,29 +523,64 @@
 .chat-convo-info-col {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .chat-convo-top-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.4rem;
+  gap: 0.45rem;
   margin-bottom: 0.2rem;
+  min-width: 0;
+  width: 100%;
 }
 
 .chat-convo-name-group {
   display: flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.35rem;
   font-weight: 700;
   font-size: 0.92rem;
   color: #1E192B;
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+}
+
+.chat-convo-name-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  min-width: 0;
+  flex-shrink: 1;
+}
+
+.chat-convo-badge-icon {
+  flex-shrink: 0;
+}
+
+.chat-convo-client-badge {
+  font-size: 0.62rem;
+  padding: 0.08rem 0.38rem;
+  border-radius: 4px;
+  background: #FEF3C7;
+  color: #92400E;
+  font-weight: 700;
+  border: 1px solid #1E192B;
+  flex-shrink: 0;
+  white-space: nowrap;
+  line-height: 1.2;
 }
 
 .chat-convo-time {
   font-size: 0.72rem;
   color: #6B7280;
   white-space: nowrap;
+  flex-shrink: 0;
+  margin-left: 0.35rem;
 }
 
 .chat-convo-preview-msg {
@@ -541,6 +590,9 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  width: 100%;
+  max-width: 100%;
+  line-height: 1.35;
 }
 
 .chat-convo-bottom-row {
@@ -548,6 +600,9 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
+  width: 100%;
+  min-width: 0;
+  margin-top: auto;
 }
 
 .chat-convo-tag {
@@ -559,7 +614,10 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 185px;
+  max-width: 190px;
+  display: inline-block;
+  line-height: 1.35;
+  box-sizing: border-box;
 }
 
 .chat-convo-tag.tag-cyan {

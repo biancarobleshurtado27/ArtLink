@@ -1090,7 +1090,9 @@ export default function MessagesPage() {
                     <div className="chat-convo-info-col">
                       <div className="chat-convo-top-row">
                         <div className="chat-convo-name-group">
-                          <span>{item.artist.name}</span>
+                          <span className="chat-convo-name-text" title={item.artist.name}>
+                            {item.artist.name}
+                          </span>
                           {item.artist.verified && (
                             <BadgeCheck
                               size={14}
@@ -1098,20 +1100,11 @@ export default function MessagesPage() {
                               fill="#EDE9FE"
                               aria-label="Verificado"
                               title="Verificado"
+                              className="chat-convo-badge-icon"
                             />
                           )}
                           {item.artist.role === 'cliente' && (
-                            <span
-                              style={{
-                                fontSize: '0.62rem',
-                                padding: '0.05rem 0.35rem',
-                                borderRadius: 4,
-                                background: '#FEF3C7',
-                                color: '#92400E',
-                                fontWeight: 700,
-                                border: '1px solid #1E192B',
-                              }}
-                            >
+                            <span className="chat-convo-client-badge">
                               Cliente
                             </span>
                           )}
