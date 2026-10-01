@@ -25,7 +25,7 @@ React Chatbot (Frontend)
     ▼
 5. ArtLink Agente IA (@n8n/n8n-nodes-langchain.agent)
     ├── 6. Memoria de Conversación (Buffer Window: 10 mensajes)
-    └── 9. Google Gemini Chat Model (models/gemini-1.5-flash)
+    └── 9. Google Gemini Chat Model (models/gemini-3.1-flash-lite)
     │
     ▼
 7. Formatear Respuesta (Extrae intent, suggestions, quickReplies, actions, confirmation)
