@@ -137,6 +137,11 @@ export async function sendMessageToChatbot({
         message: data.message || 'Respuesta recibida correctamente.',
         provider: data.provider || 'gemini',
         model: data.model || 'gemini',
+        intent: data.intent || null,
+        toolUsed: data.toolUsed || null,
+        data: Array.isArray(data.data) ? data.data : [],
+        actions: Array.isArray(data.actions) ? data.actions : [],
+        confirmationRequired: data.confirmationRequired || null,
         isFallback: false,
       }
     }

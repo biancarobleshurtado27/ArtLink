@@ -1,0 +1,7 @@
+{
+  "message": "Quiero saber el estado de mi encargo #req-101",
+  "conversationId": "test-agent-order",
+  "role": "client",
+  "page": "/mensajes",
+  "history": []
+}

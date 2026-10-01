@@ -1,0 +1,7 @@
+{
+  "message": "¿Qué artistas de Pixel Art tienen disponibilidad abierta y precio menor a $100?",
+  "conversationId": "test-agent-artists",
+  "role": "client",
+  "page": "/explorar",
+  "history": []
+}
