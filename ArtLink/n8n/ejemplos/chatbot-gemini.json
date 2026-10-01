@@ -1,7 +1,15 @@
 {
-  "message": "¿Cómo solicito una comisión?",
-  "conversationId": "test-conversation",
+  "message": "Busca artistas de modelos VTuber con comisiones abiertas",
+  "sessionId": "test-session-vtuber",
+  "conversationId": "test-convo-vtuber",
+  "userId": "client-1",
+  "userName": "Cliente Prueba",
   "role": "client",
   "page": "/explorar",
+  "preferences": [
+    "VTuber",
+    "Anime"
+  ],
+  "language": "es",
   "history": []
 }

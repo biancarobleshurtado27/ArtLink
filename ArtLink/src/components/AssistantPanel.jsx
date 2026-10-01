@@ -8,6 +8,7 @@ import {
   CheckCheck,
   ExternalLink,
   FileText,
+  HelpCircle,
   Lock,
   Radio,
   RefreshCw,
@@ -20,7 +21,12 @@ import {
   User,
   X,
 } from 'lucide-react'
-import { sendMessageToChatbot } from '../services/n8nChatService'
+import {
+  clearPersistedChatHistory,
+  loadPersistedChatHistory,
+  savePersistedChatHistory,
+  sendMessageToChatbot,
+} from '../services/n8nChatService'
 import { checkN8nHealth } from '../services/n8nService'
 import artieAvatar from '../assets/artie-avatar.png'
 
@@ -35,34 +41,44 @@ const initialMessage = {
   id: 'welcome',
   role: 'assistant',
   content:
-    '¡Hola, creador! Soy el Asistente de ArtLink con tecnología Gemini y herramientas conectadas. ¿Buscas un ilustrador, consultar el estado de tu pedido o solicitar comisiones bajo custodia Escrow Shield?',
+    '¡Hola, creador! Soy el Agente de IA oficial de ArtLink. Puedo ayudarte a explorar artistas, gestionar comisiones y responder dudas educativas sobre dibujo, modelado 3D, VTubers y teoría del arte.',
   time: `Hoy a las ${getFormattedTime()}`,
   provider: 'system',
+  suggestions: [
+    '¿Cómo solicito una comisión en ArtLink?',
+    'Buscar artistas de modelado 3D o VTuber',
+    '¿Qué es el cel shading en arte digital?',
+  ],
+  quickReplies: [
+    'Explorar artistas',
+    'Cómo pedir comisión',
+    'Teoría del color',
+  ],
 }
 
 const QUICK_PROMPTS = [
   {
-    id: 'pixel',
-    icon: Search,
-    text: 'Buscar artistas de Pixel Art hasta $100',
+    id: 'commission',
+    icon: FileText,
+    text: '¿Cómo solicito una comisión?',
     styleClass: 'prompt-pill-pink',
   },
   {
-    id: 'order',
-    icon: FileText,
-    text: 'Consultar el estado del encargo #req-101',
+    id: '3d',
+    icon: Search,
+    text: 'Buscar artistas de modelado 3D',
     styleClass: 'prompt-pill-mint',
   },
   {
-    id: 'avail',
+    id: 'vtuber',
     icon: Sparkles,
-    text: 'Ver artistas con disponibilidad abierta',
+    text: 'Buscar modelos VTuber',
     styleClass: 'prompt-pill-lavender',
   },
   {
-    id: 'escrow',
-    icon: ShieldCheck,
-    text: '¿Cómo funciona la custodia de pago Escrow?',
+    id: 'shading',
+    icon: HelpCircle,
+    text: '¿Qué es el cel shading?',
     styleClass: 'prompt-pill-yellow',
   },
 ]
@@ -73,9 +89,13 @@ export default function AssistantPanel({ onClose }) {
   const historyRef = useRef(null)
   const panelRef = useRef(null)
   const abortControllerRef = useRef(null)
+  const sessionIdRef = useRef(`session-${Date.now()}`)
   const conversationIdRef = useRef(`artlink-chat-${Date.now()}`)
 
-  const [messages, setMessages] = useState([initialMessage])
+  // Cargar historial previo de localStorage para conservar la conversación al recargar
+  const [messages, setMessages] = useState(() => {
+    return loadPersistedChatHistory() || [initialMessage]
+  })
   const [input, setInput] = useState('')
   const [thinking, setThinking] = useState(false)
   const [error, setError] = useState('')
@@ -85,6 +105,11 @@ export default function AssistantPanel({ onClose }) {
   // Estado de tamaño y posición de la ventana
   const [size, setSize] = useState({ width: 410, height: 590 })
   const [position, setPosition] = useState({ x: 0, y: 0 })
+
+  // Guardar historial en almacenamiento local cada vez que cambien los mensajes
+  useEffect(() => {
+    savePersistedChatHistory(messages)
+  }, [messages])
 
   // Verificar disponibilidad de N8N al montar
   useEffect(() => {
@@ -142,10 +167,10 @@ export default function AssistantPanel({ onClose }) {
     function onMouseMove(moveEvent) {
       const deltaX = moveEvent.clientX - startX
       const deltaY = moveEvent.clientY - startY
-      const minW = 320
-      const maxW = Math.min(800, window.innerWidth - 32)
-      const minH = 380
-      const maxH = Math.min(900, window.innerHeight - 40)
+      const minW = 290
+      const maxW = Math.min(800, window.innerWidth - 20)
+      const minH = 360
+      const maxH = Math.min(900, window.innerHeight - 36)
 
       let newW = startW
       let newH = startH
@@ -191,7 +216,7 @@ export default function AssistantPanel({ onClose }) {
     }
   }, [messages, thinking, error])
 
-  // Envío del mensaje al webhook de N8N que conecta con el Agente Gemini
+  // Envío del mensaje al webhook del Agente LangChain en N8N
   async function handleSendText(text) {
     const trimmed = text.trim()
     if (!trimmed || thinking) return
@@ -226,6 +251,7 @@ export default function AssistantPanel({ onClose }) {
     try {
       const result = await sendMessageToChatbot({
         message: trimmed,
+        sessionId: sessionIdRef.current,
         conversationId: conversationIdRef.current,
         history: historyPayload,
         signal: controller.signal,
@@ -247,13 +273,14 @@ export default function AssistantPanel({ onClose }) {
             id: `assistant-${Date.now()}`,
             role: 'assistant',
             content: result.message,
-            provider: result.provider,
-            model: result.model,
+            provider: result.provider || 'gemini',
+            model: result.model || 'gemini-1.5-flash',
             intent: result.intent,
-            toolUsed: result.toolUsed,
-            data: result.data || [],
+            knowledgeDomain: result.knowledgeDomain,
+            suggestions: result.suggestions || [],
+            quickReplies: result.quickReplies || [],
             actions: result.actions || [],
-            confirmationRequired: result.confirmationRequired || null,
+            requiresConfirmation: Boolean(result.requiresConfirmation),
             isFallback: Boolean(result.isFallback),
             time: getFormattedTime(),
           },
@@ -299,20 +326,39 @@ export default function AssistantPanel({ onClose }) {
   }
 
   function handleExecuteAction(action) {
-    if (!action || !action.url) return
-    navigate(action.url)
-    onClose?.()
+    if (!action) return
+
+    if (action.type === 'open_artist_profile' && action.artistProfileId) {
+      navigate(`/artista/${action.artistProfileId}`)
+      onClose?.()
+      return
+    }
+
+    if (action.type === 'open_commission' && action.artistProfileId) {
+      const commParam = action.commissionId ? `&commissionId=${action.commissionId}` : ''
+      navigate(`/solicitar-comision?artistId=${action.artistProfileId}${commParam}`)
+      onClose?.()
+      return
+    }
+
+    if (action.type === 'open_explore') {
+      const params = new URLSearchParams()
+      if (action.filters?.discipline) params.set('discipline', action.filters.discipline)
+      if (action.filters?.style) params.set('style', action.filters.style)
+      if (action.filters?.maxPrice) params.set('maxPrice', action.filters.maxPrice)
+      navigate(`/explorar?${params.toString()}`)
+      onClose?.()
+      return
+    }
+
+    if (action.url) {
+      navigate(action.url)
+      onClose?.()
+    }
   }
 
   function handleConfirmAction(confirmation) {
-    if (!confirmation) return
-    if (confirmation.action === 'solicitar_comision' && confirmation.details?.artistId) {
-      const budgetParam = confirmation.details.budget ? `&budget=${confirmation.details.budget}` : ''
-      navigate(`/solicitar-comision?artistId=${confirmation.details.artistId}${budgetParam}`)
-      onClose?.()
-    } else {
-      handleSendText(`Sí, confirmo la acción para proceder: ${confirmation.prompt || 'confirmado'}`)
-    }
+    handleSendText('Sí, confirmo la acción para continuar.')
   }
 
   function handleRejectAction() {
@@ -329,6 +375,8 @@ export default function AssistantPanel({ onClose }) {
       abortControllerRef.current.abort()
       abortControllerRef.current = null
     }
+    clearPersistedChatHistory()
+    sessionIdRef.current = `session-${Date.now()}`
     conversationIdRef.current = `artlink-chat-${Date.now()}`
     setMessages([
       {
@@ -405,7 +453,7 @@ export default function AssistantPanel({ onClose }) {
             <div className="artie-sub-text">
               <span className={`artie-status-pill ${n8nAvailable ? 'is-connected' : 'is-offline'}`}>
                 <Radio size={9} aria-hidden="true" />
-                {n8nAvailable ? 'N8N + Gemini y herramientas activo' : 'N8N no disponible (Respaldo local)'}
+                {n8nAvailable ? 'Agente ArtLink en línea' : 'N8N no disponible (Respaldo local)'}
               </span>
             </div>
           </div>
@@ -453,52 +501,18 @@ export default function AssistantPanel({ onClose }) {
 
               <div className="artie-msg-bubble-wrap">
                 <article className="artie-msg-bubble">
+                  {/* Texto seguro sin renderizar HTML sin escapar */}
                   <p className="artie-msg-text">{message.content}</p>
 
-                  {/* Distintivo de herramienta ejecutada */}
-                  {message.toolUsed && (
-                    <div className="artie-msg-tool-tag">
-                      <Search size={10} aria-hidden="true" />
-                      <span>Herramienta: {message.toolUsed.replace(/_/g, ' ')}</span>
-                    </div>
-                  )}
-
-                  {/* Tarjetas de artistas reales consultados */}
-                  {Array.isArray(message.data) && message.data.length > 0 && message.intent === 'search_artists' && (
-                    <div className="artie-agent-cards-grid">
-                      {message.data.map((artist) => (
-                        <div key={artist.id} className="artie-agent-artist-card">
-                          <img
-                            src={artist.avatar}
-                            alt={artist.name}
-                            className="artie-agent-artist-avatar"
-                          />
-                          <div className="artie-agent-artist-info">
-                            <div className="artie-agent-artist-name-row">
-                              <strong>{artist.name}</strong>
-                              <BadgeCheck size={12} color="#8B5CF6" aria-hidden="true" />
-                            </div>
-                            <span className="artie-agent-artist-price">
-                              Desde ${artist.basePrice} USD
-                            </span>
-                            <span className="artie-agent-artist-avail">
-                              {artist.availability === 'open' ? 'Cupos abiertos' : 'En espera'}
-                            </span>
-                          </div>
-                          <button
-                            type="button"
-                            className="artie-agent-card-action-btn"
-                            onClick={() => {
-                              navigate(`/artista/${artist.id}`)
-                              onClose?.()
-                            }}
-                          >
-                            <span>Ver</span>
-                            <ArrowRight size={10} aria-hidden="true" />
-                          </button>
-                        </div>
+                  {/* Sugerencias contextuales */}
+                  {Array.isArray(message.suggestions) && message.suggestions.length > 0 && (
+                    <ul className="artie-agent-suggestions-list">
+                      {message.suggestions.map((sug, i) => (
+                        <li key={i} className="artie-suggestion-item">
+                          <span>{sug}</span>
+                        </li>
                       ))}
-                    </div>
+                    </ul>
                   )}
 
                   {/* Acciones sugeridas en la interfaz */}
@@ -512,29 +526,46 @@ export default function AssistantPanel({ onClose }) {
                           onClick={() => handleExecuteAction(act)}
                         >
                           <ExternalLink size={11} aria-hidden="true" />
-                          <span>{act.label}</span>
+                          <span>{act.label || 'Ver en ArtLink'}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Respuestas rápidas interactivas (Quick Replies) */}
+                  {Array.isArray(message.quickReplies) && message.quickReplies.length > 0 && (
+                    <div className="artie-agent-quick-replies-group">
+                      {message.quickReplies.map((reply, ridx) => (
+                        <button
+                          key={ridx}
+                          type="button"
+                          className="artie-quick-reply-pill"
+                          onClick={() => handleSendText(reply)}
+                          disabled={thinking}
+                        >
+                          <span>{reply}</span>
                         </button>
                       ))}
                     </div>
                   )}
 
                   {/* Tarjeta de Confirmación de Seguridad */}
-                  {message.confirmationRequired && (
+                  {message.requiresConfirmation && (
                     <div className="artie-agent-confirm-card">
                       <div className="artie-agent-confirm-title">
-                        <ShieldCheck size={14} color="#059669" aria-hidden="true" />
+                        <ShieldCheck size={14} color="#059669" />
                         <strong>Confirmación de Seguridad ArtLink</strong>
                       </div>
                       <p className="artie-agent-confirm-prompt">
-                        {message.confirmationRequired.prompt || '¿Deseas confirmar esta operación?'}
+                        Esta acción requiere tu confirmación explícita para continuar.
                       </p>
                       <div className="artie-agent-confirm-btns">
                         <button
                           type="button"
                           className="artie-confirm-yes-btn"
-                          onClick={() => handleConfirmAction(message.confirmationRequired)}
+                          onClick={() => handleConfirmAction(message)}
                         >
-                          <Check size={12} aria-hidden="true" />
+                          <Check size={12} />
                           <span>Confirmar</span>
                         </button>
                         <button
@@ -542,7 +573,7 @@ export default function AssistantPanel({ onClose }) {
                           className="artie-confirm-no-btn"
                           onClick={handleRejectAction}
                         >
-                          <X size={12} aria-hidden="true" />
+                          <X size={12} />
                           <span>Cancelar</span>
                         </button>
                       </div>
@@ -576,7 +607,7 @@ export default function AssistantPanel({ onClose }) {
           )
         })}
 
-        {/* Sugerencias Rápidas */}
+        {/* Sugerencias Rápidas Iniciales */}
         {messages.length === 1 && (
           <div className="artie-quick-prompts-group">
             {QUICK_PROMPTS.map((prompt) => {
@@ -608,7 +639,7 @@ export default function AssistantPanel({ onClose }) {
                 <span className="artie-thinking-dot dot-1" />
                 <span className="artie-thinking-dot dot-2" />
                 <span className="artie-thinking-dot dot-3" />
-                <span className="sr-only">Consultando herramientas y Gemini vía N8N...</span>
+                <span className="sr-only">Consultando al Agente Gemini en N8N...</span>
               </div>
               <div className="artie-thinking-cancel-row">
                 <button
@@ -663,7 +694,7 @@ export default function AssistantPanel({ onClose }) {
             onChange={(event) => setInput(event.target.value)}
             placeholder={
               thinking
-                ? 'El Agente está consultando herramientas...'
+                ? 'El Agente de ArtLink está procesando...'
                 : 'Escribe tu consulta sobre arte, creadores o comisiones'
             }
             disabled={thinking}
@@ -708,7 +739,7 @@ export default function AssistantPanel({ onClose }) {
       {/* ── 4. PIE DE PÁGINA DE SEGURIDAD ── */}
       <div className="artie-security-footnote">
         <Lock size={11} aria-hidden="true" />
-        <span>Agente IA con herramientas controladas y custodia Escrow Shield. Las llamadas se ejecutan en N8N.</span>
+        <span>Agente oficial ArtLink con Gemini. Las llamadas y memoria se procesan de forma segura en N8N.</span>
       </div>
     </section>
   )

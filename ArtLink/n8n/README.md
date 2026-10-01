@@ -1,146 +1,167 @@
-# Integración N8N: Agente de IA con Gemini y Herramientas - ArtLink
+# ArtLink - Agente IA de Arte y Comisiones (N8N + Google Gemini)
 
-Este directorio contiene los flujos de automatización de N8N para el proyecto ArtLink, incluyendo el **Agente de IA Oficial con Gemini y Herramientas Controladas**, así como los flujos de registro y comisiones con notificaciones por correo Gmail.
+Este directorio contiene el workflow oficial de automatización para el **Agente IA de ArtLink**, adaptado a partir de la arquitectura técnica de agentes LangChain en N8N.
 
----
-
-## 1. Diferencia entre Chatbot y Agente de IA
-
-| Característica | Chatbot Tradicional | Agente de IA ArtLink (Nuevo) |
-|---|---|---|
-| **Funcionamiento** | Solo genera texto predictivo | Clasifica intención y decide si necesita herramientas |
-| **Datos reales** | Inventa o desconoce artistas actuales | Consulta en tiempo real `/artistProfiles`, `/requests`, `/commissions` |
-| **Acciones en la UI** | Solo texto estático | Envía botones de acción y navegación (`/artista/:id`, `/explorar?...`) |
-| **Mutaciones y seguridad** | Podría prometer compras falsas | Solicita confirmación explícita antes de crear o enviar solicitudes |
-| **Datos no encontrados** | Alucina respuestas | Admite con honestidad que no hubo coincidencias y sugiere alternativas |
+> **Nota Arquitectónica:**
+> El workflow de ejemplo (Sonar) se utilizó **únicamente como plantilla arquitectónica técnica** (Webhook, Validación, Contexto, LangChain Agent, Memoria Buffer, Modelo Gemini, Formateo y Respond). Se han eliminado por completo todas las referencias musicales, nombres de Sonar, credenciales, IDs de instancia y configuraciones privadas.
 
 ---
 
-## 2. Arquitectura del Agente
+## 1. Arquitectura del Agente LangChain en N8N
 
 ```text
 React Chatbot (Frontend)
     │
-    ▼ HTTP POST (sin API keys en el navegador)
-Webhook de N8N (/artlink/chatbot-gemini)
+    ▼ HTTP POST (Sin API keys en React)
+1. Webhook ArtLink (/webhook/artlink-chatbot)
     │
     ▼
-Validar sesión y mensaje (1-2000 chars, historial max 10, anti-datos sensibles)
+2. Validar Mensaje (1-2000 chars, tipo string, anti-datos sensibles, rol)
+    ├── [Inválido] ──► 3. Respond Error (HTTP 400)
     │
-    ▼ HTTP Request (Gemini Paso 1)
-Gemini clasifica intención y solicita herramienta
+    ▼ [Válido]
+4. Preparar Contexto (Contexto seguro, rol, idioma, página, historial max 10)
     │
-    ▼ Code Node (Ejecutor seguro en N8N)
-N8N valida y ejecuta la herramienta contra ArtLink (JSON Server http://localhost:3000)
+    ▼
+5. ArtLink Agente IA (@n8n/n8n-nodes-langchain.agent)
+    ├── 6. Memoria de Conversación (Buffer Window: 10 mensajes)
+    └── 9. Google Gemini Chat Model (models/gemini-1.5-flash)
     │
-    ▼ HTTP Request (Gemini Paso 2)
-Gemini interpreta el resultado real, genera explicación, acciones y confirmaciones
+    ▼
+7. Formatear Respuesta (Extrae intent, suggestions, quickReplies, actions, confirmation)
     │
-    ▼ Respond to Webhook (JSON enriquecido)
-React muestra texto, tarjetas de artistas, botones de acción y confirmación
+    ▼
+8. Respond Webhook (HTTP 200 con cabeceras CORS unificadas)
+    │
+    ▼
+React Chatbot muestra respuesta, sugerencias, respuestas rápidas y botones de acción
 ```
 
-> **Principio de Seguridad Estricta:**
-> La clave `GEMINI_API_KEY` reside **únicamente en N8N**. React nunca se conecta directamente a Gemini ni contiene la API key en el código, `.env`, localStorage, `db.json` ni Git.
+---
+
+## 2. Nodos del Workflow (`n8n/flujo-agente-artlink-gemini.json`)
+
+| # | Nombre del Nodo | Tipo de Nodo | Función |
+|---|---|---|---|
+| **1** | **Webhook ArtLink** | `n8n-nodes-base.webhook` | Escucha peticiones `POST /webhook/artlink-chatbot` con `responseMode: responseNode`. |
+| **2** | **Validar Mensaje** | `n8n-nodes-base.if` | Verifica que el mensaje exista, sea texto, no esté vacío, no exceda 2000 caracteres y no contenga contraseñas ni datos de tarjetas. |
+| **3** | **Respond Error** | `n8n-nodes-base.respondToWebhook` | Devuelve `400 Bad Request` con mensaje de error controlado y cabeceras CORS. |
+| **4** | **Preparar Contexto** | `n8n-nodes-base.code` | Prepara `sessionId`, `conversationId`, `userId`, `userName`, `role`, `page`, `language`, `preferences` e `history` (recortado a 10). |
+| **5** | **ArtLink Agente IA** | `@n8n/n8n-nodes-langchain.agent` | Agente inteligente con el prompt oficial de ArtLink (asistencia de la plataforma + conocimiento educativo de arte). |
+| **6** | **Memoria de Conversación** | `@n8n/n8n-nodes-langchain.memoryBufferWindow` | Ventana de contexto para recordar los últimos 10 turnos de la sesión. |
+| **7** | **Google Gemini Chat Model** | `@n8n/n8n-nodes-langchain.lmChatGoogleGemini` | Conector oficial del modelo Gemini con credencial propia de ArtLink. |
+| **8** | **Formatear Respuesta** | `n8n-nodes-base.code` | Normaliza el output a la estructura de ArtLink (intención, acciones, sugerencias, sin campos musicales). |
+| **9** | **Respond Webhook** | `n8n-nodes-base.respondToWebhook` | Retorna el JSON estructurado al Frontend con cabeceras CORS. |
 
 ---
 
-## 3. Herramientas Controladas Creadas en N8N
+## 3. Modelo Gemini y Credenciales en N8N
 
-1. **`buscar_artistas`**:
-   - Parámetros: `discipline`, `style`, `maxPrice`, `availability`, `query`.
-   - Consulta: `/artistProfiles` en JSON Server.
-   - Retorna: Artistas reales con nombre, tarifa base, disponibilidad, especialidad y enlace a su perfil.
+- **Nodo:** Google Gemini Chat Model (`@n8n/n8n-nodes-langchain.lmChatGoogleGemini`).
+- **Modelo Configurado:** `models/gemini-1.5-flash` (alta velocidad, excelente seguimiento de instrucciones y amplia cuota disponible en Google AI Studio). Si tu cuenta tiene habilitado `gemini-2.0-flash`, puedes seleccionarlo en el desplegable del nodo.
+- **Credencial de Gemini:**
+  1. En N8N (`http://localhost:5678`), ve a **Credentials** -> **Add Credential**.
+  2. Busca **Google Gemini(PaLM) Api**.
+  3. Ingresa tu API Key de Google AI Studio.
+  4. Nombra la credencial como `Google Gemini ArtLink API`.
+  5. En el nodo **Google Gemini Chat Model**, selecciona esta credencial.
 
-2. **`consultar_perfil_artista`**:
-   - Parámetros: `artistNameOrId`.
-   - Consulta: `/artistProfiles` y `/commissions?artistId=...`.
-   - Retorna: Biografía, portafolio, tarifas base y paquetes activos del artista.
-
-3. **`consultar_estado_pedido`**:
-   - Parámetros: `orderId`.
-   - Consulta: `/requests?id=...`.
-   - Retorna: Estado de la solicitud (pendiente, en progreso, finalizada), presupuesto bajo custodia Escrow Shield y detalles.
-
-4. **`consultar_tarifas`**:
-   - Parámetros: `category`, `maxPrice`.
-   - Consulta: `/commissions`.
-   - Retorna: Paquetes de comisiones reales en la plataforma.
-
-5. **`solicitar_confirmacion`**:
-   - Parámetros: `action`, `artistName`, `budget`.
-   - Acción: Genera una tarjeta de confirmación en la UI para que el usuario apruebe formalmente antes de abrir el formulario o enviar el encargo.
+> **Seguridad Estricta:** La API key nunca se incluye en el archivo JSON del workflow ni en el código de React.
 
 ---
 
-## 4. Guía de Puesta en Marcha
+## 4. Payload de Entrada y Formato de Respuesta
 
-### Paso 1: Configurar Variables de Entorno en N8N
+### Entrada esperada (`POST /webhook/artlink-chatbot`):
+```json
+{
+  "message": "Busca artistas de modelos VTuber con comisiones abiertas",
+  "sessionId": "session-12345",
+  "conversationId": "convo-12345",
+  "userId": "client-1",
+  "userName": "Cliente Prueba",
+  "role": "client",
+  "page": "/explorar",
+  "preferences": ["VTuber", "Anime"],
+  "language": "es",
+  "history": []
+}
+```
 
-Define las variables antes de iniciar o reiniciar N8N:
+### Respuesta normalizada:
+```json
+{
+  "success": true,
+  "message": "En ArtLink puedes encontrar creadores de modelos VTuber listos para comisiones...",
+  "sessionId": "session-12345",
+  "conversationId": "convo-12345",
+  "intent": "search_artists",
+  "knowledgeDomain": "artlink",
+  "suggestions": [
+    "¿Qué especificaciones requiere un modelo Live2D?",
+    "Ver artistas con entrega rápida"
+  ],
+  "quickReplies": [
+    "Explorar artistas",
+    "Cómo pedir comisión"
+  ],
+  "actions": [
+    {
+      "type": "open_explore",
+      "label": "Explorar artistas VTuber",
+      "filters": {
+        "discipline": "Modelos VTuber"
+      }
+    }
+  ],
+  "requiresConfirmation": false,
+  "timestamp": "2026-10-01T19:00:00.000Z",
+  "model": "gemini-1.5-flash"
+}
+```
 
-**En Windows (PowerShell):**
+---
+
+## 5. Importación y Activación en N8N
+
+### Mediante la CLI de N8N:
 ```powershell
-$env:GEMINI_API_KEY="TU_CLAVE_SECRETA_DE_GEMINI"
-$env:GEMINI_MODEL="gemini-1.5-flash"
-n8n start
+n8n import:workflow --input="n8n/flujo-agente-artlink-gemini.json"
+n8n publish:workflow --id="ArtLinkAgentGem1"
 ```
 
-**En Linux / macOS:**
-```bash
-export GEMINI_API_KEY="TU_CLAVE_SECRETA_DE_GEMINI"
-export GEMINI_MODEL="gemini-1.5-flash"
-n8n start
-```
+### Desde la Interfaz Web:
+1. Abre `http://localhost:5678`.
+2. En **Workflows**, haz clic en **Import from File**.
+3. Selecciona `n8n/flujo-agente-artlink-gemini.json`.
+4. Asigna tu credencial de Gemini en el nodo **Google Gemini Chat Model**.
+5. Activa el interruptor **Active** (esquina superior derecha).
 
 ---
 
-### Paso 2: Importar y Publicar el Workflow en N8N
+## 6. Pruebas y Casos de Uso Verificados
 
-Mediante CLI:
+Ejecuta las pruebas desde PowerShell o cURL:
+
 ```powershell
-n8n import:workflow --input="n8n/flujo-chatbot-gemini.json"
-n8n publish:workflow --id="Kx9L2pQm8W7vR4tN"
+# Probar el webhook con el payload de ejemplo
+$body = Get-Content n8n/ejemplos/chatbot-gemini.json -Raw
+Invoke-RestMethod -Uri "http://localhost:5678/webhook/artlink-chatbot" -Method Post -Body $body -ContentType "application/json"
 ```
 
-O desde la interfaz web en `http://localhost:5678`:
-1. Ve a **Workflows** -> **Import from File**.
-2. Selecciona `n8n/flujo-chatbot-gemini.json`.
-3. Activa el interruptor **Active** (arriba a la derecha).
-
----
-
-## 5. Pruebas del Agente con Herramientas
-
-Se incluyen archivos de prueba representativos en `n8n/ejemplos/`:
-
-### Prueba 1: Búsqueda de Artistas con Filtros Reales
-```powershell
-$body = Get-Content n8n/ejemplos/agente-gemini-artistas.json -Raw
-Invoke-RestMethod -Uri "http://localhost:5678/webhook/artlink/chatbot-gemini" -Method Post -Body $body -ContentType "application/json"
-```
-**Respuesta:** Retorna artistas reales (Pixel Foundry, $80 USD, cupos abiertos) junto con la acción de interfaz para ir a su perfil.
-
-### Prueba 2: Consulta del Estado de un Pedido
-```powershell
-$body = Get-Content n8n/ejemplos/agente-gemini-pedido.json -Raw
-Invoke-RestMethod -Uri "http://localhost:5678/webhook/artlink/chatbot-gemini" -Method Post -Body $body -ContentType "application/json"
-```
-**Respuesta:** Consulta `/requests?id=req-101` y describe el estado del pedido y el monto retenido en Escrow Shield.
-
----
-
-## 6. Variables de Entorno en el Frontend
-
-En tu archivo `.env`:
-```env
-VITE_N8N_WEBHOOK_BASE_URL=http://localhost:5678/webhook
-VITE_USE_GEMINI_WORKFLOW=true
-```
-
-Si deseas probar el modo de respaldo local sin conexión externa:
-```env
-VITE_USE_GEMINI_WORKFLOW=false
-```
-El agente responderá inmediatamente:
-`Respuesta local de respaldo; Gemini no está disponible.`
+### Matriz de Pruebas:
+1. **Cómo solicitar una comisión:** El agente explica el proceso de 3 pasos (acuerdo, depósito Escrow Shield, entregas y aprobación).
+2. **Buscar artistas de modelado 3D:** Provee guía y botón de acción interactivo `open_explore`.
+3. **Buscar modelos VTuber:** Provee detalles sobre rig y botón para filtrar en la plataforma.
+4. **Qué es el cel shading:** Explicación técnica educativa del sombreado no fotorrealista (NPR).
+5. **Cómo mejorar la teoría del color:** Consejos sobre armonías cromáticas, saturación y contraste.
+6. **Quién fue Frida Kahlo:** Explicación histórica y artística rigurosa distinguiéndola de los artistas de ArtLink.
+7. **Diferencia entre cubismo y surrealismo:** Explicación sobre descomposición geométrica vs. libre asociación del subconsciente.
+8. **Cómo comenzar con Live2D:** Guía de capas para ilustradores (separación de ojos, boca y cabello).
+9. **Pregunta fuera de ArtLink y arte:** Recuerda cortésmente su función como Agente de ArtLink.
+10. **Mensaje vacío:** Responde HTTP 400 (`Debes enviar un mensaje válido para el asistente de ArtLink.`).
+11. **Mensaje demasiado largo (>2000 chars):** Rechazado por el nodo de validación.
+12. **Gemini / N8N no disponible:** El frontend detecta la caída y muestra con honestidad:  
+    *«Respuesta local de respaldo; Gemini no está disponible.»*
+13. **Recargar y conservar el chat:** Persistencia automática en `localStorage` mediante `loadPersistedChatHistory()`.
+14. **Diseño Responsivo:** Adaptado para 375px (móvil), 768px (tablet) y 1280px (escritorio).

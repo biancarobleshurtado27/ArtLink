@@ -984,3 +984,68 @@
 .artie-confirm-no-btn:hover {
   background: #F3F4F6;
 }
+
+/* ── PÍLDORAS DE RESPUESTAS RÁPIDAS (Quick Replies) ── */
+.artie-agent-quick-replies-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.55rem;
+}
+
+.artie-quick-reply-pill {
+  background: #EDE9FE;
+  border: 1px solid #C4B5FD;
+  border-radius: 999px;
+  color: #6D28D9;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.22rem 0.65rem;
+  cursor: pointer;
+  box-shadow: 1px 1px 0 rgba(109, 40, 217, 0.2);
+  transition: all 0.15s ease;
+}
+
+.artie-quick-reply-pill:hover:not(:disabled) {
+  background: #DDD6FE;
+  transform: translateY(-1px);
+}
+
+.artie-quick-reply-pill:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── LISTA DE SUGERENCIAS CONTEXTUALES ── */
+.artie-agent-suggestions-list {
+  margin: 0.55rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.artie-suggestion-item {
+  font-size: 0.72rem;
+  color: #4B5563;
+  background: #F9FAFB;
+  border: 1px dashed #D1D5DB;
+  border-radius: 6px;
+  padding: 0.25rem 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+/* ── RESPONSIVIDAD PARA PANTALLAS PEQUEÑAS (375px) ── */
+@media (max-width: 25rem) {
+  .assistant-dialog,
+  .chatbot-window {
+    width: calc(100vw - 16px) !important;
+    max-width: calc(100vw - 16px) !important;
+    right: -0.5rem !important;
+    bottom: 3.5rem !important;
+    height: 78vh !important;
+    min-width: 290px !important;
+  }
+}
