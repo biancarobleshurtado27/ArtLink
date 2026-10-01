@@ -11,13 +11,14 @@ import {
   ChevronLeft,
   ChevronRight,
   X,
+  Star,
 } from 'lucide-react'
 import EmptyState from '../components/EmptyState'
 import ErrorState from '../components/ErrorState'
 import LoadingState from '../components/LoadingState'
 import useDiscoverData from '../hooks/useDiscoverData'
 import { handleImageError } from '../utils/imageFallback'
-import { RANKING_EMPTY_MESSAGE } from '../utils/discoverData'
+import { RANKING_EMPTY_MESSAGE, getAvailabilityStatus, getArtistWorks } from '../utils/discoverData'
 
 const AVAILABILITY_BADGE_CLASS = {
   open: 'badge-mint',
@@ -28,19 +29,12 @@ const AVAILABILITY_BADGE_CLASS = {
 
 const ITEMS_PER_PAGE = 8
 
-const SORT_COMPARATORS = {
-  popular: (first, second) => second.likes - first.likes,
-  recent: (first, second) => new Date(second.createdAt || 0) - new Date(first.createdAt || 0),
-  price_asc: (first, second) => (first.artistPrice || 0) - (second.artistPrice || 0),
-  price_desc: (first, second) => (second.artistPrice || 0) - (first.artistPrice || 0),
-  rating: (first, second) => (second.artistRating || 0) - (first.artistRating || 0),
-}
-
-
 export default function ExplorePage() {
   const [searchParams] = useSearchParams()
   const {
     artworks,
+    artists,
+    portfolioItems,
     publicArtworks,
     categoryOptions,
     ranking,
@@ -84,24 +78,86 @@ export default function ExplorePage() {
   const activeFilterCount =
     (searchQuery.trim() ? 1 : 0) + (selectedCategory !== 'all' ? 1 : 0) + (openSlotsOnly ? 1 : 0)
 
-  // Filtrado reactivo de obras sobre los datos reales del portafolio
-  const filteredArtworks = useMemo(() => {
+  // Enriquecer cada artista con sus obras asociadas, disponibilidad y métricas
+  const enrichedArtists = useMemo(() => {
+    return (artists || []).map((artist) => {
+      const works = getArtistWorks(portfolioItems, artist.id)
+      const availability = getAvailabilityStatus(artist)
+      const totalLikes = works.reduce((sum, w) => sum + (Number(w.likes) || 0), 0)
+      return {
+        ...artist,
+        works,
+        workCount: works.length,
+        availability,
+        totalLikes,
+      }
+    })
+  }, [artists, portfolioItems])
+
+  // Filtrado reactivo de artistas sobre los datos del servidor
+  const filteredArtists = useMemo(() => {
     const query = searchQuery.trim().toLocaleLowerCase()
-    const list = artworks.filter((art) => {
-      if (openSlotsOnly && art.availability.tone !== 'open') return false
-      if (selectedCategory !== 'all' && !art.categoryIds.includes(selectedCategory)) return false
-      if (query && !art.searchTerms.toLocaleLowerCase().includes(query)) return false
+    const list = enrichedArtists.filter((artist) => {
+      // 1. Disponibilidad de cupos
+      if (openSlotsOnly && artist.availability.tone !== 'open') return false
+
+      // 2. Filtro de Categoría
+      if (selectedCategory !== 'all') {
+        const cat = categoryOptions.find((c) => c.id === selectedCategory)
+        const catName = (cat?.label || '').toLowerCase()
+        const matchCategory =
+          (artist.disciplines || []).some((d) => d.toLowerCase().includes(catName) || catName.includes(d.toLowerCase())) ||
+          (artist.styles || []).some((s) => s.toLowerCase().includes(catName) || catName.includes(s.toLowerCase())) ||
+          (artist.works || []).some((w) => (w.category || '').toLowerCase().includes(catName) || catName.includes((w.category || '').toLowerCase()))
+        if (!matchCategory) return false
+      }
+
+      // 3. Búsqueda por texto (nombre, usuario, biografía, disciplinas, estilos u obras)
+      if (query) {
+        const searchCorpus = [
+          artist.displayName,
+          artist.name,
+          artist.username,
+          artist.bio,
+          ...(artist.disciplines || []),
+          ...(artist.styles || []),
+          ...(artist.works || []).map((w) => `${w.title} ${w.description}`),
+        ]
+          .filter(Boolean)
+          .join(' ')
+          .toLowerCase()
+
+        if (!searchCorpus.includes(query)) return false
+      }
+
       return true
     })
 
-    return [...list].sort(SORT_COMPARATORS[selectedSort] || SORT_COMPARATORS.popular)
-  }, [artworks, openSlotsOnly, selectedCategory, searchQuery, selectedSort])
+    return [...list].sort((first, second) => {
+      if (selectedSort === 'popular') {
+        return (second.totalLikes || second.rating * 10) - (first.totalLikes || first.rating * 10)
+      }
+      if (selectedSort === 'recent') {
+        return (second.workCount || 0) - (first.workCount || 0)
+      }
+      if (selectedSort === 'price_asc') {
+        return (Number(first.basePrice) || 0) - (Number(second.basePrice) || 0)
+      }
+      if (selectedSort === 'price_desc') {
+        return (Number(second.basePrice) || 0) - (Number(first.basePrice) || 0)
+      }
+      if (selectedSort === 'rating') {
+        return (Number(second.rating) || 0) - (Number(first.rating) || 0)
+      }
+      return 0
+    })
+  }, [enrichedArtists, openSlotsOnly, selectedCategory, searchQuery, selectedSort, categoryOptions])
 
-  const totalPages = Math.max(1, Math.ceil(filteredArtworks.length / ITEMS_PER_PAGE))
+  const totalPages = Math.max(1, Math.ceil(filteredArtists.length / ITEMS_PER_PAGE))
   const activePage = Math.min(currentPage, totalPages)
   const startIndex = (activePage - 1) * ITEMS_PER_PAGE
-  const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, filteredArtworks.length)
-  const paginatedArtworks = filteredArtworks.slice(startIndex, endIndex)
+  const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, filteredArtists.length)
+  const paginatedArtists = filteredArtists.slice(startIndex, endIndex)
 
   return (
     <div className="explore-v3-container">
@@ -333,6 +389,11 @@ export default function ExplorePage() {
                   )}
                   <div>
                     <h3 className="momento-artist-name">{name}</h3>
+                    {artist.username && (
+                      <span className="destacada-artist-handle" style={{ display: 'block', fontSize: '0.8rem', color: '#6B7280', margin: '0.1rem 0' }}>
+                        @{artist.username}
+                      </span>
+                    )}
                     <p className="momento-artist-tag">{(artist.disciplines || []).join(' · ')}</p>
                   </div>
                 </div>
@@ -380,53 +441,58 @@ export default function ExplorePage() {
           )}
         </section>
 
-        {/* 6. SECCIÓN: OBRAS DESTACADAS EN LA COMUNIDAD */}
+        {/* 6. SECCIÓN: CATÁLOGO DE ARTISTAS */}
         <section className="destacadas-section" aria-labelledby="destacadas-title" id="destacadas-section-header">
           <div className="destacadas-header">
             <div className="destacadas-title-wrap">
-              <h2 id="destacadas-title">Obras Destacadas en la Comunidad</h2>
-              <span className="destacadas-counter-badge">{filteredArtworks.length} Encontradas</span>
+              <h2 id="destacadas-title">Catálogo de artistas</h2>
+              <span className="destacadas-counter-badge">
+                {filteredArtists.length} {filteredArtists.length === 1 ? 'artista encontrado' : 'artistas encontrados'}
+              </span>
             </div>
             <span className="destacadas-counter-text">
-              Mostrando {filteredArtworks.length > 0 ? startIndex + 1 : 0} - {endIndex} de {filteredArtworks.length}
+              Mostrando {filteredArtists.length > 0 ? startIndex + 1 : 0} - {endIndex} de {filteredArtists.length}
             </span>
           </div>
 
-          {paginatedArtworks.length > 0 ? (
+          {paginatedArtists.length > 0 ? (
           <div className={`destacadas-grid ${viewMode === 'list' ? 'is-list' : ''}`}>
-            {paginatedArtworks.map((art) => {
-              const isLiked = Boolean(likedMap[art.id])
-              const isBookmarked = Boolean(bookmarkedMap[art.id])
-              const displayLikes = (art.likes + (isLiked ? 1 : 0)).toLocaleString('es-ES')
+            {paginatedArtists.map((artist) => {
+              const isLiked = Boolean(likedMap[artist.id])
+              const isBookmarked = Boolean(bookmarkedMap[artist.id])
+              const name = artist.displayName || artist.name || 'Artista'
+              const coverImg = artist.banner || artist.avatar || artist.works?.[0]?.image
 
               return (
-                <article key={art.id} className="destacada-card" aria-label={art.title}>
+                <article key={artist.id} className="destacada-card" aria-label={`Perfil de ${name}`}>
                   <div className="destacada-image-box">
-                    <span className={`destacada-badge ${AVAILABILITY_BADGE_CLASS[art.availability.tone]}`}>
-                      {art.availability.label}
+                    <span className={`destacada-badge ${AVAILABILITY_BADGE_CLASS[artist.availability.tone]}`}>
+                      {artist.availability.label}
                     </span>
 
-                    <img
-                      src={art.image}
-                      alt={art.title}
-                      className="destacada-img"
-                      onError={handleImageError}
-                    />
+                    {coverImg && (
+                      <img
+                        src={coverImg}
+                        alt={`Portada de ${name}`}
+                        className="destacada-img"
+                        onError={handleImageError}
+                      />
+                    )}
 
                     <div className="destacada-floating-actions">
                       <button
                         type="button"
                         className={`destacada-action-btn ${isLiked ? 'is-liked' : ''}`}
-                        onClick={() => toggleLike(art.id)}
-                        aria-label="Me gusta esta obra"
+                        onClick={() => toggleLike(artist.id)}
+                        aria-label={`Me gusta el perfil de ${name}`}
                       >
                         <Heart size={14} fill={isLiked ? '#EF4444' : 'none'} aria-hidden="true" />
                       </button>
                       <button
                         type="button"
                         className="destacada-action-btn"
-                        onClick={() => toggleBookmark(art.id)}
-                        aria-label="Guardar obra en colección"
+                        onClick={() => toggleBookmark(artist.id)}
+                        aria-label={`Guardar a ${name} en favoritos`}
                       >
                         <Bookmark size={14} fill={isBookmarked ? '#8B5CF6' : 'none'} aria-hidden="true" />
                       </button>
@@ -434,30 +500,93 @@ export default function ExplorePage() {
                   </div>
 
                   <div className="destacada-info">
-                    <h3 className="destacada-title" title={art.title}>
-                      <Link to={`/artista/${art.artistId}`} style={{ color: 'inherit', textDecoration: 'none' }}>
-                        {art.title}
-                      </Link>
-                    </h3>
-
-                    <div className="destacada-artist-row">
+                    <div className="destacada-artist-row" style={{ marginBottom: '0.4rem' }}>
                       <div className="destacada-artist-left">
-                        {art.artistAvatar && (
+                        {artist.avatar && (
                           <img
-                            src={art.artistAvatar}
-                            alt={art.artistName}
+                            src={artist.avatar}
+                            alt={name}
                             className="destacada-artist-avatar"
                             onError={handleImageError}
                           />
                         )}
-                        <span className="destacada-artist-handle">
-                          {art.artistHandle || art.artistName}
-                        </span>
+                        <div>
+                          <h3 className="destacada-title" style={{ margin: 0, fontSize: '1.1rem' }}>
+                            <Link to={`/artista/${artist.id}`} style={{ color: 'inherit', textDecoration: 'none' }}>
+                              {name.includes('[DEMO]') ? name : `Artista: ${name}`}
+                            </Link>
+                          </h3>
+                          <span className="destacada-artist-handle">
+                            @{artist.username}
+                          </span>
+                        </div>
                       </div>
 
-                      <div className="destacada-likes">
-                        <Heart size={12} fill="#EF4444" color="#EF4444" aria-hidden="true" />
-                        <span>{displayLikes}</span>
+                      <div className="destacada-likes" title="Calificación media">
+                        <Star size={13} fill="#F59E0B" color="#F59E0B" aria-hidden="true" />
+                        <span style={{ fontWeight: 700, marginLeft: 2 }}>{artist.rating || 5.0}</span>
+                      </div>
+                    </div>
+
+                    {artist.bio && (
+                      <p style={{ fontSize: '0.82rem', color: '#4B5563', margin: '0.35rem 0 0.65rem', lineHeight: 1.35, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                        {artist.bio}
+                      </p>
+                    )}
+
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem', marginBottom: '0.65rem' }}>
+                      {(artist.disciplines || []).slice(0, 2).map((disc) => (
+                        <span key={disc} className="badge-pill-purple" style={{ fontSize: '0.72rem', padding: '0.15rem 0.5rem' }}>
+                          {disc}
+                        </span>
+                      ))}
+                      {(artist.styles || []).slice(0, 2).map((st) => (
+                        <span key={st} className="badge-pill-mint" style={{ fontSize: '0.72rem', padding: '0.15rem 0.5rem' }}>
+                          {st}
+                        </span>
+                      ))}
+                    </div>
+
+                    {artist.works && artist.works.length > 0 && (
+                      <div style={{ marginBottom: '0.75rem', background: '#F9FAFB', padding: '0.5rem', borderRadius: '8px', border: '1px solid #E5E7EB' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.75rem', marginBottom: '0.35rem' }}>
+                          <span style={{ fontWeight: 700, color: '#374151', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '70%' }}>
+                            {artist.works[0].title}
+                          </span>
+                          <span style={{ color: '#6B7280', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+                            <Heart size={11} fill="#EF4444" color="#EF4444" aria-hidden="true" />
+                            <span>{artist.works[0].likes || 0}</span>
+                          </span>
+                        </div>
+                        <div style={{ display: 'flex', gap: '0.4rem' }}>
+                          {artist.works.slice(0, 3).map((w) => (
+                            <div
+                              key={w.id}
+                              style={{ position: 'relative', flex: 1, height: '46px', borderRadius: '5px', overflow: 'hidden', border: '1px solid #D1D5DB' }}
+                              title={w.title}
+                            >
+                              <img src={w.image} alt={w.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={handleImageError} />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="momento-card-footer" style={{ marginTop: 'auto', paddingTop: '0.65rem', borderTop: '1.5px solid #F3F4F6' }}>
+                      <div>
+                        <span className="momento-price-label">Tarifa base</span>
+                        <strong className="momento-price-value">
+                          {artist.basePrice > 0 ? `Desde $${artist.basePrice}` : 'A consultar'}
+                        </strong>
+                      </div>
+
+                      <div className="momento-actions-group">
+                        <Link to={`/artista/${artist.id}`} className="momento-btn-view">
+                          Ver perfil
+                        </Link>
+                        <Link to={`/solicitudes/nueva/${artist.id}`} className="momento-btn-quote">
+                          Cotizar
+                        </Link>
                       </div>
                     </div>
                   </div>
@@ -467,9 +596,9 @@ export default function ExplorePage() {
           </div>
           ) : (
             <EmptyState
-              title="Sin obras para estos filtros"
+              title="Sin artistas para estos filtros"
               description={activeFilterCount > 0
-                ? 'Ajusta la búsqueda o restablece los filtros para ver el portafolio completo.'
+                ? 'Ajusta la búsqueda o restablece los filtros para ver todos los artistas del catálogo.'
                 : RANKING_EMPTY_MESSAGE}
             />
           )}
