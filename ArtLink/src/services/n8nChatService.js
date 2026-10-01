@@ -11,15 +11,16 @@ const CHAT_STORAGE_KEY = 'artlink_agent_chat_history'
  * Verifica si el flujo de N8N con Gemini está habilitado en las variables de entorno.
  */
 export function isN8nChatbotConfigured() {
-  return import.meta.env.VITE_USE_GEMINI_WORKFLOW !== 'false'
+  return import.meta.env?.VITE_USE_GEMINI_WORKFLOW !== 'false'
 }
 
 /**
  * Obtiene la URL base configurada para los webhooks de N8N.
  */
 export function getN8nWebhookBaseUrl() {
-  return import.meta.env.VITE_N8N_WEBHOOK_BASE_URL || 'http://localhost:5678/webhook'
+  return import.meta.env?.VITE_N8N_WEBHOOK_BASE_URL || 'http://localhost:5678/webhook'
 }
+
 
 /**
  * Carga el historial de conversación persistente desde localStorage.
@@ -83,35 +84,36 @@ export async function sendMessageToChatbot({
   userId = 'guest-user',
   userName = 'Creador',
   role = 'client',
-  page = window?.location?.pathname || '/',
+  page = typeof window !== 'undefined' && window?.location?.pathname ? window.location.pathname : '/',
   preferences = [],
   language = 'es',
   history = [],
   signal,
-  timeoutMs = 18000,
+  timeoutMs = 30000,
 }) {
   const trimmed = (message || '').trim()
   if (!trimmed) {
-    throw new Error('Debes enviar un mensaje válido para el asistente de ArtLink.')
+    return {
+      success: false,
+      message: 'Debes enviar un mensaje válido para el asistente de ArtLink.',
+      errorCode: 'INVALID_REQUEST',
+      retryable: false,
+      quickReplies: [],
+      actions: [],
+    }
   }
 
   // Si el flujo está deshabilitado explícitamente, devolver el mensaje de respaldo formal
   if (!isN8nChatbotConfigured()) {
     return {
       success: false,
-      message: FALLBACK_MESSAGE,
-      sessionId,
-      conversationId,
-      intent: 'unknown',
-      knowledgeDomain: 'general',
-      suggestions: [],
-      quickReplies: [],
+      message: 'No pude responder en este momento. Intenta nuevamente.',
+      errorCode: 'AGENT_UNAVAILABLE',
+      retryable: true,
+      quickReplies: ['Explorar artistas', 'Cómo pedir comisión', 'Teoría del color'],
       actions: [],
-      requiresConfirmation: false,
       provider: 'local-fallback',
       model: 'local-fallback',
-      timestamp: new Date().toISOString(),
-      isFallback: true,
     }
   }
 
@@ -129,16 +131,15 @@ export async function sendMessageToChatbot({
   }
 
   const baseUrl = getN8nWebhookBaseUrl().replace(/\/+$/, '')
-  // Endpoint exacto configurado en N8N para el Agente ArtLink
   const webhookUrl = `${baseUrl}/artlink-chatbot`
 
-  // Controlador de timeout interno combinado con la señal de cancelación del usuario
+  // Controlador de timeout interno (30s) combinado con la señal de cancelación del usuario
   const internalController = new AbortController()
+  let isTimedOut = false
   const timeoutId = setTimeout(() => {
-    internalController.abort(new Error('TIMEOUT'))
+    isTimedOut = true
+    internalController.abort()
   }, timeoutMs)
-
-  let combinedSignal = internalController.signal
 
   if (signal) {
     if (signal.aborted) {
@@ -151,11 +152,19 @@ export async function sendMessageToChatbot({
       'abort',
       () => {
         clearTimeout(timeoutId)
-        internalController.abort(signal.reason || new Error('Cancelado por el usuario'))
+        internalController.abort()
       },
       { once: true }
     )
   }
+
+  const ALLOWED_ACTIONS = [
+    'open_artist_profile',
+    'open_commission',
+    'open_explore',
+    'open_requests',
+    'open_settings',
+  ]
 
   try {
     const response = await fetch(webhookUrl, {
@@ -164,7 +173,7 @@ export async function sendMessageToChatbot({
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(payload),
-      signal: combinedSignal,
+      signal: internalController.signal,
     })
 
     clearTimeout(timeoutId)
@@ -177,90 +186,130 @@ export async function sendMessageToChatbot({
     }
 
     if (!response.ok) {
-      const errorMsg =
-        data?.message ||
-        data?.error ||
-        `El servicio de N8N devolvió un error (${response.status}: ${response.statusText}).`
+      if (response.status === 429) {
+        return {
+          success: false,
+          message: 'El servicio está ocupado en este momento. Por favor espera unos segundos e intenta nuevamente.',
+          errorCode: 'RATE_LIMITED',
+          retryable: true,
+          quickReplies: [],
+          actions: [],
+        }
+      }
+
+      if (response.status === 400) {
+        return {
+          success: false,
+          message: (typeof data?.message === 'string' && data.message.trim()) || 'La solicitud enviada no es válida.',
+          errorCode: 'INVALID_REQUEST',
+          retryable: false,
+          quickReplies: [],
+          actions: [],
+        }
+      }
 
       return {
         success: false,
-        message: errorMsg,
-        sessionId,
-        conversationId,
-        intent: 'unknown',
-        knowledgeDomain: 'general',
-        suggestions: [],
+        message: 'No pude responder en este momento. Intenta nuevamente.',
+        errorCode: 'AGENT_UNAVAILABLE',
+        retryable: true,
         quickReplies: [],
         actions: [],
-        requiresConfirmation: false,
-        provider: 'gemini',
-        model: data?.model || 'gemini',
-        status: response.status,
-        isFallback: false,
       }
     }
 
+    // Normalizar cualquier formato de respuesta de Gemini al campo message
+    let extractedText = ''
     if (data && typeof data === 'object') {
-      return {
-        success: data.success !== false,
-        message: data.message || 'Respuesta del agente recibida.',
-        sessionId: data.sessionId || sessionId,
-        conversationId: data.conversationId || conversationId,
-        intent: data.intent || 'art_explanation',
-        knowledgeDomain: data.knowledgeDomain || 'art',
-        suggestions: Array.isArray(data.suggestions) ? data.suggestions : [],
-        quickReplies: Array.isArray(data.quickReplies) ? data.quickReplies : [],
-        actions: Array.isArray(data.actions) ? data.actions : [],
-        requiresConfirmation: Boolean(data.requiresConfirmation),
-        timestamp: data.timestamp || new Date().toISOString(),
-        model: data.model || 'gemini-1.5-flash',
-        provider: 'gemini',
-        isFallback: false,
+      if (typeof data.message === 'string' && data.message.trim()) {
+        extractedText = data.message.trim()
+      } else if (typeof data.output === 'string' && data.output.trim()) {
+        extractedText = data.output.trim()
+      } else if (data.output && typeof data.output.text === 'string' && data.output.text.trim()) {
+        extractedText = data.output.text.trim()
+      } else if (typeof data.text === 'string' && data.text.trim()) {
+        extractedText = data.text.trim()
+      } else if (typeof data.response === 'string' && data.response.trim()) {
+        extractedText = data.response.trim()
       }
     }
+
+    // El campo message nunca puede ser null, undefined, cadena vacía ni un objeto sin texto
+    if (!extractedText) {
+      return {
+        success: false,
+        message: 'No pude generar una respuesta completa. Intenta escribir tu pregunta de otra forma.',
+        errorCode: 'INVALID_RESPONSE',
+        retryable: true,
+        quickReplies: [],
+        actions: [],
+      }
+    }
+
+    // Si data.success vino explícitamente en false
+    if (data?.success === false) {
+      return {
+        success: false,
+        message: extractedText || 'No pude responder en este momento. Intenta nuevamente.',
+        errorCode: data.errorCode || 'AGENT_UNAVAILABLE',
+        retryable: data.retryable !== false,
+        quickReplies: [],
+        actions: [],
+      }
+    }
+
+    // Ignorar opciones transparentes (suggestions)
+    const quickReplies = Array.isArray(data?.quickReplies)
+      ? data.quickReplies.filter((r) => typeof r === 'string' && r.trim().length > 0)
+      : []
+    const visibleSuggestions = [] // Se ignoran completamente por especificación
+
+    const actions = Array.isArray(data?.actions)
+      ? data.actions.filter((a) => a && typeof a === 'object' && ALLOWED_ACTIONS.includes(a.type))
+      : []
 
     return {
       success: true,
-      message: 'Consulta procesada correctamente.',
-      sessionId,
-      conversationId,
-      intent: 'art_explanation',
-      knowledgeDomain: 'art',
-      suggestions: [],
-      quickReplies: [],
-      actions: [],
-      requiresConfirmation: false,
-      model: 'gemini-1.5-flash',
-      provider: 'gemini',
-      isFallback: false,
+      message: extractedText,
+      conversationId: data?.conversationId || conversationId,
+      intent: data?.intent || 'art_technique',
+      quickReplies: quickReplies.length > 0 ? quickReplies : ['Explorar artistas', 'Cómo pedir comisión', 'Teoría del color'],
+      actions,
+      requiresConfirmation: Boolean(data?.requiresConfirmation),
+      provider: data?.provider || 'gemini',
+      model: data?.model || 'gemini-3.1-flash-lite',
     }
   } catch (error) {
     clearTimeout(timeoutId)
 
-    // Si fue cancelado expresamente por el usuario
-    if (signal?.aborted || error.name === 'AbortError') {
-      const abortErr = new Error('Consulta cancelada por el usuario.')
+    // Si la cancelación provino del usuario explícitamente
+    if (signal?.aborted) {
+      const abortErr = new Error('Operación cancelada por el usuario.')
       abortErr.name = 'AbortError'
       throw abortErr
     }
 
-    // Si N8N está apagado, inaccesible o hubo un error de red/timeout
+    // Si ocurrió timeout (~30s)
+    if (isTimedOut) {
+      return {
+        success: false,
+        message: 'El tiempo de espera para la respuesta del agente se ha agotado. Intenta nuevamente.',
+        errorCode: 'AGENT_TIMEOUT',
+        retryable: true,
+        quickReplies: [],
+        actions: [],
+      }
+    }
+
+    // Error de red, N8N apagado o inalcanzable
     return {
       success: false,
-      message: FALLBACK_MESSAGE,
-      sessionId,
-      conversationId,
-      intent: 'unknown',
-      knowledgeDomain: 'general',
-      suggestions: [],
+      message: 'No pude responder en este momento. Intenta nuevamente.',
+      errorCode: 'AGENT_UNAVAILABLE',
+      retryable: true,
       quickReplies: [],
       actions: [],
-      requiresConfirmation: false,
-      provider: 'local-fallback',
-      model: 'local-fallback',
-      timestamp: new Date().toISOString(),
-      isFallback: true,
-      rawError: error.message,
     }
   }
 }
+

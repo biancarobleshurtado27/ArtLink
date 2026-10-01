@@ -43,13 +43,7 @@ function getFormattedTime(dateInput) {
 }
 
 const INITIAL_WELCOME_CONTENT =
-  '¡Hola, creador! Soy el Agente de IA oficial de ArtLink. Puedo ayudarte a explorar artistas, gestionar comisiones y responder dudas educativas sobre dibujo, modelado 3D, VTubers y teoría del arte.'
-
-const INITIAL_SUGGESTIONS = [
-  '¿Cómo solicito una comisión en ArtLink?',
-  'Buscar artistas de modelado 3D o VTuber',
-  '¿Qué es el cel shading en arte digital?',
-]
+  'Hola, soy el asistente de ArtLink. Puedo ayudarte a encontrar artistas, entender las comisiones o resolver dudas sobre arte digital.'
 
 const INITIAL_QUICK_REPLIES = [
   'Explorar artistas',
@@ -57,32 +51,6 @@ const INITIAL_QUICK_REPLIES = [
   'Teoría del color',
 ]
 
-const QUICK_PROMPTS = [
-  {
-    id: 'commission',
-    icon: FileText,
-    text: '¿Cómo solicito una comisión?',
-    styleClass: 'prompt-pill-pink',
-  },
-  {
-    id: '3d',
-    icon: Search,
-    text: 'Buscar artistas de modelado 3D',
-    styleClass: 'prompt-pill-mint',
-  },
-  {
-    id: 'vtuber',
-    icon: Sparkles,
-    text: 'Buscar modelos VTuber',
-    styleClass: 'prompt-pill-lavender',
-  },
-  {
-    id: 'shading',
-    icon: HelpCircle,
-    text: '¿Qué es el cel shading?',
-    styleClass: 'prompt-pill-yellow',
-  },
-]
 
 export default function AssistantPanel({ onClose }) {
   const navigate = useNavigate()
@@ -125,7 +93,6 @@ export default function AssistantPanel({ onClose }) {
             content: INITIAL_WELCOME_CONTENT,
             provider: 'system',
             status: 'sent',
-            suggestions: INITIAL_SUGGESTIONS,
             quickReplies: INITIAL_QUICK_REPLIES,
           })
           const initialized = addMessageToConversation(convo, welcomeMsg)
@@ -133,6 +100,7 @@ export default function AssistantPanel({ onClose }) {
         } else {
           setConversation(convo)
         }
+
       })
       .catch((err) => {
         console.error('[AssistantPanel] Error al recuperar conversación:', err)
@@ -333,7 +301,6 @@ export default function AssistantPanel({ onClose }) {
           provider: result.provider || 'gemini',
           status: 'sent',
           intent: result.intent,
-          suggestions: result.suggestions || [],
           quickReplies: result.quickReplies || [],
           actions: result.actions || [],
         })
@@ -386,6 +353,11 @@ export default function AssistantPanel({ onClose }) {
     }
   }
 
+  function handleQuickReply(reply) {
+    if (thinking || !reply) return
+    handleSendText(reply)
+  }
+
   // Iniciar una conversación completamente nueva
   function handleNewConversation() {
     if (abortControllerRef.current) {
@@ -402,7 +374,6 @@ export default function AssistantPanel({ onClose }) {
       content: INITIAL_WELCOME_CONTENT,
       provider: 'system',
       status: 'sent',
-      suggestions: INITIAL_SUGGESTIONS,
       quickReplies: INITIAL_QUICK_REPLIES,
     })
     const initialized = addMessageToConversation(freshConvo, welcomeMsg)
@@ -422,9 +393,11 @@ export default function AssistantPanel({ onClose }) {
       return
     }
 
-    if (action.type === 'open_commission' && action.artistProfileId) {
+    if (action.type === 'open_commission') {
       const commParam = action.commissionId ? `&commissionId=${action.commissionId}` : ''
-      navigate(`/solicitar-comision?artistId=${action.artistProfileId}${commParam}`)
+      const artistParam = action.artistProfileId ? `artistId=${action.artistProfileId}` : ''
+      const query = [artistParam, commParam.replace(/^&/, '')].filter(Boolean).join('&')
+      navigate(`/solicitudes/nueva${query ? `?${query}` : ''}`)
       onClose?.()
       return
     }
@@ -434,7 +407,20 @@ export default function AssistantPanel({ onClose }) {
       if (action.filters?.discipline) params.set('discipline', action.filters.discipline)
       if (action.filters?.style) params.set('style', action.filters.style)
       if (action.filters?.maxPrice) params.set('maxPrice', action.filters.maxPrice)
-      navigate(`/explorar?${params.toString()}`)
+      const q = params.toString()
+      navigate(`/explorar${q ? `?${q}` : ''}`)
+      onClose?.()
+      return
+    }
+
+    if (action.type === 'open_requests') {
+      navigate('/solicitudes')
+      onClose?.()
+      return
+    }
+
+    if (action.type === 'open_settings') {
+      navigate('/settings')
       onClose?.()
       return
     }
@@ -444,6 +430,7 @@ export default function AssistantPanel({ onClose }) {
       onClose?.()
     }
   }
+
 
   function handleConfirmAction() {
     handleSendText('Sí, confirmo la acción para continuar.')
@@ -562,17 +549,6 @@ export default function AssistantPanel({ onClose }) {
                   <article className="artie-msg-bubble">
                     <p className="artie-msg-text">{message.content}</p>
 
-                    {/* Sugerencias contextuales */}
-                    {Array.isArray(message.suggestions) && message.suggestions.length > 0 && (
-                      <ul className="artie-agent-suggestions-list">
-                        {message.suggestions.map((sug, i) => (
-                          <li key={i} className="artie-suggestion-item">
-                            <span>{sug}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-
                     {/* Acciones sugeridas en la interfaz */}
                     {Array.isArray(message.actions) && message.actions.length > 0 && (
                       <div className="artie-agent-actions-group">
@@ -590,18 +566,18 @@ export default function AssistantPanel({ onClose }) {
                       </div>
                     )}
 
-                    {/* Respuestas rápidas interactivas (Quick Replies) */}
+                    {/* Botones morados de acciones rápidas (Quick Replies) */}
                     {Array.isArray(message.quickReplies) && message.quickReplies.length > 0 && (
-                      <div className="artie-agent-quick-replies-group">
-                        {message.quickReplies.map((reply, ridx) => (
+                      <div className="chat-quick-replies">
+                        {message.quickReplies.map((reply) => (
                           <button
-                            key={ridx}
+                            key={reply}
                             type="button"
-                            className="artie-quick-reply-pill"
-                            onClick={() => handleSendText(reply)}
+                            className="chat-quick-reply"
+                            onClick={() => handleQuickReply(reply)}
                             disabled={thinking}
                           >
-                            <span>{reply}</span>
+                            {reply}
                           </button>
                         ))}
                       </div>
@@ -669,15 +645,15 @@ export default function AssistantPanel({ onClose }) {
                 <span className="artie-dot dot-2" />
                 <span className="artie-dot dot-3" />
               </div>
-              <span className="artie-thinking-label">Consultando datos con Gemini...</span>
+              <span className="artie-thinking-label">ArtLink está preparando una respuesta...</span>
               <button
                 type="button"
                 className="artie-cancel-btn"
                 onClick={handleCancel}
-                title="Detener respuesta"
+                title="Cancelar respuesta"
               >
                 <Square size={10} aria-hidden="true" />
-                <span>Detener</span>
+                <span>Cancelar</span>
               </button>
             </div>
           </div>
@@ -693,7 +669,7 @@ export default function AssistantPanel({ onClose }) {
                 {lastFailedMessage && (
                   <button type="button" className="artie-retry-btn" onClick={handleRetry}>
                     <RotateCcw size={12} aria-hidden="true" />
-                    <span>Reintentar envío</span>
+                    <span>Reintentar</span>
                   </button>
                 )}
               </div>
@@ -702,25 +678,6 @@ export default function AssistantPanel({ onClose }) {
         )}
       </div>
 
-      {/* Prompts Rápidos (solo si hay pocos mensajes) */}
-      {messagesList.length <= 2 && !thinking && (
-        <nav className="artie-quick-prompts-bar" aria-label="Sugerencias iniciales">
-          {QUICK_PROMPTS.map((prompt) => {
-            const Icon = prompt.icon
-            return (
-              <button
-                key={prompt.id}
-                type="button"
-                className={`prompt-pill ${prompt.styleClass}`}
-                onClick={() => handleSendText(prompt.text)}
-              >
-                <Icon size={12} aria-hidden="true" />
-                <span>{prompt.text}</span>
-              </button>
-            )
-          })}
-        </nav>
-      )}
 
       {/* Pie con formulario de envío */}
       <footer className="artie-composer-area">

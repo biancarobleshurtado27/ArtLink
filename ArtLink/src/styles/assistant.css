@@ -985,57 +985,45 @@
   background: #F3F4F6;
 }
 
-/* ── PÍLDORAS DE RESPUESTAS RÁPIDAS (Quick Replies) ── */
-.artie-agent-quick-replies-group {
+/* ── BOTONES MORADOS DE ACCIONES RÁPIDAS (Quick Replies) ── */
+.chat-quick-replies {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.35rem;
-  margin-top: 0.55rem;
+  gap: 0.45rem;
+  margin-top: 0.65rem;
 }
 
-.artie-quick-reply-pill {
-  background: #EDE9FE;
-  border: 1px solid #C4B5FD;
+.chat-quick-reply {
+  background: #efe5ff;
+  border: 1px solid #cdb2ff;
+  color: #7040c8;
   border-radius: 999px;
-  color: #6D28D9;
-  font-size: 0.7rem;
-  font-weight: 700;
-  padding: 0.22rem 0.65rem;
+  font-weight: 600;
+  font-size: 0.78rem;
+  padding: 0.35rem 0.85rem;
   cursor: pointer;
-  box-shadow: 1px 1px 0 rgba(109, 40, 217, 0.2);
-  transition: all 0.15s ease;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: none;
+  line-height: 1.25;
 }
 
-.artie-quick-reply-pill:hover:not(:disabled) {
-  background: #DDD6FE;
+.chat-quick-reply:hover,
+.chat-quick-reply:focus-visible {
+  background: #7c4dff;
+  border-color: #7c4dff;
+  color: #ffffff;
   transform: translateY(-1px);
 }
 
-.artie-quick-reply-pill:disabled {
+.chat-quick-reply:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  transform: none;
 }
 
-/* ── LISTA DE SUGERENCIAS CONTEXTUALES ── */
-.artie-agent-suggestions-list {
-  margin: 0.55rem 0 0;
-  padding: 0;
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-}
-
-.artie-suggestion-item {
-  font-size: 0.72rem;
-  color: #4B5563;
-  background: #F9FAFB;
-  border: 1px dashed #D1D5DB;
-  border-radius: 6px;
-  padding: 0.25rem 0.5rem;
-  display: flex;
-  align-items: center;
-}
 
 /* ── RESPONSIVIDAD PARA PANTALLAS PEQUEÑAS (375px) ── */
 @media (max-width: 25rem) {

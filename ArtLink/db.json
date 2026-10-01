@@ -1143,12 +1143,35 @@
       "createdAt": "2026-10-01T01:09:01.739Z"
     }
   ],
-  "messages": [],
+  "messages": [
+    {
+      "conversationId": "mythosforge",
+      "senderId": "user-artist-001",
+      "senderRole": "artista",
+      "text": "holalaa",
+      "time": "15:05",
+      "attachments": [],
+      "createdAt": "2026-10-01T21:05:18.548Z",
+      "read": false,
+      "id": "30yj4-9MuSc"
+    },
+    {
+      "conversationId": "mythosforge",
+      "senderId": "user-artist-001",
+      "senderRole": "artista",
+      "text": "qwertyujiokpl",
+      "time": "15:05",
+      "attachments": [],
+      "createdAt": "2026-10-01T21:05:29.388Z",
+      "read": false,
+      "id": "v6XkTypzdvU"
+    }
+  ],
   "conversations": [],
   "favorites": [],
   "portfolio": [],
-  "$schema": "./node_modules/json-server/schema.json",
   "notifications": [],
   "proposals": [],
-  "chatMessages": []
+  "chatMessages": [],
+  "$schema": "./node_modules/json-server/schema.json"
 }
