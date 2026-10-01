@@ -3,53 +3,67 @@
    Matches reference design: 3-column layout, thick borders, badges, escrow
    ========================================================================== */
 
-/* Layout completely fixed for Chat */
+/* Layout completely fixed and full screen for Chat */
 .is-chat-layout {
   height: 100vh !important;
   max-height: 100vh !important;
+  min-height: 100vh !important;
   overflow: hidden !important;
+  margin-bottom: 0 !important;
+  padding: 0 !important;
 }
 
 .main-content-chat {
-  height: 100% !important;
-  max-height: 100% !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+  min-height: 0 !important;
   overflow: hidden !important;
   display: flex !important;
   flex-direction: column !important;
-  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
 }
 
 .page-container-chat {
   height: 100% !important;
   max-height: 100% !important;
   max-width: 100% !important;
+  width: 100% !important;
   padding: 0 !important;
+  margin: 0 !important;
   overflow: hidden !important;
   display: flex !important;
   flex-direction: column !important;
   min-height: 0 !important;
+  flex: 1 1 0 !important;
 }
 
 .chat-view-container {
-  max-width: 1440px;
-  width: 100%;
-  margin: 0 auto;
-  height: 100vh;
-  max-height: 100vh;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+  min-height: 100vh !important;
   box-sizing: border-box;
-  padding: 0.75rem 1.25rem 0.85rem;
+  padding: 0.85rem 1.5rem 0.85rem 1.5rem;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   color: #1E192B;
+  background: #FFFDF8;
+  flex: 1 1 0;
 }
 
 /* ── Top Header & Filter Bar ── */
 .chat-top-header {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  margin-bottom: 1.25rem;
+  gap: 0.65rem;
+  margin-bottom: 0.85rem;
+  flex-shrink: 0;
 }
 
 .chat-header-row {
@@ -68,7 +82,7 @@
 
 .chat-main-title {
   font-family: var(--font-heading, 'Syne', sans-serif);
-  font-size: 1.65rem;
+  font-size: 1.45rem;
   font-weight: 800;
   margin: 0;
   color: #1E192B;
@@ -79,9 +93,9 @@
   background: #FCE7F3;
   color: #9D174D;
   border: 1.5px solid #1E192B;
-  padding: 0.25rem 0.65rem;
+  padding: 0.2rem 0.6rem;
   border-radius: 9999px;
-  font-size: 0.8rem;
+  font-size: 0.76rem;
   font-weight: 700;
   box-shadow: 1.5px 1.5px 0 #1E192B;
   display: inline-flex;
@@ -207,17 +221,17 @@
 
 /* ── Main 3-Column Grid ── */
 .chat-three-column-grid {
-  flex: 1;
+  flex: 1 1 0;
   min-height: 0;
   display: grid;
-  grid-template-columns: 320px 1fr 350px;
+  grid-template-columns: 310px minmax(0, 1fr) 345px;
   gap: 1.15rem;
   align-items: stretch;
   overflow: hidden;
-  height: 100%;
+  height: auto;
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 980px) {
   .chat-three-column-grid {
     grid-template-columns: 290px 1fr;
   }
@@ -226,7 +240,7 @@
   }
 }
 
-@media (max-width: 860px) {
+@media (max-width: 768px) {
   .chat-three-column-grid {
     grid-template-columns: 1fr;
   }
@@ -250,16 +264,20 @@
   height: 100% !important;
   max-height: 100% !important;
   min-height: 0 !important;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .chat-sidebar-header {
-  padding: 1rem 1rem 0.75rem;
+  padding: 0.85rem 1rem 0.65rem;
   border-bottom: 2px solid #1E192B;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
   background: #FFFDF8;
+  flex-shrink: 0;
 }
 
 .chat-sidebar-title-row {
@@ -306,9 +324,10 @@
 }
 
 .chat-sidebar-search-row {
-  padding: 0.75rem 1rem;
+  padding: 0.65rem 1rem;
   border-bottom: 1.5px solid #E5E7EB;
   background: #FFFFFF;
+  flex-shrink: 0;
 }
 
 .chat-sidebar-search-box {
@@ -332,8 +351,10 @@
 }
 
 .chat-conversations-scroll-list {
-  flex: 1;
+  flex: 1 1 0;
+  min-height: 0;
   overflow-y: auto;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
 }
@@ -490,7 +511,7 @@
 }
 
 .chat-sidebar-footer {
-  padding: 0.75rem 1rem;
+  padding: 0.65rem 1rem;
   border-top: 2px solid #1E192B;
   background: #FFFDF8;
   display: flex;
@@ -499,6 +520,7 @@
   font-size: 0.75rem;
   font-weight: 600;
   color: #4B5563;
+  flex-shrink: 0;
 }
 
 .chat-socket-indicator {
@@ -514,17 +536,21 @@
   height: 100% !important;
   max-height: 100% !important;
   min-height: 0 !important;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .chat-center-header {
-  padding: 0.85rem 1.25rem;
+  padding: 0.75rem 1.15rem;
   border-bottom: 2px solid #1E192B;
   background: #FFFDF8;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 0.85rem;
   flex-wrap: wrap;
+  flex-shrink: 0;
 }
 
 .chat-active-artist-info {
@@ -618,14 +644,15 @@
   background: #CCFBF1;
   border: 1.5px solid #0F766E;
   border-radius: 8px;
-  padding: 0.65rem 0.95rem;
-  margin: 0.75rem 1rem 0;
+  padding: 0.5rem 0.85rem;
+  margin: 0.5rem 0.85rem 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: #042F2E;
+  flex-shrink: 0;
 }
 
 .chat-shield-text-wrap {
@@ -646,13 +673,17 @@
 
 /* ── Chat Messages Scroll Area ── */
 .chat-thread-scroll-box {
-  flex: 1;
+  flex: 1 1 0;
+  min-height: 250px;
   overflow-y: auto;
-  padding: 1rem 1.25rem;
+  overflow-x: hidden;
+  padding: 0.85rem 1.15rem;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1rem;
   background: #FFFDF8;
+  scrollbar-width: thin;
+  scrollbar-color: #D1D5DB transparent;
 }
 
 .chat-date-separator {
@@ -799,7 +830,8 @@
 .chat-wip-img-wrapper {
   position: relative;
   width: 100%;
-  max-height: 280px;
+  height: 200px;
+  max-height: 200px;
   background: #F3F4F6;
   border-bottom: 2px solid #1E192B;
   overflow: hidden;
@@ -807,7 +839,7 @@
 
 .chat-wip-img {
   width: 100%;
-  height: 260px;
+  height: 100%;
   object-fit: cover;
   display: block;
 }
@@ -881,28 +913,28 @@
 
 /* WIP Approval & Adjustments Action Buttons */
 .chat-wip-actions-row {
-  padding: 0.85rem 1.15rem;
+  padding: 0.65rem 0.95rem;
   display: flex;
-  gap: 0.75rem;
+  gap: 0.5rem;
   background: #FFFFFF;
   flex-wrap: wrap;
 }
 
 .chat-btn-approve-wip {
-  flex: 1.3;
-  min-width: 180px;
+  flex: 1 1 180px;
+  min-width: 140px;
   background: #0D9488;
   color: #FFFFFF;
   border: 2px solid #1E192B;
   border-radius: 10px;
-  padding: 0.65rem 1rem;
-  font-size: 0.85rem;
+  padding: 0.55rem 0.85rem;
+  font-size: 0.82rem;
   font-weight: 800;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.45rem;
   box-shadow: 2.5px 2.5px 0 #1E192B;
   transition: all 0.15s ease;
 }
@@ -914,14 +946,15 @@
 }
 
 .chat-btn-adjust-wip {
-  flex: 1;
-  min-width: 150px;
+  flex: 1 1 140px;
+  min-width: 120px;
   background: #FFFFFF;
   color: #1E192B;
   border: 2px solid #1E192B;
   border-radius: 10px;
-  padding: 0.65rem 1rem;
-  font-size: 0.85rem;
+  padding: 0.55rem 0.85rem;
+  font-size: 0.82rem;
+
   font-weight: 800;
   cursor: pointer;
   display: flex;
@@ -940,7 +973,7 @@
 
 /* ── Quick Replies Bar ── */
 .chat-quick-replies-bar {
-  padding: 0.45rem 1rem;
+  padding: 0.35rem 0.85rem;
   background: #FFFDF8;
   border-top: 1.5px solid #E5E7EB;
   display: flex;
@@ -949,14 +982,15 @@
   overflow-x: auto;
   font-size: 0.76rem;
   color: #6B7280;
+  flex-shrink: 0;
 }
 
 .chat-quick-pill {
   background: #FFFFFF;
   border: 1.5px solid #1E192B;
   border-radius: 9999px;
-  padding: 0.25rem 0.65rem;
-  font-size: 0.76rem;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.74rem;
   font-weight: 700;
   color: #1E192B;
   cursor: pointer;
@@ -978,9 +1012,10 @@
 
 /* ── Bottom Input Box Card ── */
 .chat-input-outer-box {
-  padding: 0.75rem 1rem 1rem;
+  padding: 0.55rem 0.85rem 0.65rem;
   background: #FFFFFF;
   border-top: 2px solid #1E192B;
+  flex-shrink: 0;
 }
 
 .chat-input-card {
@@ -988,19 +1023,22 @@
   border-radius: 12px;
   background: #FFFFFF;
   box-shadow: 2.5px 2.5px 0 #1E192B;
-  padding: 0.6rem 0.85rem;
+  padding: 0.45rem 0.75rem;
 }
 
 .chat-textarea-field {
   width: 100%;
   border: none;
   outline: none;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   font-family: inherit;
   color: #1E192B;
   resize: none;
-  min-height: 48px;
+  min-height: 38px;
+  height: 40px;
+  max-height: 75px;
   background: transparent;
+  line-height: 1.35;
 }
 
 .chat-input-toolbar-row {
@@ -1072,10 +1110,13 @@
   max-height: 100% !important;
   min-height: 0 !important;
   overflow-y: auto;
-  padding: 1rem 1.15rem;
+  overflow-x: hidden;
+  padding: 0.9rem 1.1rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.9rem;
+  scrollbar-width: thin;
+  scrollbar-color: #D1D5DB transparent;
 }
 
 .chat-details-header-row {
@@ -1544,4 +1585,30 @@
   font-size: 0.75rem;
   font-weight: 700;
   color: #4B5563;
+}
+
+/* ── Clean Scrollbars for All 3 Chat Columns ── */
+.chat-thread-scroll-box::-webkit-scrollbar,
+.chat-conversations-scroll-list::-webkit-scrollbar,
+.chat-col-details::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-thread-scroll-box::-webkit-scrollbar-track,
+.chat-conversations-scroll-list::-webkit-scrollbar-track,
+.chat-col-details::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chat-thread-scroll-box::-webkit-scrollbar-thumb,
+.chat-conversations-scroll-list::-webkit-scrollbar-thumb,
+.chat-col-details::-webkit-scrollbar-thumb {
+  background-color: #D1D5DB;
+  border-radius: 9999px;
+}
+
+.chat-thread-scroll-box::-webkit-scrollbar-thumb:hover,
+.chat-conversations-scroll-list::-webkit-scrollbar-thumb:hover,
+.chat-col-details::-webkit-scrollbar-thumb:hover {
+  background-color: #9CA3AF;
 }

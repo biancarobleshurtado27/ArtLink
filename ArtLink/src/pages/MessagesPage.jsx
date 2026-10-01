@@ -282,10 +282,8 @@ export default function MessagesPage() {
   const [selectedConvoId, setSelectedConvoId] = useState(
     searchParams.get('requestId') || 'convo-1082'
   )
-  const [activeFilter, setActiveFilter] = useState('all') // 'all', 'active', 'pending_sketch', 'bot', 'archived'
   const [channelType, setChannelType] = useState('orders') // 'direct', 'orders'
   const [sidebarSearch, setSidebarSearch] = useState('')
-  const [topSearch, setTopSearch] = useState('')
   const [messageInput, setMessageInput] = useState('')
 
   // Modals & Panels
@@ -298,28 +296,16 @@ export default function MessagesPage() {
   const [adjustText, setAdjustText] = useState('')
   const [showApprovalConfirm, setShowApprovalConfirm] = useState(false)
   const [showMediationModal, setShowMediationModal] = useState(false)
-  const [showNewQueryModal, setShowNewQueryModal] = useState(false)
   const [showPalettePicker, setShowPalettePicker] = useState(false)
   const [selectedColors, setSelectedColors] = useState([])
 
   const threadEndRef = useRef(null)
-  const topSearchInputRef = useRef(null)
-
-  // Keyboard shortcut Ctrl+K listener for top search
-  useEffect(() => {
-    function handleKeyDown(e) {
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault()
-        topSearchInputRef.current?.focus()
-      }
-    }
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [])
 
   // Auto-scroll when messages change
   useEffect(() => {
-    threadEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    if (typeof threadEndRef.current?.scrollIntoView === 'function') {
+      threadEndRef.current.scrollIntoView({ behavior: 'smooth' })
+    }
   }, [conversations, selectedConvoId])
 
   const activeConvo =
@@ -331,14 +317,8 @@ export default function MessagesPage() {
     if (channelType === 'direct' && c.type !== 'direct') return false
     if (channelType === 'orders' && c.type !== 'orders' && c.id !== 'convo-artie') return false
 
-    // Filter chip
-    if (activeFilter === 'active' && c.filterCategory !== 'active_orders' && c.filterCategory !== 'pending_sketch') return false
-    if (activeFilter === 'pending_sketch' && c.filterCategory !== 'pending_sketch') return false
-    if (activeFilter === 'bot' && !c.isBot) return false
-    if (activeFilter === 'archived' && c.filterCategory !== 'archived') return false
-
     // Search query
-    const q = (sidebarSearch || topSearch).trim().toLowerCase()
+    const q = sidebarSearch.trim().toLowerCase()
     if (q) {
       const matchName = c.artist.name.toLowerCase().includes(q)
       const matchUser = c.artist.username.toLowerCase().includes(q)
@@ -450,83 +430,7 @@ export default function MessagesPage() {
 
   return (
     <div className="chat-view-container">
-      {/* ── 1. TOP HEADER & FILTER BAR ── */}
-      <header className="chat-top-header">
-        <div className="chat-header-row">
-          <div className="chat-title-group">
-            <h1 className="chat-main-title">Mensajes y Encargos Activos</h1>
-            <span className="chat-count-badge">
-              <Sparkles size={13} aria-hidden="true" />
-              + 3 conversaciones activas
-            </span>
-          </div>
-
-          <div className="chat-header-actions">
-            <div className="chat-search-pill-box">
-              <Search size={15} color="#6B7280" aria-hidden="true" />
-              <input
-                ref={topSearchInputRef}
-                type="text"
-                placeholder="Buscar en mensajes..."
-                value={topSearch}
-                onChange={(e) => setTopSearch(e.target.value)}
-                aria-label="Buscar en mensajes"
-              />
-              <span className="chat-kbd-hint">Ctrl+K</span>
-            </div>
-
-            <button
-              type="button"
-              className="chat-btn-new-query"
-              onClick={() => setShowNewQueryModal(true)}
-            >
-              <Plus size={16} aria-hidden="true" />
-              Nueva Consulta
-            </button>
-          </div>
-        </div>
-
-        {/* Filter Chips Bar */}
-        <div className="chat-filters-chips-bar" role="tablist" aria-label="Filtros de conversaciones">
-          <button
-            type="button"
-            className={`chat-filter-chip ${activeFilter === 'all' ? 'is-active' : ''}`}
-            onClick={() => setActiveFilter('all')}
-          >
-            Todos ({conversations.length})
-          </button>
-          <button
-            type="button"
-            className={`chat-filter-chip ${activeFilter === 'active' ? 'is-active' : ''}`}
-            onClick={() => setActiveFilter('active')}
-          >
-            Encargos Activos (3)
-          </button>
-          <button
-            type="button"
-            className={`chat-filter-chip chip-mint ${activeFilter === 'pending_sketch' ? 'is-active' : ''}`}
-            onClick={() => setActiveFilter('pending_sketch')}
-          >
-            Pendiente de Boceto (1)
-          </button>
-          <button
-            type="button"
-            className={`chat-filter-chip chip-pink ${activeFilter === 'bot' ? 'is-active' : ''}`}
-            onClick={() => setActiveFilter('bot')}
-          >
-            <Bot size={13} aria-hidden="true" /> Artie AI Bot (1)
-          </button>
-          <button
-            type="button"
-            className={`chat-filter-chip chip-gray ${activeFilter === 'archived' ? 'is-active' : ''}`}
-            onClick={() => setActiveFilter('archived')}
-          >
-            Archivados
-          </button>
-        </div>
-      </header>
-
-      {/* ── 2. THREE-COLUMN CHAT GRID ── */}
+      {/* ── THREE-COLUMN CHAT GRID ── */}
       <div className="chat-three-column-grid">
         {/* ══════════════════════════════════════════════════════════════════
             COLUMN 1: BANDEJA (Conversations Sidebar)
@@ -627,7 +531,7 @@ export default function MessagesPage() {
               type="button"
               className="chat-tool-btn"
               title="Configuración de socket"
-              onClick={() => setActiveFilter('all')}
+              onClick={() => setSidebarSearch('')}
             >
               <Sliders size={14} aria-hidden="true" />
             </button>
@@ -1514,75 +1418,6 @@ export default function MessagesPage() {
                 }}
               >
                 Contactar a Mediador
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 7. Modal Nueva Consulta */}
-      {showNewQueryModal && (
-        <div className="chat-modal-backdrop" role="dialog" aria-modal="true">
-          <div className="chat-modal-window">
-            <div className="chat-modal-header">
-              <h3>Iniciar Nueva Consulta</h3>
-              <button
-                type="button"
-                className="chat-modal-close-btn"
-                onClick={() => setShowNewQueryModal(false)}
-              >
-                <X size={16} />
-              </button>
-            </div>
-
-            <div className="chat-modal-body">
-              <p style={{ margin: 0, color: '#4B5563' }}>
-                Selecciona con quién deseas comunicarte para iniciar una nueva conversación:
-              </p>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-                {conversations.map((c) => (
-                  <button
-                    key={c.id}
-                    type="button"
-                    style={{
-                      background: '#FFFDF8',
-                      border: '1.5px solid #1E192B',
-                      borderRadius: 8,
-                      padding: '0.65rem 0.85rem',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.75rem',
-                      cursor: 'pointer',
-                      textAlign: 'left',
-                    }}
-                    onClick={() => {
-                      setSelectedConvoId(c.id)
-                      setShowNewQueryModal(false)
-                    }}
-                  >
-                    <img
-                      src={c.artist.avatar}
-                      alt={c.artist.name}
-                      style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover' }}
-                    />
-                    <div>
-                      <strong style={{ display: 'block', fontSize: '0.9rem' }}>{c.artist.name}</strong>
-                      <small style={{ color: '#6B7280' }}>{c.title}</small>
-                    </div>
-                    <ChevronRight size={16} style={{ marginLeft: 'auto', color: '#6B7280' }} />
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="chat-modal-footer">
-              <button
-                type="button"
-                className="chat-btn-action-white"
-                onClick={() => setShowNewQueryModal(false)}
-              >
-                Cerrar
               </button>
             </div>
           </div>
