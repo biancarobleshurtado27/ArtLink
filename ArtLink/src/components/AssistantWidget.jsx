@@ -1,9 +1,15 @@
 import { useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { Bot } from 'lucide-react'
 import AssistantPanel from './AssistantPanel'
 
 export default function AssistantWidget() {
   const [open, setOpen] = useState(false)
+  const location = useLocation()
+
+  if (location.pathname.startsWith('/mensajes')) {
+    return null
+  }
 
   return (
     <>

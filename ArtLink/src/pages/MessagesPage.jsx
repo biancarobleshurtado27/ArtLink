@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import {
   AlertTriangle,
   ArrowRight,
+  BadgeCheck,
   Bot,
   Calendar,
   Check,
@@ -10,27 +11,20 @@ import {
   ChevronRight,
   Clock,
   Download,
-  Edit3,
   ExternalLink,
-  Eye,
   FileText,
-  Filter,
-  Headphones,
   Lock,
   Maximize2,
   MoreVertical,
-  Palette,
   Paperclip,
-  Pause,
-  Play,
   Plus,
+  RotateCcw,
   Search,
   Send,
   ShieldCheck,
   Sliders,
   Smile,
   Sparkles,
-  Star,
   User,
   Volume2,
   X,
@@ -38,30 +32,105 @@ import {
 } from 'lucide-react'
 import usePrivateRequests from '../hooks/usePrivateRequests'
 import useAuth from '../hooks/useAuth'
+import { interpretNeed } from '../services/aiService'
+import artieAvatar from '../assets/artie-avatar.png'
 import '../styles/chatPop.css'
+
+const EMOJI_LIST = [
+  '😀', '😁', '😂', '🤣', '😃', '😄', '😅',
+  '😊', '😍', '🥰', '😘', '😎', '🤩', '🥳',
+  '🎨', '🖌️', '🖍️', '🎭', '🖼️', '✨', '🌟',
+  '💡', '🔥', '🚀', '🎉', '💯', '👏', '🙌',
+  '👍', '❤️', '💖', '⭐', '🤝', '☕', '👀',
+]
+
+const QUICK_PROMPTS = [
+  {
+    id: 'anime',
+    icon: Search,
+    text: 'Encontrar ilustradores de anime/manga',
+    styleClass: 'pill-pink',
+  },
+  {
+    id: 'escrow',
+    icon: ShieldCheck,
+    text: '¿Cómo funciona el pago seguro Escrow?',
+    styleClass: 'pill-mint',
+  },
+  {
+    id: 'fast',
+    icon: Sparkles,
+    text: 'Artistas con cupos abiertos y entrega rápida',
+    styleClass: 'pill-lavender',
+  },
+  {
+    id: 'brief',
+    icon: FileText,
+    text: 'Ayúdame a redactar el brief de mi encargo',
+    styleClass: 'pill-yellow',
+  },
+]
+
+function playNotificationSound() {
+  try {
+    const AudioContext = window.AudioContext || window.webkitAudioContext
+    if (!AudioContext) return
+    const ctx = new AudioContext()
+    const osc = ctx.createOscillator()
+    const gain = ctx.createGain()
+    osc.type = 'sine'
+    osc.frequency.setValueAtTime(587.33, ctx.currentTime)
+    osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.1)
+    gain.gain.setValueAtTime(0.12, ctx.currentTime)
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.22)
+    osc.connect(gain)
+    gain.connect(ctx.destination)
+    osc.start()
+    osc.stop(ctx.currentTime + 0.22)
+  } catch {}
+}
+
+const CHAT_THEMES = [
+  { name: 'purple', bg: '#8B5CF6', text: '#FFFFFF', time: '#7C3AED' },
+  { name: 'cyan', bg: '#06B6D4', text: '#FFFFFF', time: '#0891B2' },
+  { name: 'pink', bg: '#EC4899', text: '#FFFFFF', time: '#DB2777' },
+  { name: 'emerald', bg: '#10B981', text: '#FFFFFF', time: '#059669' },
+  { name: 'amber', bg: '#F59E0B', text: '#1E192B', time: '#D97706' },
+  { name: 'indigo', bg: '#6366F1', text: '#FFFFFF', time: '#4F46E5' },
+  { name: 'rose', bg: '#F43F5E', text: '#FFFFFF', time: '#E11D48' },
+  { name: 'violet', bg: '#A855F7', text: '#FFFFFF', time: '#9333EA' },
+  { name: 'teal', bg: '#14B8A6', text: '#FFFFFF', time: '#0D9488' },
+  { name: 'lime', bg: '#84CC16', text: '#1E192B', time: '#65A30D' },
+]
+
+function getChatTheme(convoId = '') {
+  let hash = 0
+  for (let i = 0; i < convoId.length; i++) {
+    hash = convoId.charCodeAt(i) + ((hash << 5) - hash)
+  }
+  return CHAT_THEMES[Math.abs(hash) % CHAT_THEMES.length]
+}
 
 const DEFAULT_CONVERSATIONS = [
   {
-    id: 'convo-1082',
-    orderId: '1082',
+    id: 'mythosforge',
+    orderId: 'q_D0R_iTERI',
+    allOrderIds: ['q_D0R_iTERI', 'req-103'],
     artist: {
-      name: 'Mía Soler',
-      username: 'miasoler_art',
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=80',
-      rating: 5.0,
-      reviewsCount: 148,
+      id: 'artist-demo-108',
+      name: 'Mythos Character Forge',
+      username: 'mythosforge',
+      avatar: 'https://images.unsplash.com/photo-1563089145-599997674d42?w=400&q=80',
       verified: true,
-      statusText: 'Activa ahora • Tiempo resp. <2h',
+      statusText: 'En línea',
     },
-    title: 'Ilustración Escénica Completa',
-    subtitle: 'Twitch Banner Horizontal + OC con pose dinámica y fondo de neón pastel.',
-    tag: 'Encargo #1082 • En progreso',
+    title: 'Diseño de Personaje Original Completo',
+    subtitle: 'Modelado y diseño de personajes heroicos, criaturas fantásticas y atuendos estilizados.',
+    tag: 'Encargo #q_D0R_iTERI • En progreso',
     tagColor: 'tag-cyan',
-    unread: 1,
-    time: '14:24',
-    preview: '¡Hola! Acabo de subir el boceto d...',
-    filterCategory: 'pending_sketch',
-    type: 'orders',
+    unread: 0,
+    time: '11:42',
+    preview: '¡Hola! Ya estoy trabajando en la estructura anatómica...',
     escrowAmount: 160.0,
     escrowDaysLeft: 7,
     escrowDeadline: '31 Oct',
@@ -78,15 +147,15 @@ const DEFAULT_CONVERSATIONS = [
         id: 2,
         title: '2. Boceto & Composición',
         date: 'Hoy',
-        desc: 'Boceto subido hoy. Esperando feedback del cliente.',
+        desc: 'Desarrollo visual y proporciones anatómicas.',
         status: 'current',
-        badge: 'En revisión',
+        badge: 'En progreso',
       },
       {
         id: 3,
         title: '3. Color & Sombreado',
         date: '',
-        desc: 'Aplicación de paleta, luces volumétricas y efectos.',
+        desc: 'Aplicación de paleta, luces volumétricas y texturas.',
         status: 'upcoming',
       },
       {
@@ -98,428 +167,550 @@ const DEFAULT_CONVERSATIONS = [
       },
     ],
     files: [
-      { id: 'f1', name: 'Ref_Chica_Bunny.jpg', img: '/images/hero/soramoon.jpg' },
-      { id: 'f2', name: 'Paleta_Pastel.jpg', img: '/images/hero/thumbs/sora-1.jpg' },
-      { id: 'f3', name: 'Concepto_Escena.jpg', img: '/images/hero/thumbs/sora-4.jpg' },
+      { id: 'f1', name: 'Ref_Personaje.jpg', img: '/images/hero/soramoon.jpg' },
+      { id: 'f2', name: 'Paleta_Heroica.jpg', img: '/images/hero/thumbs/sora-1.jpg' },
     ],
     messages: [
       {
         id: 'msg-1',
         sender: 'me',
-        text: '¡Hola Mía! Te compartí las referencias de vestuario y la paleta pastel para el avatar de Twitch. ¿Pudiste revisarlas? Quedo atento a tus observaciones sobre las orejitas de conejo.',
+        text: '¡Hola! Te compartí las referencias de vestuario y la silueta heroica para el diseño del personaje. Quedo atento a tus observaciones.',
         time: '11:15',
         status: 'read',
       },
       {
         id: 'msg-2',
         sender: 'artist',
-        text: '¡Hola Alex! Sí, me encantaron los detalles de los destellos y la gama cromática. Ya armé la primera propuesta de composición y pose dinámica con el fondo en perspectiva.',
+        text: '¡Hola! Sí, me encantaron los detalles de los destellos y la gama cromática. Ya armé la primera propuesta de composición y pose dinámica con el fondo en perspectiva.',
         time: '11:42',
-      },
-      {
-        id: 'msg-3',
-        type: 'wip_delivery',
-        phaseTag: '✦ NUEVA ENTREGA FASE 2 ✦',
-        versionTag: 'VERSIÓN 1.2',
-        title: 'ENTREGA DE PROGRESO (WIP)',
-        filename: 'v1.2_lineart_rough_composition.png',
-        desc: 'Lineart limpio preliminar, distribución de elementos escénicos (pantalla, snacks flotantes y avatar central). Formato nativo 3840 x 2160 px.',
-        img: '/images/wip_sketch.jpg',
-        filesize: '14.8 MB',
-        resolution: 'PNG de alta resolución',
-        watermarkTitle: 'BOCETO FASE 2 • ARTIE ESCROW',
-        watermarkSub: 'Solo previsualización de aprobación',
-        adjustmentsLeft: 2,
-        time: '11:43',
       },
     ],
   },
   {
-    id: 'convo-1040',
-    orderId: '1040',
+    id: 'aetherconcept',
+    orderId: 'req-102',
+    allOrderIds: ['req-102'],
     artist: {
-      name: 'Renzo Miyazaki',
-      username: 'renzomiyazaki',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80',
-      rating: 4.9,
-      reviewsCount: 92,
+      id: 'artist-demo-104',
+      name: 'Aether Concept Art',
+      username: 'aetherconcept',
+      avatar: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&q=80',
       verified: true,
-      statusText: 'Desconectado recientemente',
+      statusText: 'En línea',
     },
-    title: 'Modelo Live2D Chibi',
-    subtitle: 'Rigging facial completo con expresiones para stream.',
-    tag: 'Encargo #1040 • Finalizado',
-    tagColor: 'tag-gray',
+    title: 'Ilustración Conceptual Sci-Fi',
+    subtitle: 'Conceptualización de mundos de ciencia ficción y atmósferas fantásticas de gran escala.',
+    tag: 'Encargo #req-102 • En progreso',
+    tagColor: 'tag-cyan',
     unread: 0,
     time: 'Ayer',
-    preview: 'Detalles de la entrega del modelo ...',
-    filterCategory: 'active_orders',
-    type: 'orders',
+    preview: 'Avanzamos con el render de perspectiva...',
     escrowAmount: 220.0,
+    escrowDaysLeft: 5,
+    escrowDeadline: '28 Oct',
+    phase: 'FASE 2 DE 4: BOCETO Y PERSPECTIVA',
+    milestones: [
+      { id: 1, title: '1. Brief', status: 'done', desc: 'Aprobado y depositado.' },
+      { id: 2, title: '2. Composición', status: 'current', desc: 'Boceto de perspectiva en revisión.' },
+      { id: 3, title: '3. Renderizado', status: 'upcoming', desc: 'Luces y texturas atmosféricas.' },
+      { id: 4, title: '4. Entrega', status: 'upcoming', desc: 'Archivos finales en 4K.' },
+    ],
+    files: [{ id: 'f4', name: 'Estacion_Orbital_Ref.jpg', img: '/images/hero/magic_shop.jpg' }],
+    messages: [
+      { id: 'm-201', sender: 'artist', text: '¡Hola! Ya quedaron configuradas todas las fuentes de iluminación planetaria y el diseño de la estación.', time: 'Ayer 16:30' },
+      { id: 'm-202', sender: 'me', text: '¡Quedó espectacular! La escala se siente inmensa. Quedo a la espera del renderizado final.', time: 'Ayer 17:15', status: 'read' },
+    ],
+  },
+  {
+    id: 'pixelfoundry',
+    orderId: 'req-101',
+    allOrderIds: ['req-101'],
+    artist: {
+      id: 'artist-demo-101',
+      name: 'Pixel Foundry',
+      username: 'pixelfoundry',
+      avatar: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&q=80',
+      verified: true,
+      statusText: 'En línea',
+    },
+    title: 'Hoja de Sprites de Personaje 16-Bit',
+    subtitle: 'Taller de creación de pixel art para videojuegos retro, sprites 16-bit e interfaces vintage.',
+    tag: 'Encargo #req-101 • Finalizado',
+    tagColor: 'tag-gray',
+    unread: 0,
+    time: '20 Mar',
+    preview: 'Spritesheet final exportado en PNG...',
+    escrowAmount: 80.0,
     escrowDaysLeft: 0,
     escrowDeadline: 'Finalizado',
     phase: 'FASE 4 DE 4: ENTREGADO Y LIBERADO',
     milestones: [
-      { id: 1, title: '1. Brief', status: 'done', desc: 'Aprobado.' },
-      { id: 2, title: '2. Modelo 2D', status: 'done', desc: 'Completado.' },
-      { id: 3, title: '3. Rigging', status: 'done', desc: 'Completado.' },
-      { id: 4, title: '4. Entrega', status: 'done', desc: 'Fondos liberados.' },
+      { id: 1, title: '1. Especificaciones', status: 'done', desc: 'Paleta y dimensiones aprobadas.' },
+      { id: 2, title: '2. Animación Base', status: 'done', desc: 'Ciclos de caminata y salto listos.' },
+      { id: 3, title: '3. Efectos y Ataques', status: 'done', desc: 'Sprites secundarios finalizados.' },
+      { id: 4, title: '4. Entrega de Archivos', status: 'done', desc: 'Archivos PSD y PNG entregados.' },
     ],
-    files: [{ id: 'f4', name: 'Entrega_Final.zip', img: '/images/hero/magic_shop.jpg' }],
+    files: [{ id: 'f5', name: 'Spritesheet_Final.png', img: '/images/hero/thumbs/sora-4.jpg' }],
     messages: [
-      { id: 'm-201', sender: 'artist', text: '¡Hola! Ya quedaron configuradas todas las físicas del cabello y los emotes.', time: 'Ayer 16:30' },
-      { id: 'm-202', sender: 'me', text: '¡Quedó espectacular Renzo! Fondos liberados. Muchas gracias.', time: 'Ayer 17:15', status: 'read' },
+      { id: 'p-1', sender: 'artist', text: '¡Hola! Ya subí el archivo ZIP con todos los frames separados por capas y el atlas listo para Unity.', time: '20 Mar 11:20' },
+      { id: 'p-2', sender: 'me', text: '¡Excelente calidad en las animaciones! Fondos liberados con éxito.', time: '20 Mar 14:05', status: 'read' },
+    ],
+  },
+  {
+    id: 'voxelstudio',
+    orderId: 'comm-102',
+    allOrderIds: ['comm-102', '102'],
+    artist: {
+      id: 'artist-demo-102',
+      name: 'Voxel Studio Lab',
+      username: 'voxelstudio',
+      avatar: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&q=80',
+      verified: true,
+      statusText: 'En línea',
+    },
+    title: 'Diorama 3D Voxel Art',
+    subtitle: 'Laboratorio de experimentación volumétrica y dioramas 3D low-poly para maquetas y juegos.',
+    tag: 'Encargo #102 • En espera',
+    tagColor: 'tag-warm',
+    unread: 0,
+    time: '15 Oct',
+    preview: '¿Deseas agregar iluminación volumétrica...',
+    escrowAmount: 120.0,
+    escrowDaysLeft: 10,
+    escrowDeadline: '25 Oct',
+    phase: 'FASE 1 DE 3: ACEPTACIÓN DE COTIZACIÓN',
+    milestones: [
+      { id: 1, title: '1. Cotización y Pago', status: 'current', desc: 'En espera de depósito en custodia.' },
+      { id: 2, title: '2. Modelado Voxel', status: 'upcoming', desc: 'Construcción isométrica 3D.' },
+      { id: 3, title: '3. Render Final', status: 'upcoming', desc: 'Exportación OBJ/GLTF.' },
+    ],
+    files: [],
+    messages: [
+      { id: 'v-1', sender: 'artist', text: '¡Hola! Ya revisé las especificaciones del diorama isométrico. ¿Te gustaría que agreguemos efectos de niebla volumétrica?', time: '15 Oct 12:30' },
     ],
   },
   {
     id: 'convo-artie',
     orderId: 'BOT-AI',
+    allOrderIds: ['BOT-AI', 'convo-artie'],
     isBot: true,
     artist: {
+      id: 'artie_ai',
       name: 'Artie Assistant ♦',
       username: 'artie_ai',
-      avatar: '/artie-avatar.png',
+      avatar: artieAvatar,
       isBot: true,
-      statusText: 'Asistente IA de ArtLink • En línea 24/7',
+      verified: true,
+      statusText: 'Asistente IA • En línea',
     },
-    title: 'Asistente de Cotizaciones y Brief',
-    subtitle: 'Cálculo de presupuestos, recomendaciones de estilo y protección Escrow.',
-    tag: 'Asistencia Cotización',
+    title: 'Asistente Inteligente Artie',
+    subtitle: 'Orientación de presupuestos, recomendaciones de estilo y protección Escrow Shield.',
+    tag: 'Asistente Virtual IA',
     tagColor: 'tag-pink',
     unread: 0,
-    time: '2d',
-    preview: 'Te ayudé a calcular el presupuesto ...',
-    filterCategory: 'bot',
-    type: 'direct',
+    time: 'En línea',
+    preview: '¡Hola, creador! Soy Artie. ¿En qué puedo orientarte hoy?',
     escrowAmount: 0.0,
-    phase: 'ASISTENTE DE ORIENTACIÓN',
+    phase: 'ASISTENTE DE ORIENTACIÓN INTELIGENTE',
     milestones: [],
     files: [],
     messages: [
       {
-        id: 'bot-1',
+        id: 'bot-welcome',
         sender: 'artist',
-        text: '¡Hola! Soy Artie, tu asistente de ArtLink. Puedo orientarte en el cálculo de tarifas de mercado para comisiones de ilustración, modelado 3D o pixel art, y responder tus dudas sobre la custodia de fondos en Escrow.',
-        time: 'Hace 2 días',
+        text: '¡Hola, creador! Soy Artie. ¿Buscas un ilustrador para tu proyecto, necesitas calcular el presupuesto de un encargo o resolver dudas sobre el sistema de custodia Escrow Shield?',
+        time: '10:00',
       },
-    ],
-  },
-  {
-    id: 'convo-sora',
-    orderId: '1095',
-    artist: {
-      name: 'Sora Lin',
-      username: 'soralin_art',
-      avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&q=80',
-      rating: 4.8,
-      reviewsCount: 37,
-      verified: true,
-      statusText: 'Activa hace 15m',
-    },
-    title: 'Set de Emotes y Stickers para Discord',
-    subtitle: '5 expresiones chibi personalizadas con fondo transparente.',
-    tag: 'Cotización enviada',
-    tagColor: 'tag-warm',
-    unread: 0,
-    time: '12 Oct',
-    preview: '¿Te gustaría agregar stickers adici...',
-    filterCategory: 'active_orders',
-    type: 'direct',
-    escrowAmount: 65.0,
-    escrowDaysLeft: 12,
-    escrowDeadline: '24 Oct',
-    phase: 'FASE 1 DE 3: ACEPTACIÓN DE COTIZACIÓN',
-    milestones: [
-      { id: 1, title: '1. Cotización y Pago', status: 'current', desc: 'En espera de depósito en custodia.' },
-      { id: 2, title: '2. Bocetos Chibi', status: 'upcoming', desc: '5 expresiones.' },
-      { id: 3, title: '3. Exportación PNG', status: 'upcoming', desc: 'Archivos optimizados.' },
-    ],
-    files: [],
-    messages: [
-      { id: 's-1', sender: 'artist', text: '¡Hola Alex! Ya revisé tu pedido de emotes. ¿Te gustaría agregar stickers adicionales con expresiones de festejo?', time: '12 Oct 10:15' },
-    ],
-  },
-  {
-    id: 'convo-kaelen',
-    orderId: '1077',
-    artist: {
-      name: 'Kaelen Woods',
-      username: 'kaelenwoods',
-      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=80',
-      rating: 5.0,
-      reviewsCount: 64,
-      verified: true,
-      statusText: 'En sesión de dibujo',
-    },
-    title: 'Splash Art Sci-Fi Ciberpunk',
-    subtitle: 'Ilustración en perspectiva de una estación orbital.',
-    tag: 'En espera',
-    tagColor: 'tag-gray',
-    unread: 0,
-    time: '08 Oct',
-    preview: 'Fondos recibidos en Escrow Shiel...',
-    filterCategory: 'archived',
-    type: 'orders',
-    escrowAmount: 190.0,
-    escrowDaysLeft: 5,
-    escrowDeadline: '15 Oct',
-    phase: 'FASE 3 DE 4: COLOR DIGITAL',
-    milestones: [],
-    files: [],
-    messages: [
-      { id: 'k-1', sender: 'artist', text: 'Fondos recibidos en Escrow Shield. Inicio la sesión de color hoy mismo.', time: '08 Oct 14:02' },
     ],
   },
 ]
 
 export default function MessagesPage() {
   const [searchParams] = useSearchParams()
+  const navigate = useNavigate()
   const { user } = useAuth()
   const { requests } = usePrivateRequests()
 
-  // State
+  // State: única conversación por usuario/artista
   const [conversations, setConversations] = useState(DEFAULT_CONVERSATIONS)
   const [selectedConvoId, setSelectedConvoId] = useState(
-    searchParams.get('requestId') || 'convo-1082'
+    searchParams.get('requestId') || DEFAULT_CONVERSATIONS[0].id
   )
-  const [channelType, setChannelType] = useState('orders') // 'direct', 'orders'
   const [sidebarSearch, setSidebarSearch] = useState('')
   const [messageInput, setMessageInput] = useState('')
+  const [isBotThinking, setIsBotThinking] = useState(false)
+
+  // Ajustes de la bandeja y el chat
+  const [chatSettings, setChatSettings] = useState(() => {
+    try {
+      const saved = localStorage.getItem('artlink_chat_settings')
+      if (saved) return JSON.parse(saved)
+    } catch {}
+    return {
+      compactView: false,
+      soundEnabled: true,
+      onlyActiveOrders: false,
+      sendOnEnter: true,
+      autoScroll: true,
+      showFullTimestamps: false,
+    }
+  })
+
+  function toggleSetting(key) {
+    setChatSettings((prev) => {
+      const updated = { ...prev, [key]: !prev[key] }
+      try {
+        localStorage.setItem('artlink_chat_settings', JSON.stringify(updated))
+      } catch {}
+      return updated
+    })
+  }
 
   // Modals & Panels
+  const [showInboxSettings, setShowInboxSettings] = useState(false)
+  const [attachments, setAttachments] = useState([])
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
+  const fileInputRef = useRef(null)
+  const emojiPickerRef = useRef(null)
+
   const [showBriefModal, setShowBriefModal] = useState(false)
-  const [showVoiceModal, setShowVoiceModal] = useState(false)
-  const [isPlayingAudio, setIsPlayingAudio] = useState(false)
-  const [audioPlaybackSpeed, setAudioPlaybackSpeed] = useState(1)
   const [showLightbox, setShowLightbox] = useState(false)
   const [showAdjustModal, setShowAdjustModal] = useState(false)
   const [adjustText, setAdjustText] = useState('')
   const [showApprovalConfirm, setShowApprovalConfirm] = useState(false)
   const [showMediationModal, setShowMediationModal] = useState(false)
-  const [showPalettePicker, setShowPalettePicker] = useState(false)
-  const [selectedColors, setSelectedColors] = useState([])
+  const [showOrderDetails, setShowOrderDetails] = useState(false)
 
   const threadEndRef = useRef(null)
 
-  // Auto-scroll when messages change
+  // Cerrar selector de emojis al hacer clic fuera
   useEffect(() => {
-    if (typeof threadEndRef.current?.scrollIntoView === 'function') {
-      threadEndRef.current.scrollIntoView({ behavior: 'smooth' })
+    function handleOutside(e) {
+      if (showEmojiPicker && emojiPickerRef.current && !emojiPickerRef.current.contains(e.target)) {
+        setShowEmojiPicker(false)
+      }
     }
-  }, [conversations, selectedConvoId])
+    document.addEventListener('mousedown', handleOutside)
+    return () => document.removeEventListener('mousedown', handleOutside)
+  }, [showEmojiPicker])
 
-  const activeConvo =
-    conversations.find((c) => c.id === selectedConvoId) || conversations[0]
+  // Sincronizar solicitudes reales de la base de datos SIN duplicar chats (un solo chat por artista/usuario)
+  useEffect(() => {
+    if (!requests || requests.length === 0) return
 
-  // Filter conversations
-  const filteredConversations = conversations.filter((c) => {
-    // Channel filter
-    if (channelType === 'direct' && c.type !== 'direct') return false
-    if (channelType === 'orders' && c.type !== 'orders' && c.id !== 'convo-artie') return false
+    setConversations((prev) => {
+      const map = new Map()
 
-    // Search query
-    const q = sidebarSearch.trim().toLowerCase()
-    if (q) {
-      const matchName = c.artist.name.toLowerCase().includes(q)
-      const matchUser = c.artist.username.toLowerCase().includes(q)
-      const matchTitle = c.title.toLowerCase().includes(q)
-      const matchTag = c.tag.toLowerCase().includes(q)
-      return matchName || matchUser || matchTitle || matchTag
-    }
-    return true
-  })
-
-  // Handle Send Message
-  function handleSendMessage(e) {
-    e?.preventDefault()
-    if (!messageInput.trim()) return
-
-    const newMsg = {
-      id: `msg-${Date.now()}`,
-      sender: 'me',
-      text: messageInput.trim(),
-      time: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
-      status: 'sent',
-    }
-
-    setConversations((prev) =>
-      prev.map((c) => {
-        if (c.id === activeConvo.id) {
-          return {
-            ...c,
-            messages: [...c.messages, newMsg],
-            preview: newMsg.text,
-            time: 'Ahora',
-          }
-        }
-        return c
+      // 1. Conservar las conversaciones existentes mapeadas por id de artista o identificador único
+      prev.forEach((c) => {
+        const key = c.isBot
+          ? 'artie_ai'
+          : c.artist?.id || c.artist?.username?.toLowerCase() || c.id
+        map.set(key, { ...c })
       })
-    )
-    setMessageInput('')
-  }
 
-  // Handle Quick Reply Click
-  function handleQuickReply(text) {
-    if (text === 'Ver en pantalla completa') {
-      setShowLightbox(true)
-      return
-    }
-    setMessageInput(text)
-  }
+      // 2. Mapear cada solicitud al artista correspondiente sin duplicar
+      requests.forEach((req) => {
+        const key =
+          req.artistId ||
+          (req.artistUsername ? req.artistUsername.toLowerCase() : String(req.id))
+        const existing = map.get(key)
 
-  // Handle Approve Lineart Milestone
-  function handleApproveMilestone() {
-    setConversations((prev) =>
-      prev.map((c) => {
-        if (c.id === activeConvo.id) {
-          const updatedMilestones = c.milestones.map((m) => {
-            if (m.id === 2) return { ...m, status: 'done', badge: 'Aprobado' }
-            if (m.id === 3) return { ...m, status: 'current', badge: 'En progreso' }
-            return m
-          })
+        if (existing) {
+          // Si ya existe conversación con este artista, actualizar datos del encargo y lista de órdenes
+          const allOrders = new Set(existing.allOrderIds || [existing.orderId, existing.id])
+          allOrders.add(String(req.id))
 
-          const approvalNotice = {
-            id: `msg-${Date.now()}`,
-            sender: 'me',
-            text: '¡Boceto de la Fase 2 aprobado con éxito! Se autorizó a Mía Soler a iniciar la etapa de Color & Sombreado bajo la protección del Escrow.',
-            time: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
-            status: 'read',
+          const isMoreRecent = req.createdAt
+            ? !existing.rawCreatedAt || new Date(req.createdAt) > new Date(existing.rawCreatedAt)
+            : false
+
+          if (isMoreRecent || !existing.isRealRequest) {
+            existing.orderId = String(req.id)
+            existing.rawCreatedAt = req.createdAt
+            existing.title = req.commissionTitle || req.title || existing.title
+            existing.subtitle = req.description || existing.subtitle
+            existing.tag = `Encargo #${req.id} • ${
+              req.status === 'completed'
+                ? 'Finalizado'
+                : req.status === 'in_progress'
+                ? 'En progreso'
+                : 'En espera'
+            }`
+            existing.tagColor =
+              req.status === 'completed'
+                ? 'tag-gray'
+                : req.status === 'in_progress'
+                ? 'tag-cyan'
+                : 'tag-warm'
+            existing.escrowAmount = Number(req.budget || req.price || existing.escrowAmount)
+            if (req.desiredDate) {
+              existing.escrowDeadline = new Date(req.desiredDate).toLocaleDateString('es-ES', {
+                day: 'numeric',
+                month: 'short',
+              })
+            }
           }
-
-          return {
-            ...c,
-            phase: 'FASE 3 DE 4: COLOR & SOMBREADO',
-            filterCategory: 'active_orders',
-            milestones: updatedMilestones,
-            messages: [...c.messages, approvalNotice],
+          existing.allOrderIds = Array.from(allOrders)
+          map.set(key, existing)
+        } else {
+          // Artista nuevo: crear exactamente 1 conversación para él
+          const newConvo = {
+            id: `artist-${req.artistId || req.id}`,
+            orderId: String(req.id),
+            allOrderIds: [String(req.id)],
+            isRealRequest: true,
+            rawCreatedAt: req.createdAt,
+            artist: {
+              id: req.artistId || `artist-${req.id}`,
+              name: req.artistName || 'Artista ArtLink',
+              username:
+                req.artistUsername ||
+                (req.artistName ? req.artistName.toLowerCase().replace(/\s+/g, '') : 'artista'),
+              avatar:
+                req.artistAvatar ||
+                'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=80',
+              verified: req.artistVerified ?? true,
+              statusText: 'En línea',
+            },
+            title: req.commissionTitle || req.title || 'Encargo personalizado',
+            subtitle: req.description || 'Especificaciones del encargo acordadas bajo custodia Escrow.',
+            tag: `Encargo #${req.id} • ${
+              req.status === 'completed'
+                ? 'Finalizado'
+                : req.status === 'in_progress'
+                ? 'En progreso'
+                : 'En espera'
+            }`,
+            tagColor:
+              req.status === 'completed'
+                ? 'tag-gray'
+                : req.status === 'in_progress'
+                ? 'tag-cyan'
+                : 'tag-warm',
+            unread: 0,
+            time: req.createdAt
+              ? new Date(req.createdAt).toLocaleDateString('es-ES', {
+                  day: 'numeric',
+                  month: 'short',
+                })
+              : 'Reciente',
+            preview: req.description
+              ? req.description.length > 35
+                ? req.description.slice(0, 35) + '...'
+                : req.description
+              : 'Conversación iniciada.',
+            escrowAmount: Number(req.budget || req.price || 0),
+            escrowDaysLeft: 7,
+            escrowDeadline: req.desiredDate
+              ? new Date(req.desiredDate).toLocaleDateString('es-ES', {
+                  day: 'numeric',
+                  month: 'short',
+                })
+              : '7 días',
+            phase:
+              req.status === 'completed'
+                ? 'FASE 4 DE 4: ENTREGADO Y LIBERADO'
+                : req.status === 'in_progress'
+                ? 'FASE 2 DE 4: PROGRESO Y REVISIÓN'
+                : 'FASE 1 DE 4: BRIEF Y DEPÓSITO',
+            milestones: [
+              {
+                id: 1,
+                title: '1. Brief & Depósito',
+                date: 'Aprobado',
+                desc: 'Depósito en custodia y especificaciones aprobadas.',
+                status: 'done',
+              },
+              {
+                id: 2,
+                title: '2. Boceto & Composición',
+                date: 'En curso',
+                desc: 'Desarrollo visual inicial.',
+                status:
+                  req.status === 'in_progress' || req.status === 'completed'
+                    ? 'done'
+                    : 'current',
+              },
+              {
+                id: 3,
+                title: '3. Color & Acabado',
+                date: '',
+                desc: 'Detalles finales y paleta.',
+                status:
+                  req.status === 'completed'
+                    ? 'done'
+                    : req.status === 'in_progress'
+                    ? 'current'
+                    : 'upcoming',
+              },
+              {
+                id: 4,
+                title: '4. Entrega de Archivos',
+                date: '',
+                desc: 'Liberación de fondos y satisfacción.',
+                status: req.status === 'completed' ? 'done' : 'upcoming',
+              },
+            ],
+            files: [],
+            messages: [
+              {
+                id: `init-${req.id}`,
+                sender: 'me',
+                text:
+                  req.description ||
+                  `¡Hola! He creado la solicitud para el encargo "${
+                    req.commissionTitle || 'Comisión personalizada'
+                  }" por un presupuesto de $${req.budget || req.price || 0} USD.`,
+                time: req.createdAt
+                  ? new Date(req.createdAt).toLocaleTimeString('es-ES', {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })
+                  : '10:00',
+                status: 'read',
+              },
+              {
+                id: `reply-${req.id}`,
+                sender: 'artist',
+                text: `¡Hola! He recibido los detalles de tu encargo. Cualquier duda o referencia adicional que quieras compartirme, puedes enviarla directamente por este chat.`,
+                time: '10:05',
+              },
+            ],
           }
+          map.set(key, newConvo)
         }
-        return c
       })
-    )
-    setShowApprovalConfirm(false)
-  }
 
-  // Handle Request Adjustments
-  function handleSubmitAdjustments(e) {
-    e.preventDefault()
-    if (!adjustText.trim()) return
-
-    const adjustMsg = {
-      id: `msg-${Date.now()}`,
-      sender: 'me',
-      text: `Solicitud de Ajustes en Boceto: ${adjustText.trim()}`,
-      time: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
-      status: 'sent',
-    }
-
-    setConversations((prev) =>
-      prev.map((c) => {
-        if (c.id === activeConvo.id) {
-          return {
-            ...c,
-            messages: [...c.messages, adjustMsg],
-          }
-        }
-        return c
-      })
-    )
-    setAdjustText('')
-    setShowAdjustModal(false)
-  }
+      return Array.from(map.values())
+    })
+  }, [requests])
 
   return (
     <div className="chat-view-container">
       {/* ── THREE-COLUMN CHAT GRID ── */}
-      <div className="chat-three-column-grid">
+      <div className={`chat-three-column-grid ${!showOrderDetails ? 'is-details-closed' : ''}`}>
         {/* ══════════════════════════════════════════════════════════════════
-            COLUMN 1: BANDEJA (Conversations Sidebar)
+            COLUMN 1: BANDEJA (Conversations Sidebar - Un solo chat por usuario)
             ══════════════════════════════════════════════════════════════════ */}
         <aside className="chat-column-box chat-col-sidebar" aria-label="Bandeja de conversaciones">
           <div className="chat-sidebar-header">
             <div className="chat-sidebar-title-row">
               <span>Bandeja</span>
-              <span className="chat-online-dot" title="En línea" />
+              <span className="chat-count-badge" style={{ fontSize: '0.72rem', padding: '0.15rem 0.55rem' }}>
+                {filteredConversations.length} {filteredConversations.length === 1 ? 'chat' : 'chats'}
+              </span>
             </div>
-
-            <div className="chat-view-switch-capsule">
-              <button
-                type="button"
-                className={`chat-switch-btn ${channelType === 'direct' ? 'is-active' : ''}`}
-                onClick={() => setChannelType('direct')}
-              >
-                Directos
-              </button>
-              <button
-                type="button"
-                className={`chat-switch-btn ${channelType === 'orders' ? 'is-active' : ''}`}
-                onClick={() => setChannelType('orders')}
-              >
-                Encargos
-              </button>
-            </div>
+            <span className="chat-online-dot" title="En línea" />
           </div>
 
+          {/* Barra de búsqueda unificada para chats y mensajes */}
           <div className="chat-sidebar-search-row">
             <div className="chat-sidebar-search-box">
-              <Filter size={14} color="#6B7280" aria-hidden="true" />
+              <Search size={15} color="#6B7280" aria-hidden="true" />
               <input
                 type="text"
-                placeholder="Filtrar por artista o tag..."
+                placeholder="Buscar chats y mensajes..."
                 value={sidebarSearch}
                 onChange={(e) => setSidebarSearch(e.target.value)}
               />
+              {sidebarSearch && (
+                <button
+                  type="button"
+                  className="chat-search-clear-btn"
+                  onClick={() => setSidebarSearch('')}
+                  title="Borrar búsqueda"
+                  aria-label="Borrar búsqueda"
+                >
+                  <X size={14} />
+                </button>
+              )}
             </div>
           </div>
 
-          <div className="chat-conversations-scroll-list">
-            {filteredConversations.map((item) => {
-              const isSelected = item.id === activeConvo.id
-              return (
-                <button
-                  key={item.id}
-                  type="button"
-                  className={`chat-convo-item-btn ${isSelected ? 'is-selected' : ''}`}
-                  onClick={() => setSelectedConvoId(item.id)}
-                >
-                  <div className="chat-avatar-wrapper">
-                    <img
-                      src={item.artist.avatar}
-                      alt={item.artist.name}
-                      className="chat-convo-avatar-img"
-                    />
-                    {item.isBot ? (
-                      <span className="chat-avatar-bot-tag">BOT</span>
-                    ) : (
-                      <span className="chat-avatar-badge-dot" />
-                    )}
-                  </div>
+          <div className={`chat-conversations-scroll-list ${chatSettings.compactView ? 'is-compact-inbox' : ''}`}>
+            {filteredConversations.length === 0 ? (
+              <div style={{ padding: '2rem 1rem', textAlign: 'center', color: '#6B7280', fontSize: '0.82rem' }}>
+                <p style={{ margin: 0, fontWeight: 700 }}>No se encontraron chats</p>
+                <span style={{ fontSize: '0.75rem' }}>Intenta con otro término de búsqueda.</span>
+              </div>
+            ) : (
+              filteredConversations.map((item) => {
+                const isSelected = item.id === activeConvo.id
+                const hasMessageMatch =
+                  sidebarSearch &&
+                  item.messages?.some((m) =>
+                    (m.text || '').toLowerCase().includes(sidebarSearch.toLowerCase())
+                  )
 
-                  <div className="chat-convo-info-col">
-                    <div className="chat-convo-top-row">
-                      <div className="chat-convo-name-group">
-                        <span>{item.artist.name}</span>
-                        {item.artist.verified && (
-                          <Check size={14} color="#8B5CF6" aria-label="Artista verificado" />
-                        )}
-                      </div>
-                      <span className="chat-convo-time">{item.time}</span>
-                    </div>
-
-                    <p className="chat-convo-preview-msg">{item.preview}</p>
-
-                    <div className="chat-convo-bottom-row">
-                      <span className={`chat-convo-tag ${item.tagColor || 'tag-gray'}`}>
-                        {item.tag}
-                      </span>
-                      {item.unread > 0 && (
-                        <span className="chat-unread-count-pill">{item.unread}</span>
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    className={`chat-convo-item-btn ${isSelected ? 'is-selected' : ''}`}
+                    onClick={() => setSelectedConvoId(item.id)}
+                  >
+                    <div className="chat-avatar-wrapper">
+                      <img
+                        src={item.artist.avatar}
+                        alt={item.artist.name}
+                        className="chat-convo-avatar-img"
+                      />
+                      {item.isBot ? (
+                        <span className="chat-avatar-bot-tag">BOT</span>
+                      ) : (
+                        <span className="chat-avatar-badge-dot" />
                       )}
                     </div>
-                  </div>
-                </button>
-              )
-            })}
+
+                    <div className="chat-convo-info-col">
+                      <div className="chat-convo-top-row">
+                        <div className="chat-convo-name-group">
+                          <span>{item.artist.name}</span>
+                          {item.artist.verified && (
+                            <BadgeCheck
+                              size={14}
+                              color="#8B5CF6"
+                              fill="#EDE9FE"
+                              aria-label="Artista verificado"
+                            />
+                          )}
+                        </div>
+                        <span className="chat-convo-time">{item.time}</span>
+                      </div>
+
+                      <p className="chat-convo-preview-msg">{item.preview}</p>
+
+                      <div className="chat-convo-bottom-row">
+                        <span className={`chat-convo-tag ${item.tagColor || 'tag-gray'}`}>
+                          {item.tag}
+                        </span>
+                        {item.unread > 0 && (
+                          <span className="chat-unread-count-pill">{item.unread}</span>
+                        )}
+                      </div>
+
+                      {hasMessageMatch && (
+                        <span
+                          style={{
+                            fontSize: '0.68rem',
+                            color: '#7C3AED',
+                            fontWeight: 700,
+                            background: '#EDE9FE',
+                            padding: '0.1rem 0.35rem',
+                            borderRadius: 4,
+                            display: 'inline-block',
+                            marginTop: 4,
+                          }}
+                        >
+                          💬 Coincidencia en mensaje
+                        </span>
+                      )}
+                    </div>
+                  </button>
+                )
+              })
+            )}
           </div>
 
           <footer className="chat-sidebar-footer">
@@ -530,8 +721,8 @@ export default function MessagesPage() {
             <button
               type="button"
               className="chat-tool-btn"
-              title="Configuración de socket"
-              onClick={() => setSidebarSearch('')}
+              title="Ajustes de la bandeja y el chat"
+              onClick={() => setShowInboxSettings(true)}
             >
               <Sliders size={14} aria-hidden="true" />
             </button>
@@ -555,44 +746,70 @@ export default function MessagesPage() {
               </div>
 
               <div className="chat-artist-titles">
-                <div className="chat-artist-name-line">
+                <div
+                  className="chat-artist-name-line"
+                  style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap' }}
+                >
                   <strong>{activeConvo.artist.name}</strong>
-                  <span className="chat-artist-handle-light">@{activeConvo.artist.username}</span>
-                  {activeConvo.artist.rating && (
-                    <span className="chat-rating-pill">
-                      <Star size={11} fill="#F59E0B" color="#F59E0B" /> {activeConvo.artist.rating} ({activeConvo.artist.reviewsCount})
-                    </span>
+                  {activeConvo.artist.verified && (
+                    <BadgeCheck
+                      size={17}
+                      color="#8B5CF6"
+                      fill="#EDE9FE"
+                      aria-label="Artista verificado"
+                      title="Artista verificado"
+                    />
                   )}
+                  <span className="chat-artist-handle-light">@{activeConvo.artist.username}</span>
                 </div>
                 <span className="chat-artist-substatus">
                   <span className="chat-online-dot" style={{ width: 7, height: 7 }} />
-                  {activeConvo.artist.statusText || 'En línea'}
+                  {activeConvo.artist.statusText?.replace(/•\s*Tiempo\s*resp[^\n]*/i, '')?.trim() ||
+                    'En línea'}
                 </span>
               </div>
             </div>
 
-            <div className="chat-center-header-actions">
+            <div
+              className="chat-center-header-actions"
+              style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}
+            >
               <button
                 type="button"
-                className="chat-btn-header-action"
-                onClick={() => setShowBriefModal(true)}
+                className={`chat-btn-header-action ${showOrderDetails ? 'is-active' : ''}`}
+                onClick={() => setShowOrderDetails((prev) => !prev)}
+                title={
+                  showOrderDetails
+                    ? 'Ocultar detalles'
+                    : activeConvo.isBot
+                    ? 'Ver guía y tips de Artie AI'
+                    : 'Ver detalles del encargo'
+                }
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.35rem',
+                  fontWeight: 700,
+                  fontSize: '0.82rem',
+                  padding: '0.42rem 0.75rem',
+                  background: showOrderDetails ? '#8B5CF6' : '#FFFFFF',
+                  color: showOrderDetails ? '#FFFFFF' : '#1E192B',
+                  border: '1.5px solid #1E192B',
+                  borderRadius: 8,
+                  boxShadow: '1.5px 1.5px 0 #1E192B',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease',
+                }}
               >
-                <FileText size={14} aria-hidden="true" />
-                Ver Brief
+                <FileText size={15} aria-hidden="true" />
+                <span>{activeConvo.isBot ? 'Asistente' : 'Encargo'}</span>
               </button>
+
               <button
                 type="button"
                 className="chat-btn-header-action"
-                onClick={() => setShowVoiceModal(true)}
-              >
-                <Headphones size={14} aria-hidden="true" />
-                Revisión Voz
-              </button>
-              <button
-                type="button"
-                className="chat-btn-header-action"
-                style={{ padding: '0.4rem 0.5rem' }}
-                title="Más opciones"
+                style={{ padding: '0.42rem 0.55rem' }}
+                title="Más opciones de seguridad"
                 onClick={() => setShowMediationModal(true)}
               >
                 <MoreVertical size={16} aria-hidden="true" />
@@ -600,30 +817,37 @@ export default function MessagesPage() {
             </div>
           </header>
 
-          {/* Escrow Shield Banner */}
-          <div className="chat-escrow-shield-banner">
-            <div className="chat-shield-text-wrap">
-              <ShieldCheck size={18} color="#0F766E" aria-hidden="true" />
-              <span>
-                <strong>✦ ArtLink Escrow Shield activo:</strong> Tu pago de{' '}
-                <strong>${activeConvo.escrowAmount?.toFixed(2) || '160.00'} USD</strong> está protegido en custodia.
-                Nunca compartas datos bancarios externos.
-              </span>
-            </div>
-            <button
-              type="button"
-              className="chat-shield-btn-details"
-              onClick={() => setShowMediationModal(true)}
-            >
-              Detalles
-            </button>
-          </div>
-
           {/* Thread messages area */}
           <div className="chat-thread-scroll-box">
             <div className="chat-date-separator">
-              <span className="chat-date-pill">Hoy, 24 de Octubre</span>
+              <span className="chat-date-pill">
+                {activeConvo.isBot ? 'Asistente Artie con Inteligencia Artificial' : 'Hoy, 24 de Octubre'}
+              </span>
             </div>
+
+            {/* Si es Artie AI y hay pocos mensajes, mostrar sugerencias rápidas directamente */}
+            {activeConvo.isBot && (activeConvo.messages || []).length <= 2 && (
+              <div
+                className="chat-artie-prompts-tray"
+                style={{ justifyContent: 'center', margin: '0.25rem 0 0.85rem' }}
+              >
+                {QUICK_PROMPTS.map((prompt) => {
+                  const Icon = prompt.icon
+                  return (
+                    <button
+                      key={prompt.id}
+                      type="button"
+                      className={`chat-artie-prompt-chip ${prompt.styleClass}`}
+                      onClick={() => handleSendTextMessage(prompt.text)}
+                      disabled={isBotThinking}
+                    >
+                      <Icon size={13} aria-hidden="true" />
+                      <span>{prompt.text}</span>
+                    </button>
+                  )
+                })}
+              </div>
+            )}
 
             {activeConvo.messages.map((msg) => {
               if (msg.type === 'wip_delivery') {
@@ -693,12 +917,62 @@ export default function MessagesPage() {
               if (msg.sender === 'me') {
                 return (
                   <div key={msg.id} className="chat-bubble-outgoing-wrap">
-                    <div className="chat-bubble-purple">
+                    <div
+                      className="chat-bubble-purple"
+                      style={{
+                        backgroundColor: activeTheme.bg,
+                        color: activeTheme.text,
+                        borderColor: '#1E192B',
+                      }}
+                    >
+                      {msg.attachments && msg.attachments.length > 0 && (
+                        <div
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '0.4rem',
+                            marginBottom: msg.text ? '0.45rem' : 0,
+                          }}
+                        >
+                          {msg.attachments.map((att, idx) => (
+                            <div key={idx}>
+                              {att.dataUrl && att.type?.startsWith('image/') ? (
+                                <img
+                                  src={att.dataUrl}
+                                  alt={att.name}
+                                  style={{
+                                    maxWidth: '100%',
+                                    maxHeight: 220,
+                                    borderRadius: 6,
+                                    border: '1.5px solid #1E192B',
+                                    display: 'block',
+                                  }}
+                                />
+                              ) : (
+                                <div
+                                  style={{
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '0.4rem',
+                                    background: 'rgba(0, 0, 0, 0.18)',
+                                    padding: '0.3rem 0.6rem',
+                                    borderRadius: 6,
+                                    fontSize: '0.8rem',
+                                  }}
+                                >
+                                  <Paperclip size={13} />
+                                  <span style={{ fontWeight: 600 }}>{att.name}</span>
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
                       {msg.text}
                     </div>
                     <div className="chat-msg-time-out">
                       <span>{msg.time}</span>
-                      <CheckCheck size={14} color="#8B5CF6" aria-hidden="true" />
+                      <CheckCheck size={14} color={activeTheme.time} aria-hidden="true" />
                     </div>
                   </div>
                 )
@@ -707,7 +981,101 @@ export default function MessagesPage() {
               return (
                 <div key={msg.id} className="chat-bubble-incoming-wrap">
                   <div className="chat-bubble-white">
+                    {msg.attachments && msg.attachments.length > 0 && (
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: '0.4rem',
+                          marginBottom: msg.text ? '0.45rem' : 0,
+                        }}
+                      >
+                        {msg.attachments.map((att, idx) => (
+                          <div key={idx}>
+                            {att.dataUrl && att.type?.startsWith('image/') ? (
+                              <img
+                                src={att.dataUrl}
+                                alt={att.name}
+                                style={{
+                                  maxWidth: '100%',
+                                  maxHeight: 220,
+                                  borderRadius: 6,
+                                  border: '1.5px solid #1E192B',
+                                  display: 'block',
+                                }}
+                              />
+                            ) : (
+                              <div
+                                style={{
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: '0.4rem',
+                                  background: '#F3F4F6',
+                                  padding: '0.3rem 0.6rem',
+                                  borderRadius: 6,
+                                  fontSize: '0.8rem',
+                                }}
+                              >
+                                <Paperclip size={13} />
+                                <span style={{ fontWeight: 600 }}>{att.name}</span>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
                     {msg.text}
+
+                    {/* Explicación orientativa de Artie AI */}
+                    {msg.explanation && (
+                      <small
+                        style={{
+                          display: 'block',
+                          marginTop: '0.4rem',
+                          color: '#6B7280',
+                          fontSize: '0.78rem',
+                          fontStyle: 'italic',
+                          lineHeight: 1.35,
+                        }}
+                      >
+                        {msg.explanation}
+                      </small>
+                    )}
+
+                    {/* Sugerencias de filtros convertidos por Artie AI */}
+                    {msg.suggestedFilters && (
+                      <div className="chat-artie-suggestions-box">
+                        <span className="chat-artie-suggestions-title">
+                          Sugerencias de Búsqueda ArtLink
+                        </span>
+                        <div className="chat-artie-tags-group">
+                          {msg.suggestedFilters.disciplines?.map((d) => (
+                            <span key={d} className="chat-artie-tag-pill">🎨 {d}</span>
+                          ))}
+                          {msg.suggestedFilters.styles?.map((s) => (
+                            <span key={s} className="chat-artie-tag-pill">✨ {s}</span>
+                          ))}
+                          {msg.suggestedFilters.maxPrice && (
+                            <span className="chat-artie-tag-pill">💰 Hasta ${msg.suggestedFilters.maxPrice} USD</span>
+                          )}
+                        </div>
+                        <Link
+                          to={`/explorar?${new URLSearchParams({
+                            ...(msg.suggestedFilters.disciplines?.[0]
+                              ? { discipline: msg.suggestedFilters.disciplines[0] }
+                              : {}),
+                            ...(msg.suggestedFilters.styles?.[0]
+                              ? { style: msg.suggestedFilters.styles[0] }
+                              : {}),
+                          }).toString()}`}
+                          className="chat-artie-action-btn"
+                        >
+                          <Search size={13} />
+                          <span>Explorar artistas con estos filtros</span>
+                          <ArrowRight size={13} />
+                        </Link>
+                      </div>
+                    )}
                   </div>
                   <div className="chat-msg-time-in">
                     <span>{msg.time}</span>
@@ -715,48 +1083,107 @@ export default function MessagesPage() {
                 </div>
               )
             })}
+
+            {/* Burbuja animada de pensamiento de Artie AI */}
+            {isBotThinking && activeConvo.isBot && (
+              <div className="chat-bubble-incoming-wrap">
+                <div className="chat-bubble-white chat-bot-thinking-bubble">
+                  <span className="chat-thinking-dot dot-1" />
+                  <span className="chat-thinking-dot dot-2" />
+                  <span className="chat-thinking-dot dot-3" />
+                  <span
+                    style={{
+                      fontSize: '0.8rem',
+                      color: '#6B7280',
+                      marginLeft: '0.45rem',
+                      fontWeight: 600,
+                    }}
+                  >
+                    Artie está pensando...
+                  </span>
+                </div>
+              </div>
+            )}
+
             <div ref={threadEndRef} />
           </div>
 
-          {/* Quick Replies Row */}
-          <div className="chat-quick-replies-bar">
-            <span>Respuestas rápidas:</span>
-            <button
-              type="button"
-              className="chat-quick-pill pill-pink"
-              onClick={() => handleQuickReply('¡Me encanta, aprobado!')}
-            >
-              <Sparkles size={12} style={{ display: 'inline', marginRight: 3 }} />
-              ¡Me encanta, aprobado!
-            </button>
-            <button
-              type="button"
-              className="chat-quick-pill"
-              onClick={() => handleQuickReply('Por favor ajustar color de ojos a tono violeta neón')}
-            >
-              <Palette size={12} style={{ display: 'inline', marginRight: 3 }} />
-              Ajustar color de ojos
-            </button>
-            <button
-              type="button"
-              className="chat-quick-pill"
-              onClick={() => setShowLightbox(true)}
-            >
-              <Eye size={12} style={{ display: 'inline', marginRight: 3 }} />
-              Ver en pantalla completa
-            </button>
-          </div>
-
           {/* Input Box Card */}
-          <div className="chat-input-outer-box">
+          <div className="chat-input-outer-box" style={{ position: 'relative' }}>
+            {/* Input oculto para cargar archivos reales */}
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileSelect}
+              multiple
+              style={{ display: 'none' }}
+              accept="image/*,.pdf,.zip,.psd,.clip"
+            />
+
+            {/* Barra de prompts rápidos para Artie AI */}
+            {activeConvo.isBot && (
+              <div
+                className="chat-artie-prompts-tray"
+                style={{
+                  padding: '0.4rem 0.85rem',
+                  background: '#FFFDF8',
+                  borderBottom: '1.5px solid #E5E7EB',
+                }}
+              >
+                {QUICK_PROMPTS.map((prompt) => {
+                  const Icon = prompt.icon
+                  return (
+                    <button
+                      key={prompt.id}
+                      type="button"
+                      className={`chat-artie-prompt-chip ${prompt.styleClass}`}
+                      onClick={() => handleSendTextMessage(prompt.text)}
+                      disabled={isBotThinking}
+                    >
+                      <Icon size={12} />
+                      <span>{prompt.text}</span>
+                    </button>
+                  )
+                })}
+              </div>
+            )}
+
             <form onSubmit={handleSendMessage} className="chat-input-card">
+              {/* Tira de archivos adjuntos pendientes de enviar */}
+              {attachments.length > 0 && (
+                <div className="chat-attachments-preview-strip">
+                  {attachments.map((att, idx) => (
+                    <div key={att.id || idx} className="chat-attachment-chip">
+                      <Paperclip size={12} />
+                      <span className="chat-attachment-chip-name">{att.name}</span>
+                      <span className="chat-attachment-chip-size">
+                        ({(att.size / 1024).toFixed(0)} KB)
+                      </span>
+                      <button
+                        type="button"
+                        className="chat-attachment-remove-btn"
+                        onClick={() => removeAttachment(idx)}
+                        title="Eliminar archivo"
+                        aria-label="Eliminar archivo"
+                      >
+                        <X size={12} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
               <textarea
                 className="chat-textarea-field"
-                placeholder={`Escribe tu mensaje a ${activeConvo.artist.name}... (puedes arrastrar archivos directamente aquí)`}
+                placeholder={
+                  activeConvo.isBot
+                    ? 'Pregunta a Artie sobre estilos, tarifas o cómo funciona Escrow...'
+                    : `Escribe tu mensaje a ${activeConvo.artist.name}...`
+                }
                 value={messageInput}
                 onChange={(e) => setMessageInput(e.target.value)}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter' && !e.shiftKey) {
+                  if (chatSettings.sendOnEnter && e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault()
                     handleSendMessage()
                   }
@@ -764,234 +1191,502 @@ export default function MessagesPage() {
               />
 
               <div className="chat-input-toolbar-row">
-                <div className="chat-input-tools-left">
+                <div className="chat-input-tools-left" style={{ position: 'relative' }}>
                   <button
                     type="button"
                     className="chat-tool-btn"
-                    title="Adjuntar referencia o archivo"
-                    onClick={() => setMessageInput((prev) => prev + ' [Archivo adjunto: referencia_paleta.png]')}
+                    title="Adjuntar archivos desde tu equipo"
+                    onClick={() => fileInputRef.current?.click()}
                   >
                     <Paperclip size={16} aria-hidden="true" />
                   </button>
+
                   <button
                     type="button"
-                    className="chat-tool-btn"
-                    title="Insertar emoji o reacción"
-                    onClick={() => setMessageInput((prev) => prev + ' ✨ ')}
+                    className={`chat-tool-btn ${showEmojiPicker ? 'is-active' : ''}`}
+                    title="Insertar emoji"
+                    onClick={() => setShowEmojiPicker((prev) => !prev)}
                   >
                     <Smile size={16} aria-hidden="true" />
                   </button>
-                  <button
-                    type="button"
-                    className="chat-tool-btn"
-                    title="Paleta de colores del encargo"
-                    onClick={() => setShowPalettePicker((prev) => !prev)}
-                  >
-                    <Palette size={16} aria-hidden="true" />
-                  </button>
-                  <button
-                    type="button"
-                    className="chat-tool-btn"
-                    title="Anotar sobre el boceto"
-                    onClick={() => setShowLightbox(true)}
-                  >
-                    <Edit3 size={16} aria-hidden="true" />
-                  </button>
+
+                  {/* Popover de emojis */}
+                  {showEmojiPicker && (
+                    <div className="chat-emoji-popover" ref={emojiPickerRef}>
+                      <div className="chat-emoji-header">
+                        <span>Seleccionar emoji</span>
+                        <button
+                          type="button"
+                          onClick={() => setShowEmojiPicker(false)}
+                          style={{
+                            background: 'transparent',
+                            border: 'none',
+                            cursor: 'pointer',
+                            padding: 2,
+                            display: 'flex',
+                            alignItems: 'center',
+                          }}
+                        >
+                          <X size={14} />
+                        </button>
+                      </div>
+                      <div className="chat-emoji-grid">
+                        {EMOJI_LIST.map((emoji) => (
+                          <button
+                            key={emoji}
+                            type="button"
+                            className="chat-emoji-btn"
+                            onClick={() => setMessageInput((prev) => prev + emoji)}
+                          >
+                            {emoji}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <button
                   type="submit"
                   className="chat-btn-send-main"
-                  disabled={!messageInput.trim()}
+                  disabled={(!messageInput.trim() && attachments.length === 0) || isBotThinking}
                 >
                   <span>Enviar</span>
                   <Send size={15} aria-hidden="true" />
                 </button>
               </div>
             </form>
-
-            {/* Floating Palette Tool */}
-            {showPalettePicker && (
-              <div
-                style={{
-                  background: '#FFFFFF',
-                  border: '2px solid #1E192B',
-                  borderRadius: 8,
-                  padding: '0.65rem 0.85rem',
-                  marginTop: '0.5rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.6rem',
-                  boxShadow: '2px 2px 0 #1E192B',
-                  fontSize: '0.8rem',
-                }}
-              >
-                <strong>Paleta pastel:</strong>
-                {[
-                  { name: 'Rosa Neón', color: '#F472B6' },
-                  { name: 'Lila Mágico', color: '#C084FC' },
-                  { name: 'Menta Pastel', color: '#A7F3D0' },
-                  { name: 'Sol Suave', color: '#FEF08A' },
-                ].map((swatch) => (
-                  <button
-                    key={swatch.name}
-                    type="button"
-                    onClick={() => {
-                      setMessageInput((prev) => `${prev} [Color ${swatch.name}: ${swatch.color}] `)
-                      setShowPalettePicker(false)
-                    }}
-                    style={{
-                      background: swatch.color,
-                      border: '1.5px solid #1E192B',
-                      borderRadius: 4,
-                      padding: '0.2rem 0.5rem',
-                      cursor: 'pointer',
-                      fontSize: '0.72rem',
-                      fontWeight: 700,
-                    }}
-                  >
-                    {swatch.name}
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
         </section>
 
         {/* ══════════════════════════════════════════════════════════════════
-            COLUMN 3: DETALLES DEL ENCARGO (Sidebar Right)
+            COLUMN 3: DETALLES DEL ENCARGO O GUÍA DE ARTIE (Sidebar Right)
             ══════════════════════════════════════════════════════════════════ */}
-        <aside className="chat-column-box chat-col-details" aria-label="Detalles del encargo">
-          <div className="chat-details-header-row">
-            <span className="chat-details-heading-label">Detalles del Encargo</span>
-            <span className="chat-order-id-pill">#{activeConvo.orderId}</span>
-          </div>
+        {showOrderDetails && (
+          activeConvo.isBot ? (
+            <aside className="chat-column-box chat-col-details" aria-label="Detalles del asistente Artie">
+              <div className="chat-details-header-row">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <span className="chat-details-heading-label">Asistente Artie</span>
+                  <span
+                    className="chat-order-id-pill"
+                    style={{ background: '#EDE9FE', color: '#6D28D9' }}
+                  >
+                    AI BOT
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowOrderDetails(false)}
+                  className="chat-details-close-btn"
+                  title="Cerrar panel de asistente"
+                  aria-label="Cerrar panel de asistente"
+                >
+                  <X size={15} />
+                </button>
+              </div>
 
-          <div className="chat-phase-tag-banner">
-            {activeConvo.phase || 'FASE 2 DE 4: REVISIÓN DE BOCETO'}
-          </div>
+              <div className="chat-phase-tag-banner" style={{ background: '#8B5CF6' }}>
+                ASISTENTE DE ORIENTACIÓN INTELIGENTE
+              </div>
 
-          <div className="chat-order-title-block">
-            <h3>{activeConvo.title}</h3>
-            <p>{activeConvo.subtitle}</p>
-          </div>
+              <div className="chat-order-title-block">
+                <h3>¿En qué puede ayudarte Artie?</h3>
+                <p>
+                  Artie es el asistente de IA oficial de ArtLink diseñado para guiarte en cada paso
+                  de tu encargo o búsqueda de talento.
+                </p>
+              </div>
 
-          {/* Financial Escrow Box */}
-          <div className="chat-financial-escrow-box">
-            <div className="chat-financial-top-line">
-              <span className="chat-escrow-label">Precio Total (Escrow)</span>
-              <span className="chat-escrow-status-pill">Protegido 100%</span>
-            </div>
-            <div className="chat-financial-amount-row">
-              <span className="chat-escrow-total-amount">
-                ${activeConvo.escrowAmount?.toFixed(2) || '160.00'} USD
-              </span>
-              <span className="chat-escrow-time-rest">
-                {activeConvo.escrowDeadline} ({activeConvo.escrowDaysLeft || 7} días rest.)
-              </span>
-            </div>
-          </div>
-
-          {/* Milestones timeline */}
-          <div className="chat-milestones-block">
-            <h4 className="chat-milestones-title">Hitos del Proyecto</h4>
-
-            <div className="chat-milestones-list">
-              {(activeConvo.milestones || []).map((m) => {
-                const isDone = m.status === 'done'
-                const isCurrent = m.status === 'current'
-                return (
-                  <div key={m.id} className="chat-milestone-step-item">
-                    <span
-                      className={`chat-step-indicator-circle ${
-                        isDone ? 'is-done' : isCurrent ? 'is-current' : ''
-                      }`}
-                    >
-                      {isDone ? <Check size={11} /> : m.id}
-                    </span>
-
-                    <div className="chat-milestone-name-row">
-                      <span>{m.title}</span>
-                      {m.badge && (
-                        <span className="chat-milestone-state-badge">{m.badge}</span>
-                      )}
-                      {m.date && <span className="chat-milestone-date-tag">{m.date}</span>}
-                    </div>
-
-                    <p className="chat-milestone-subinfo">{m.desc}</p>
+              <div className="chat-milestones-block">
+                <h4 className="chat-milestones-title">Capacidades Principales</h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem', fontSize: '0.82rem' }}>
+                  <div
+                    style={{
+                      background: '#F9FAFB',
+                      border: '1.5px solid #1E192B',
+                      borderRadius: 8,
+                      padding: '0.65rem',
+                    }}
+                  >
+                    <strong style={{ color: '#6D28D9' }}>🔍 Búsqueda de Artistas:</strong>
+                    <p style={{ margin: '0.2rem 0 0', color: '#4B5563' }}>
+                      Escribe la idea de tu proyecto (ej: "Ilustración anime de fantasía con presupuesto de 150 USD") y Artie te dará recomendaciones y filtros directos.
+                    </p>
                   </div>
-                )
-              })}
-            </div>
-          </div>
 
-          {/* Action buttons */}
-          <div className="chat-details-actions-group">
-            <button
-              type="button"
-              className="chat-btn-action-disabled"
-              disabled
-              title="El pago se libera automáticamente tras la entrega final aprobada"
-            >
-              <Lock size={14} aria-hidden="true" />
-              Liberar Pago Anticipado (Bloqueado)
-            </button>
+                  <div
+                    style={{
+                      background: '#F9FAFB',
+                      border: '1.5px solid #1E192B',
+                      borderRadius: 8,
+                      padding: '0.65rem',
+                    }}
+                  >
+                    <strong style={{ color: '#0F766E' }}>🛡️ Protección Escrow Shield:</strong>
+                    <p style={{ margin: '0.2rem 0 0', color: '#4B5563' }}>
+                      Pregúntale cómo funciona la retención segura de fondos por hitos de entrega antes de que el artista cobre.
+                    </p>
+                  </div>
 
-            <button
-              type="button"
-              className="chat-btn-action-white"
-              onClick={() => setShowBriefModal(true)}
-            >
-              <Calendar size={14} aria-hidden="true" />
-              Extender Plazo / Modificar Brief
-            </button>
+                  <div
+                    style={{
+                      background: '#F9FAFB',
+                      border: '1.5px solid #1E192B',
+                      borderRadius: 8,
+                      padding: '0.65rem',
+                    }}
+                  >
+                    <strong style={{ color: '#B45309' }}>📝 Ayuda para Briefs:</strong>
+                    <p style={{ margin: '0.2rem 0 0', color: '#4B5563' }}>
+                      Aprende a especificar resoluciones, paletas y formatos para evitar confusiones en tu pedido.
+                    </p>
+                  </div>
+                </div>
+              </div>
 
-            <button
-              type="button"
-              className="chat-link-mediation-warning"
-              onClick={() => setShowMediationModal(true)}
-            >
-              <AlertTriangle size={13} aria-hidden="true" />
-              ¿Problemas? Solicitar Mediación ArtLink
-            </button>
-          </div>
+              <div className="chat-details-actions-group">
+                <Link
+                  to="/explorar"
+                  className="chat-btn-action-white"
+                  style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem' }}
+                >
+                  <Search size={14} />
+                  Ver Catálogo de Artistas
+                </Link>
+                <button
+                  type="button"
+                  className="chat-btn-action-white"
+                  onClick={handleResetArtieChat}
+                >
+                  <RotateCcw size={14} />
+                  Reiniciar Conversación con Artie
+                </button>
+              </div>
+            </aside>
+          ) : (
+            <aside className="chat-column-box chat-col-details" aria-label="Detalles del encargo">
+              <div className="chat-details-header-row">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <span className="chat-details-heading-label">Detalles del Encargo</span>
+                  <span className="chat-order-id-pill">#{activeConvo.orderId}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowOrderDetails(false)}
+                  className="chat-details-close-btn"
+                  title="Cerrar detalles del encargo"
+                  aria-label="Cerrar detalles del encargo"
+                >
+                  <X size={15} />
+                </button>
+              </div>
 
-          {/* Files section */}
-          <div className="chat-files-attached-card">
-            <div className="chat-files-top-line">
-              <span className="chat-files-title">
-                Archivos del Encargo ({activeConvo.files?.length || 3})
-              </span>
+              <div className="chat-phase-tag-banner">
+                {activeConvo.phase || 'FASE 2 DE 4: REVISIÓN DE BOCETO'}
+              </div>
+
+              <div className="chat-order-title-block">
+                <h3>{activeConvo.title}</h3>
+                <p>{activeConvo.subtitle}</p>
+              </div>
+
+              {/* Financial Escrow Box */}
+              <div className="chat-financial-escrow-box">
+                <div className="chat-financial-top-line">
+                  <span className="chat-escrow-label">Precio Total (Escrow)</span>
+                  <span className="chat-escrow-status-pill">Protegido 100%</span>
+                </div>
+                <div className="chat-financial-amount-row">
+                  <span className="chat-escrow-total-amount">
+                    ${activeConvo.escrowAmount?.toFixed(2) || '160.00'} USD
+                  </span>
+                  <span className="chat-escrow-time-rest">
+                    {activeConvo.escrowDeadline} ({activeConvo.escrowDaysLeft || 7} días rest.)
+                  </span>
+                </div>
+              </div>
+
+              {/* Milestones timeline */}
+              <div className="chat-milestones-block">
+                <h4 className="chat-milestones-title">Hitos del Proyecto</h4>
+
+                <div className="chat-milestones-list">
+                  {(activeConvo.milestones || []).map((m) => {
+                    const isDone = m.status === 'done'
+                    const isCurrent = m.status === 'current'
+                    return (
+                      <div key={m.id} className="chat-milestone-step-item">
+                        <span
+                          className={`chat-step-indicator-circle ${
+                            isDone ? 'is-done' : isCurrent ? 'is-current' : ''
+                          }`}
+                        >
+                          {isDone ? <Check size={11} /> : m.id}
+                        </span>
+
+                        <div className="chat-milestone-name-row">
+                          <span>{m.title}</span>
+                          {m.badge && (
+                            <span className="chat-milestone-state-badge">{m.badge}</span>
+                          )}
+                          {m.date && <span className="chat-milestone-date-tag">{m.date}</span>}
+                        </div>
+
+                        <p className="chat-milestone-subinfo">{m.desc}</p>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Action buttons */}
+              <div className="chat-details-actions-group">
+                <button
+                  type="button"
+                  className="chat-btn-action-disabled"
+                  disabled
+                  title="El pago se libera automáticamente tras la entrega final aprobada"
+                >
+                  <Lock size={14} aria-hidden="true" />
+                  Liberar Pago Anticipado (Bloqueado)
+                </button>
+
+                <button
+                  type="button"
+                  className="chat-btn-action-white"
+                  onClick={() => setShowBriefModal(true)}
+                >
+                  <Calendar size={14} aria-hidden="true" />
+                  Extender Plazo / Modificar Brief
+                </button>
+
+                <button
+                  type="button"
+                  className="chat-link-mediation-warning"
+                  onClick={() => setShowMediationModal(true)}
+                >
+                  <AlertTriangle size={13} aria-hidden="true" />
+                  ¿Problemas? Solicitar Mediación ArtLink
+                </button>
+              </div>
+
+              {/* Files section */}
+              <div className="chat-files-attached-card">
+                <div className="chat-files-top-line">
+                  <span className="chat-files-title">
+                    Archivos del Encargo ({activeConvo.files?.length || 3})
+                  </span>
+                  <button
+                    type="button"
+                    className="chat-link-see-all"
+                    onClick={() => setShowLightbox(true)}
+                  >
+                    Ver todo
+                  </button>
+                </div>
+
+                <div className="chat-files-thumbs-grid">
+                  {(activeConvo.files || []).map((file) => (
+                    <button
+                      key={file.id}
+                      type="button"
+                      className="chat-file-thumb-btn"
+                      onClick={() => setShowLightbox(true)}
+                      title={file.name}
+                    >
+                      <img src={file.img} alt={file.name} />
+                    </button>
+                  ))}
+                </div>
+
+                <div className="chat-files-security-badge">
+                  <ShieldCheck size={16} color="#0F766E" style={{ flexShrink: 0, marginTop: 2 }} />
+                  <span>
+                    Archivos originales respaldados con hash criptográfico SHA-256 para verificación
+                    de entrega.
+                  </span>
+                </div>
+              </div>
+            </aside>
+          )
+        )}
+      </div>
+
+      {/* ══════════════════════════════════════════════════════════════════
+          MODAL: AJUSTES DE BANDEJA Y CHAT
+          ══════════════════════════════════════════════════════════════════ */}
+      {showInboxSettings && (
+        <div className="chat-modal-backdrop" role="dialog" aria-modal="true">
+          <div className="chat-modal-window">
+            <div className="chat-modal-header">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <Sliders size={18} color="#1E192B" />
+                <h3>Ajustes de Bandeja y Chat</h3>
+              </div>
               <button
                 type="button"
-                className="chat-link-see-all"
-                onClick={() => setShowLightbox(true)}
+                className="chat-modal-close-btn"
+                onClick={() => setShowInboxSettings(false)}
+                title="Cerrar ventana de ajustes"
+                aria-label="Cerrar ajustes"
               >
-                Ver todo
+                <X size={16} />
               </button>
             </div>
 
-            <div className="chat-files-thumbs-grid">
-              {(activeConvo.files || []).map((file) => (
-                <button
-                  key={file.id}
-                  type="button"
-                  className="chat-file-thumb-btn"
-                  onClick={() => setShowLightbox(true)}
-                  title={file.name}
-                >
-                  <img src={file.img} alt={file.name} />
-                </button>
-              ))}
+            <div className="chat-modal-body">
+              {/* Sección 1: Bandeja de Entrada */}
+              <div className="chat-settings-section">
+                <h4 className="chat-settings-title">Bandeja de Entrada</h4>
+
+                <div className="chat-settings-row">
+                  <div className="chat-settings-label">
+                    <strong>Vista compacta de conversaciones</strong>
+                    <span>Muestra más conversaciones en pantalla con espaciado reducido.</span>
+                  </div>
+                  <button
+                    type="button"
+                    className={`chat-toggle-switch ${chatSettings.compactView ? 'is-on' : ''}`}
+                    onClick={() => toggleSetting('compactView')}
+                    aria-label="Alternar vista compacta"
+                  >
+                    <span className="chat-toggle-handle" />
+                  </button>
+                </div>
+
+                <div className="chat-settings-row">
+                  <div className="chat-settings-label">
+                    <strong>Sonidos de notificación</strong>
+                    <span>Reproduce un aviso auditivo al enviar o recibir mensajes.</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <button
+                      type="button"
+                      className="chat-btn-action-white"
+                      style={{ padding: '0.25rem 0.55rem', fontSize: '0.74rem' }}
+                      onClick={playNotificationSound}
+                      title="Probar sonido"
+                    >
+                      <Volume2 size={12} style={{ display: 'inline', marginRight: 3 }} />
+                      Probar
+                    </button>
+                    <button
+                      type="button"
+                      className={`chat-toggle-switch ${chatSettings.soundEnabled ? 'is-on' : ''}`}
+                      onClick={() => toggleSetting('soundEnabled')}
+                      aria-label="Alternar sonidos de notificación"
+                    >
+                      <span className="chat-toggle-handle" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="chat-settings-row">
+                  <div className="chat-settings-label">
+                    <strong>Solo encargos activos</strong>
+                    <span>Oculta automáticamente conversaciones de encargos ya finalizados.</span>
+                  </div>
+                  <button
+                    type="button"
+                    className={`chat-toggle-switch ${chatSettings.onlyActiveOrders ? 'is-on' : ''}`}
+                    onClick={() => toggleSetting('onlyActiveOrders')}
+                    aria-label="Alternar solo encargos activos"
+                  >
+                    <span className="chat-toggle-handle" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Sección 2: Comportamiento del Chat */}
+              <div className="chat-settings-section">
+                <h4 className="chat-settings-title">Comportamiento del Chat</h4>
+
+                <div className="chat-settings-row">
+                  <div className="chat-settings-label">
+                    <strong>Enviar mensajes con Enter</strong>
+                    <span>Presiona Enter para enviar; usa Shift + Enter para un salto de línea.</span>
+                  </div>
+                  <button
+                    type="button"
+                    className={`chat-toggle-switch ${chatSettings.sendOnEnter ? 'is-on' : ''}`}
+                    onClick={() => toggleSetting('sendOnEnter')}
+                    aria-label="Alternar enviar con tecla Enter"
+                  >
+                    <span className="chat-toggle-handle" />
+                  </button>
+                </div>
+
+                <div className="chat-settings-row">
+                  <div className="chat-settings-label">
+                    <strong>Desplazamiento automático (Auto-scroll)</strong>
+                    <span>Baja automáticamente al último mensaje al recibir nuevas respuestas.</span>
+                  </div>
+                  <button
+                    type="button"
+                    className={`chat-toggle-switch ${chatSettings.autoScroll ? 'is-on' : ''}`}
+                    onClick={() => toggleSetting('autoScroll')}
+                    aria-label="Alternar auto scroll"
+                  >
+                    <span className="chat-toggle-handle" />
+                  </button>
+                </div>
+
+                <div className="chat-settings-row">
+                  <div className="chat-settings-label">
+                    <strong>Marcas de tiempo completas</strong>
+                    <span>Muestra fecha y hora detalladas en cada burbuja de mensaje.</span>
+                  </div>
+                  <button
+                    type="button"
+                    className={`chat-toggle-switch ${chatSettings.showFullTimestamps ? 'is-on' : ''}`}
+                    onClick={() => toggleSetting('showFullTimestamps')}
+                    aria-label="Alternar marcas de tiempo completas"
+                  >
+                    <span className="chat-toggle-handle" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Sección 3: Acciones rápidas de mantenimiento */}
+              <div className="chat-settings-section">
+                <h4 className="chat-settings-title">Acciones de Mantenimiento</h4>
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  <button
+                    type="button"
+                    className="chat-btn-action-white"
+                    style={{ fontSize: '0.8rem', padding: '0.45rem 0.85rem' }}
+                    onClick={handleMarkAllAsRead}
+                  >
+                    <CheckCheck size={14} />
+                    Marcar todos como leídos
+                  </button>
+                  <button
+                    type="button"
+                    className="chat-btn-action-white"
+                    style={{ fontSize: '0.8rem', padding: '0.45rem 0.85rem' }}
+                    onClick={handleResetArtieChat}
+                  >
+                    <RotateCcw size={14} />
+                    Reiniciar conversación con Artie
+                  </button>
+                </div>
+              </div>
             </div>
 
-            <div className="chat-files-security-badge">
-              <ShieldCheck size={16} color="#0F766E" style={{ flexShrink: 0, marginTop: 2 }} />
-              <span>Archivos originales respaldados con hash criptográfico SHA-256 para verificación de entrega.</span>
+            <div className="chat-modal-footer">
+              <button
+                type="button"
+                className="chat-btn-approve-wip"
+                style={{ flex: 'none', padding: '0.5rem 1.25rem', background: '#8B5CF6' }}
+                onClick={() => setShowInboxSettings(false)}
+              >
+                Guardar y Cerrar
+              </button>
             </div>
           </div>
-        </aside>
-      </div>
+        </div>
+      )}
 
       {/* ══════════════════════════════════════════════════════════════════
           MODALS & FUNCTIONALITIES
@@ -1069,97 +1764,6 @@ export default function MessagesPage() {
                 onClick={() => setShowBriefModal(false)}
               >
                 Cerrar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 2. Modal Revisión Voz */}
-      {showVoiceModal && (
-        <div className="chat-modal-backdrop" role="dialog" aria-modal="true">
-          <div className="chat-modal-window">
-            <div className="chat-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <Headphones size={18} color="#8B5CF6" />
-                <h3>Nota de Voz de Mía Soler</h3>
-              </div>
-              <button
-                type="button"
-                className="chat-modal-close-btn"
-                onClick={() => {
-                  setShowVoiceModal(false)
-                  setIsPlayingAudio(false)
-                }}
-              >
-                <X size={16} />
-              </button>
-            </div>
-
-            <div className="chat-modal-body">
-              <p style={{ margin: 0, color: '#4B5563' }}>
-                Mía adjuntó un comentario en audio explicando la perspectiva del lineart y la distribución de los snacks flotantes:
-              </p>
-
-              <div className="chat-audio-wave-player">
-                <button
-                  type="button"
-                  className="chat-audio-play-btn"
-                  onClick={() => setIsPlayingAudio(!isPlayingAudio)}
-                >
-                  {isPlayingAudio ? <Pause size={16} /> : <Play size={16} style={{ marginLeft: 2 }} />}
-                </button>
-
-                <div className="chat-audio-wave-bars">
-                  {[40, 70, 30, 90, 60, 100, 50, 80, 45, 95, 75, 35, 85, 65, 90, 55, 70, 40].map(
-                    (val, idx) => (
-                      <div
-                        key={idx}
-                        className={`chat-wave-bar ${idx < 8 ? 'is-played' : ''} ${
-                          isPlayingAudio ? 'animating' : ''
-                        }`}
-                        style={{ height: `${val}%`, animationDelay: `${idx * 0.05}s` }}
-                      />
-                    )
-                  )}
-                </div>
-
-                <span className="chat-audio-time-label">
-                  {isPlayingAudio ? '0:24 / 0:42' : '0:42'}
-                </span>
-
-                <button
-                  type="button"
-                  style={{
-                    background: '#F3F4F6',
-                    border: '1px solid #1E192B',
-                    borderRadius: 4,
-                    padding: '0.2rem 0.45rem',
-                    fontSize: '0.72rem',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                  }}
-                  onClick={() => setAudioPlaybackSpeed((prev) => (prev === 1 ? 1.5 : prev === 1.5 ? 2 : 1))}
-                >
-                  {audioPlaybackSpeed}x
-                </button>
-              </div>
-
-              <div style={{ background: '#FFFDF8', border: '1px solid #E5E7EB', borderRadius: 8, padding: '0.75rem', fontSize: '0.8rem' }}>
-                <em>"¡Hola Alex! En este boceto ubiqué el ángulo un poco más alto para que las orejitas y los monitores de fondo tengan profundidad. Fíjate en los detalles de la tableta gráfica..."</em>
-              </div>
-            </div>
-
-            <div className="chat-modal-footer">
-              <button
-                type="button"
-                className="chat-btn-action-white"
-                onClick={() => {
-                  setShowVoiceModal(false)
-                  setIsPlayingAudio(false)
-                }}
-              >
-                Listo
               </button>
             </div>
           </div>

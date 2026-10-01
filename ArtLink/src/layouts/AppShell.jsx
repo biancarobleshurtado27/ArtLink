@@ -207,7 +207,7 @@ export default function AppShell() {
             <PageContainer className={isMessagesPage ? 'page-container-chat' : ''}><Outlet /></PageContainer>
           </main>
           {!user && !isMessagesPage && <Footer />}
-          <AssistantWidget />
+          {!isMessagesPage && <AssistantWidget />}
         </div>
       </div>
     )
@@ -439,7 +439,7 @@ export default function AppShell() {
           <PageContainer className={isMessagesPage ? 'page-container-chat' : ''}><Outlet /></PageContainer>
         </main>
         {!user && !isMessagesPage && <Footer />}
-        <AssistantWidget />
+        {!isMessagesPage && <AssistantWidget />}
         <BottomNavigation links={mobileLinks} />
       </div>
     </div>

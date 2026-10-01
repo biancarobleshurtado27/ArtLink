@@ -454,8 +454,8 @@ export default function PrivateRequestsPage() {
                         <span className="req-order-accepted-badge" style={{ background: '#DCFCE7', color: '#15803D' }}>
                           ✓ Solicitud Aceptada
                         </span>
-                        <Link to="/mensajes?requestId=convo-1082" className="req-btn-link-purple">
-                          <MessageCircle size={15} /> Abrir chat con Kaelen
+                        <Link to="/mensajes?requestId=q_D0R_iTERI" className="req-btn-link-purple">
+                          <MessageCircle size={15} /> Abrir chat con el artista
                         </Link>
                       </div>
                     ) : (
@@ -549,7 +549,7 @@ export default function PrivateRequestsPage() {
                           <span>Pedir Modificaciones</span>
                         </button>
                         <Link
-                          to="/mensajes?requestId=convo-1082"
+                          to="/mensajes?requestId=q_D0R_iTERI"
                           className="req-btn-link-purple"
                         >
                           <MessageCircle size={15} />
@@ -561,7 +561,7 @@ export default function PrivateRequestsPage() {
                         <span className="req-order-accepted-badge" style={{ background: '#DCFCE7', color: '#15803D' }}>
                           ✓ Hito 2 Aprobado
                         </span>
-                        <Link to="/mensajes?requestId=convo-1082" className="req-btn-link-purple">
+                        <Link to="/mensajes?requestId=q_D0R_iTERI" className="req-btn-link-purple">
                           <MessageCircle size={15} /> Ver avance hacia Fase 3 en Mensajes
                         </Link>
                       </div>
@@ -570,8 +570,8 @@ export default function PrivateRequestsPage() {
                         <span className="req-order-accepted-badge" style={{ background: '#FEF3C7', color: '#92400E' }}>
                           Ajustes solicitados
                         </span>
-                        <Link to="/mensajes?requestId=convo-1082" className="req-btn-link-purple">
-                          <MessageCircle size={15} /> Ver hilo con Mía Soler
+                        <Link to="/mensajes?requestId=q_D0R_iTERI" className="req-btn-link-purple">
+                          <MessageCircle size={15} /> Ver hilo con el artista
                         </Link>
                       </div>
                     )}

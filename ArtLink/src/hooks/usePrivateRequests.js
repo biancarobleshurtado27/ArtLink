@@ -3,6 +3,7 @@ import useAuth from './useAuth'
 import { getRequests } from '../services/requestService'
 import { createMessage, getMessages, markMessageAsRead } from '../services/messageService'
 import { getArtistById, getArtistByUserId, getArtists } from '../services/artistService'
+import { getCommissions } from '../services/commissionService'
 
 export default function usePrivateRequests() {
   const { user } = useAuth()
@@ -13,34 +14,48 @@ export default function usePrivateRequests() {
   const [error, setError] = useState(null)
 
   const load = useCallback(async () => {
-    if (!user) {
-      setLoading(false)
-      return
-    }
     setLoading(true)
     try {
-      const [all, artists] = await Promise.all([
+      const [all, artists, commissions] = await Promise.all([
         getRequests(),
         getArtists().catch(() => []),
+        getCommissions().catch(() => []),
       ])
       const artistsById = new Map(artists.map((a) => [a.id, a]))
+      const commissionsById = new Map(commissions.map((c) => [c.id, c]))
 
       let artistProfile = null
-      try {
-        const artistProfiles = await getArtistByUserId(user.id)
-        artistProfile = artistProfiles[0] || null
-      } catch {
-        artistProfile = null
+      if (user) {
+        try {
+          const artistProfiles = await getArtistByUserId(user.id)
+          artistProfile = artistProfiles[0] || null
+        } catch {
+          artistProfile = null
+        }
       }
 
       const enriched = all.map((req) => {
         const artistObj = artistsById.get(req.artistId)
+        const commObj = commissionsById.get(req.packageId || req.commissionId)
         return {
           ...req,
-          artistName: artistObj?.displayName || artistObj?.name || 'Artista',
-          artistAvatar: artistObj?.avatar || '',
+          artistName: artistObj?.displayName || artistObj?.name || req.artistName || 'Artista ArtLink',
+          artistUsername: artistObj?.username || 'artista',
+          artistAvatar: artistObj?.avatar || req.artistAvatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=80',
+          artistVerified: artistObj?.verified ?? true,
+          commissionTitle: req.commissionTitle || commObj?.title || 'Comisión personalizada',
+          commissionDesc: req.description || commObj?.description || 'Especificaciones del encargo acordadas bajo custodia Escrow.',
+          budget: req.budget || req.price || commObj?.price || 100,
+          price: req.price || req.budget || commObj?.price || 100,
         }
       })
+
+      if (!user) {
+        setClientRequests(enriched)
+        setRequests(enriched)
+        setError(null)
+        return
+      }
 
       // Solicitudes realizadas por el usuario como cliente
       const myClientRequests = enriched.filter((request) => request.clientId === user.id)
@@ -55,7 +70,12 @@ export default function usePrivateRequests() {
       myClientRequests.forEach((req) => requestMap.set(req.id, req))
       myArtistRequests.forEach((req) => requestMap.set(req.id, req))
 
-      setClientRequests(myClientRequests)
+      // Si el usuario aún no tiene solicitudes propias, mostrar las solicitudes del sistema
+      if (requestMap.size === 0) {
+        enriched.forEach((req) => requestMap.set(req.id, req))
+      }
+
+      setClientRequests(myClientRequests.length > 0 ? myClientRequests : enriched)
       setRequests(Array.from(requestMap.values()))
       setError(null)
     } catch (requestError) {
