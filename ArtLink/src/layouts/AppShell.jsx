@@ -94,6 +94,7 @@ export default function AppShell() {
     { to: '/explorar', label: 'Explorar', accessibleLabel: 'Explorar artistas' },
     { to: '/como-funciona', label: 'Cómo funciona' },
     { to: '/para-artistas', label: 'Para artistas' },
+    { to: '/solicitudes', label: 'Solicitudes & Notificaciones', accessibleLabel: 'Solicitudes y Notificaciones' },
   ]
 
   // Enlaces de la barra lateral izquierda para usuarios autenticados
@@ -101,13 +102,13 @@ export default function AppShell() {
     { to: '/', label: 'Inicio', icon: Home, accessibleLabel: 'Inicio' },
     { to: '/explorar', label: 'Explorar', icon: Search, accessibleLabel: 'Explorar artistas' },
     { to: '/mensajes', label: 'Mensajes', icon: MessageCircle, accessibleLabel: 'Mensajes privados' },
-    { to: '/solicitudes', label: 'Solicitudes', icon: Bell, accessibleLabel: 'Mis solicitudes' },
+    { to: '/solicitudes', label: 'Solicitudes y Notificaciones', icon: Bell, accessibleLabel: 'Solicitudes y Notificaciones' },
   ]
 
   const mobileLinks = [
     { to: '/', label: 'Inicio', icon: Home },
     { to: '/explorar', label: 'Explorar', icon: Search },
-    { to: '/solicitudes', label: 'Solicitudes', icon: Bell },
+    { to: '/solicitudes', label: 'Solicitudes & Notificaciones', icon: Bell },
     { to: '/mensajes', label: 'Mensajes', icon: MessageCircle },
     { to: '/perfil', label: 'Perfil', icon: UserRound },
   ]
