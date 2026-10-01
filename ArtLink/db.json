@@ -1165,6 +1165,50 @@
       "createdAt": "2026-10-01T21:05:29.388Z",
       "read": false,
       "id": "v6XkTypzdvU"
+    },
+    {
+      "conversationId": "mythosforge",
+      "senderId": "user-artist-001",
+      "senderRole": "artista",
+      "text": "HOLAAAA",
+      "time": "15:36",
+      "attachments": [],
+      "createdAt": "2026-10-01T21:36:40.811Z",
+      "read": false,
+      "id": "7gYVszCVWxE"
+    },
+    {
+      "conversationId": "mythosforge",
+      "senderId": "user-artist-001",
+      "senderRole": "artista",
+      "text": "HOLLLAAAAAAAAA",
+      "time": "15:36",
+      "attachments": [],
+      "createdAt": "2026-10-01T21:36:48.353Z",
+      "read": false,
+      "id": "nQB4KstJmMk"
+    },
+    {
+      "conversationId": "aetherconcept",
+      "senderId": "user-artist-001",
+      "senderRole": "artista",
+      "text": "sadfghjkl",
+      "time": "15:36",
+      "attachments": [],
+      "createdAt": "2026-10-01T21:36:56.249Z",
+      "read": false,
+      "id": "iGQh7QjArnY"
+    },
+    {
+      "conversationId": "client-NlFFPtqd1uk",
+      "senderId": "user-artist-001",
+      "senderRole": "artista",
+      "text": "ASDFGHTREWQ",
+      "time": "15:37",
+      "attachments": [],
+      "createdAt": "2026-10-01T21:37:09.805Z",
+      "read": false,
+      "id": "xJP-FqrEfAY"
     }
   ],
   "conversations": [],

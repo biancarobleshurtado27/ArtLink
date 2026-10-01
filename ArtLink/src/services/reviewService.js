@@ -1,4 +1,7 @@
 import apiClient, { getServiceError } from './apiClient'
+import { readLocal, saveLocal } from './persistence/localStorageService'
+import { getUserScopedKey } from './persistence/storageKeys'
+import { removeReviewDraft } from './persistence/syncService'
 
 const resource = 'reseñas'
 
@@ -19,18 +22,42 @@ export async function getReviewById(id) {
 }
 
 export async function getReviewsByArtistId(artistId) {
+  if (!artistId) return []
+  const cacheKey = getUserScopedKey(artistId, 'artist_reviews')
+  const cached = readLocal(cacheKey, [])
+
   try {
-    return (await apiClient.get('/reviews', { params: { artistId } })).data
+    const list = (await apiClient.get('/reviews', { params: { artistId } })).data
+    if (Array.isArray(list) && list.length > 0) {
+      saveLocal(cacheKey, list)
+      return list
+    }
+    if (Array.isArray(cached) && cached.length > 0) {
+      return cached
+    }
+    saveLocal(cacheKey, [])
+    return []
   } catch (error) {
-    throw getServiceError(error, resource)
+    return Array.isArray(cached) ? cached : []
   }
 }
 
 export async function createReview(review) {
+  const artistId = review?.artistId
+  const userId = review?.userId
+  if (artistId) {
+    const cacheKey = getUserScopedKey(artistId, 'artist_reviews')
+    const current = readLocal(cacheKey, [])
+    saveLocal(cacheKey, [review, ...current])
+  }
+  if (userId && artistId) {
+    removeReviewDraft(userId, artistId)
+  }
+
   try {
     return (await apiClient.post('/reviews', review)).data
   } catch (error) {
-    throw getServiceError(error, resource)
+    return review
   }
 }
 

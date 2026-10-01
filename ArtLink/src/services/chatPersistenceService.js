@@ -94,6 +94,9 @@ export function loadLocalConversation(userId, conversationId) {
 /**
  * Guarda la conversación en localStorage con límite de 50 mensajes y deduplicación.
  */
+/**
+ * Guarda la conversación en localStorage con límite de 50 mensajes y deduplicación.
+ */
 export function saveLocalConversation(conversation) {
   if (!conversation || !conversation.id) return null
 
@@ -123,8 +126,48 @@ export function saveLocalConversation(conversation) {
     updateUserConversationIndex(userId, updatedConversation.id)
   }
 
+  // Guardar activo tanto con ámbito de usuario como global de respaldo
+  saveLocal(getUserScopedKey(userId, 'active_conversation_id'), updatedConversation.id)
   setActiveConversationId(updatedConversation.id)
   return updatedConversation
+}
+
+/**
+ * Obtiene sincronamente la conversación activa guardada en localStorage.
+ * Permite inicializar useState sin parpadeos ni riesgo de sobreescritura.
+ */
+export function getLocalConversationSync(userId = GUEST_USER_ID) {
+  const safeUser = userId || GUEST_USER_ID
+
+  if (safeUser === GUEST_USER_ID) {
+    const guestConvo = readLocal(GUEST_CHAT_KEY, null)
+    return guestConvo || null
+  }
+
+  // Buscar por ID activo específico del usuario
+  const userScopedActiveKey = getUserScopedKey(safeUser, 'active_conversation_id')
+  const userActiveId = readLocal(userScopedActiveKey, null) || getActiveConversationId()
+
+  if (userActiveId) {
+    const local = loadLocalConversation(safeUser, userActiveId)
+    if (local && Array.isArray(local.messages) && local.messages.length > 0) {
+      return local
+    }
+  }
+
+  // Si no se encontró o estaba vacía, consultar el índice de conversaciones del usuario
+  const indexKey = getUserScopedKey(safeUser, CONVERSATION_INDEX_KEY)
+  const convoIds = readLocal(indexKey, [])
+  if (Array.isArray(convoIds) && convoIds.length > 0) {
+    for (let i = convoIds.length - 1; i >= 0; i--) {
+      const candidate = loadLocalConversation(safeUser, convoIds[i])
+      if (candidate && Array.isArray(candidate.messages) && candidate.messages.length > 0) {
+        return candidate
+      }
+    }
+  }
+
+  return null
 }
 
 /**
@@ -217,32 +260,51 @@ export async function syncMessageToServer(conversationId, message, userId) {
  */
 export async function getActiveConversation(userId = GUEST_USER_ID, currentPage = '/') {
   const safeUser = userId || GUEST_USER_ID
-  const activeId = getActiveConversationId()
 
-  // 1. Intentar cargar conversación de localStorage
-  let conversation = null
-  if (safeUser === GUEST_USER_ID) {
-    conversation = readLocal(GUEST_CHAT_KEY, null)
-  } else if (activeId) {
-    conversation = loadLocalConversation(safeUser, activeId)
-  }
+  // 1. Intentar cargar conversación de localStorage síncronamente
+  let conversation = getLocalConversationSync(safeUser)
 
   // 2. Si no está en local y el usuario está autenticado, intentar cargar de JSON Server
-  if (!conversation && safeUser !== GUEST_USER_ID && activeId) {
-    try {
-      const { data: serverConvo } = await apiClient.get(`/conversations/${activeId}`)
-      if (serverConvo && serverConvo.userId === safeUser) {
-        const { data: serverMessages } = await apiClient.get('/chatMessages', {
-          params: { conversationId: activeId },
-        })
-        conversation = {
-          ...serverConvo,
-          messages: Array.isArray(serverMessages) ? serverMessages : [],
-          isLocalOnly: false,
+  if (!conversation && safeUser !== GUEST_USER_ID) {
+    const userScopedActiveKey = getUserScopedKey(safeUser, 'active_conversation_id')
+    const activeId = readLocal(userScopedActiveKey, null) || getActiveConversationId()
+
+    if (activeId) {
+      try {
+        const { data: serverConvo } = await apiClient.get(`/conversations/${activeId}`)
+        if (serverConvo && serverConvo.userId === safeUser) {
+          const { data: serverMessages } = await apiClient.get('/chatMessages', {
+            params: { conversationId: activeId },
+          })
+          conversation = {
+            ...serverConvo,
+            messages: Array.isArray(serverMessages) ? serverMessages : [],
+            isLocalOnly: false,
+          }
+          saveLocalConversation(conversation)
         }
-        saveLocalConversation(conversation)
-      }
-    } catch {}
+      } catch {}
+    }
+
+    if (!conversation) {
+      try {
+        const { data: userConvos } = await apiClient.get('/conversations', {
+          params: { userId: safeUser },
+        })
+        if (Array.isArray(userConvos) && userConvos.length > 0) {
+          const latest = userConvos[userConvos.length - 1]
+          const { data: serverMessages } = await apiClient.get('/chatMessages', {
+            params: { conversationId: latest.id },
+          })
+          conversation = {
+            ...latest,
+            messages: Array.isArray(serverMessages) ? serverMessages : [],
+            isLocalOnly: false,
+          }
+          saveLocalConversation(conversation)
+        }
+      } catch {}
+    }
   }
 
   // 3. Si sigue sin existir, crear una nueva conversación limpia

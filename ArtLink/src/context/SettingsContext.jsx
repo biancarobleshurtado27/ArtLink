@@ -6,14 +6,27 @@ import { GLOBAL_SETTINGS_KEY } from '../services/persistence/storageKeys'
 
 function readSettingsFromStorage() {
   const stored = readLocal(GLOBAL_SETTINGS_KEY, null) || readLocal(SETTINGS_KEY, null)
-  if (!stored) return DEFAULT_SETTINGS
-  return {
+  let rawTheme = null
+  let rawTextSize = null
+  try {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      rawTheme = window.localStorage.getItem('artlink_theme')
+      rawTextSize = window.localStorage.getItem('artlink_text_size')
+    }
+  } catch {}
+
+  const merged = {
     ...DEFAULT_SETTINGS,
-    ...stored,
-    notifications: { ...DEFAULT_SETTINGS.notifications, ...(stored.notifications || {}) },
-    privacy: { ...DEFAULT_SETTINGS.privacy, ...(stored.privacy || {}) },
-    preferences: { ...DEFAULT_SETTINGS.preferences, ...(stored.preferences || {}) },
+    ...(stored || {}),
+    notifications: { ...DEFAULT_SETTINGS.notifications, ...(stored?.notifications || {}) },
+    privacy: { ...DEFAULT_SETTINGS.privacy, ...(stored?.privacy || {}) },
+    preferences: { ...DEFAULT_SETTINGS.preferences, ...(stored?.preferences || {}) },
   }
+
+  if (rawTheme) merged.theme = rawTheme
+  if (rawTextSize) merged.fontSize = rawTextSize
+
+  return merged
 }
 
 export function SettingsProvider({ children }) {
@@ -66,8 +79,24 @@ export function SettingsProvider({ children }) {
       const next = { ...prev, [key]: value }
       applySettingsToDOM(next)
       saveAppSettings(null, next)
+      try {
+        if (typeof window !== 'undefined' && window.localStorage) {
+          if (key === 'theme') window.localStorage.setItem('artlink_theme', String(value))
+          if (key === 'fontSize') window.localStorage.setItem('artlink_text_size', String(value))
+        }
+      } catch {}
       return next
     })
+  }
+
+  function setTheme(nextTheme) {
+    const value = nextTheme === 'dark' ? 'dark' : 'light'
+    updateSetting('theme', value)
+  }
+
+  function setTextSize(nextSize) {
+    const valid = ['normal', 'large', 'x-large'].includes(nextSize) ? nextSize : 'normal'
+    updateSetting('fontSize', valid)
   }
 
   function updateNotifications(key, value) {
@@ -117,6 +146,12 @@ export function SettingsProvider({ children }) {
     setSettings(DEFAULT_SETTINGS)
     saveAppSettings(null, DEFAULT_SETTINGS)
     applySettingsToDOM(DEFAULT_SETTINGS)
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        window.localStorage.removeItem('artlink_theme')
+        window.localStorage.removeItem('artlink_text_size')
+      }
+    } catch {}
     setStatusMessage('Preferencias restauradas a los valores predeterminados.')
     setTimeout(() => setStatusMessage(''), 4000)
   }
@@ -125,6 +160,10 @@ export function SettingsProvider({ children }) {
     <SettingsContext.Provider
       value={{
         settings,
+        theme: settings.theme,
+        textSize: settings.fontSize,
+        setTheme,
+        setTextSize,
         updateSetting,
         updateNotifications,
         updatePrivacy,

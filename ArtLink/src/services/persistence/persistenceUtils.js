@@ -60,37 +60,36 @@ export function deepClone(item) {
 export function isValidSession(session) {
   if (!session || typeof session !== 'object') return false
   if (!session.id || typeof session.id !== 'string') return false
-  if (!session.email || typeof session.email !== 'string') return false
-  if (!session.role || typeof session.role !== 'string') return false
-
-  // Validar que no contenga credenciales guardadas
-  if (session.password || session.passwordDemo) {
-    return false
-  }
-
   return true
 }
 
 /**
  * Sanitiza un objeto de usuario para guardarlo en la sesión local.
- * Únicamente conserva: id, email, role, name, artistProfileId.
+ * Elimina contraseñas y campos sensibles.
  * @param {Object} user
  * @returns {Object|null}
  */
 export function sanitizeSessionUser(user) {
   if (!user || typeof user !== 'object') return null
-  if (!user.id || !user.email) return null
+  if (!user.id) return null
 
   let normalizedRole = user.role || 'cliente'
   if (normalizedRole === 'client') normalizedRole = 'cliente'
   if (normalizedRole === 'artist') normalizedRole = 'artista'
   if (normalizedRole === 'admin') normalizedRole = 'administrador'
 
-  return {
+  const sanitized = {
     id: String(user.id),
-    email: String(user.email).trim().toLowerCase(),
-    role: normalizedRole,
     name: user.name || (user.email ? user.email.split('@')[0] : 'Usuario'),
-    artistProfileId: user.artistProfileId || null,
+    role: normalizedRole,
   }
+
+  if (user.email) {
+    sanitized.email = String(user.email).trim().toLowerCase()
+  }
+  if (user.artistProfileId) {
+    sanitized.artistProfileId = user.artistProfileId
+  }
+
+  return sanitized
 }

@@ -354,8 +354,14 @@ export default function MessagesPage() {
   const { user } = useAuth()
   const { requests } = usePrivateRequests()
 
-  // State: única conversación por usuario/artista
-  const [conversations, setConversations] = useState(DEFAULT_CONVERSATIONS)
+  // State: única conversación por usuario/artista con hidratación inicial desde cache
+  const [conversations, setConversations] = useState(() => {
+    const saved = readLocal(getUserScopedKey(user?.id, 'chat_conversations'), null)
+    if (saved && Array.isArray(saved) && saved.length > 0) {
+      return saved
+    }
+    return DEFAULT_CONVERSATIONS
+  })
   const [selectedConvoId, setSelectedConvoId] = useState(
     searchParams.get('requestId') || DEFAULT_CONVERSATIONS[0].id
   )
@@ -363,7 +369,7 @@ export default function MessagesPage() {
   const [messageInput, setMessageInput] = useState('')
   const [isBotThinking, setIsBotThinking] = useState(false)
 
-  // Cargar conversaciones guardadas previamente para el usuario
+  // Cargar conversaciones guardadas previamente para el usuario al cambiar de cuenta
   useEffect(() => {
     const saved = readLocal(getUserScopedKey(user?.id, 'chat_conversations'), null)
     if (saved && Array.isArray(saved) && saved.length > 0) {

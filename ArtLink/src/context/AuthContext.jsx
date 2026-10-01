@@ -8,14 +8,22 @@ import { isValidSession, sanitizeSessionUser } from '../services/persistence/per
 import { migrateGuestChatToUser } from '../services/chatPersistenceService'
 import apiClient from '../services/apiClient'
 
+export const SESSION_STORAGE_KEY = 'artlink_session'
+
 function readStoredSession() {
-  const stored = readLocal(ACTIVE_SESSION_KEY, null)
+  let stored = readLocal(ACTIVE_SESSION_KEY, null)
+  if (!stored) {
+    stored = readLocal(SESSION_STORAGE_KEY, null)
+  }
+  if (!stored && typeof window !== 'undefined' && window.localStorage) {
+    try {
+      const raw = window.localStorage.getItem(SESSION_STORAGE_KEY)
+      if (raw) stored = JSON.parse(raw)
+    } catch {}
+  }
   if (!stored) return null
 
-  // Validación estricta de estructura
   if (!isValidSession(stored)) {
-    console.warn('[AuthContext] Sesión local corrupta o no válida detectada. Limpiando almacenamiento.')
-    removeLocal(ACTIVE_SESSION_KEY)
     return null
   }
 
@@ -30,6 +38,11 @@ export function AuthProvider({ children }) {
 
     if (safeUser) {
       saveLocal(ACTIVE_SESSION_KEY, safeUser)
+      try {
+        if (typeof window !== 'undefined' && window.localStorage) {
+          window.localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(safeUser))
+        }
+      } catch {}
       setUserOnline(safeUser)
 
       // Migrar chat de invitado a la cuenta si existía
@@ -39,6 +52,11 @@ export function AuthProvider({ children }) {
     } else {
       if (user) setUserOffline(user)
       removeLocal(ACTIVE_SESSION_KEY)
+      try {
+        if (typeof window !== 'undefined' && window.localStorage) {
+          window.localStorage.removeItem(SESSION_STORAGE_KEY)
+        }
+      } catch {}
     }
 
     setUser(safeUser)

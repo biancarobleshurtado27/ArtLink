@@ -28,6 +28,7 @@ import {
   createNewConversation,
   formatChatMessage,
   getActiveConversation,
+  getLocalConversationSync,
   saveLocalConversation,
   updateMessageInConversation,
 } from '../services/chatPersistenceService'
@@ -62,9 +63,9 @@ export default function AssistantPanel({ onClose }) {
   const panelRef = useRef(null)
   const abortControllerRef = useRef(null)
 
-  // Estado de la conversación persistente
-  const [conversation, setConversation] = useState(null)
-  const [loadingConversation, setLoadingConversation] = useState(true)
+  // Estado de la conversación persistente con hidratación síncrona
+  const [conversation, setConversation] = useState(() => getLocalConversationSync(userId))
+  const [loadingConversation, setLoadingConversation] = useState(() => !getLocalConversationSync(userId))
 
   const [input, setInput] = useState('')
   const [thinking, setThinking] = useState(false)
@@ -76,31 +77,37 @@ export default function AssistantPanel({ onClose }) {
   const [size, setSize] = useState({ width: 410, height: 590 })
   const [position, setPosition] = useState({ x: 0, y: 0 })
 
-  // Cargar o inicializar la conversación activa para este usuario / invitado
+  // Cargar o sincronizar la conversación activa para este usuario / invitado
   useEffect(() => {
     let active = true
-    setLoadingConversation(true)
 
     getActiveConversation(userId, window.location?.pathname || '/')
       .then((convo) => {
         if (!active) return
 
-        // Si la conversación viene completamente vacía, insertar mensaje inicial de bienvenida
-        if (!convo.messages || convo.messages.length === 0) {
-          const welcomeMsg = formatChatMessage({
-            id: 'welcome',
-            role: 'assistant',
-            content: INITIAL_WELCOME_CONTENT,
-            provider: 'system',
-            status: 'sent',
-            quickReplies: INITIAL_QUICK_REPLIES,
-          })
-          const initialized = addMessageToConversation(convo, welcomeMsg)
-          setConversation(initialized)
-        } else {
-          setConversation(convo)
-        }
+        setConversation((current) => {
+          // Si el estado local ya tiene mensajes y convo viene vacío, no sobreescribir
+          if (current && Array.isArray(current.messages) && current.messages.length > 0) {
+            if (!convo || !Array.isArray(convo.messages) || convo.messages.length === 0) {
+              return current
+            }
+          }
 
+          // Si la conversación viene completamente vacía, insertar mensaje inicial de bienvenida
+          if (!convo.messages || convo.messages.length === 0) {
+            const welcomeMsg = formatChatMessage({
+              id: 'welcome',
+              role: 'assistant',
+              content: INITIAL_WELCOME_CONTENT,
+              provider: 'system',
+              status: 'sent',
+              quickReplies: INITIAL_QUICK_REPLIES,
+            })
+            return addMessageToConversation(convo, welcomeMsg)
+          }
+
+          return convo
+        })
       })
       .catch((err) => {
         console.error('[AssistantPanel] Error al recuperar conversación:', err)
@@ -291,10 +298,15 @@ export default function AssistantPanel({ onClose }) {
           provider: 'local-fallback',
           status: 'error',
         })
-        const updatedWithError = addMessageToConversation(conversationWithUserSent, errorAssistantMsg)
-        setConversation(updatedWithError)
+        setConversation((currentConvo) => {
+          const base = currentConvo || withUserMsg
+          const conversationWithUserSent = updateMessageInConversation(base, userMessageId, {
+            status: 'sent',
+          })
+          return addMessageToConversation(conversationWithUserSent, errorAssistantMsg)
+        })
       } else {
-        // 3. Guardar la respuesta exitosa de Gemini
+        // 3. Guardar la respuesta exitosa de Gemini anexándola al historial existente
         const assistantMsg = formatChatMessage({
           role: 'assistant',
           content: result.message,
@@ -304,8 +316,13 @@ export default function AssistantPanel({ onClose }) {
           quickReplies: result.quickReplies || [],
           actions: result.actions || [],
         })
-        const updatedWithAssistant = addMessageToConversation(conversationWithUserSent, assistantMsg)
-        setConversation(updatedWithAssistant)
+        setConversation((currentConvo) => {
+          const base = currentConvo || withUserMsg
+          const conversationWithUserSent = updateMessageInConversation(base, userMessageId, {
+            status: 'sent',
+          })
+          return addMessageToConversation(conversationWithUserSent, assistantMsg)
+        })
       }
     } catch (requestError) {
       if (requestError.name === 'AbortError') {
@@ -315,8 +332,10 @@ export default function AssistantPanel({ onClose }) {
           provider: 'system',
           status: 'sent',
         })
-        const updatedCancelled = addMessageToConversation(withUserMsg, cancelledMsg)
-        setConversation(updatedCancelled)
+        setConversation((currentConvo) => {
+          const base = currentConvo || withUserMsg
+          return addMessageToConversation(base, cancelledMsg)
+        })
       } else {
         // 4. Guardar errores controlados
         setError(requestError.message || 'Ocurrió un error al conectar con el Asistente.')
@@ -327,8 +346,10 @@ export default function AssistantPanel({ onClose }) {
           provider: 'local-fallback',
           status: 'error',
         })
-        const updatedError = addMessageToConversation(withUserMsg, errorMsg)
-        setConversation(updatedError)
+        setConversation((currentConvo) => {
+          const base = currentConvo || withUserMsg
+          return addMessageToConversation(base, errorMsg)
+        })
       }
     } finally {
       setThinking(false)

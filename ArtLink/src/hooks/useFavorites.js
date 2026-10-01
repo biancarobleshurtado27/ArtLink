@@ -27,7 +27,15 @@ export default function useFavorites() {
     setError(null)
     try {
       const serverIds = await getFavoritesByUser(userId)
-      setIds(serverIds)
+      if (Array.isArray(serverIds) && serverIds.length > 0) {
+        setIds(serverIds)
+      } else {
+        const key = getUserScopedKey(userId, 'favorites')
+        const cached = readLocal(key, [])
+        if (Array.isArray(cached) && cached.length > 0) {
+          setIds(cached)
+        }
+      }
     } catch (err) {
       setError(err)
     } finally {
@@ -36,8 +44,13 @@ export default function useFavorites() {
   }, [userId])
 
   useEffect(() => {
+    const key = getUserScopedKey(userId, 'favorites')
+    const cached = readLocal(key, [])
+    if (Array.isArray(cached) && cached.length > 0) {
+      setIds(cached)
+    }
     loadFavorites()
-  }, [loadFavorites])
+  }, [userId, loadFavorites])
 
   async function toggle(id) {
     if (!id) return
