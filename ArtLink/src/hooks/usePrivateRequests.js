@@ -58,31 +58,26 @@ export default function usePrivateRequests() {
       })
 
       if (!user) {
-        setClientRequests(enriched)
-        setRequests(enriched)
+        setClientRequests([])
+        setRequests([])
         setError(null)
         return
       }
 
       // Solicitudes realizadas por el usuario como cliente
-      const myClientRequests = enriched.filter((request) => request.clientId === user.id)
+      const myClientRequests = enriched.filter((request) => String(request.clientId) === String(user.id))
 
       // Solicitudes recibidas como artista (si aplica)
       const myArtistRequests = artistProfile
-        ? enriched.filter((request) => request.artistId === artistProfile.id)
-        : []
+        ? enriched.filter((request) => String(request.artistId) === String(artistProfile.id) || String(request.artistId) === String(user.id))
+        : enriched.filter((request) => String(request.artistId) === String(user.id))
 
       // Combinar sin duplicados para centro de conversaciones
       const requestMap = new Map()
       myClientRequests.forEach((req) => requestMap.set(req.id, req))
       myArtistRequests.forEach((req) => requestMap.set(req.id, req))
 
-      // Si el usuario aún no tiene solicitudes propias, mostrar las solicitudes del sistema
-      if (requestMap.size === 0) {
-        enriched.forEach((req) => requestMap.set(req.id, req))
-      }
-
-      setClientRequests(myClientRequests.length > 0 ? myClientRequests : enriched)
+      setClientRequests(myClientRequests)
       setRequests(Array.from(requestMap.values()))
       setError(null)
     } catch (requestError) {

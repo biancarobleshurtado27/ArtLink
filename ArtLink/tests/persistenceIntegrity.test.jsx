@@ -54,7 +54,7 @@ describe('Verificación de persistencia global de ArtLink', () => {
   })
 
   it('Chatbot: persiste mensajes tras recarga y no los sobrescribe con arrays vacíos', async () => {
-    const userId = 'user-test-01'
+    const userId = `user-test-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`
 
     // 1. Obtener conversación inicial y agregar mensaje de usuario y de Gemini
     let convo = await getActiveConversation(userId, '/explorar')
@@ -103,8 +103,8 @@ describe('Verificación de persistencia global de ArtLink', () => {
   })
 
   it('Aislamiento por usuario: el cambio de usuario no mezcla ni borra conversaciones', async () => {
-    const userA = 'user-client-A'
-    const userB = 'user-artist-B'
+    const userA = `user-client-A-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`
+    const userB = `user-artist-B-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`
 
     // Usuario A envía mensaje
     let convoA = await getActiveConversation(userA)

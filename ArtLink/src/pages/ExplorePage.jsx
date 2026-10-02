@@ -52,6 +52,7 @@ export default function ExplorePage() {
   const initialSavedFilters = useMemo(() => getCatalogFilters(user?.id, {}), [user?.id])
 
   // Estados de búsqueda y filtros persistentes
+  const [searchInput, setSearchInput] = useState(() => searchParams.get('q') || initialSavedFilters.searchQuery || '')
   const [searchQuery, setSearchQuery] = useState(() => searchParams.get('q') || initialSavedFilters.searchQuery || '')
   const [openSlotsOnly, setOpenSlotsOnly] = useState(() => initialSavedFilters.openSlotsOnly ?? false)
   const [selectedSort, setSelectedSort] = useState(() => initialSavedFilters.selectedSort || 'popular')
@@ -59,6 +60,26 @@ export default function ExplorePage() {
   const [selectedCategory, setSelectedCategory] = useState(() => searchParams.get('categoria') || initialSavedFilters.selectedCategory || 'all')
   const [filterModalOpen, setFilterModalOpen] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
+
+  // Sincronizar parámetro de búsqueda de la URL
+  useEffect(() => {
+    const qParam = searchParams.get('q')
+    if (qParam !== null) {
+      setSearchInput(qParam)
+      setSearchQuery(qParam)
+    }
+  }, [searchParams])
+
+  // Ejecutar búsqueda explícitamente al presionar Enter o enviar formulario
+  const handleExecuteSearch = (e) => {
+    if (e && typeof e.preventDefault === 'function') {
+      e.preventDefault()
+    }
+    setSearchQuery(searchInput)
+    setCurrentPage(1)
+    const el = document.getElementById('destacadas-section-header')
+    if (el) el.scrollIntoView({ behavior: 'smooth' })
+  }
 
   // Guardar filtros en almacenamiento persistente al cambiar
   useEffect(() => {
@@ -233,16 +254,18 @@ export default function ExplorePage() {
 
       {/* 2. MEGA SEARCH & FILTER CARD */}
       <section className="explore-mega-search-card" aria-label="Buscador central de arte">
-        <div className="mega-search-top">
+        <form className="mega-search-top" onSubmit={handleExecuteSearch} role="search">
           <div className="mega-search-input-wrap">
             <Search size={18} className="mega-search-icon" aria-hidden="true" />
             <input
-              type="text"
+              type="search"
               placeholder="Buscar por estilo, personaje o artista..."
-              value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value)
-                setCurrentPage(1)
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleExecuteSearch(e)
+                }
               }}
               aria-label="Buscar en la galería"
             />
@@ -264,18 +287,14 @@ export default function ExplorePage() {
           </button>
 
           <button
-            type="button"
+            type="submit"
             className="mega-search-submit-btn"
-            onClick={() => {
-              const el = document.getElementById('destacadas-section-header')
-              if (el) el.scrollIntoView({ behavior: 'smooth' })
-            }}
             aria-label="Explorar Galería"
           >
             <Sparkles size={16} aria-hidden="true" />
             <span>Explorar Galería</span>
           </button>
-        </div>
+        </form>
       </section>
 
       {loading && <LoadingState label="Cargando la galería de la comunidad" />}
@@ -840,6 +859,7 @@ export default function ExplorePage() {
                   onClick={() => {
                     setSelectedCategory('all')
                     setOpenSlotsOnly(false)
+                    setSearchInput('')
                     setSearchQuery('')
                     setCurrentPage(1)
                     setFilterModalOpen(false)

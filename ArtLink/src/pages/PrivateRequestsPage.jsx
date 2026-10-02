@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect, useCallback } from 'react'
 import {
   AlertCircle,
   ArrowRight,
@@ -17,6 +17,7 @@ import {
   Filter,
   Heart,
   HelpCircle,
+  Inbox,
   Laptop,
   Lock,
   MessageCircle,
@@ -35,12 +36,21 @@ import { Link, useNavigate } from 'react-router-dom'
 import Modal from '../components/Modal'
 import LoadingState from '../components/LoadingState'
 import ErrorState from '../components/ErrorState'
+import useAuth from '../hooks/useAuth'
 import usePrivateRequests from '../hooks/usePrivateRequests'
+import { updateRequest } from '../services/requestService'
+import { getNotificationsByUser, markNotificationAsRead } from '../services/notificationService'
+import { triggerNotificationsUpdate, NOTIFICATIONS_CHANGED_EVENT } from '../hooks/useNotificationBadges'
 import '../styles/requestsPop.css'
 
 export default function PrivateRequestsPage() {
   const navigate = useNavigate()
-  const { clientRequests, loading, error } = usePrivateRequests()
+  const { user } = useAuth()
+  const { requests, loading: requestsLoading, error: requestsError, reload: reloadRequests } = usePrivateRequests()
+
+  // Notificaciones reales del usuario
+  const [notifications, setNotifications] = useState([])
+  const [notificationsLoading, setNotificationsLoading] = useState(false)
 
   // Filtros y búsqueda
   const [activeTab, setActiveTab] = useState('all') // 'all', 'commissions', 'wip', 'escrow', 'community'
@@ -53,24 +63,54 @@ export default function PrivateRequestsPage() {
     commissions: true,
     wip: true,
     escrow: true,
-    dms: false,
-    mentions: false,
+    dms: true,
+    mentions: true,
   })
 
-  // Modales interactivos
+  // Modales interactivos con datos reales
   const [selectedRequest, setSelectedRequest] = useState(null)
   const [showRoadmapModal, setShowRoadmapModal] = useState(false)
   const [showEscrowProofModal, setShowEscrowProofModal] = useState(false)
   const [showAcceptModal, setShowAcceptModal] = useState(false)
-  const [showCounterOfferModal, setShowCounterOfferModal] = useState(false)
   const [showRevisionModal, setShowRevisionModal] = useState(false)
+  const [revisionNotes, setRevisionNotes] = useState('')
   const [showBotTemplatesModal, setShowBotTemplatesModal] = useState(false)
   const [toastMessage, setToastMessage] = useState(null)
 
-  // Estado interactivo de acciones en pantalla
-  const [kaelenStatus, setKaelenStatus] = useState('pending') // 'pending', 'accepted', 'rejected'
-  const [miaStatus, setMiaStatus] = useState('in_review') // 'in_review', 'approved', 'revision_requested'
-  const [allReadMarked, setAllReadMarked] = useState(false)
+  const [allReadMarked, setAllReadMarked] = useState(() => {
+    try {
+      return localStorage.getItem('artlink_requests_all_read') === 'true'
+    } catch {
+      return false
+    }
+  })
+
+  // Cargar notificaciones reales del usuario autenticado
+  const loadNotifications = useCallback(async () => {
+    if (!user?.id) {
+      setNotifications([])
+      return
+    }
+    setNotificationsLoading(true)
+    try {
+      const data = await getNotificationsByUser(user.id)
+      setNotifications(Array.isArray(data) ? data : [])
+    } catch {
+      setNotifications([])
+    } finally {
+      setNotificationsLoading(false)
+    }
+  }, [user?.id])
+
+  useEffect(() => {
+    loadNotifications()
+    const handleUpdate = () => {
+      loadNotifications()
+      reloadRequests()
+    }
+    window.addEventListener(NOTIFICATIONS_CHANGED_EVENT, handleUpdate)
+    return () => window.removeEventListener(NOTIFICATIONS_CHANGED_EVENT, handleUpdate)
+  }, [loadNotifications, reloadRequests])
 
   // Disparar toast temporal
   const triggerToast = (msg) => {
@@ -79,8 +119,21 @@ export default function PrivateRequestsPage() {
   }
 
   // Marcar todo como leído
-  const handleMarkAllAsRead = () => {
+  const handleMarkAllAsRead = async () => {
     setAllReadMarked(true)
+    try {
+      localStorage.setItem('artlink_requests_all_read', 'true')
+    } catch {}
+
+    if (user?.id && notifications.length > 0) {
+      try {
+        await Promise.all(
+          notifications.filter((n) => !n.read).map((n) => markNotificationAsRead(n.id, user.id))
+        )
+      } catch {}
+    }
+    loadNotifications()
+    triggerNotificationsUpdate()
     triggerToast('Todas las alertas y notificaciones fueron marcadas como leídas')
   }
 
@@ -102,31 +155,94 @@ export default function PrivateRequestsPage() {
       commissions: true,
       wip: true,
       escrow: true,
-      dms: false,
-      mentions: false,
+      dms: true,
+      mentions: true,
     })
     setActiveTab('all')
     setSearchTerm('')
     triggerToast('Filtros restablecidos al valor predeterminado')
   }
 
-  // Exportar CSV
+  // Acciones reales sobre solicitudes
+  const handleAcceptRequest = async (req) => {
+    try {
+      await updateRequest(req.id, { status: 'in_progress', escrowStatus: 'held_in_escrow' })
+      setShowAcceptModal(false)
+      setSelectedRequest(null)
+      triggerToast(`Solicitud #${req.id.slice(-6)} aceptada. Fondos en custodia Escrow.`)
+      reloadRequests()
+      triggerNotificationsUpdate()
+    } catch (err) {
+      triggerToast('Error al aceptar la solicitud: ' + (err.message || 'Error del servidor'))
+    }
+  }
+
+  const handleRejectRequest = async (req) => {
+    try {
+      await updateRequest(req.id, { status: 'cancelled' })
+      triggerToast(`Solicitud #${req.id.slice(-6)} cancelada amablemente.`)
+      reloadRequests()
+      triggerNotificationsUpdate()
+    } catch (err) {
+      triggerToast('Error al cancelar la solicitud: ' + (err.message || 'Error del servidor'))
+    }
+  }
+
+  const handleApproveMilestone = async (req) => {
+    try {
+      await updateRequest(req.id, { status: 'completed', escrowStatus: 'released' })
+      triggerToast(`Entrega de encargo #${req.id.slice(-6)} aprobada. Fondos liberados.`)
+      reloadRequests()
+      triggerNotificationsUpdate()
+    } catch (err) {
+      triggerToast('Error al aprobar entrega: ' + (err.message || 'Error del servidor'))
+    }
+  }
+
+  const handleSendRevision = async () => {
+    if (!selectedRequest) return
+    try {
+      await updateRequest(selectedRequest.id, { status: 'in_progress', revisionRequested: true })
+      setShowRevisionModal(false)
+      setRevisionNotes('')
+      triggerToast(`Observaciones enviadas para el encargo #${selectedRequest.id.slice(-6)}`)
+      reloadRequests()
+      triggerNotificationsUpdate()
+    } catch (err) {
+      triggerToast('Error al solicitar ajustes: ' + (err.message || 'Error del servidor'))
+    }
+  }
+
+  // Exportar CSV dinámicamente con datos reales
   const handleExportCSV = () => {
-    const csvContent =
-      'data:text/csv;charset=utf-8,' +
-      'ID,Tipo,Contraparte,Monto_USD,Estado,Fecha\n' +
-      '#1094,Solicitud Encargo,Kaelen Vance,220.00,Pendiente,Hoy\n' +
-      '#1082,Entrega Hito 2 (WIP),Mía Soler,160.00,En Revisión,Hoy\n' +
-      '#ESC-8921,Depósito en Custodia,ArtLink Escrow,160.00,Protegido,Ayer\n' +
-      '#1040,Encargo Finalizado,Renzo Miyazaki,220.00,Aceptado,Hace 2 días\n'
+    if (requests.length === 0 && notifications.length === 0) {
+      triggerToast('No hay solicitudes ni notificaciones registradas para exportar')
+      return
+    }
+
+    const header = 'ID,Tipo,Contraparte,Monto_USD,Estado,Fecha\n'
+    const rows = requests.map((r) => {
+      const isClient = String(user?.id) === String(r.clientId)
+      const partner = isClient ? (r.artistName || 'Artista') : (r.clientName || 'Cliente')
+      const date = r.createdAt ? new Date(r.createdAt).toLocaleDateString() : 'Reciente'
+      const amount = (r.budget || r.price || 0).toFixed(2)
+      return `"#${r.id.slice(-6)}","Solicitud Encargo","${partner}",${amount},"${r.status || 'pendiente'}","${date}"`
+    })
+
+    const notifRows = notifications.map((n) => {
+      const date = n.createdAt ? new Date(n.createdAt).toLocaleDateString() : 'Reciente'
+      return `"${n.id}","Notificación","${n.title || 'ArtLink'}","0.00","${n.read ? 'Leída' : 'Nueva'}","${date}"`
+    })
+
+    const csvContent = 'data:text/csv;charset=utf-8,' + header + [...rows, ...notifRows].join('\n')
     const encodedUri = encodeURI(csvContent)
     const link = document.createElement('a')
     link.setAttribute('href', encodedUri)
-    link.setAttribute('download', 'ArtLink_Historial_Solicitudes_Notificaciones.csv')
+    link.setAttribute('download', `ArtLink_Historial_${Date.now()}.csv`)
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
-    triggerToast('Historial descargado en formato CSV')
+    triggerToast('Historial real descargado en formato CSV')
   }
 
   // Exportar PDF / Reporte
@@ -134,8 +250,158 @@ export default function PrivateRequestsPage() {
     window.print()
   }
 
-  if (loading) return <LoadingState label="Cargando solicitudes y notificaciones..." />
-  if (error) return <ErrorState message={error.message} />
+  // ── CÁLCULO DE MÉTRICAS Y LISTAS FILTRADAS CON DATOS REALES ──
+  const userIdStr = String(user?.id || '')
+
+  // Filtrado de solicitudes
+  const filteredRequests = useMemo(() => {
+    return requests.filter((req) => {
+      // Búsqueda de texto
+      if (searchTerm.trim()) {
+        const query = searchTerm.toLowerCase()
+        const matchTitle = (req.commissionTitle || '').toLowerCase().includes(query)
+        const matchDesc = (req.description || '').toLowerCase().includes(query)
+        const matchArtist = (req.artistName || '').toLowerCase().includes(query)
+        const matchClient = (req.clientName || '').toLowerCase().includes(query)
+        const matchId = String(req.id).toLowerCase().includes(query)
+        if (!matchTitle && !matchDesc && !matchArtist && !matchClient && !matchId) {
+          return false
+        }
+      }
+
+      // Filtro por tab
+      if (activeTab === 'commissions') {
+        return req.status === 'pending' || req.status === 'waitlist' || req.status === 'in_progress' || req.status === 'completed'
+      }
+      if (activeTab === 'wip') {
+        return req.status === 'in_review' || req.status === 'in_progress'
+      }
+      if (activeTab === 'escrow') {
+        return req.escrowStatus === 'held_in_escrow' || Number(req.budget) > 0
+      }
+      if (activeTab === 'community') {
+        return false // Las interacciones comunitarias son notificaciones
+      }
+
+      // Tab 'all' - validar contra sidebar checkboxes
+      const isCommission = req.status === 'pending' || req.status === 'waitlist' || req.status === 'completed'
+      const isWip = req.status === 'in_review' || req.status === 'in_progress'
+      const isEscrow = req.escrowStatus === 'held_in_escrow'
+
+      if (isCommission && !sidebarFilters.commissions) return false
+      if (isWip && !sidebarFilters.wip) return false
+      if (isEscrow && !sidebarFilters.escrow) return false
+
+      return true
+    }).sort((a, b) => {
+      if (orderMode === 'Prioridad Crítica') {
+        const aCritical = a.status === 'pending' || a.status === 'waitlist' || a.status === 'in_review'
+        const bCritical = b.status === 'pending' || b.status === 'waitlist' || b.status === 'in_review'
+        if (aCritical && !bCritical) return -1
+        if (!aCritical && bCritical) return 1
+        return new Date(b.createdAt || 0) - new Date(a.createdAt || 0)
+      }
+      if (orderMode === 'Mayor Monto') {
+        return (Number(b.budget) || 0) - (Number(a.budget) || 0)
+      }
+      return new Date(b.createdAt || 0) - new Date(a.createdAt || 0)
+    })
+  }, [requests, activeTab, searchTerm, sidebarFilters, orderMode])
+
+  // Filtrado de notificaciones
+  const filteredNotifications = useMemo(() => {
+    return notifications.filter((notif) => {
+      if (searchTerm.trim()) {
+        const query = searchTerm.toLowerCase()
+        const matchTitle = (notif.title || '').toLowerCase().includes(query)
+        const matchMsg = (notif.message || notif.body || '').toLowerCase().includes(query)
+        if (!matchTitle && !matchMsg) return false
+      }
+
+      if (activeTab === 'commissions') {
+        return notif.type === 'commission' || notif.type === 'solicitud'
+      }
+      if (activeTab === 'wip') {
+        return notif.type === 'wip' || notif.type === 'revision'
+      }
+      if (activeTab === 'escrow') {
+        return notif.type === 'escrow' || notif.type === 'payment'
+      }
+      if (activeTab === 'community') {
+        return notif.type === 'community' || notif.type === 'mention' || notif.type === 'like' || notif.type === 'follow' || !notif.type
+      }
+
+      // Tab 'all' - validar contra sidebar checkboxes
+      if (notif.type === 'mention' && !sidebarFilters.mentions) return false
+      if (notif.type === 'dms' && !sidebarFilters.dms) return false
+
+      return true
+    }).sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
+  }, [notifications, activeTab, searchTerm, sidebarFilters])
+
+  // Métricas reales
+  const pendingRequests = useMemo(() => {
+    return requests.filter((r) => r.status === 'pending' || r.status === 'waitlist')
+  }, [requests])
+
+  const inReviewRequests = useMemo(() => {
+    return requests.filter((r) => r.status === 'in_review')
+  }, [requests])
+
+  const activeEscrowTotal = useMemo(() => {
+    return requests
+      .filter((r) => r.escrowStatus === 'held_in_escrow' || r.status === 'in_progress' || r.status === 'in_review')
+      .reduce((sum, r) => sum + (Number(r.budget) || Number(r.price) || 0), 0)
+  }, [requests])
+
+  // Conteo de elementos que requieren atención hoy
+  const actionRequiredRequests = useMemo(() => {
+    return requests.filter((r) => {
+      const isArtist = String(r.artistId) === userIdStr
+      const isClient = String(r.clientId) === userIdStr
+      if (isArtist && (r.status === 'pending' || r.status === 'waitlist')) return true
+      if (isClient && r.status === 'in_review') return true
+      return false
+    })
+  }, [requests, userIdStr])
+
+  const pendingActionCount = allReadMarked
+    ? 0
+    : actionRequiredRequests.length + notifications.filter((n) => !n.read).length
+
+  // Conteos por categoría para tabs
+  const tabCounts = useMemo(() => {
+    const commissionsCount = requests.filter(
+      (r) => r.status === 'pending' || r.status === 'waitlist' || r.status === 'in_progress' || r.status === 'completed'
+    ).length
+    const wipCount = requests.filter((r) => r.status === 'in_review' || r.status === 'in_progress').length
+    const escrowCount = requests.filter((r) => r.escrowStatus === 'held_in_escrow' || Number(r.budget) > 0).length
+    const communityCount = notifications.filter(
+      (n) => n.type === 'community' || n.type === 'mention' || n.type === 'like' || n.type === 'follow'
+    ).length
+    const allCount = requests.length + notifications.length
+
+    return {
+      all: allCount,
+      commissions: commissionsCount,
+      wip: wipCount,
+      escrow: escrowCount,
+      community: communityCount,
+    }
+  }, [requests, notifications])
+
+  const loading = requestsLoading || notificationsLoading
+
+  if (loading && requests.length === 0 && notifications.length === 0) {
+    return <LoadingState label="Cargando solicitudes y notificaciones..." />
+  }
+
+  if (requestsError) {
+    return <ErrorState message={requestsError.message || 'Error al cargar las solicitudes'} />
+  }
+
+  const hasAnyItems = requests.length > 0 || notifications.length > 0
+  const hasFilteredItems = filteredRequests.length > 0 || filteredNotifications.length > 0
 
   return (
     <div className="req-page-container">
@@ -171,7 +437,9 @@ export default function PrivateRequestsPage() {
           <div className="req-title-badges">
             <span className="req-badge-action-pending">
               <span className="req-badge-dot-pink" />
-              {allReadMarked ? '0 pendientes de acción' : '4 pendientes de acción'}
+              {pendingActionCount === 0
+                ? '0 pendientes de acción'
+                : `${pendingActionCount} ${pendingActionCount === 1 ? 'pendiente' : 'pendientes'} de acción`}
             </span>
             <span className="req-badge-escrow-active">
               ✦ ESCROW SHIELD ACTIVO
@@ -191,7 +459,7 @@ export default function PrivateRequestsPage() {
           <button
             type="button"
             className="req-btn-icon-settings"
-            title="Configuración de filtros y alertas"
+            title="Restablecer filtros"
             onClick={resetSidebarFilters}
           >
             <Sliders size={16} aria-hidden="true" />
@@ -228,7 +496,7 @@ export default function PrivateRequestsPage() {
         </div>
       </div>
 
-      {/* ── 3. FILTER TABS BAR ── */}
+      {/* ── 3. FILTER TABS BAR (DYNAMIC COUNTS) ── */}
       <nav className="req-filter-tabs-bar" aria-label="Categorías de alertas">
         <button
           type="button"
@@ -236,7 +504,7 @@ export default function PrivateRequestsPage() {
           onClick={() => setActiveTab('all')}
         >
           <span>Todas las Alertas</span>
-          <span className="req-tab-count-badge">12</span>
+          <span className="req-tab-count-badge">{tabCounts.all}</span>
         </button>
 
         <button
@@ -245,7 +513,9 @@ export default function PrivateRequestsPage() {
           onClick={() => setActiveTab('commissions')}
         >
           <span>Solicitudes de Comisión</span>
-          <span className="req-tab-count-badge">3 nuevas</span>
+          <span className="req-tab-count-badge">
+            {tabCounts.commissions > 0 ? `${tabCounts.commissions} activas` : '0'}
+          </span>
         </button>
 
         <button
@@ -254,7 +524,7 @@ export default function PrivateRequestsPage() {
           onClick={() => setActiveTab('wip')}
         >
           <span>Revisiones & Entregas WIP</span>
-          <span className="req-tab-count-badge badge-cyan">2</span>
+          <span className="req-tab-count-badge badge-cyan">{tabCounts.wip}</span>
         </button>
 
         <button
@@ -264,7 +534,7 @@ export default function PrivateRequestsPage() {
         >
           <Shield size={13} aria-hidden="true" />
           <span>Pagos y Escrow Shield</span>
-          <span className="req-tab-count-badge badge-green">1</span>
+          <span className="req-tab-count-badge badge-green">{tabCounts.escrow}</span>
         </button>
 
         <button
@@ -273,11 +543,11 @@ export default function PrivateRequestsPage() {
           onClick={() => setActiveTab('community')}
         >
           <span>Interacciones de Comunidad</span>
-          <span className="req-tab-count-badge">6</span>
+          <span className="req-tab-count-badge">{tabCounts.community}</span>
         </button>
       </nav>
 
-      {/* ── 4. THREE TOP KPI METRIC CARDS (WITH WASHI TAPE) ── */}
+      {/* ── 4. THREE TOP KPI METRIC CARDS (DYNAMIC VALUES) ── */}
       <section className="req-kpi-cards-grid" aria-label="Métricas clave de atención">
         {/* Card 1: Cola de Encargos */}
         <div className="req-kpi-card kpi-pink">
@@ -289,11 +559,17 @@ export default function PrivateRequestsPage() {
                 <Laptop size={18} aria-hidden="true" />
               </div>
             </div>
-            <div className="req-kpi-main-value">3 Pendientes</div>
+            <div className="req-kpi-main-value">
+              {pendingRequests.length} {pendingRequests.length === 1 ? 'Pendiente' : 'Pendientes'}
+            </div>
           </div>
           <p className="req-kpi-subtext">
             <Clock size={13} aria-hidden="true" />
-            Tiempo prom. de respuesta: <strong>1.8 hrs</strong>
+            {pendingRequests.length > 0 ? (
+              <span>Encargos por confirmar respuesta</span>
+            ) : (
+              <span>Sin solicitudes pendientes</span>
+            )}
           </p>
         </div>
 
@@ -307,11 +583,17 @@ export default function PrivateRequestsPage() {
                 <Edit3 size={18} aria-hidden="true" />
               </div>
             </div>
-            <div className="req-kpi-main-value">1 Boceto Listo</div>
+            <div className="req-kpi-main-value">
+              {inReviewRequests.length} {inReviewRequests.length === 1 ? 'En Revisión' : 'En Revisión'}
+            </div>
           </div>
           <p className="req-kpi-subtext">
             <FileText size={13} aria-hidden="true" />
-            Encargo <strong>#1082</strong> de Mía Soler
+            {inReviewRequests.length > 0 ? (
+              <span>Bocetos e hitos aguardando aprobación</span>
+            ) : (
+              <span>Todas las revisiones al día</span>
+            )}
           </p>
         </div>
 
@@ -325,11 +607,17 @@ export default function PrivateRequestsPage() {
                 <ShieldCheck size={19} aria-hidden="true" />
               </div>
             </div>
-            <div className="req-kpi-main-value">$340.00 USD</div>
+            <div className="req-kpi-main-value">
+              ${activeEscrowTotal.toFixed(2)} USD
+            </div>
           </div>
           <p className="req-kpi-subtext">
             <Lock size={13} aria-hidden="true" />
-            Fondos asegurados hasta tu aprobación
+            {activeEscrowTotal > 0 ? (
+              <span>Fondos asegurados hasta tu aprobación</span>
+            ) : (
+              <span>Sin depósitos en custodia activos</span>
+            )}
           </p>
         </div>
       </section>
@@ -337,397 +625,329 @@ export default function PrivateRequestsPage() {
       {/* ── 5. MAIN TWO-COLUMN CONTENT GRID ── */}
       <div className="req-main-two-columns">
         {/* ══════════════════════════════════════════════════════════════════
-           LEFT COLUMN: FEED DE ACCIONES & NOTIFICACIONES
+           LEFT COLUMN: FEED DE ACCIONES & NOTIFICACIONES REALES
            ══════════════════════════════════════════════════════════════════ */}
         <main className="req-feed-column" id="main-content">
-          {/* ── SECCIÓN 1: ACCIÓN REQUERIDA HOY ── */}
-          {(activeTab === 'all' || activeTab === 'commissions' || activeTab === 'wip') && (
-            <section aria-label="Acciones requeridas hoy">
-              <div className="req-section-header-row">
-                <div className="req-section-badge-title">
-                  <span className="req-section-badge-dark">+ ACCIÓN REQUERIDA HOY</span>
-                  <span className="req-section-time-hint">VENCE EN MENOS DE 48 HRS</span>
-                </div>
+          {!hasAnyItems ? (
+            /* ESTADO VACÍO CUANDO NO HAY SOLICITUDES NI NOTIFICACIONES EN LA CUENTA */
+            <div className="req-empty-state-box">
+              <div className="req-empty-icon-wrap">
+                <Inbox size={38} aria-hidden="true" />
+              </div>
+              <h2 className="req-empty-title">No tienes solicitudes ni notificaciones activas</h2>
+              <p className="req-empty-desc">
+                Cuando envíes o recibas solicitudes de comisión, o tengas actualizaciones sobre tus proyectos y pagos en custodia, aparecerán aquí en tiempo real.
+              </p>
+              <div className="req-empty-actions">
+                <Link to="/explorar" className="req-btn-primary-purple" style={{ textDecoration: 'none' }}>
+                  <Sparkles size={16} aria-hidden="true" />
+                  <span>Explorar Creadores</span>
+                </Link>
+                <Link to="/solicitudes/nueva" className="req-btn-secondary-pink" style={{ textDecoration: 'none' }}>
+                  <FileText size={16} aria-hidden="true" />
+                  <span>Crear Solicitud</span>
+                </Link>
+              </div>
+            </div>
+          ) : !hasFilteredItems ? (
+            /* ESTADO VACÍO TRAS APLICAR FILTROS O BÚSQUEDA */
+            <div className="req-empty-state-box">
+              <div className="req-empty-icon-wrap" style={{ background: '#FEF3C7', color: '#D97706' }}>
+                <Search size={38} aria-hidden="true" />
+              </div>
+              <h2 className="req-empty-title">Sin resultados para esta vista</h2>
+              <p className="req-empty-desc">
+                No hay solicitudes o alertas que coincidan con el término de búsqueda o filtros seleccionados.
+              </p>
+              <div className="req-empty-actions">
                 <button
                   type="button"
-                  className="req-link-resolve-all"
-                  onClick={() => triggerToast('Iniciando resolución guiada de tareas pendientes')}
+                  className="req-btn-primary-purple"
+                  onClick={resetSidebarFilters}
                 >
-                  Resolver todas (2)
+                  Restablecer filtros
                 </button>
               </div>
-
-              {/* CARD 1: Kaelen Vance - Solicitud de Comisión VTuber */}
-              {(sidebarFilters.commissions || activeTab === 'commissions') && (
-                <article className="req-action-card-box">
-                  <span className="req-card-washi-tape-tag tag-pink">SOLICITUD NUEVA</span>
-
-                  <div className="req-card-user-row">
-                    <div className="req-user-avatar-meta">
-                      <div className="req-user-avatar-wrap">
-                        <img
-                          src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&q=80"
-                          alt="Kaelen Vance"
-                          className="req-user-avatar-img"
-                        />
-                        <span className="req-user-check-badge">✓</span>
-                      </div>
-                      <div className="req-user-titles">
-                        <div className="req-user-name-line">
-                          <strong>Kaelen Vance</strong>
-                          <span className="req-user-handle">@Kaelen_Design</span>
-                          <span className="req-order-id-badge">Encargo #1094</span>
-                        </div>
-                        <p className="req-card-statement">
-                          Solicita encargo personalizado: <strong>Diseño de Personaje VTuber 2D</strong>
-                        </p>
-                      </div>
+            </div>
+          ) : (
+            <>
+              {/* ── SECCIÓN 1: ACCIÓN REQUERIDA HOY (SOLICITUDES PENDIENTES DE APROBACIÓN) ── */}
+              {actionRequiredRequests.length > 0 && (
+                <section aria-label="Acciones requeridas hoy">
+                  <div className="req-section-header-row">
+                    <div className="req-section-badge-title">
+                      <span className="req-section-badge-dark">+ ACCIÓN REQUERIDA HOY</span>
+                      <span className="req-section-time-hint">REQUIERE TU CONFIRMACIÓN</span>
                     </div>
+                  </div>
 
-                    <div className="req-price-time-box">
-                      <span className="req-price-amount">$220.00 USD</span>
-                      <span className="req-price-deadline">
-                        <Clock size={11} style={{ display: 'inline', marginRight: 3 }} />
-                        Plazo: 16 días
+                  {actionRequiredRequests.map((req) => {
+                    const isArtist = String(req.artistId) === userIdStr
+                    const isClient = String(req.clientId) === userIdStr
+                    const counterparty = isClient ? (req.artistName || 'Artista') : (req.clientName || 'Cliente')
+                    const counterpartyHandle = isClient ? (req.artistUsername || 'artista') : (req.clientUsername || 'cliente')
+                    const counterpartyAvatar = isClient ? req.artistAvatar : req.clientAvatar
+
+                    return (
+                      <article key={req.id} className="req-action-card-box">
+                        <span className="req-card-washi-tape-tag tag-pink">
+                          {req.status === 'in_review' ? 'HITO POR APROBAR' : 'SOLICITUD PENDIENTE'}
+                        </span>
+
+                        <div className="req-card-user-row">
+                          <div className="req-user-avatar-meta">
+                            <div className="req-user-avatar-wrap">
+                              <img
+                                src={counterpartyAvatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(counterparty)}&background=random`}
+                                alt={counterparty}
+                                className="req-user-avatar-img"
+                              />
+                              <span className="req-user-check-badge">✓</span>
+                            </div>
+                            <div className="req-user-titles">
+                              <div className="req-user-name-line">
+                                <strong>{counterparty}</strong>
+                                <span className="req-user-handle">@{counterpartyHandle}</span>
+                                <span className="req-order-id-badge">Encargo #{req.id.slice(-6)}</span>
+                              </div>
+                              <p className="req-card-statement">
+                                {req.commissionTitle || req.description || 'Comisión personalizada ArtLink'}
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="req-price-time-box">
+                            <span className="req-price-amount">${(req.budget || req.price || 0).toFixed(2)} USD</span>
+                            {req.desiredDate && (
+                              <span className="req-price-deadline">
+                                <Clock size={11} style={{ display: 'inline', marginRight: 3 }} />
+                                Plazo: {req.desiredDate}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        {req.description && (
+                          <div className="req-briefing-note-box">
+                            <div className="req-brief-inner-col">
+                              <div className="req-brief-tag-title">
+                                <FileText size={12} /> NOTA DEL BRIEFING
+                              </div>
+                              <p className="req-brief-quote">&quot;{req.description}&quot;</p>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Botones de acción real */}
+                        <div className="req-card-actions-row">
+                          {isArtist && (req.status === 'pending' || req.status === 'waitlist') && (
+                            <>
+                              <button
+                                type="button"
+                                className="req-btn-primary-purple"
+                                onClick={() => {
+                                  setSelectedRequest(req)
+                                  setShowAcceptModal(true)
+                                }}
+                              >
+                                <Check size={16} aria-hidden="true" />
+                                <span>Aceptar Solicitud</span>
+                              </button>
+                              <button
+                                type="button"
+                                className="req-btn-secondary-pink"
+                                onClick={() => {
+                                  setSelectedRequest(req)
+                                  setShowRoadmapModal(true)
+                                }}
+                              >
+                                <Eye size={15} aria-hidden="true" />
+                                <span>Ver Hoja de Ruta</span>
+                              </button>
+                              <button
+                                type="button"
+                                className="req-btn-link-action"
+                                onClick={() => handleRejectRequest(req)}
+                              >
+                                <X size={14} style={{ display: 'inline', marginRight: 2 }} />
+                                Rechazar amablemente
+                              </button>
+                            </>
+                          )}
+
+                          {isClient && req.status === 'in_review' && (
+                            <>
+                              <button
+                                type="button"
+                                className="req-btn-mint-approve"
+                                onClick={() => handleApproveMilestone(req)}
+                              >
+                                <Check size={16} aria-hidden="true" />
+                                <span>Aprobar Entrega & Liberar Custodia</span>
+                              </button>
+                              <button
+                                type="button"
+                                className="req-btn-white-outline"
+                                onClick={() => {
+                                  setSelectedRequest(req)
+                                  setShowRevisionModal(true)
+                                }}
+                              >
+                                <Edit3 size={15} aria-hidden="true" />
+                                <span>Pedir Modificaciones</span>
+                              </button>
+                            </>
+                          )}
+
+                          <Link
+                            to={`/mensajes?requestId=${req.id}`}
+                            className="req-btn-link-purple"
+                          >
+                            <MessageCircle size={15} />
+                            <span>Abrir Conversación</span>
+                          </Link>
+                        </div>
+                      </article>
+                    )
+                  })}
+                </section>
+              )}
+
+              {/* ── SECCIÓN 2: HISTORIAL DE SOLICITUDES REALES ── */}
+              {filteredRequests.length > 0 && (
+                <section aria-label="Historial de solicitudes activas" style={{ marginTop: '1rem' }}>
+                  <div className="req-section-header-row">
+                    <div className="req-section-badge-title">
+                      <span className="req-section-badge-neutral">
+                        + SOLICITUDES Y ENCARGOS ACTIVOS ({filteredRequests.length})
                       </span>
                     </div>
                   </div>
 
-                  {/* Nota del Briefing */}
-                  <div className="req-briefing-note-box">
-                    <div className="req-brief-inner-col">
-                      <div className="req-brief-tag-title">
-                        <FileText size={12} /> NOTA DEL BRIEFING
-                      </div>
-                      <p className="req-brief-quote">
-                        &quot;¡Hola! Sigo tu trabajo desde hace meses. Busco un modelo VTuber anime de cuerpo medio con temática cósmica/astronómica, capa traslúcida y 3 expresiones clave (feliz, enojado y llorando chibi). Ya tengo la paleta de colores aprobada...&quot;
-                      </p>
-                      <div className="req-brief-attachment-line">
-                        <Paperclip size={13} color="#6B7280" />
-                        <span>moodboard_referencias.pdf</span> (3.4 MB) • Recibido hace 3 horas
-                      </div>
-                    </div>
-                    <img
-                      src="/images/hero/soramoon.jpg"
-                      alt="Referencia de estilo VTuber"
-                      className="req-brief-thumb-img"
-                      onError={(e) => {
-                        e.target.src = 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=200&q=80'
-                      }}
-                    />
-                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+                    {filteredRequests.map((req) => {
+                      const isClient = String(req.clientId) === userIdStr
+                      const counterparty = isClient ? (req.artistName || 'Artista') : (req.clientName || 'Cliente')
+                      const amount = Number(req.budget || req.price || 0)
 
-                  {/* Botones de acción de la solicitud */}
-                  <div className="req-card-actions-row">
-                    {kaelenStatus === 'pending' ? (
-                      <>
-                        <button
-                          type="button"
-                          className="req-btn-primary-purple"
-                          onClick={() => setShowAcceptModal(true)}
-                        >
-                          <Check size={16} aria-hidden="true" />
-                          <span>Aceptar Solicitud</span>
-                        </button>
-                        <button
-                          type="button"
-                          className="req-btn-secondary-pink"
-                          onClick={() => setShowCounterOfferModal(true)}
-                        >
-                          <Edit3 size={15} aria-hidden="true" />
-                          <span>Proponer Ajuste de Tarifa/Plazo</span>
-                        </button>
-                        <button
-                          type="button"
-                          className="req-btn-link-action"
-                          onClick={() => {
-                            setKaelenStatus('rejected')
-                            triggerToast('Solicitud rechazada con mensaje de cortesía')
-                          }}
-                        >
-                          <X size={14} style={{ display: 'inline', marginRight: 2 }} />
-                          Rechazar amablemente
-                        </button>
-                      </>
-                    ) : kaelenStatus === 'accepted' ? (
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                        <span className="req-order-accepted-badge" style={{ background: '#DCFCE7', color: '#15803D' }}>
-                          ✓ Solicitud Aceptada
-                        </span>
-                        <Link to="/mensajes?requestId=q_D0R_iTERI" className="req-btn-link-purple">
-                          <MessageCircle size={15} /> Abrir chat con el artista
-                        </Link>
-                      </div>
-                    ) : (
-                      <span style={{ fontSize: '0.85rem', color: '#9CA3AF', fontWeight: 600 }}>
-                        Solicitud archivada
+                      return (
+                        <article key={req.id} className="req-recent-event-card">
+                          <div className="req-event-icon-circle circle-green">
+                            <ShieldCheck size={22} />
+                          </div>
+                          <div className="req-event-info-col">
+                            <div className="req-event-top-line">
+                              <strong>{req.commissionTitle || req.description || 'Comisión ArtLink'}</strong>
+                              <span className="req-event-escrow-badge">#{req.id.slice(-6)}</span>
+                            </div>
+                            <p className="req-event-desc-p">
+                              Contraparte: <strong>{counterparty}</strong> • Monto: <strong>${amount.toFixed(2)} USD</strong> • Estado:{' '}
+                              <strong style={{ color: req.status === 'completed' ? '#16A34A' : '#7C3AED' }}>
+                                {req.status === 'in_progress' ? 'En Progreso' : req.status === 'completed' ? 'Completado' : req.status}
+                              </strong>
+                              {req.escrowStatus === 'held_in_escrow' && ' (Fondos retenidos en Escrow)'}
+                            </p>
+                            <div className="req-event-meta-line">
+                              <button
+                                type="button"
+                                className="req-event-link-text"
+                                onClick={() => {
+                                  setSelectedRequest(req)
+                                  setShowEscrowProofModal(true)
+                                }}
+                                style={{ background: 'none', border: 'none', padding: 0 }}
+                              >
+                                Ver comprobante de custodia Escrow
+                              </button>
+                              <span>•</span>
+                              <span>{req.createdAt ? new Date(req.createdAt).toLocaleDateString() : 'Activa'}</span>
+                            </div>
+                          </div>
+                          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                            <button
+                              type="button"
+                              className="req-btn-roadmap"
+                              onClick={() => setSelectedRequest(req)}
+                            >
+                              Detalles
+                            </button>
+                            <Link
+                              to={`/mensajes?requestId=${req.id}`}
+                              className="req-btn-roadmap"
+                              style={{ textDecoration: 'none', background: '#EDE9FE', color: '#6D28D9' }}
+                            >
+                              Chat
+                            </Link>
+                          </div>
+                        </article>
+                      )
+                    })}
+                  </div>
+                </section>
+              )}
+
+              {/* ── SECCIÓN 3: NOTIFICACIONES REALES DEL SISTEMA ── */}
+              {filteredNotifications.length > 0 && (
+                <section aria-label="Notificaciones del sistema" style={{ marginTop: '1.25rem' }}>
+                  <div className="req-section-header-row">
+                    <div className="req-section-badge-title">
+                      <span className="req-section-badge-neutral">
+                        + NOTIFICACIONES ({filteredNotifications.length})
                       </span>
-                    )}
+                    </div>
                   </div>
-                </article>
-              )}
 
-              {/* CARD 2: Mía Soler - Hito por Aprobar */}
-              {(sidebarFilters.wip || activeTab === 'wip') && (
-                <article className="req-action-card-box">
-                  <span className="req-card-washi-tape-tag tag-mint">HITO POR APROBAR</span>
-
-                  <div className="req-card-user-row">
-                    <div className="req-user-avatar-meta">
-                      <div className="req-user-avatar-wrap">
-                        <img
-                          src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&q=80"
-                          alt="Mía Soler"
-                          className="req-user-avatar-img"
-                        />
-                        <span className="req-user-check-badge">✓</span>
-                      </div>
-                      <div className="req-user-titles">
-                        <div className="req-user-name-line">
-                          <strong>Mía Soler</strong>
-                          <span className="req-user-handle">@miasoler_art</span>
-                          <span className="req-order-id-badge">Encargo #1082</span>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+                    {filteredNotifications.map((notif) => (
+                      <article
+                        key={notif.id}
+                        className="req-recent-event-card"
+                        style={{ opacity: notif.read ? 0.85 : 1 }}
+                      >
+                        <div
+                          className={`req-event-icon-circle ${
+                            notif.type === 'escrow' ? 'circle-green' : 'circle-purple'
+                          }`}
+                        >
+                          {notif.type === 'escrow' ? (
+                            <ShieldCheck size={20} />
+                          ) : notif.type === 'like' ? (
+                            <Heart size={20} />
+                          ) : (
+                            <FileText size={20} />
+                          )}
                         </div>
-                        <p className="req-card-statement">
-                          Entregable de Hito 2: <strong>Boceto v1.2 con Ajustes de Iluminación y Pose</strong>
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="req-urgent-time-pill">
-                      <Clock size={13} aria-hidden="true" />
-                      <span>41:24 hrs para respuesta</span>
-                    </div>
+                        <div className="req-event-info-col">
+                          <div className="req-event-top-line">
+                            <strong>{notif.title || 'Actualización de ArtLink'}</strong>
+                            {!notif.read && (
+                              <span className="req-badge-action-pending" style={{ padding: '0.1rem 0.5rem', fontSize: '0.72rem' }}>
+                                Nueva
+                              </span>
+                            )}
+                          </div>
+                          <p className="req-event-desc-p">
+                            {notif.message || notif.body || notif.description || 'Tienes una nueva actualización en tu cuenta.'}
+                          </p>
+                          <div className="req-event-meta-line">
+                            <span>{notif.createdAt ? new Date(notif.createdAt).toLocaleDateString() : 'Reciente'}</span>
+                          </div>
+                        </div>
+                        {notif.link && (
+                          <Link
+                            to={notif.link}
+                            className="req-btn-roadmap"
+                            style={{ textDecoration: 'none' }}
+                          >
+                            Ver
+                          </Link>
+                        )}
+                      </article>
+                    ))}
                   </div>
-
-                  {/* Previsualización del boceto */}
-                  <div className="req-wip-preview-row">
-                    <div className="req-wip-thumb-wrap">
-                      <img
-                        src="/images/wip_sketch.jpg"
-                        alt="Boceto entregado por Mía Soler"
-                        className="req-wip-thumb-img"
-                        onError={(e) => {
-                          e.target.src = 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&q=80'
-                        }}
-                      />
-                      <span className="req-wip-tag-floating">WIP FASE 2</span>
-                    </div>
-
-                    <div className="req-wip-info-col">
-                      <p className="req-wip-desc-p">
-                        &quot;Mía ha subido el archivo <span className="req-wip-filename-chip">ilusion_nocturna_boceto_v1.2.clip</span>. Se modificó el ángulo del brazo izquierdo y se agregaron las luciérnagas pastel solicitadas.&quot;
-                      </p>
-                      <div className="req-wip-escrow-pill-line">
-                        <ShieldCheck size={14} color="#059669" />
-                        <span>Hito cubierto por Escrow: <strong>$160.00 USD</strong> • 3 comentarios de revisión</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Botones de acción del hito */}
-                  <div className="req-card-actions-row">
-                    {miaStatus === 'in_review' ? (
-                      <>
-                        <button
-                          type="button"
-                          className="req-btn-mint-approve"
-                          onClick={() => {
-                            setMiaStatus('approved')
-                            triggerToast('Boceto de la Fase 2 aprobado con éxito en Escrow')
-                          }}
-                        >
-                          <Check size={16} aria-hidden="true" />
-                          <span>Revisar Boceto & Aprobar Hito</span>
-                        </button>
-                        <button
-                          type="button"
-                          className="req-btn-white-outline"
-                          onClick={() => setShowRevisionModal(true)}
-                        >
-                          <Edit3 size={15} aria-hidden="true" />
-                          <span>Pedir Modificaciones</span>
-                        </button>
-                        <Link
-                          to="/mensajes?requestId=q_D0R_iTERI"
-                          className="req-btn-link-purple"
-                        >
-                          <MessageCircle size={15} />
-                          <span>Abrir en Chat de Mensajes</span>
-                        </Link>
-                      </>
-                    ) : miaStatus === 'approved' ? (
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                        <span className="req-order-accepted-badge" style={{ background: '#DCFCE7', color: '#15803D' }}>
-                          ✓ Hito 2 Aprobado
-                        </span>
-                        <Link to="/mensajes?requestId=q_D0R_iTERI" className="req-btn-link-purple">
-                          <MessageCircle size={15} /> Ver avance hacia Fase 3 en Mensajes
-                        </Link>
-                      </div>
-                    ) : (
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                        <span className="req-order-accepted-badge" style={{ background: '#FEF3C7', color: '#92400E' }}>
-                          Ajustes solicitados
-                        </span>
-                        <Link to="/mensajes?requestId=q_D0R_iTERI" className="req-btn-link-purple">
-                          <MessageCircle size={15} /> Ver hilo con el artista
-                        </Link>
-                      </div>
-                    )}
-                  </div>
-                </article>
+                </section>
               )}
-            </section>
-          )}
-
-          {/* ── SECCIÓN 2: RECIENTES & PAGOS (ESTA SEMANA) ── */}
-          {(activeTab === 'all' || activeTab === 'escrow' || activeTab === 'community') && (
-            <section aria-label="Eventos recientes y pagos">
-              <div className="req-section-header-row" style={{ marginTop: '0.5rem' }}>
-                <div className="req-section-badge-title">
-                  <span className="req-section-badge-neutral">+ RECIENTES & PAGOS (ESTA SEMANA)</span>
-                </div>
-                <span className="req-section-time-hint" style={{ textTransform: 'none', fontWeight: 600 }}>
-                  Mostrando 3 de 10 eventos
-                </span>
-              </div>
-
-              {/* Evento 1: Fondos Depositados en Custodia Segura */}
-              {(sidebarFilters.escrow || activeTab === 'escrow') && (
-                <article className="req-recent-event-card">
-                  <div className="req-event-icon-circle circle-green">
-                    <ShieldCheck size={22} />
-                  </div>
-                  <div className="req-event-info-col">
-                    <div className="req-event-top-line">
-                      <strong>Fondos Depositados en Custodia Segura</strong>
-                      <span className="req-event-escrow-badge">Escrow Shield #ESC-8921</span>
-                    </div>
-                    <p className="req-event-desc-p">
-                      <strong>$160.00 USD</strong> fueron retenidos con éxito por la pasarela de ArtLink para el encargo con <strong>@miasoler_art</strong>. Tu dinero está 100% protegido hasta la entrega final del PSD/PNG comercial y tu visto bueno.
-                    </p>
-                    <div className="req-event-meta-line">
-                      <button
-                        type="button"
-                        className="req-event-link-text"
-                        onClick={() => setShowEscrowProofModal(true)}
-                        style={{ background: 'none', border: 'none', padding: 0 }}
-                      >
-                        Ver comprobante de depósito seguro
-                      </button>
-                      <span>•</span>
-                      <span>Ayer a las 18:40</span>
-                    </div>
-                  </div>
-                  <span className="req-event-pill-right">Protegido ✓</span>
-                </article>
-              )}
-
-              {/* Evento 2: Renzo Miyazaki aceptó solicitud */}
-              {(sidebarFilters.commissions || activeTab === 'commissions') && (
-                <article className="req-recent-event-card">
-                  <img
-                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&q=80"
-                    alt="Renzo Miyazaki"
-                    className="req-user-avatar-img"
-                    style={{ width: 44, height: 44 }}
-                  />
-                  <div className="req-event-info-col">
-                    <div className="req-event-top-line">
-                      <strong>Renzo Miyazaki</strong>
-                      <span className="req-user-handle">@renzo_mecha</span>
-                      <span className="req-order-accepted-badge">Aceptó tu solicitud</span>
-                    </div>
-                    <p className="req-event-desc-p">
-                      Aceptó formalmente tu comisión para <strong>&quot;Mecha Cyber Samurai 3D + Texturizado PBR&quot;</strong>. El cronograma de 20 días ha comenzado.
-                    </p>
-                    <div className="req-event-meta-line">
-                      <span>Fase 1: Briefing técnico y siluetas</span>
-                      <span>•</span>
-                      <span>Hace 2 días</span>
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    className="req-btn-roadmap"
-                    onClick={() => setShowRoadmapModal(true)}
-                  >
-                    Ver Hoja de Ruta
-                  </button>
-                </article>
-              )}
-
-              {/* Evento 3: Airi Hoshino & Vitrina Comunitaria */}
-              {(sidebarFilters.mentions || activeTab === 'community') && (
-                <article className="req-recent-event-card">
-                  <div className="req-event-icon-square-pink">
-                    <Heart size={20} fill="#E11D48" />
-                  </div>
-                  <div className="req-event-info-col">
-                    <p className="req-event-desc-p" style={{ margin: 0, fontSize: '0.9rem' }}>
-                      <strong>Airi Hoshino</strong> y <strong>14 creadores más</strong> guardaron tu obra <strong style={{ color: '#7C3AED' }}>&quot;Tardes de Lavanda&quot;</strong> en su carpeta de inspiración <em>&quot;Pastel Dreams 2025&quot;</em>.
-                    </p>
-                    <div className="req-event-meta-line" style={{ marginTop: '0.35rem' }}>
-                      <span>Hace 3 días</span>
-                      <span>•</span>
-                      <span>Vitrina Comunitaria</span>
-                    </div>
-                  </div>
-                  <img
-                    src="/images/hero/soramoon.jpg"
-                    alt="Tardes de Lavanda"
-                    className="req-event-thumb-small"
-                    onError={(e) => {
-                      e.target.src = 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=100&q=80'
-                    }}
-                  />
-                </article>
-              )}
-            </section>
-          )}
-
-          {/* ── SECCIÓN 3: SOLICITUDES ADICIONALES DEL SERVIDOR (SI EXISTEN) ── */}
-          {clientRequests && clientRequests.length > 0 && (
-            <section aria-label="Otras solicitudes en tu cuenta" style={{ marginTop: '1rem' }}>
-              <div className="req-section-header-row">
-                <span className="req-section-badge-neutral">+ SOLICITUDES EN TU HISTORIAL ({clientRequests.length})</span>
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
-                {clientRequests.map((req) => (
-                  <article key={req.id} className="req-recent-event-card">
-                    <div className="req-event-icon-circle circle-green">
-                      <FileText size={20} />
-                    </div>
-                    <div className="req-event-info-col">
-                      <div className="req-event-top-line">
-                        <strong>{req.description}</strong>
-                        <span className="req-event-escrow-badge">ID #{req.id.slice(-6)}</span>
-                      </div>
-                      <p className="req-event-desc-p">
-                        Artista: <strong>{req.artistName || 'Creador ArtLink'}</strong> • Presupuesto: <strong>${req.budget} USD</strong> • Fecha: {req.desiredDate}
-                      </p>
-                    </div>
-                    <div style={{ display: 'flex', gap: '0.5rem' }}>
-                      <button
-                        type="button"
-                        className="req-btn-roadmap"
-                        onClick={() => setSelectedRequest(req)}
-                      >
-                        Detalles
-                      </button>
-                      <Link
-                        to={`/mensajes?requestId=${req.id}`}
-                        className="req-btn-roadmap"
-                        style={{ textDecoration: 'none', background: '#EDE9FE', color: '#6D28D9' }}
-                      >
-                        Chat
-                      </Link>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </section>
+            </>
           )}
         </main>
 
@@ -735,7 +955,7 @@ export default function PrivateRequestsPage() {
            RIGHT COLUMN: SIDEBAR FILTERS, BOT TIP & EXPORT
            ══════════════════════════════════════════════════════════════════ */}
         <aside className="req-sidebar-column" aria-label="Filtros y utilidades">
-          {/* Card 1: Filtros de Entrada */}
+          {/* Card 1: Filtros de Entrada con Conteos Reales */}
           <div className="req-sidebar-box">
             <div className="req-washi-tape tape-pink" style={{ left: '50%' }} aria-hidden="true" />
             <div className="req-sidebar-header-row">
@@ -760,7 +980,9 @@ export default function PrivateRequestsPage() {
                   </span>
                   <span>Encargos y Solicitudes</span>
                 </span>
-                <span className="req-filter-badge-count count-purple">3</span>
+                <span className="req-filter-badge-count count-purple">
+                  {tabCounts.commissions}
+                </span>
               </label>
 
               <label className="req-checkbox-row">
@@ -773,7 +995,9 @@ export default function PrivateRequestsPage() {
                   </span>
                   <span>Revisiones & Entregas WIP</span>
                 </span>
-                <span className="req-filter-badge-count count-cyan">2</span>
+                <span className="req-filter-badge-count count-cyan">
+                  {tabCounts.wip}
+                </span>
               </label>
 
               <label className="req-checkbox-row">
@@ -786,7 +1010,9 @@ export default function PrivateRequestsPage() {
                   </span>
                   <span>Alertas de Pago & Escrow</span>
                 </span>
-                <span className="req-filter-badge-count count-pink">1</span>
+                <span className="req-filter-badge-count count-pink">
+                  {tabCounts.escrow}
+                </span>
               </label>
 
               <label className="req-checkbox-row">
@@ -799,7 +1025,9 @@ export default function PrivateRequestsPage() {
                   </span>
                   <span>Mensajes Directos</span>
                 </span>
-                <span className="req-filter-badge-count count-gray">5</span>
+                <span className="req-filter-badge-count count-gray">
+                  {notifications.filter((n) => n.type === 'message' || n.type === 'dm').length}
+                </span>
               </label>
 
               <label className="req-checkbox-row">
@@ -810,9 +1038,11 @@ export default function PrivateRequestsPage() {
                   >
                     {sidebarFilters.mentions && <Check size={13} />}
                   </span>
-                  <span>Menciones & Favoritos</span>
+                  <span>Menciones & Comunidad</span>
                 </span>
-                <span className="req-filter-badge-count count-gray">8</span>
+                <span className="req-filter-badge-count count-gray">
+                  {tabCounts.community}
+                </span>
               </label>
             </div>
 
@@ -852,11 +1082,11 @@ export default function PrivateRequestsPage() {
               </div>
               <div className="req-artie-title-block">
                 <span className="req-artie-tag-top">CONSEJO DE ARTIE BOT</span>
-                <h3 className="req-artie-title-main">Optimiza tu Tienda</h3>
+                <h3 className="req-artie-title-main">Optimiza tu Flujo</h3>
               </div>
             </div>
             <p className="req-artie-body-text">
-              ✦ <strong>Dato pro:</strong> Los artistas que responden solicitudes de comisión en menos de <strong>4 horas</strong> tienen una tasa de cierre de contrato <strong>35% mayor</strong> y reciben insignia de <em>&apos;Respuesta Veloz&apos;</em>.
+              ✦ <strong>Dato pro:</strong> Responder oportunamente y registrar avances de bocetos protege el cronograma del encargo y asegura la liberación puntual de fondos en custodia.
             </p>
             <button
               type="button"
@@ -864,12 +1094,12 @@ export default function PrivateRequestsPage() {
               onClick={() => setShowBotTemplatesModal(true)}
               style={{ background: 'none', border: 'none', padding: 0 }}
             >
-              <span>Configurar plantillas de respuesta</span>
+              <span>Ver plantillas de respuesta</span>
               <ArrowRight size={14} />
             </button>
           </div>
 
-          {/* Card 3: Exportar Historial */}
+          {/* Card 3: Exportar Historial Real */}
           <div className="req-export-box">
             <div className="req-export-header">
               <div className="req-export-icon">
@@ -878,7 +1108,7 @@ export default function PrivateRequestsPage() {
               <strong>Exportar Historial</strong>
             </div>
             <p className="req-export-desc">
-              Descarga un registro oficial de comisiones cerradas, recibos de custodia y auditoría fiscal.
+              Descarga un registro oficial de tus comisiones y auditoría de fondos en custodia.
             </p>
             <div className="req-export-btns-row">
               <button
@@ -903,270 +1133,207 @@ export default function PrivateRequestsPage() {
       </div>
 
       {/* ══════════════════════════════════════════════════════════════════
-         MODALES INTERACTIVOS
+         MODALES INTERACTIVOS DINÁMICOS
          ══════════════════════════════════════════════════════════════════ */}
 
-      {/* 1. Modal Aceptar Solicitud (Kaelen Vance) */}
-      <Modal
-        open={showAcceptModal}
-        title="Aceptar Encargo Personalizado #1094"
-        onClose={() => setShowAcceptModal(false)}
-      >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <p style={{ margin: 0, color: '#374151', fontSize: '0.92rem' }}>
-            Al aceptar la solicitud de <strong>Kaelen Vance</strong>, se creará el contrato en custodia por <strong>$220.00 USD</strong> y se iniciará el plazo convenido de <strong>16 días</strong>.
-          </p>
-          <div style={{ background: '#F0FDF4', border: '1.5px solid #16A34A', borderRadius: 8, padding: '0.75rem', fontSize: '0.85rem', color: '#166534' }}>
-            ✓ Los fondos serán transferidos a ArtLink Escrow Shield inmediatamente tras la confirmación de Kaelen.
-          </div>
-          <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', marginTop: '1rem' }}>
-            <button
-              type="button"
-              className="button button-outline"
-              onClick={() => setShowAcceptModal(false)}
-            >
-              Cancelar
-            </button>
-            <button
-              type="button"
-              className="button button-primary"
-              onClick={() => {
-                setKaelenStatus('accepted')
-                setShowAcceptModal(false)
-                triggerToast('¡Encargo #1094 aceptado! Notificación enviada a Kaelen')
-              }}
-            >
-              Confirmar y Aceptar
-            </button>
-          </div>
-        </div>
-      </Modal>
-
-      {/* 2. Modal Proponer Ajuste de Tarifa / Plazo */}
-      <Modal
-        open={showCounterOfferModal}
-        title="Proponer Ajuste de Tarifa o Plazo"
-        onClose={() => setShowCounterOfferModal(false)}
-      >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <p style={{ margin: 0, color: '#4B5563', fontSize: '0.9rem' }}>
-            Puedes proponer un nuevo valor presupuestario o ajustar los días de entrega según tu carga de trabajo actual:
-          </p>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-            <div>
-              <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.3rem' }}>
-                Nueva Tarifa Propuesta (USD):
-              </label>
-              <input
-                type="number"
-                defaultValue={250}
-                style={{ width: '100%', padding: '0.5rem', border: '1.5px solid #1E192B', borderRadius: 6, fontWeight: 700 }}
-              />
+      {/* 1. Modal Aceptar Solicitud */}
+      {selectedRequest && (
+        <Modal
+          open={showAcceptModal}
+          title={`Aceptar Solicitud de Comisión #${selectedRequest.id.slice(-6)}`}
+          onClose={() => setShowAcceptModal(false)}
+        >
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <p style={{ margin: 0, color: '#374151', fontSize: '0.92rem' }}>
+              Al aceptar esta solicitud de <strong>{selectedRequest.clientName || 'Cliente'}</strong>, se activará el contrato con fondos en custodia Escrow por <strong>${(selectedRequest.budget || selectedRequest.price || 0).toFixed(2)} USD</strong>.
+            </p>
+            <div style={{ background: '#F0FDF4', border: '1.5px solid #16A34A', borderRadius: 8, padding: '0.75rem', fontSize: '0.85rem', color: '#166534' }}>
+              ✓ Los fondos permanecen protegidos bajo ArtLink Escrow Shield hasta la entrega final aprobada.
             </div>
-            <div>
-              <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.3rem' }}>
-                Nuevo Plazo (Días):
-              </label>
-              <input
-                type="number"
-                defaultValue={20}
-                style={{ width: '100%', padding: '0.5rem', border: '1.5px solid #1E192B', borderRadius: 6, fontWeight: 700 }}
-              />
-            </div>
-          </div>
-          <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.3rem' }}>
-              Motivo o sugerencia para el cliente:
-            </label>
-            <textarea
-              rows={3}
-              defaultValue="Hola Kaelen, me interesa mucho el proyecto. Por el nivel de detalle de las 3 expresiones y la capa cósmica, propongo 20 días para garantizar la máxima calidad."
-              style={{ width: '100%', padding: '0.5rem', border: '1.5px solid #1E192B', borderRadius: 6, fontSize: '0.85rem' }}
-            />
-          </div>
-          <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
-            <button
-              type="button"
-              className="button button-outline"
-              onClick={() => setShowCounterOfferModal(false)}
-            >
-              Cancelar
-            </button>
-            <button
-              type="button"
-              className="button button-primary"
-              onClick={() => {
-                setShowCounterOfferModal(false)
-                triggerToast('Contrapropuesta enviada exitosamente a Kaelen Vance')
-              }}
-            >
-              Enviar Propuesta
-            </button>
-          </div>
-        </div>
-      </Modal>
-
-      {/* 3. Modal Pedir Modificaciones para Boceto */}
-      <Modal
-        open={showRevisionModal}
-        title="Solicitar Modificaciones del Boceto v1.2"
-        onClose={() => setShowRevisionModal(false)}
-      >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <p style={{ margin: 0, color: '#4B5563', fontSize: '0.9rem' }}>
-            Indica a Mía Soler los cambios específicos necesarios antes de autorizar el paso a la fase de Color &amp; Sombreado:
-          </p>
-          <textarea
-            rows={4}
-            placeholder="Ejemplo: Por favor inclinar ligeramente el rostro hacia la derecha y añadir más brillo a las luciérnagas..."
-            style={{ width: '100%', padding: '0.65rem', border: '1.5px solid #1E192B', borderRadius: 8, fontSize: '0.88rem' }}
-          />
-          <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
-            <button
-              type="button"
-              className="button button-outline"
-              onClick={() => setShowRevisionModal(false)}
-            >
-              Cancelar
-            </button>
-            <button
-              type="button"
-              className="button button-primary"
-              onClick={() => {
-                setMiaStatus('revision_requested')
-                setShowRevisionModal(false)
-                triggerToast('Solicitud de modificaciones enviada a Mía Soler')
-              }}
-            >
-              Enviar Observaciones
-            </button>
-          </div>
-        </div>
-      </Modal>
-
-      {/* 4. Modal Hoja de Ruta de Renzo Miyazaki */}
-      <Modal
-        open={showRoadmapModal}
-        title="Hoja de Ruta: Mecha Cyber Samurai 3D"
-        onClose={() => setShowRoadmapModal(false)}
-      >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', paddingBottom: '0.75rem', borderBottom: '1.5px solid #E5E7EB' }}>
-            <img
-              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&q=80"
-              alt="Renzo Miyazaki"
-              style={{ width: 42, height: 42, borderRadius: '50%', border: '1.5px solid #1E192B' }}
-            />
-            <div>
-              <strong style={{ display: 'block' }}>Renzo Miyazaki (@renzo_mecha)</strong>
-              <small style={{ color: '#6B7280' }}>Cronograma total: 20 días (Inicio: Hace 2 días)</small>
-            </div>
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            {[
-              { num: '1', title: 'Briefing técnico y siluetas base', status: 'En progreso', badge: 'Actual', dates: 'Día 1 - 4' },
-              { num: '2', title: 'Modelado High-Poly y armadura cyberpunk', status: 'Próximo', badge: 'Hito Escrow 1', dates: 'Día 5 - 10' },
-              { num: '3', title: 'Retopología Low-Poly y mapas UV', status: 'Pendiente', badge: 'Hito Escrow 2', dates: 'Día 11 - 15' },
-              { num: '4', title: 'Texturizado PBR 4K y entrega FBX/OBJ', status: 'Final', badge: 'Liberación total', dates: 'Día 16 - 20' },
-            ].map((step) => (
-              <div
-                key={step.num}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.75rem',
-                  padding: '0.65rem 0.85rem',
-                  border: '1.5px solid #1E192B',
-                  borderRadius: 8,
-                  background: step.badge === 'Actual' ? '#EDE9FE' : '#FFFFFF',
-                }}
+            <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', marginTop: '1rem' }}>
+              <button
+                type="button"
+                className="button button-outline"
+                onClick={() => setShowAcceptModal(false)}
               >
-                <span
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className="button button-primary"
+                onClick={() => handleAcceptRequest(selectedRequest)}
+              >
+                Confirmar y Aceptar
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      {/* 2. Modal Pedir Modificaciones */}
+      {selectedRequest && (
+        <Modal
+          open={showRevisionModal}
+          title={`Solicitar Modificaciones para Encargo #${selectedRequest.id.slice(-6)}`}
+          onClose={() => setShowRevisionModal(false)}
+        >
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <p style={{ margin: 0, color: '#4B5563', fontSize: '0.9rem' }}>
+              Indica los ajustes o revisiones necesarias que el artista debe realizar antes de autorizar la entrega final:
+            </p>
+            <textarea
+              rows={4}
+              value={revisionNotes}
+              onChange={(e) => setRevisionNotes(e.target.value)}
+              placeholder="Describe detalladamente los cambios deseados..."
+              style={{ width: '100%', padding: '0.65rem', border: '1.5px solid #1E192B', borderRadius: 8, fontSize: '0.88rem', boxSizing: 'border-box' }}
+            />
+            <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
+              <button
+                type="button"
+                className="button button-outline"
+                onClick={() => setShowRevisionModal(false)}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className="button button-primary"
+                onClick={handleSendRevision}
+              >
+                Enviar Observaciones
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      {/* 3. Modal Hoja de Ruta Dinámica */}
+      {selectedRequest && (
+        <Modal
+          open={showRoadmapModal}
+          title={`Hoja de Ruta: Encargo #${selectedRequest.id.slice(-6)}`}
+          onClose={() => setShowRoadmapModal(false)}
+        >
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', paddingBottom: '0.75rem', borderBottom: '1.5px solid #E5E7EB' }}>
+              <div>
+                <strong style={{ display: 'block', fontSize: '1rem' }}>
+                  {selectedRequest.commissionTitle || selectedRequest.description || 'Comisión personalizada'}
+                </strong>
+                <small style={{ color: '#6B7280' }}>
+                  Presupuesto: ${(selectedRequest.budget || selectedRequest.price || 0).toFixed(2)} USD • Fecha acordada: {selectedRequest.desiredDate || 'Flexible'}
+                </small>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              {[
+                { num: '1', title: 'Revisión y Aceptación de Briefing', status: selectedRequest.status === 'pending' ? 'Actual' : 'Completado' },
+                { num: '2', title: 'Desarrollo de Boceto Preliminar', status: selectedRequest.status === 'in_progress' ? 'Actual' : 'Pendiente' },
+                { num: '3', title: 'Revisión y Ajustes de Cliente', status: selectedRequest.status === 'in_review' ? 'Actual' : 'Pendiente' },
+                { num: '4', title: 'Entrega Final y Liberación de Fondos Escrow', status: selectedRequest.status === 'completed' ? 'Completado' : 'Pendiente' },
+              ].map((step) => (
+                <div
+                  key={step.num}
                   style={{
-                    width: 24,
-                    height: 24,
-                    borderRadius: '50%',
-                    background: step.badge === 'Actual' ? '#7C3AED' : '#1E192B',
-                    color: '#FFF',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '0.75rem',
-                    fontWeight: 800,
+                    gap: '0.75rem',
+                    padding: '0.65rem 0.85rem',
+                    border: '1.5px solid #1E192B',
+                    borderRadius: 8,
+                    background: step.status === 'Actual' ? '#EDE9FE' : '#FFFFFF',
                   }}
                 >
-                  {step.num}
-                </span>
-                <div style={{ flex: 1 }}>
-                  <strong style={{ fontSize: '0.85rem', display: 'block' }}>{step.title}</strong>
-                  <small style={{ color: '#6B7280' }}>{step.dates} • {step.badge}</small>
+                  <span
+                    style={{
+                      width: 24,
+                      height: 24,
+                      borderRadius: '50%',
+                      background: step.status === 'Actual' ? '#7C3AED' : '#1E192B',
+                      color: '#FFF',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '0.75rem',
+                      fontWeight: 800,
+                    }}
+                  >
+                    {step.num}
+                  </span>
+                  <div style={{ flex: 1 }}>
+                    <strong style={{ fontSize: '0.85rem', display: 'block' }}>{step.title}</strong>
+                    <small style={{ color: '#6B7280' }}>Estado: {step.status}</small>
+                  </div>
                 </div>
+              ))}
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
+              <button
+                type="button"
+                className="button button-primary"
+                onClick={() => setShowRoadmapModal(false)}
+              >
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      {/* 4. Modal Comprobante de Depósito Escrow Shield */}
+      {selectedRequest && (
+        <Modal
+          open={showEscrowProofModal}
+          title="Certificado de Retención en Custodia Escrow"
+          onClose={() => setShowEscrowProofModal(false)}
+        >
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div style={{ background: '#ECFDF5', border: '2px solid #059669', borderRadius: 10, padding: '1rem', textAlign: 'center' }}>
+              <ShieldCheck size={36} color="#059669" style={{ margin: '0 auto 0.5rem' }} />
+              <h3 style={{ margin: '0 0 0.25rem', fontFamily: 'var(--font-heading, sans-serif)', fontSize: '1.25rem', color: '#065F46' }}>
+                Depósito en Custodia Activo
+              </h3>
+              <span style={{ fontSize: '0.8rem', color: '#047857', fontWeight: 700 }}>
+                Código de custodia: ESC-{selectedRequest.id.slice(-6).toUpperCase()}-ARTLK
+              </span>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', fontSize: '0.85rem' }}>
+              <div style={{ background: '#FFFDF8', border: '1.5px solid #1E192B', padding: '0.65rem', borderRadius: 6 }}>
+                <span style={{ color: '#6B7280', fontSize: '0.75rem', display: 'block' }}>Monto asegurado:</span>
+                <strong style={{ fontSize: '1.1rem' }}>${(selectedRequest.budget || selectedRequest.price || 0).toFixed(2)} USD</strong>
               </div>
-            ))}
-          </div>
-
-          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
-            <button
-              type="button"
-              className="button button-primary"
-              onClick={() => setShowRoadmapModal(false)}
-            >
-              Entendido
-            </button>
-          </div>
-        </div>
-      </Modal>
-
-      {/* 5. Modal Comprobante de Depósito Escrow Shield */}
-      <Modal
-        open={showEscrowProofModal}
-        title="Certificado de Retención en Custodia Escrow"
-        onClose={() => setShowEscrowProofModal(false)}
-      >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <div style={{ background: '#ECFDF5', border: '2px solid #059669', borderRadius: 10, padding: '1rem', textAlign: 'center' }}>
-            <ShieldCheck size={36} color="#059669" style={{ margin: '0 auto 0.5rem' }} />
-            <h3 style={{ margin: '0 0 0.25rem', fontFamily: 'var(--font-heading, sans-serif)', fontSize: '1.25rem', color: '#065F46' }}>
-              Depósito en Custodia Activo
-            </h3>
-            <span style={{ fontSize: '0.8rem', color: '#047857', fontWeight: 700 }}>
-              Código de transacción: ESC-8921-ARTLK-2026
-            </span>
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', fontSize: '0.85rem' }}>
-            <div style={{ background: '#FFFDF8', border: '1.5px solid #1E192B', padding: '0.65rem', borderRadius: 6 }}>
-              <span style={{ color: '#6B7280', fontSize: '0.75rem', display: 'block' }}>Monto retenido:</span>
-              <strong style={{ fontSize: '1.1rem' }}>$160.00 USD</strong>
+              <div style={{ background: '#FFFDF8', border: '1.5px solid #1E192B', padding: '0.65rem', borderRadius: 6 }}>
+                <span style={{ color: '#6B7280', fontSize: '0.75rem', display: 'block' }}>Contraparte:</span>
+                <strong>{selectedRequest.artistName || selectedRequest.clientName || 'Creador ArtLink'}</strong>
+              </div>
+              <div style={{ background: '#FFFDF8', border: '1.5px solid #1E192B', padding: '0.65rem', borderRadius: 6 }}>
+                <span style={{ color: '#6B7280', fontSize: '0.75rem', display: 'block' }}>Garantía:</span>
+                <strong>Satisfacción o reembolso 100%</strong>
+              </div>
+              <div style={{ background: '#FFFDF8', border: '1.5px solid #1E192B', padding: '0.65rem', borderRadius: 6 }}>
+                <span style={{ color: '#6B7280', fontSize: '0.75rem', display: 'block' }}>Estado de Escrow:</span>
+                <strong style={{ color: '#059669' }}>{selectedRequest.escrowStatus || 'Protegido'}</strong>
+              </div>
             </div>
-            <div style={{ background: '#FFFDF8', border: '1.5px solid #1E192B', padding: '0.65rem', borderRadius: 6 }}>
-              <span style={{ color: '#6B7280', fontSize: '0.75rem', display: 'block' }}>Beneficiario condicional:</span>
-              <strong>@miasoler_art</strong>
-            </div>
-            <div style={{ background: '#FFFDF8', border: '1.5px solid #1E192B', padding: '0.65rem', borderRadius: 6 }}>
-              <span style={{ color: '#6B7280', fontSize: '0.75rem', display: 'block' }}>Garantía:</span>
-              <strong>Satisfacción o reembolso 100%</strong>
-            </div>
-            <div style={{ background: '#FFFDF8', border: '1.5px solid #1E192B', padding: '0.65rem', borderRadius: 6 }}>
-              <span style={{ color: '#6B7280', fontSize: '0.75rem', display: 'block' }}>Firma Criptográfica:</span>
-              <code style={{ fontSize: '0.7rem' }}>SHA256: 7f83b165...</code>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
+              <button
+                type="button"
+                className="button button-primary"
+                onClick={() => setShowEscrowProofModal(false)}
+              >
+                Cerrar Comprobante
+              </button>
             </div>
           </div>
+        </Modal>
+      )}
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
-            <button
-              type="button"
-              className="button button-primary"
-              onClick={() => setShowEscrowProofModal(false)}
-            >
-              Cerrar Comprobante
-            </button>
-          </div>
-        </div>
-      </Modal>
-
-      {/* 6. Modal Plantillas de Respuesta de Artie Bot */}
+      {/* 5. Modal Plantillas de Respuesta de Artie Bot */}
       <Modal
         open={showBotTemplatesModal}
         title="Plantillas de Respuesta Rápida ArtLink"
@@ -1188,7 +1355,7 @@ export default function PrivateRequestsPage() {
             },
             {
               title: 'Ajuste de calendario por alta demanda',
-              text: '¡Hola! Actualmente tengo una cola de 3 comisiones en progreso. Me encantaría hacer tu encargo con un inicio programado para dentro de 10 días para dedicarle el 100% de atención.',
+              text: '¡Hola! Actualmente tengo una cola de comisiones en progreso. Me encantaría hacer tu encargo con un inicio programado para dentro de unos días para dedicarle el 100% de atención.',
             },
           ].map((tpl, i) => (
             <div
@@ -1211,10 +1378,10 @@ export default function PrivateRequestsPage() {
                 className="button button-outline button-small"
                 onClick={() => {
                   setShowBotTemplatesModal(false)
-                  triggerToast(`Plantilla "${tpl.title}" copiada al portapapeles`)
+                  triggerToast(`Plantilla "${tpl.title}" copiada`)
                 }}
               >
-                Copiar y Usar en Chat
+                Usar en Conversación
               </button>
             </div>
           ))}
@@ -1231,34 +1398,36 @@ export default function PrivateRequestsPage() {
         </div>
       </Modal>
 
-      {/* 7. Modal de Detalle Completo para Solicitudes del Servidor */}
+      {/* 6. Modal de Detalle Completo para Solicitud Seleccionada */}
       <Modal
-        open={Boolean(selectedRequest)}
+        open={Boolean(selectedRequest && !showAcceptModal && !showRevisionModal && !showRoadmapModal && !showEscrowProofModal)}
         title="Detalle de Solicitud de Comisión"
         onClose={() => setSelectedRequest(null)}
       >
         {selectedRequest && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontWeight: 800 }}>ID: #{selectedRequest.id}</span>
-              <span className="req-event-escrow-badge">{selectedRequest.status}</span>
+              <span style={{ fontWeight: 800 }}>ID: #{selectedRequest.id.slice(-6)}</span>
+              <span className="req-event-escrow-badge">{selectedRequest.status || 'Activa'}</span>
             </div>
 
             <div>
-              <strong>Descripción:</strong>
+              <strong>Descripción / Brief:</strong>
               <p style={{ background: '#F9FAFB', border: '1px solid #1E192B', borderRadius: 6, padding: '0.75rem', marginTop: '0.25rem' }}>
-                {selectedRequest.description}
+                {selectedRequest.description || selectedRequest.commissionTitle || 'Sin descripción detallada provista.'}
               </p>
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
               <div>
                 <small style={{ color: '#6B7280', display: 'block' }}>Presupuesto:</small>
-                <strong style={{ fontSize: '1.2rem', color: '#6D28D9' }}>${selectedRequest.budget} USD</strong>
+                <strong style={{ fontSize: '1.2rem', color: '#6D28D9' }}>
+                  ${(selectedRequest.budget || selectedRequest.price || 0).toFixed(2)} USD
+                </strong>
               </div>
               <div>
                 <small style={{ color: '#6B7280', display: 'block' }}>Fecha acordada:</small>
-                <strong>{selectedRequest.desiredDate}</strong>
+                <strong>{selectedRequest.desiredDate || 'No definida'}</strong>
               </div>
             </div>
 

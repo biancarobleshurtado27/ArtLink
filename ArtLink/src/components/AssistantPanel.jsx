@@ -53,7 +53,7 @@ const INITIAL_QUICK_REPLIES = [
 ]
 
 
-export default function AssistantPanel({ onClose }) {
+export default function AssistantPanel({ onClose, embedded = false }) {
   const navigate = useNavigate()
   const { user } = useAuth()
   const userId = user?.id || 'guest'
@@ -467,28 +467,49 @@ export default function AssistantPanel({ onClose }) {
   return (
     <section
       ref={panelRef}
-      className="assistant-dialog chatbot-window"
-      role="dialog"
-      aria-modal="true"
+      className={`assistant-dialog chatbot-window ${embedded ? 'assistant-embedded' : ''}`}
+      role={embedded ? 'region' : 'dialog'}
+      aria-modal={embedded ? undefined : 'true'}
       aria-labelledby="assistant-title"
-      style={{
-        width: `${size.width}px`,
-        height: `${size.height}px`,
-        transform: `translate(${position.x}px, ${position.y}px)`,
-      }}
+      style={
+        embedded
+          ? {
+              width: '100%',
+              height: '100%',
+              maxHeight: '100%',
+              borderRadius: 0,
+              boxShadow: 'none',
+              border: 'none',
+              transform: 'none',
+              position: 'relative',
+              bottom: 'auto',
+              right: 'auto',
+              display: 'flex',
+              flexDirection: 'column',
+            }
+          : {
+              width: `${size.width}px`,
+              height: `${size.height}px`,
+              transform: `translate(${position.x}px, ${position.y}px)`,
+            }
+      }
     >
-      {/* Tiradores para redimensionar */}
-      <div className="resize-handle resize-top" onMouseDown={(e) => startResize(e, 'top')} />
-      <div className="resize-handle resize-right" onMouseDown={(e) => startResize(e, 'right')} />
-      <div className="resize-handle resize-bottom" onMouseDown={(e) => startResize(e, 'bottom')} />
-      <div className="resize-handle resize-left" onMouseDown={(e) => startResize(e, 'left')} />
-      <div className="resize-handle resize-top-left" onMouseDown={(e) => startResize(e, 'top-left')} />
-      <div className="resize-handle resize-top-right" onMouseDown={(e) => startResize(e, 'top-right')} />
-      <div className="resize-handle resize-bottom-left" onMouseDown={(e) => startResize(e, 'bottom-left')} />
-      <div className="resize-handle resize-bottom-right" onMouseDown={(e) => startResize(e, 'bottom-right')} />
+      {/* Tiradores para redimensionar sólo en modo ventana flotante */}
+      {!embedded && (
+        <>
+          <div className="resize-handle resize-top" onMouseDown={(e) => startResize(e, 'top')} />
+          <div className="resize-handle resize-right" onMouseDown={(e) => startResize(e, 'right')} />
+          <div className="resize-handle resize-bottom" onMouseDown={(e) => startResize(e, 'bottom')} />
+          <div className="resize-handle resize-left" onMouseDown={(e) => startResize(e, 'left')} />
+          <div className="resize-handle resize-top-left" onMouseDown={(e) => startResize(e, 'top-left')} />
+          <div className="resize-handle resize-top-right" onMouseDown={(e) => startResize(e, 'top-right')} />
+          <div className="resize-handle resize-bottom-left" onMouseDown={(e) => startResize(e, 'bottom-left')} />
+          <div className="resize-handle resize-bottom-right" onMouseDown={(e) => startResize(e, 'bottom-right')} />
+        </>
+      )}
 
-      {/* Encabezado arrastrable */}
-      <header className="assistant-header-premium" onMouseDown={handleHeaderMouseDown}>
+      {/* Encabezado */}
+      <header className="assistant-header-premium" onMouseDown={embedded ? undefined : handleHeaderMouseDown}>
         <div className="artie-avatar-frame-wrap">
           <div className="artie-avatar-ring">
             <img src={artieAvatar} alt="ArtLink AI Agent" className="artie-avatar-img" />
@@ -521,16 +542,18 @@ export default function AssistantPanel({ onClose }) {
           >
             <Plus size={15} aria-hidden="true" />
           </button>
-          <button
-            ref={closeButtonRef}
-            type="button"
-            className="artie-ctrl-btn artie-close-btn"
-            onClick={onClose}
-            title="Cerrar asistente"
-            aria-label="Cerrar asistente"
-          >
-            <X size={16} aria-hidden="true" />
-          </button>
+          {!embedded && onClose && (
+            <button
+              ref={closeButtonRef}
+              type="button"
+              className="artie-ctrl-btn artie-close-btn"
+              onClick={onClose}
+              title="Cerrar asistente"
+              aria-label="Cerrar asistente"
+            >
+              <X size={16} aria-hidden="true" />
+            </button>
+          )}
         </div>
       </header>
 

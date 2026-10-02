@@ -998,33 +998,6 @@
   ],
   "requests": [
     {
-      "id": "req-101",
-      "clientId": "client-1",
-      "artistId": "artist-demo-101",
-      "packageId": "comm-101",
-      "status": "completed",
-      "budget": 80,
-      "createdAt": "2024-03-01T10:00:00Z"
-    },
-    {
-      "id": "req-102",
-      "clientId": "client-1",
-      "artistId": "artist-demo-104",
-      "packageId": "comm-105",
-      "status": "in_progress",
-      "budget": 220,
-      "createdAt": "2024-03-15T12:00:00Z"
-    },
-    {
-      "id": "req-103",
-      "clientId": "client-1",
-      "artistId": "artist-demo-108",
-      "packageId": "comm-109",
-      "status": "completed",
-      "budget": 160,
-      "createdAt": "2024-03-20T14:00:00Z"
-    },
-    {
       "artistId": "artist-demo-108",
       "clientId": "NlFFPtqd1uk",
       "commissionId": null,
@@ -1039,6 +1012,22 @@
       "n8nProcessed": true,
       "createdAt": "2026-10-01T01:21:18.663Z",
       "id": "q_D0R_iTERI"
+    },
+    {
+      "artistId": "artist-demo-109",
+      "clientId": "client-1",
+      "commissionId": null,
+      "commissionTitle": "Comisión personalizada",
+      "budget": 85,
+      "price": 85,
+      "description": "",
+      "desiredDate": "2026-10-02",
+      "references": [],
+      "status": "waitlist",
+      "escrowStatus": "held_in_escrow",
+      "n8nProcessed": true,
+      "createdAt": "2026-10-02T14:12:04.565Z",
+      "id": "xCm4eFp2pXg"
     }
   ],
   "reviews": [
@@ -1077,6 +1066,18 @@
       "rating": 1,
       "comment": "muy caro todo dislike",
       "createdAt": "2026-10-01T01:21:19.593Z"
+    },
+    {
+      "id": "MWrGsq5xcjM",
+      "artistId": "artist-demo-109",
+      "requestId": "xCm4eFp2pXg",
+      "clientId": "client-1",
+      "clientName": "Cliente Prueba",
+      "clientAvatar": "https://ui-avatars.com/api/?name=Cliente%20Prueba&background=random",
+      "commissionTitle": "Logotipo Tipográfico y Monograma",
+      "rating": 2,
+      "comment": "muy malo",
+      "createdAt": "2026-10-02T14:12:06.553Z"
     }
   ],
   "follows": [
@@ -1143,7 +1144,68 @@
       "createdAt": "2026-10-01T01:09:01.739Z"
     }
   ],
-  "messages": [],
+  "messages": [
+    {
+      "id": "96ZFzOE6WMI",
+      "conversationId": "GhTc0edNdcs",
+      "senderId": "client-1",
+      "receiverId": "user-artist-001",
+      "content": "queria saber sobre notidicaciones",
+      "createdAt": "2026-10-02T14:10:15.108Z",
+      "readAt": "2026-10-02T14:12:20.930Z",
+      "isDemoData": false,
+      "text": "queria saber sobre notidicaciones",
+      "read": true
+    },
+    {
+      "id": "q4PpS4lv4sc",
+      "conversationId": "GhTc0edNdcs",
+      "senderId": "client-1",
+      "receiverId": "user-artist-001",
+      "content": "holaaa",
+      "createdAt": "2026-10-02T14:10:20.589Z",
+      "readAt": "2026-10-02T14:12:20.930Z",
+      "isDemoData": false,
+      "text": "holaaa",
+      "read": true
+    },
+    {
+      "id": "9BgAQfURZy8",
+      "conversationId": "NfLbxpWCmuw",
+      "senderId": "client-1",
+      "receiverId": "artist-demo-109",
+      "content": "holllla",
+      "createdAt": "2026-10-02T14:11:27.555Z",
+      "readAt": null,
+      "isDemoData": false,
+      "text": "holllla",
+      "read": false
+    },
+    {
+      "id": "LrVqCrGoPhQ",
+      "conversationId": "GhTc0edNdcs",
+      "senderId": "user-artist-001",
+      "receiverId": "client-1",
+      "content": "hollaaa",
+      "createdAt": "2026-10-02T14:12:25.509Z",
+      "readAt": "2026-10-02T16:04:12.965Z",
+      "isDemoData": false,
+      "text": "hollaaa",
+      "read": true
+    },
+    {
+      "id": "TQnAhDyBiRQ",
+      "conversationId": "GhTc0edNdcs",
+      "senderId": "user-artist-001",
+      "receiverId": "client-1",
+      "content": "holAAAAAAAAAAAAAAAAA",
+      "createdAt": "2026-10-02T16:03:23.409Z",
+      "readAt": "2026-10-02T16:04:12.965Z",
+      "isDemoData": false,
+      "text": "holAAAAAAAAAAAAAAAAA",
+      "read": true
+    }
+  ],
   "conversations": [
     {
       "id": "jNM36J8GQWc",
@@ -1168,6 +1230,104 @@
       "createdAt": "2026-10-01T22:20:49.191Z",
       "updatedAt": "2026-10-01T22:20:49.191Z",
       "page": "/"
+    },
+    {
+      "id": "GhTc0edNdcs",
+      "participantIds": [
+        "client-1",
+        "user-artist-001"
+      ],
+      "createdAt": "2026-10-02T14:09:55.841Z",
+      "updatedAt": "2026-10-02T16:03:23.409Z",
+      "lastMessageId": "TQnAhDyBiRQ",
+      "relatedArtistProfileId": "artist-001",
+      "relatedRequestId": null,
+      "isDemoData": false
+    },
+    {
+      "id": "NfLbxpWCmuw",
+      "participantIds": [
+        "client-1",
+        "artist-demo-109"
+      ],
+      "createdAt": "2026-10-02T14:11:27.529Z",
+      "updatedAt": "2026-10-02T14:11:27.555Z",
+      "lastMessageId": "9BgAQfURZy8",
+      "relatedArtistProfileId": "artist-demo-109",
+      "relatedRequestId": null,
+      "isDemoData": false
+    },
+    {
+      "id": "i4BYgFHjNG4",
+      "userId": "user-test-1790959924046-by1c",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-02T16:52:04.148Z",
+      "updatedAt": "2026-10-02T16:52:04.148Z",
+      "page": "/explorar"
+    },
+    {
+      "id": "jlw3PjlX3jE",
+      "userId": "user-client-A-1790959924168-vc4v",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-02T16:52:04.255Z",
+      "updatedAt": "2026-10-02T16:52:04.255Z",
+      "page": "/"
+    },
+    {
+      "id": "-vtKeywYBh8",
+      "userId": "user-artist-B-1790959924168-uuyo",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-02T16:52:04.419Z",
+      "updatedAt": "2026-10-02T16:52:04.419Z",
+      "page": "/"
+    },
+    {
+      "id": "HbHu-e_brrw",
+      "userId": "user-test-1790959963373-u0xr",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-02T16:52:43.677Z",
+      "updatedAt": "2026-10-02T16:52:43.677Z",
+      "page": "/explorar"
+    },
+    {
+      "id": "Lc7AUu6e9ck",
+      "userId": "user-client-A-1790959963764-6zrt",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-02T16:52:44.008Z",
+      "updatedAt": "2026-10-02T16:52:44.008Z",
+      "page": "/"
+    },
+    {
+      "id": "wyFBGMVdDmg",
+      "userId": "user-artist-B-1790959963764-3iyj",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-02T16:52:44.150Z",
+      "updatedAt": "2026-10-02T16:52:44.150Z",
+      "page": "/"
+    },
+    {
+      "id": "WUfZbjDQZL4",
+      "userId": "user-test-1790960362350-o9o4",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-02T16:59:23.171Z",
+      "updatedAt": "2026-10-02T16:59:23.171Z",
+      "page": "/explorar"
+    },
+    {
+      "id": "vXmB6m1zn74",
+      "userId": "user-client-A-1790960363239-v9xn",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-02T16:59:24.438Z",
+      "updatedAt": "2026-10-02T16:59:24.438Z",
+      "page": "/"
+    },
+    {
+      "id": "gBhtg3rBznM",
+      "userId": "user-artist-B-1790960363239-1s55",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-02T16:59:25.221Z",
+      "updatedAt": "2026-10-02T16:59:25.221Z",
+      "page": "/"
     }
   ],
   "favorites": [
@@ -1187,117 +1347,6 @@
   "portfolio": [],
   "notifications": [],
   "proposals": [],
-  "chatMessages": [
-    {
-      "id": "CG0rRp8PgTs",
-      "conversationId": "convo-1790893248787-4o1bx",
-      "userId": "user-test-01",
-      "role": "user",
-      "content": "Hola asistente de ArtLink",
-      "createdAt": "2026-10-01T22:20:48.803Z",
-      "provider": "gemini",
-      "status": "sent",
-      "intent": null
-    },
-    {
-      "id": "2p9uP5gVlrY",
-      "conversationId": "convo-1790893248787-4o1bx",
-      "userId": "user-test-01",
-      "role": "assistant",
-      "content": "Hola, te ayudo a buscar ilustradores digitales.",
-      "createdAt": "2026-10-01T22:20:48.808Z",
-      "provider": "gemini",
-      "status": "sent",
-      "intent": null
-    },
-    {
-      "id": "dqat_kLI7ig",
-      "conversationId": "convo-1790893248787-4o1bx",
-      "userId": "user-test-01",
-      "role": "assistant",
-      "content": "Puedo recomendarte artistas de estilo anime.",
-      "createdAt": "2026-10-01T22:20:48.814Z",
-      "provider": "gemini",
-      "status": "sent",
-      "intent": null
-    },
-    {
-      "id": "GbSfvrATW0g",
-      "conversationId": "convo-1790893248913-dhezu",
-      "userId": "user-client-A",
-      "role": "user",
-      "content": "Mensaje de usuario A",
-      "createdAt": "2026-10-01T22:20:48.926Z",
-      "provider": "gemini",
-      "status": "sent",
-      "intent": null
-    },
-    {
-      "id": "4-RO-zTz4Zo",
-      "conversationId": "convo-1790893249191-0co47",
-      "userId": "user-artist-B",
-      "role": "user",
-      "content": "Mensaje de usuario B",
-      "createdAt": "2026-10-01T22:20:49.218Z",
-      "provider": "gemini",
-      "status": "sent",
-      "intent": null
-    },
-    {
-      "id": "c35nAZqrTXY",
-      "conversationId": "jNM36J8GQWc",
-      "userId": "user-test-01",
-      "role": "user",
-      "content": "Hola asistente de ArtLink",
-      "createdAt": "2026-10-01T22:22:38.908Z",
-      "provider": "gemini",
-      "status": "sent",
-      "intent": null
-    },
-    {
-      "id": "yCjVZyF9OjA",
-      "conversationId": "jNM36J8GQWc",
-      "userId": "user-test-01",
-      "role": "assistant",
-      "content": "Hola, te ayudo a buscar ilustradores digitales.",
-      "createdAt": "2026-10-01T22:22:38.914Z",
-      "provider": "gemini",
-      "status": "sent",
-      "intent": null
-    },
-    {
-      "id": "jHgvNetGfLo",
-      "conversationId": "jNM36J8GQWc",
-      "userId": "user-test-01",
-      "role": "assistant",
-      "content": "Puedo recomendarte artistas de estilo anime.",
-      "createdAt": "2026-10-01T22:22:38.921Z",
-      "provider": "gemini",
-      "status": "sent",
-      "intent": null
-    },
-    {
-      "id": "YzEuJStv3xM",
-      "conversationId": "v04EqHCukPQ",
-      "userId": "user-client-A",
-      "role": "user",
-      "content": "Mensaje de usuario A",
-      "createdAt": "2026-10-01T22:22:39.242Z",
-      "provider": "gemini",
-      "status": "sent",
-      "intent": null
-    },
-    {
-      "id": "TJ2QFRzqfHY",
-      "conversationId": "A1FpIQX90zI",
-      "userId": "user-artist-B",
-      "role": "user",
-      "content": "Mensaje de usuario B",
-      "createdAt": "2026-10-01T22:22:39.285Z",
-      "provider": "gemini",
-      "status": "sent",
-      "intent": null
-    }
-  ],
+  "chatMessages": [],
   "$schema": "./node_modules/json-server/schema.json"
 }

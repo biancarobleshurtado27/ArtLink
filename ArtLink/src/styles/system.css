@@ -2109,6 +2109,67 @@ img, svg, video {
   display: none;
 }
 
+/* Círculos de notificación / alertas */
+.sidebar-notification-circle {
+  position: absolute;
+  top: -5px;
+  right: -7px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 9999px;
+  background: #EF4444;
+  color: #FFFFFF;
+  font-size: 0.65rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid #FFFFFF;
+  box-shadow: 1px 1px 0 #1E192B;
+  line-height: 1;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.nav-notification-circle {
+  position: absolute;
+  top: -5px;
+  right: -7px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 3px;
+  border-radius: 9999px;
+  background: #EF4444;
+  color: #FFFFFF;
+  font-size: 0.62rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid #FFFFFF;
+  box-shadow: 1px 1px 0 #1E192B;
+  line-height: 1;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.header-notification-circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  border-radius: 9999px;
+  background: #EF4444;
+  color: #FFFFFF;
+  font-size: 0.65rem;
+  font-weight: 800;
+  margin-left: 0.4rem;
+  line-height: 1;
+}
+
 .sidebar-tooltip {
   position: absolute;
   left: 100%;

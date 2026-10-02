@@ -2180,3 +2180,36 @@
   transform: translateX(20px);
 }
 
+/* ── Círculo de notificación de mensajes sin leer en la bandeja ── */
+.chat-convo-unread-circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 9999px;
+  background: #EF4444;
+  color: #FFFFFF;
+  font-size: 0.65rem;
+  font-weight: 800;
+  border: 1.5px solid #1E192B;
+  box-shadow: 1px 1px 0 #1E192B;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.chat-bot-convo-item {
+  background: #FAF5FF !important;
+  border-bottom: 2px solid #E9D5FF !important;
+}
+
+.chat-bot-convo-item:hover {
+  background: #F3E8FF !important;
+}
+
+.chat-bot-convo-item.is-selected {
+  background: #EDE9FE !important;
+  border-color: #8B5CF6 !important;
+}
+

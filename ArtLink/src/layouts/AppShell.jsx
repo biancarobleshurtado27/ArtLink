@@ -25,6 +25,7 @@ import {
 import logoArtLink from '../assets/logo-artlink.png'
 import useAuth from '../hooks/useAuth'
 import useDisplayPreferences from '../hooks/useDisplayPreferences'
+import useNotificationBadges from '../hooks/useNotificationBadges'
 import Footer from '../components/Footer'
 import AssistantWidget from '../components/AssistantWidget'
 import PageContainer from '../components/PageContainer'
@@ -89,6 +90,8 @@ export default function AppShell() {
   const userAvatar = user?.avatar || ''
   const initials = userName.split(' ').map((part) => part[0]).filter(Boolean).slice(0, 2).join('').toUpperCase()
 
+  const { unreadMessagesCount, totalAlertsCount } = useNotificationBadges()
+
   // Enlaces de la cabecera pública cuando no hay sesión
   const publicLinks = [
     { to: '/explorar', label: 'Explorar', accessibleLabel: 'Explorar artistas' },
@@ -101,15 +104,37 @@ export default function AppShell() {
   const topNavItems = [
     { to: '/', label: 'Inicio', icon: Home, accessibleLabel: 'Inicio' },
     { to: '/explorar', label: 'Explorar', icon: Search, accessibleLabel: 'Explorar artistas' },
-    { to: '/mensajes', label: 'Mensajes', icon: MessageCircle, accessibleLabel: 'Mensajes privados' },
-    { to: '/solicitudes', label: 'Solicitudes y Notificaciones', icon: Bell, accessibleLabel: 'Solicitudes y Notificaciones' },
+    {
+      to: '/mensajes',
+      label: 'Mensajes',
+      icon: MessageCircle,
+      accessibleLabel: 'Mensajes privados',
+      badgeCount: unreadMessagesCount,
+    },
+    {
+      to: '/solicitudes',
+      label: 'Solicitudes y Notificaciones',
+      icon: Bell,
+      accessibleLabel: 'Solicitudes y Notificaciones',
+      badgeCount: totalAlertsCount,
+    },
   ]
 
   const mobileLinks = [
     { to: '/', label: 'Inicio', icon: Home },
     { to: '/explorar', label: 'Explorar', icon: Search },
-    { to: '/solicitudes', label: 'Solicitudes & Notificaciones', icon: Bell },
-    { to: '/mensajes', label: 'Mensajes', icon: MessageCircle },
+    {
+      to: '/solicitudes',
+      label: 'Solicitudes & Notificaciones',
+      icon: Bell,
+      badgeCount: totalAlertsCount,
+    },
+    {
+      to: '/mensajes',
+      label: 'Mensajes',
+      icon: MessageCircle,
+      badgeCount: unreadMessagesCount,
+    },
     { to: '/perfil', label: 'Perfil', icon: UserRound },
   ]
 
@@ -164,7 +189,12 @@ export default function AppShell() {
                     onClick={closeMenus}
                     className={({ isActive }) => (isActive ? 'nav-pill active' : 'nav-pill')}
                   >
-                    {link.label}
+                    <span>{link.label}</span>
+                    {link.to === '/solicitudes' && totalAlertsCount > 0 && (
+                      <span className="header-notification-circle" title={`${totalAlertsCount} pendientes`}>
+                        {totalAlertsCount > 9 ? '9+' : totalAlertsCount}
+                      </span>
+                    )}
                   </NavLink>
                 ))}
               </div>
@@ -253,7 +283,7 @@ export default function AppShell() {
 
         {/* 2-6. NAVEGACIÓN SUPERIOR (Inicio, Explorar, Mensajes, Solicitudes, +) */}
         <nav className="sidebar-nav" aria-label="Navegación principal">
-          {topNavItems.map(({ to, label, icon: Icon, accessibleLabel }) => (
+          {topNavItems.map(({ to, label, icon: Icon, accessibleLabel, badgeCount }) => (
             <NavLink
               key={to}
               to={to}
@@ -261,7 +291,18 @@ export default function AppShell() {
               aria-label={accessibleLabel || label}
               className={({ isActive }) => (isActive ? 'sidebar-nav-item is-active' : 'sidebar-nav-item')}
             >
-              <Icon size={26} className="sidebar-icon" aria-hidden="true" />
+              <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Icon size={26} className="sidebar-icon" aria-hidden="true" />
+                {Boolean(badgeCount && badgeCount > 0) && (
+                  <span
+                    className="sidebar-notification-circle"
+                    title={`${badgeCount} pendientes`}
+                    aria-label={`${badgeCount} pendientes`}
+                  >
+                    {badgeCount > 9 ? '9+' : badgeCount}
+                  </span>
+                )}
+              </div>
               <span className="sidebar-nav-label">{label}</span>
               <span className="sidebar-tooltip" role="tooltip">{label}</span>
             </NavLink>

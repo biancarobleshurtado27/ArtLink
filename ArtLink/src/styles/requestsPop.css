@@ -1365,3 +1365,56 @@
   transform: translate(-1px, -1px);
   box-shadow: 3px 3px 0 #1E192B;
 }
+
+/* ── Empty State Neo-Brutalist Card ── */
+.req-empty-state-box {
+  background: #FFFDF8;
+  border: 2px solid #1E192B;
+  border-radius: 12px;
+  box-shadow: 4px 4px 0 #1E192B;
+  padding: 3rem 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin: 1rem 0 2rem;
+}
+
+.req-empty-icon-wrap {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #EDE9FE;
+  border: 2px solid #1E192B;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #7C3AED;
+  box-shadow: 3px 3px 0 #1E192B;
+}
+
+.req-empty-title {
+  font-family: var(--font-heading, 'Syne', sans-serif);
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #1E192B;
+  margin: 0;
+}
+
+.req-empty-desc {
+  max-width: 520px;
+  color: #6B7280;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.req-empty-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+

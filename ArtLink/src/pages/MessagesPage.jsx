@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'reac
 import {
   AlertTriangle,
   BadgeCheck,
+  Bot,
   Check,
   CheckCheck,
   Clock,
@@ -16,12 +17,17 @@ import {
   Send,
   ShieldCheck,
   Sliders,
+  Sparkles,
   User,
   Volume2,
   X,
 } from 'lucide-react'
 import useAuth from '../hooks/useAuth'
 import usePrivateRequests from '../hooks/usePrivateRequests'
+import apiClient from '../services/apiClient'
+import AssistantPanel from '../components/AssistantPanel'
+import artieAvatar from '../assets/artie-avatar.png'
+import { triggerNotificationsUpdate } from '../hooks/useNotificationBadges'
 import {
   checkParticipantOnline,
   getPresenceRegistry,
@@ -115,6 +121,7 @@ export default function MessagesPage() {
   const [draftRecipientArtist, setDraftRecipientArtist] = useState(null)
 
   // UI States
+  const [unreadByConvoMap, setUnreadByConvoMap] = useState({})
   const [sidebarSearch, setSidebarSearch] = useState('')
   const [messageInput, setMessageInput] = useState('')
   const [sendLoading, setSendLoading] = useState(false)
@@ -235,6 +242,26 @@ export default function MessagesPage() {
       )
 
       setConversations(validConvos)
+
+      // Contar mensajes sin leer por conversación para el usuario actual
+      try {
+        const { data: allMsgs } = await apiClient.get('/messages')
+        if (Array.isArray(allMsgs)) {
+          const map = {}
+          allMsgs.forEach((m) => {
+            if (
+              !m.isDemoData &&
+              String(m.receiverId) === safeCurrentUserId &&
+              !m.read &&
+              !m.readAt
+            ) {
+              const cId = String(m.conversationId)
+              map[cId] = (map[cId] || 0) + 1
+            }
+          })
+          setUnreadByConvoMap(map)
+        }
+      } catch {}
     } catch (err) {
       setError(err?.message || 'No se pudieron cargar tus conversaciones.')
     } finally {
@@ -286,6 +313,14 @@ export default function MessagesPage() {
     }
   }, [isNewRoute, newRecipientId, newArtistProfileId, user?.id, navigate])
 
+  // Determinar si el chatbot de ArtLink está seleccionado
+  const isChatbotSelected =
+    conversationId === 'asistente' ||
+    conversationId === 'chatbot' ||
+    conversationId === 'artie' ||
+    conversationId === 'artlink-ai' ||
+    (!conversationId && !isNewRoute && conversations.length === 0)
+
   // Determinar la conversación activa
   const activeConvo = conversations.find(
     (c) => conversationId && String(c.id) === String(conversationId)
@@ -300,7 +335,7 @@ export default function MessagesPage() {
 
   // Cargar mensajes de la conversación activa y marcar como leídos
   useEffect(() => {
-    if (isNewRoute) return
+    if (isNewRoute || isChatbotSelected) return
     if (!activeConvo?.id || !user?.id) {
       setActiveMessages([])
       return
@@ -313,8 +348,13 @@ export default function MessagesPage() {
       .then((msgs) => {
         if (!active) return
         setActiveMessages(msgs || [])
-        // Marcar como leídos en servidor
-        markConversationAsRead(activeConvo.id, user.id).catch(() => {})
+        // Marcar como leídos en servidor y actualizar estado de no leídos
+        markConversationAsRead(activeConvo.id, user.id)
+          .then(() => {
+            setUnreadByConvoMap((prev) => ({ ...prev, [String(activeConvo.id)]: 0 }))
+            triggerNotificationsUpdate()
+          })
+          .catch(() => {})
       })
       .catch((err) => {
         console.warn('Error al cargar mensajes:', err?.message)
@@ -326,7 +366,7 @@ export default function MessagesPage() {
     return () => {
       active = false
     }
-  }, [activeConvo?.id, user?.id, isNewRoute])
+  }, [activeConvo?.id, user?.id, isNewRoute, isChatbotSelected])
 
   // Cargar borrador persistente del mensaje
   useEffect(() => {
@@ -600,69 +640,7 @@ export default function MessagesPage() {
     )
   }
 
-  // ── ESTADO 3: SIN CONVERSACIONES ──
-  if (conversations.length === 0 && !isNewRoute) {
-    return (
-      <main
-        className="chat-view-container"
-        style={{
-          minHeight: '65vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <div
-          style={{
-            textAlign: 'center',
-            padding: '3rem 1.5rem',
-            maxWidth: '440px',
-            margin: '0 auto',
-          }}
-        >
-          <MessageSquare
-            size={48}
-            color="#8B5CF6"
-            style={{ margin: '0 auto 1rem', opacity: 0.85 }}
-            aria-hidden="true"
-          />
-          <h2
-            style={{
-              fontSize: '1.25rem',
-              fontWeight: 700,
-              color: '#1E192B',
-              marginBottom: '0.5rem',
-            }}
-          >
-            Todavía no tienes conversaciones.
-          </h2>
-          <p style={{ color: '#6B7280', fontSize: '0.95rem', lineHeight: 1.5 }}>
-            Cuando envíes o recibas un mensaje, aparecerá aquí.
-          </p>
-          <div style={{ marginTop: '1.5rem' }}>
-            <Link
-              to="/explorar"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.4rem',
-                background: '#8B5CF6',
-                color: '#FFFFFF',
-                textDecoration: 'none',
-                padding: '0.65rem 1.25rem',
-                borderRadius: 8,
-                fontWeight: 600,
-                fontSize: '0.9rem',
-              }}
-            >
-              <Search size={15} aria-hidden="true" />
-              <span>Explorar artistas</span>
-            </Link>
-          </div>
-        </div>
-      </main>
-    )
-  }
+  const totalUnreadMessages = Object.values(unreadByConvoMap).reduce((a, b) => a + b, 0)
 
   return (
     <div className="chat-view-container">
@@ -678,9 +656,19 @@ export default function MessagesPage() {
                 className="chat-count-badge"
                 style={{ fontSize: '0.72rem', padding: '0.15rem 0.55rem' }}
               >
-                {filteredConversations.length}{' '}
-                {filteredConversations.length === 1 ? 'chat' : 'chats'}
+                {filteredConversations.length + 1}{' '}
+                {filteredConversations.length === 0 ? 'chat' : 'chats'}
               </span>
+              {totalUnreadMessages > 0 && (
+                <span
+                  className="chat-convo-unread-circle"
+                  style={{ marginLeft: '0.35rem' }}
+                  title={`${totalUnreadMessages} mensajes sin leer`}
+                  aria-label={`${totalUnreadMessages} mensajes sin leer`}
+                >
+                  {totalUnreadMessages}
+                </span>
+              )}
             </div>
             <div
               style={{
@@ -734,21 +722,127 @@ export default function MessagesPage() {
               chatSettings.compactView ? 'is-compact-inbox' : ''
             }`}
           >
+            {/* 0. ArtLink AI Chatbot Pinned Conversation */}
+            {(!sidebarSearch ||
+              'artlink ai asistente virtual gemini bot'
+                .toLowerCase()
+                .includes(sidebarSearch.trim().toLowerCase())) && (
+              <button
+                type="button"
+                className={`chat-convo-item-btn chat-bot-convo-item ${
+                  isChatbotSelected ? 'is-selected' : ''
+                }`}
+                onClick={() => navigate('/mensajes/asistente')}
+              >
+                <div className="chat-avatar-wrapper">
+                  <img
+                    src={artieAvatar}
+                    alt="ArtLink AI"
+                    className="chat-convo-avatar-img"
+                  />
+                  <span
+                    className="chat-avatar-badge-dot is-online"
+                    title="En línea 24/7 con Gemini"
+                  />
+                </div>
+
+                <div className="chat-convo-info-col">
+                  <div className="chat-convo-top-row">
+                    <div className="chat-convo-name-group">
+                      <span className="chat-convo-name-text">ArtLink AI</span>
+                      <span
+                        style={{
+                          fontSize: '0.65rem',
+                          background: '#EDE9FE',
+                          color: '#6D28D9',
+                          border: '1.2px solid #1E192B',
+                          borderRadius: 9999,
+                          padding: '0.05rem 0.4rem',
+                          fontWeight: 800,
+                        }}
+                      >
+                        Agente
+                      </span>
+                    </div>
+                    <span className="chat-convo-time">
+                      <span
+                        style={{
+                          color: '#059669',
+                          fontWeight: 700,
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '0.25rem',
+                        }}
+                      >
+                        <span
+                          className="chat-online-dot is-online"
+                          style={{ width: 6, height: 6 }}
+                        />
+                        En línea
+                      </span>
+                    </span>
+                  </div>
+
+                  <p className="chat-convo-preview-msg">
+                    Asistente oficial con Gemini 24/7
+                  </p>
+
+                  <div className="chat-convo-bottom-row">
+                    <span className="chat-convo-tag tag-pink">Asistente AI</span>
+                  </div>
+                </div>
+              </button>
+            )}
+
             {filteredConversations.length === 0 ? (
               <div
                 style={{
-                  padding: '2rem 1rem',
+                  padding: '1.5rem 1rem',
                   textAlign: 'center',
                   color: '#6B7280',
                   fontSize: '0.82rem',
                 }}
               >
-                <p style={{ margin: 0, fontWeight: 700 }}>No se encontraron chats</p>
-                <span style={{ fontSize: '0.75rem' }}>Intenta con otro término de búsqueda.</span>
+                <p style={{ margin: 0, fontWeight: 700 }}>
+                  {sidebarSearch
+                    ? 'No se encontraron otros chats'
+                    : 'Aún no tienes chats con otros creadores'}
+                </p>
+                <span
+                  style={{
+                    fontSize: '0.75rem',
+                    display: 'block',
+                    margin: '0.35rem 0 0.8rem',
+                  }}
+                >
+                  {sidebarSearch
+                    ? 'Intenta con otro término de búsqueda.'
+                    : '¡Chatea con ArtLink AI arriba o explora artistas!'}
+                </span>
+                {!sidebarSearch && (
+                  <Link
+                    to="/explorar"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.35rem',
+                      background: '#8B5CF6',
+                      color: '#FFFFFF',
+                      textDecoration: 'none',
+                      padding: '0.45rem 0.85rem',
+                      borderRadius: 6,
+                      fontWeight: 600,
+                      fontSize: '0.78rem',
+                    }}
+                  >
+                    <Search size={13} aria-hidden="true" />
+                    <span>Explorar creadores</span>
+                  </Link>
+                )}
               </div>
             ) : (
               filteredConversations.map((item) => {
-                const isSelected = !isNewRoute && item.id === activeConvo?.id
+                const isSelected = !isNewRoute && !isChatbotSelected && item.id === activeConvo?.id
                 const pId = item.participantIds.find((pid) => String(pid) !== String(user?.id))
                 const pUser = usersMap[String(pId)]
                 const pArtist = item.relatedArtistProfileId
@@ -772,6 +866,8 @@ export default function MessagesPage() {
                       minute: '2-digit',
                     })
                   : 'Reciente'
+
+                const unreadCount = unreadByConvoMap[String(item.id)] || 0
 
                 return (
                   <button
@@ -839,10 +935,26 @@ export default function MessagesPage() {
                           : 'Conversación activa'}
                       </p>
 
-                      <div className="chat-convo-bottom-row">
+                      <div
+                        className="chat-convo-bottom-row"
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                        }}
+                      >
                         <span className="chat-convo-tag tag-cyan">
                           {pArtist ? 'Artista' : 'Contacto'}
                         </span>
+                        {unreadCount > 0 && (
+                          <span
+                            className="chat-convo-unread-circle"
+                            title={`${unreadCount} mensajes sin leer`}
+                            aria-label={`${unreadCount} mensajes sin leer`}
+                          >
+                            {unreadCount}
+                          </span>
+                        )}
                       </div>
                     </div>
                   </button>
@@ -871,8 +983,12 @@ export default function MessagesPage() {
             COLUMNA 2: HILO DE MENSAJES Y FORMULARIO DE ENVÍO
             ══════════════════════════════════════════════════════════════════ */}
         <section className="chat-column-box chat-col-center" aria-label="Hilo de conversación">
-          {/* Encabezado del chat */}
-          <header className="chat-center-header">
+          {isChatbotSelected ? (
+            <AssistantPanel embedded={true} />
+          ) : (
+            <>
+              {/* Encabezado del chat */}
+              <header className="chat-center-header">
             <div className="chat-active-artist-info">
               <div className="chat-avatar-wrapper">
                 <img
@@ -1290,6 +1406,8 @@ export default function MessagesPage() {
               </div>
             </form>
           </div>
+          </>
+          )}
         </section>
 
         {/* ══════════════════════════════════════════════════════════════════
@@ -1312,12 +1430,60 @@ export default function MessagesPage() {
               </button>
             </div>
 
-            <div className="chat-order-title-block">
-              <h3>{otherParticipantDisplay.name}</h3>
-              <p>@{otherParticipantDisplay.username}</p>
-            </div>
+            {isChatbotSelected ? (
+              <>
+                <div className="chat-order-title-block">
+                  <h3>ArtLink AI</h3>
+                  <p>@artlink_ai · Asistente Oficial</p>
+                </div>
+                <div
+                  style={{
+                    background: '#F9FAFB',
+                    border: '1.5px solid #1E192B',
+                    borderRadius: 8,
+                    padding: '0.85rem',
+                    fontSize: '0.82rem',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '0.5rem',
+                  }}
+                >
+                  <div>
+                    <strong>Rol: </strong>
+                    <span>Asistente Creativo & Guía de Comisiones</span>
+                  </div>
+                  <div>
+                    <strong>Motor de Inteligencia: </strong>
+                    <span>Gemini AI vía n8n</span>
+                  </div>
+                  <div>
+                    <strong>Disponibilidad: </strong>
+                    <span style={{ color: '#059669', fontWeight: 700 }}>En línea 24/7</span>
+                  </div>
+                </div>
+                <div
+                  style={{
+                    marginTop: '1rem',
+                    padding: '0.75rem',
+                    borderRadius: 8,
+                    background: '#EDE9FE',
+                    border: '1.5px solid #8B5CF6',
+                    fontSize: '0.78rem',
+                    color: '#5B21B6',
+                    lineHeight: 1.4,
+                  }}
+                >
+                  Pregúntale a ArtLink AI sobre recomendaciones de creadores, cómo cotizar un encargo o el funcionamiento de la protección de fondos con Escrow.
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="chat-order-title-block">
+                  <h3>{otherParticipantDisplay.name}</h3>
+                  <p>@{otherParticipantDisplay.username}</p>
+                </div>
 
-            {relatedArtist && (
+                {relatedArtist && (
               <div
                 style={{
                   background: '#F9FAFB',
@@ -1419,6 +1585,8 @@ export default function MessagesPage() {
                   <span>Ver perfil de artista</span>
                 </Link>
               </div>
+            )}
+            </>
             )}
           </aside>
         )}
