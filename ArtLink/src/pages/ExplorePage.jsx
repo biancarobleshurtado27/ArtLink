@@ -28,7 +28,7 @@ const AVAILABILITY_BADGE_CLASS = {
   open: 'badge-mint',
   waitlist: 'badge-lilac',
   closed: 'badge-lilac',
-  unknown: 'badge-pink',
+  unknown: 'badge-lilac',
 }
 
 const ITEMS_PER_PAGE = 8

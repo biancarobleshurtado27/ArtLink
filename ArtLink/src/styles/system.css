@@ -3278,9 +3278,9 @@ p.admin-subtitle {
 }
 
 .metric-icon-rose {
-  background: #FCE7F3 !important;
-  color: #DB2777 !important;
-  border: 1px solid #FBCFE8 !important;
+  background: var(--lilac, #F3EEFF) !important;
+  color: var(--violet-dark, #6D28D9) !important;
+  border: 1px solid var(--violet-light, #DDD6FE) !important;
 }
 
 .admin-metric-val {
@@ -3320,9 +3320,9 @@ p.admin-subtitle {
 }
 
 .status-pill-pink {
-  background: #FCE7F3 !important;
-  color: #9D174D !important;
-  border: 1px solid #FBCFE8 !important;
+  background: var(--lilac, #F3EEFF) !important;
+  color: var(--violet-dark, #6D28D9) !important;
+  border: 1px solid var(--violet-light, #DDD6FE) !important;
 }
 
 .status-pill-violet {
@@ -3550,8 +3550,8 @@ p.admin-subtitle {
 }
 
 .studio-badge.badge-pink {
-  background: #FFE4EE;
-  color: #9D174D;
+  background: var(--lilac, #F3EEFF);
+  color: var(--violet-dark, #5B21B6);
 }
 
 .studio-footer-columns {

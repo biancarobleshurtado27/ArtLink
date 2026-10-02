@@ -550,13 +550,13 @@ export default function PrivateRequestsPage() {
       {/* ── 4. THREE TOP KPI METRIC CARDS (DYNAMIC VALUES) ── */}
       <section className="req-kpi-cards-grid" aria-label="Métricas clave de atención">
         {/* Card 1: Cola de Encargos */}
-        <div className="req-kpi-card kpi-pink">
-          <div className="req-washi-tape tape-pink" aria-hidden="true" />
+        <div className="req-kpi-card kpi-yellow">
+          <div className="req-washi-tape tape-yellow" aria-hidden="true" />
           <div>
             <div className="req-kpi-top-row">
               <span className="req-kpi-eyebrow">COLA DE ENCARGOS</span>
-              <div className="req-kpi-icon-circle icon-pink">
-                <Laptop size={18} aria-hidden="true" />
+              <div className="req-kpi-icon-circle icon-yellow">
+                <Inbox size={18} aria-hidden="true" />
               </div>
             </div>
             <div className="req-kpi-main-value">

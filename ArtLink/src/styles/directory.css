@@ -63,7 +63,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background: #FFE2EC;
+  background: var(--lilac, #F3EEFF);
   border: 1.5px solid #1E192B;
   border-radius: 999px;
   padding: 0.4rem 1.2rem;
@@ -268,7 +268,7 @@
   box-shadow: 2px 2px 0px #1E192B;
 }
 
-.tag-pink { background: #FFE4EE; }
+.tag-pink { background: #EDE9FE; }
 .tag-mint { background: #CCFBF1; }
 .tag-lilac { background: #EDE9FE; }
 .tag-yellow { background: #FEF08A; }
@@ -546,9 +546,9 @@
 }
 
 .badge-mint { background: #CCFBF1; color: #0F5C4F; }
-.badge-pink { background: #FFE4EE; color: #9D174D; }
+.badge-pink { background: #EDE9FE; color: #5B21B6; }
 .badge-lilac { background: #EDE9FE; color: #5B21B6; }
-.badge-magenta { background: #FCE7F3; color: #831843; }
+.badge-magenta { background: #FEF08A; color: #713F12; }
 
 .momento-artist-header {
   display: flex;
@@ -1743,7 +1743,7 @@
 .artist-v2-comm-badge {
   display: inline-block;
   align-self: flex-start;
-  background: #FFE2EC;
+  background: var(--lilac, #F3EEFF);
   border: 1.5px solid var(--ink);
   border-radius: 999px;
   padding: 0.25rem 0.75rem;
@@ -1752,7 +1752,7 @@
   font-weight: 800;
   text-transform: uppercase;
   margin-bottom: 0.8rem;
-  color: #9D174D;
+  color: var(--violet-dark, #5B21B6);
   box-shadow: 2px 2px 0 var(--ink);
 }
 
@@ -1972,8 +1972,8 @@
 }
 
 .artist-v2-artwork-like-btn.liked {
-  background: #FFE2EC;
-  color: #BE185D;
+  background: var(--lilac, #F3EEFF);
+  color: var(--violet-dark, #6D28D9);
 }
 
 /* 6. SECCIÓN REPUTACIÓN Y RESEÑAS */

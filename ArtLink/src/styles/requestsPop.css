@@ -47,8 +47,8 @@
 }
 
 .req-badge-action-pending {
-  background: #FCE7F3;
-  color: #9D174D;
+  background: var(--yellow, #FEF08A);
+  color: #4A3B00;
   border: 1.5px solid #1E192B;
   border-radius: 9999px;
   padding: 0.25rem 0.75rem;
@@ -60,11 +60,12 @@
   gap: 0.4rem;
 }
 
-.req-badge-dot-pink {
+.req-badge-dot-pink,
+.req-badge-dot-pending {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #E11D48;
+  background: #B45309;
   display: inline-block;
 }
 
@@ -288,8 +289,10 @@
   justify-content: space-between;
 }
 
-.req-kpi-card.kpi-pink {
-  background: #FFF1F2;
+.req-kpi-card.kpi-pink,
+.req-kpi-card.kpi-yellow {
+  background: var(--cream, #FFFDF8);
+  border: 2px solid #1E192B;
 }
 
 .req-kpi-card.kpi-lavender {
@@ -313,8 +316,9 @@
   pointer-events: none;
 }
 
-.req-washi-tape.tape-pink {
-  background: rgba(251, 207, 232, 0.85);
+.req-washi-tape.tape-pink,
+.req-washi-tape.tape-yellow {
+  background: rgba(254, 240, 138, 0.9);
 }
 
 .req-washi-tape.tape-cyan {
@@ -352,9 +356,10 @@
   box-shadow: 1.5px 1.5px 0 #1E192B;
 }
 
-.req-kpi-icon-circle.icon-pink {
-  background: #FCE7F3;
-  color: #BE185D;
+.req-kpi-icon-circle.icon-pink,
+.req-kpi-icon-circle.icon-yellow {
+  background: var(--yellow, #FEF08A);
+  color: #4A3B00;
 }
 
 .req-kpi-icon-circle.icon-purple {
@@ -500,9 +505,10 @@
   box-shadow: 1.5px 1.5px 0 #1E192B;
 }
 
-.req-card-washi-tape-tag.tag-pink {
-  background: #FCE7F3;
-  color: #9D174D;
+.req-card-washi-tape-tag.tag-pink,
+.req-card-washi-tape-tag.tag-yellow {
+  background: var(--yellow, #FEF08A);
+  color: #4A3B00;
 }
 
 .req-card-washi-tape-tag.tag-mint {
@@ -589,8 +595,8 @@
 }
 
 .req-order-accepted-badge {
-  background: #FCE7F3;
-  color: #9D174D;
+  background: var(--lilac, #F3EEFF);
+  color: var(--violet-dark, #5B21B6);
   border: 1px solid #1E192B;
   border-radius: 4px;
   padding: 0.05rem 0.45rem;
@@ -825,8 +831,8 @@
 }
 
 .req-btn-secondary-pink {
-  background: #FCE7F3;
-  color: #9D174D;
+  background: var(--paper, #FFFFFF);
+  color: var(--ink, #1E192B);
   border: 2px solid #1E192B;
   border-radius: 8px;
   padding: 0.55rem 1rem;
@@ -841,7 +847,7 @@
 }
 
 .req-btn-secondary-pink:hover {
-  background: #FBCFE8;
+  background: var(--lilac, #F3EEFF);
   transform: translate(-1px, -1px);
   box-shadow: 3px 3px 0 #1E192B;
 }
@@ -962,8 +968,8 @@
   height: 44px;
   border-radius: 10px;
   border: 2px solid #1E192B;
-  background: #FCE7F3;
-  color: #E11D48;
+  background: var(--lilac, #F3EEFF);
+  color: var(--violet-dark, #5D35C7);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1171,8 +1177,8 @@
 }
 
 .req-filter-badge-count.count-pink {
-  background: #FCE7F3;
-  color: #BE185D;
+  background: var(--lilac, #F3EEFF);
+  color: var(--violet-dark, #5D35C7);
 }
 
 .req-filter-badge-count.count-gray {
@@ -1246,7 +1252,7 @@
   width: 40px;
   height: 40px;
   border-radius: 10px;
-  background: #9D174D;
+  background: var(--violet, #8B5CF6);
   color: #FFFFFF;
   border: 2px solid #1E192B;
   display: flex;
@@ -1265,7 +1271,7 @@
   font-size: 0.7rem;
   font-weight: 800;
   letter-spacing: 0.05em;
-  color: #9D174D;
+  color: var(--violet-dark, #5B21B6);
   text-transform: uppercase;
 }
 
@@ -1287,7 +1293,7 @@
 .req-artie-link-action {
   font-size: 0.82rem;
   font-weight: 800;
-  color: #BE185D;
+  color: var(--violet-dark, #5B21B6);
   text-decoration: none;
   cursor: pointer;
   display: inline-flex;

@@ -795,8 +795,8 @@ export default function ArtistProfilePage() {
                     >
                       <Heart
                         size={14}
-                        fill={isLiked ? '#BE185D' : 'none'}
-                        color={isLiked ? '#BE185D' : 'currentColor'}
+                        fill={isLiked ? 'var(--violet, #8B5CF6)' : 'none'}
+                        color={isLiked ? 'var(--violet, #8B5CF6)' : 'currentColor'}
                         aria-hidden="true"
                       />
                       <span>{itemLikes}</span>
@@ -1003,7 +1003,7 @@ export default function ArtistProfilePage() {
       <section id="sobre-mi" className="artist-v2-section" aria-labelledby="about-section-title">
         <div className="artist-v2-about-layout">
           <div className="artist-v2-about-card">
-            <span className="artist-v2-comm-badge" style={{ background: '#FFE2EC', color: '#9D174D' }}>
+            <span className="artist-v2-comm-badge" style={{ background: 'var(--lilac)', color: 'var(--violet-dark)' }}>
               BIOGRAFÍA Y HERRAMIENTAS
             </span>
             <h2 id="about-section-title" style={{ fontFamily: 'var(--heading)', fontSize: '1.5rem', margin: '0.4rem 0 0.8rem' }}>
@@ -1130,12 +1130,12 @@ export default function ArtistProfilePage() {
                     size={15}
                     fill={
                       user && allLikes.some((l) => String(l.userId) === String(user.id) && String(l.portfolioItemId) === String(selectedWork.id))
-                        ? '#BE185D'
+                        ? '#8B5CF6'
                         : 'none'
                     }
                     color={
                       user && allLikes.some((l) => String(l.userId) === String(user.id) && String(l.portfolioItemId) === String(selectedWork.id))
-                        ? '#BE185D'
+                        ? '#8B5CF6'
                         : 'currentColor'
                     }
                     aria-hidden="true"

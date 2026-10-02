@@ -90,8 +90,8 @@
 }
 
 .chat-count-badge {
-  background: #FCE7F3;
-  color: #9D174D;
+  background: var(--lilac, #F3EEFF);
+  color: var(--violet-dark, #5B21B6);
   border: 1.5px solid #1E192B;
   padding: 0.2rem 0.6rem;
   border-radius: 9999px;
@@ -210,8 +210,8 @@
 
 .chat-filter-chip.chip-pink.is-active,
 .chat-filter-chip.chip-pink {
-  background: #FBCFE8;
-  color: #9D174D;
+  background: var(--violet-soft, #DDD0FF);
+  color: var(--violet-deep, #45208F);
 }
 
 .chat-filter-chip.chip-gray {
@@ -631,8 +631,8 @@
 }
 
 .chat-convo-tag.tag-pink {
-  background: #FCE7F3;
-  color: #831843;
+  background: var(--lilac, #F3EEFF);
+  color: var(--violet-dark, #5B21B6);
 }
 
 .chat-convo-tag.tag-warm {
@@ -641,7 +641,7 @@
 }
 
 .chat-unread-count-pill {
-  background: #F43F5E;
+  background: var(--violet, #8B5CF6);
   color: #FFFFFF;
   border-radius: 9999px;
   min-width: 18px;
@@ -931,8 +931,8 @@
 }
 
 .chat-wip-tag-phase {
-  background: #FCE7F3;
-  color: #9D174D;
+  background: var(--lilac, #F3EEFF);
+  color: var(--violet-dark, #5B21B6);
   border: 1px solid #1E192B;
   border-radius: 4px;
   font-size: 0.68rem;
@@ -1150,8 +1150,8 @@
 }
 
 .chat-quick-pill.pill-pink {
-  background: #FCE7F3;
-  color: #9D174D;
+  background: var(--lilac, #F3EEFF);
+  color: var(--violet-dark, #5B21B6);
 }
 
 /* ── Bottom Input Box Card ── */
@@ -1278,8 +1278,8 @@
 }
 
 .chat-order-id-pill {
-  background: #FCE7F3;
-  color: #9D174D;
+  background: var(--lilac, #F3EEFF);
+  color: var(--violet-dark, #5B21B6);
   border: 1.5px solid #1E192B;
   border-radius: 9999px;
   padding: 0.15rem 0.55rem;
@@ -2014,8 +2014,8 @@
 }
 
 .chat-artie-prompt-chip.pill-pink {
-  background: #FCE7F3;
-  color: #9D174D;
+  background: var(--lilac, #F3EEFF);
+  color: var(--violet-dark, #5B21B6);
 }
 
 .chat-artie-prompt-chip.pill-mint {

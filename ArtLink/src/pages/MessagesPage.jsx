@@ -75,14 +75,14 @@ function playNotificationSound() {
 const CHAT_THEMES = [
   { name: 'purple', bg: '#8B5CF6', text: '#FFFFFF', time: '#7C3AED' },
   { name: 'cyan', bg: '#06B6D4', text: '#FFFFFF', time: '#0891B2' },
-  { name: 'pink', bg: '#EC4899', text: '#FFFFFF', time: '#DB2777' },
+  { name: 'mint', bg: '#2DD4BF', text: '#0F3A33', time: '#0D9488' },
   { name: 'emerald', bg: '#10B981', text: '#FFFFFF', time: '#059669' },
   { name: 'amber', bg: '#F59E0B', text: '#1E192B', time: '#D97706' },
   { name: 'indigo', bg: '#6366F1', text: '#FFFFFF', time: '#4F46E5' },
-  { name: 'rose', bg: '#F43F5E', text: '#FFFFFF', time: '#E11D48' },
-  { name: 'violet', bg: '#A855F7', text: '#FFFFFF', time: '#9333EA' },
+  { name: 'yellow', bg: '#FEF08A', text: '#1E192B', time: '#B45309' },
+  { name: 'violet', bg: '#7C3AED', text: '#FFFFFF', time: '#5B21B6' },
   { name: 'teal', bg: '#14B8A6', text: '#FFFFFF', time: '#0D9488' },
-  { name: 'lime', bg: '#84CC16', text: '#1E192B', time: '#65A30D' },
+  { name: 'lilac', bg: '#DDD0FF', text: '#1E192B', time: '#45208F' },
 ]
 
 function getChatTheme(convoId = '') {

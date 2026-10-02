@@ -656,7 +656,7 @@ export default function ArtistPanelPage() {
                         </>
                       ) : (
                         <>
-                          <PauseCircle size={14} color="#E11D48" /> PAUSAR SOLICITUDES
+                          <PauseCircle size={14} color="#6D28D9" /> PAUSAR SOLICITUDES
                         </>
                       )}
                     </button>
@@ -697,13 +697,13 @@ export default function ArtistPanelPage() {
             <div className="art-dash-kpi-card">
               <div className="art-dash-kpi-top">
                 <span className="art-dash-kpi-label">PROTECCIÓN ACTIVA</span>
-                <div className="art-dash-kpi-icon-bubble pink">
+                <div className="art-dash-kpi-icon-bubble purple">
                   <ShieldCheck size={17} />
                 </div>
               </div>
               <div>
                 <h3 className="art-dash-kpi-title">En Custodia Escrow</h3>
-                <p className="art-dash-kpi-val coral">${escrowCustody.toFixed(2)} USD</p>
+                <p className="art-dash-kpi-val purple">${escrowCustody.toFixed(2)} USD</p>
               </div>
               <div className="art-dash-kpi-footer">
                 <span className="art-dash-dot-indicator" />

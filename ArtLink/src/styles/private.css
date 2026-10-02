@@ -654,9 +654,9 @@
 
 .metric-icon-rose,
 .accent-pink .metric-icon-wrap {
-  background: #FCE7F3;
-  color: #DB2777;
-  border: 1px solid #FBCFE8;
+  background: var(--lilac, #F3EEFF);
+  color: var(--violet-dark, #5B21B6);
+  border: 1px solid var(--violet-light, #DDD6FE);
 }
 
 .admin-metric-val,
@@ -702,9 +702,9 @@
 
 .admin-status-badge.is-pending,
 .admin-status-badge.is-waitlist {
-  background: #FCE7F3;
-  color: #9D174D;
-  border: 1px solid #FBCFE8;
+  background: #FEF9C3;
+  color: #B45309;
+  border: 1px solid #FDE68A;
 }
 
 .admin-status-badge.is-in-progress {

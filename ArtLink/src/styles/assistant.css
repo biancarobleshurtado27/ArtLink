@@ -261,12 +261,12 @@
 }
 
 .artie-close-btn {
-  background: #FCE7F3;
+  background: var(--paper, #FFFFFF);
 }
 
 .artie-close-btn:hover {
-  background: #F43F5E;
-  color: #FFFFFF;
+  background: #FEE2E2;
+  color: #DC2626;
 }
 
 /* ── 2. HISTORIAL DE MENSAJES & ACCIONES RÁPIDAS ── */
@@ -413,7 +413,7 @@
 }
 
 .prompt-pill-pink {
-  background: #FCE7F3;
+  background: var(--lilac, #F3EEFF);
 }
 
 .prompt-pill-mint {
@@ -705,10 +705,10 @@
 }
 
 .artie-cancel-req-btn {
-  background: #FFF1F2;
-  border: 1.5px solid #E11D48;
+  background: #FEF2F2;
+  border: 1.5px solid #DC2626;
   border-radius: 6px;
-  color: #BE123C;
+  color: #B91C1C;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -720,16 +720,16 @@
 }
 
 .artie-cancel-req-btn:hover {
-  background: #FFE4E6;
+  background: #FEE2E2;
   transform: translateY(-1px);
 }
 
 .artie-cancel-submit-btn {
-  background: #E11D48 !important;
+  background: #DC2626 !important;
 }
 
 .artie-cancel-submit-btn:hover {
-  background: #BE123C !important;
+  background: #B91C1C !important;
 }
 
 /* ── TARJETA DE ERROR CONTROLADO Y BOTÓN REINTENTAR ── */

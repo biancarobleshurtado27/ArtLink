@@ -155,8 +155,8 @@
   --mint: #0D9488;
 }
 :root[data-color-mode='tritanopia'] {
-  --violet: #DB2777;
-  --violet-dark: #9D174D;
+  --violet: #7C3AED;
+  --violet-dark: #5B21B6;
   --rose: #DC2626;
   --mint: #2563EB;
 }
