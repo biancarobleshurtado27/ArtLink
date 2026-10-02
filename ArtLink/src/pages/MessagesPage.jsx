@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import {
   AlertTriangle,
+  ArrowLeft,
   BadgeCheck,
   Bot,
   Check,
@@ -326,8 +327,9 @@ export default function MessagesPage() {
     (c) => conversationId && String(c.id) === String(conversationId)
   )
 
-  // Si se está en /mensajes sin ID y existen conversaciones, redirigir a la primera
+  // Si se está en /mensajes sin ID y existen conversaciones, redirigir a la primera en pantallas de escritorio
   useEffect(() => {
+    if (typeof window !== 'undefined' && window.innerWidth <= 768) return
     if (!loading && !isNewRoute && !conversationId && conversations.length > 0) {
       navigate(`/mensajes/${conversations[0].id}`, { replace: true })
     }
@@ -641,10 +643,11 @@ export default function MessagesPage() {
   }
 
   const totalUnreadMessages = Object.values(unreadByConvoMap).reduce((a, b) => a + b, 0)
+  const hasActiveChat = Boolean(conversationId || isNewRoute)
 
   return (
     <div className="chat-view-container">
-      <div className={`chat-three-column-grid ${!showOrderDetails ? 'is-details-closed' : ''}`}>
+      <div className={`chat-three-column-grid ${!showOrderDetails ? 'is-details-closed' : ''} ${hasActiveChat ? 'has-active-chat' : 'is-inbox-view'}`}>
         {/* ══════════════════════════════════════════════════════════════════
             COLUMNA 1: BANDEJA DE CONVERSACIONES REALES
             ══════════════════════════════════════════════════════════════════ */}
@@ -989,7 +992,18 @@ export default function MessagesPage() {
             <>
               {/* Encabezado del chat */}
               <header className="chat-center-header">
-            <div className="chat-active-artist-info">
+                {hasActiveChat && (
+                  <button
+                    type="button"
+                    className="chat-mobile-back-btn"
+                    onClick={() => navigate('/mensajes')}
+                    title="Volver a lista de chats"
+                    aria-label="Volver a lista de chats"
+                  >
+                    <ArrowLeft size={18} aria-hidden="true" />
+                  </button>
+                )}
+                <div className="chat-active-artist-info">
               <div className="chat-avatar-wrapper">
                 <img
                   src={otherParticipantDisplay.avatar}

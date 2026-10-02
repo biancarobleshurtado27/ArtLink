@@ -2329,3 +2329,89 @@
     grid-template-columns: 1fr 1fr;
   }
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   EXPLORE V3 & DIRECTORY: TABLET & MOBILE RESPONSIVE ADAPTATIONS
+   ══════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 64rem) {
+  .momento-cards-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1rem !important;
+  }
+
+  .directory-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .filter-panel {
+    position: static !important;
+  }
+
+  .directory-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .mega-search-top {
+    flex-wrap: wrap !important;
+  }
+
+  .mega-search-input-wrap {
+    flex: 1 1 100% !important;
+    min-width: 0 !important;
+  }
+
+  .mega-search-select,
+  .mega-search-filters-btn,
+  .mega-search-submit-btn {
+    flex: 1 1 auto !important;
+  }
+}
+
+@media (max-width: 48rem) {
+  .explore-v3-hero {
+    padding: 1.5rem 0.5rem 1.25rem !important;
+  }
+
+  .explore-mega-search-card {
+    padding: 1rem !important;
+    border-radius: 14px !important;
+  }
+
+  .mega-search-top {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0.65rem !important;
+  }
+
+  .mega-search-submit-btn {
+    justify-content: center !important;
+    width: 100% !important;
+  }
+
+  .momento-cards-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .directory-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .carousel-arrow-btn {
+    display: none !important;
+  }
+
+  .category-pills-scroll {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .momento-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.5rem !important;
+  }
+
+  .momento-arrows {
+    display: none !important;
+  }
+}

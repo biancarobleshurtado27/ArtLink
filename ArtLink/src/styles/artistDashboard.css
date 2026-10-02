@@ -1867,16 +1867,27 @@ input:checked + .art-dash-toggle-slider:before {
 @media (max-width: 1100px) {
   .art-dash-kpi-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 1.1rem;
   }
 }
 
 @media (max-width: 900px) {
   .art-dash-hero {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
+    padding: 1.6rem 1.5rem;
+    gap: 1.5rem;
   }
   .art-dash-hero-actions {
     width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .art-dash-hero-actions .art-dash-btn-primary,
+  .art-dash-hero-actions .art-dash-btn-teal,
+  .art-dash-hero-actions .art-dash-btn-lavender {
+    flex: 1 1 calc(50% - 0.5rem);
+    min-width: 140px;
   }
   .art-dash-sidebar {
     grid-template-columns: 1fr;
@@ -1884,11 +1895,54 @@ input:checked + .art-dash-toggle-slider:before {
 }
 
 @media (max-width: 640px) {
-  .art-dash-kpi-grid {
-    grid-template-columns: 1fr;
+  .art-dash-container {
+    padding: 1rem 0.85rem 3rem;
+  }
+  .art-dash-nav-capsule-wrap {
+    justify-content: flex-start;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.5rem;
+    scrollbar-width: none;
+  }
+  .art-dash-nav-capsule-wrap::-webkit-scrollbar {
+    display: none;
+  }
+  .art-dash-hero {
+    padding: 1.25rem 1rem;
+    border-radius: 1rem;
   }
   .art-dash-hero-left {
     flex-direction: column;
     align-items: flex-start;
+    gap: 1rem;
+  }
+  .art-dash-avatar-img {
+    width: 68px;
+    height: 68px;
+  }
+  .art-dash-hero-title {
+    font-size: 1.35rem;
+  }
+  .art-dash-hero-actions {
+    flex-direction: column;
+  }
+  .art-dash-hero-actions .art-dash-btn-primary,
+  .art-dash-hero-actions .art-dash-btn-teal,
+  .art-dash-hero-actions .art-dash-btn-lavender {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+  .art-dash-kpi-grid {
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+  }
+  .art-dash-kpi-card {
+    min-height: auto;
+    padding: 1.15rem;
+  }
+  .art-dash-kanban-columns {
+    grid-template-columns: repeat(4, 270px);
+    padding-bottom: 1rem;
   }
 }

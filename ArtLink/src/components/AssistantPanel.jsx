@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   AlertCircle,
+  ArrowLeft,
   ArrowRight,
   BadgeCheck,
   Check,
@@ -510,6 +511,17 @@ export default function AssistantPanel({ onClose, embedded = false }) {
 
       {/* Encabezado */}
       <header className="assistant-header-premium" onMouseDown={embedded ? undefined : handleHeaderMouseDown}>
+        {embedded && (
+          <button
+            type="button"
+            className="chat-mobile-back-btn"
+            onClick={() => navigate('/mensajes')}
+            title="Volver a lista de chats"
+            aria-label="Volver a lista de chats"
+          >
+            <ArrowLeft size={18} aria-hidden="true" />
+          </button>
+        )}
         <div className="artie-avatar-frame-wrap">
           <div className="artie-avatar-ring">
             <img src={artieAvatar} alt="ArtLink AI Agent" className="artie-avatar-img" width="34" height="34" />
