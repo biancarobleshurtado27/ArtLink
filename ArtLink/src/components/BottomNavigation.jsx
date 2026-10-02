@@ -4,11 +4,11 @@ import logoArtLink from '../assets/logo-artlink.png'
 export default function BottomNavigation({ links, label = 'Navegación móvil' }) {
   return (
     <nav className="bottom-navigation" aria-label={label}>
-      {links.map(({ to, label: text, icon: Icon, badgeCount }) => (
+      {links.map(({ to, label: text, accessibleLabel, icon: Icon, badgeCount }) => (
         <NavLink
           key={to}
           to={to}
-          aria-label={text}
+          aria-label={accessibleLabel || text}
           className={({ isActive }) => (isActive ? 'bottom-nav-item is-active' : 'bottom-nav-item')}
         >
           {to === '/' ? (

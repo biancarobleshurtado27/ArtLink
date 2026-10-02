@@ -121,21 +121,23 @@ export default function AppShell() {
   ]
 
   const mobileLinks = [
-    { to: '/', label: 'Inicio', icon: Home },
-    { to: '/explorar', label: 'Explorar', icon: Search },
+    { to: '/', label: 'Inicio', accessibleLabel: 'Inicio', icon: Home },
+    { to: '/explorar', label: 'Explorar', accessibleLabel: 'Explorar artistas', icon: Search },
     {
       to: '/solicitudes',
-      label: 'Solicitudes & Notificaciones',
+      label: 'Solicitudes',
+      accessibleLabel: 'Solicitudes y Notificaciones',
       icon: Bell,
       badgeCount: totalAlertsCount,
     },
     {
       to: '/mensajes',
       label: 'Mensajes',
+      accessibleLabel: 'Mensajes privados',
       icon: MessageCircle,
       badgeCount: unreadMessagesCount,
     },
-    { to: '/perfil', label: 'Perfil', icon: UserRound },
+    { to: '/perfil', label: 'Perfil', accessibleLabel: 'Mi perfil', icon: UserRound },
   ]
 
   const isAdmin = user?.role === ROLES.ADMIN || user?.role === 'admin' || user?.role === 'administrador'
@@ -320,6 +322,7 @@ export default function AppShell() {
               className={({ isActive }) => (isActive ? 'sidebar-nav-item is-active' : 'sidebar-nav-item')}
             >
               <LayoutDashboard size={26} className="sidebar-icon" aria-hidden="true" />
+              <span className="sidebar-nav-label">Panel administrativo</span>
               <span className="sidebar-tooltip" role="tooltip">
                 Panel administrativo
               </span>
@@ -332,6 +335,9 @@ export default function AppShell() {
               className={({ isActive }) => (isActive ? 'sidebar-nav-item is-active' : 'sidebar-nav-item')}
             >
               <Star size={26} className="sidebar-icon" aria-hidden="true" />
+              <span className="sidebar-nav-label">
+                {user?.role === ROLES.ARTIST ? 'Panel de artista' : 'Convertirse en creador'}
+              </span>
               <span className="sidebar-tooltip" role="tooltip">
                 {user?.role === ROLES.ARTIST ? 'Panel de artista' : 'Convertirse en creador'}
               </span>
@@ -352,6 +358,7 @@ export default function AppShell() {
               }}
             >
               <MoreVertical size={26} className="sidebar-icon" aria-hidden="true" />
+              <span className="sidebar-nav-label">Opciones de cuenta</span>
               <span className="sidebar-tooltip" role="tooltip">Opciones de usuario</span>
             </button>
 

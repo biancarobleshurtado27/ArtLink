@@ -1464,6 +1464,22 @@
       "createdAt": "2026-10-02T21:06:08.261Z",
       "updatedAt": "2026-10-02T21:06:08.261Z",
       "page": "/"
+    },
+    {
+      "id": "w51_UvCE9yE",
+      "userId": "user-test-1790976397790-p58n",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-02T21:26:38.224Z",
+      "updatedAt": "2026-10-02T21:26:38.224Z",
+      "page": "/explorar"
+    },
+    {
+      "id": "zFdZ4q7RnBA",
+      "userId": "user-artist-B-1790976398340-8brd",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-02T21:26:38.760Z",
+      "updatedAt": "2026-10-02T21:26:38.760Z",
+      "page": "/"
     }
   ],
   "favorites": [
@@ -1733,6 +1749,149 @@
       "role": "user",
       "content": "Mensaje de usuario B",
       "createdAt": "2026-10-02T21:06:08.265Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "TGFDhNzCBIc",
+      "conversationId": "convo-1790970939709-qiu62",
+      "userId": "client-1",
+      "role": "user",
+      "content": "cuantos clientes hay en la web",
+      "createdAt": "2026-10-02T21:13:29.035Z",
+      "provider": "gemini",
+      "status": "sending",
+      "intent": null
+    },
+    {
+      "id": "KAW53uRxmGg",
+      "conversationId": "convo-1790970939709-qiu62",
+      "userId": "client-1",
+      "role": "user",
+      "content": "cuantos clientes hay en la web",
+      "createdAt": "2026-10-02T21:13:29.035Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "w8jPlWvlR6M",
+      "conversationId": "convo-1790970939709-qiu62",
+      "userId": "client-1",
+      "role": "user",
+      "content": "cuantos clientes hay en la web",
+      "createdAt": "2026-10-02T21:13:29.035Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "578AAQDTn78",
+      "conversationId": "convo-1790970939709-qiu62",
+      "userId": "client-1",
+      "role": "assistant",
+      "content": "El tiempo de espera para la respuesta del agente se ha agotado. Intenta nuevamente.",
+      "createdAt": "2026-10-02T21:13:59.090Z",
+      "provider": "local-fallback",
+      "status": "error",
+      "intent": null
+    },
+    {
+      "id": "y2oRmW0nAMA",
+      "conversationId": "convo-1790970939709-qiu62",
+      "userId": "client-1",
+      "role": "user",
+      "content": "cuantos clientes hay en la web",
+      "createdAt": "2026-10-02T21:13:29.035Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "Xkzgm9cyeFc",
+      "conversationId": "convo-1790970939709-qiu62",
+      "userId": "client-1",
+      "role": "assistant",
+      "content": "El tiempo de espera para la respuesta del agente se ha agotado. Intenta nuevamente.",
+      "createdAt": "2026-10-02T21:13:59.090Z",
+      "provider": "local-fallback",
+      "status": "error",
+      "intent": null
+    },
+    {
+      "id": "1PclFn53r_o",
+      "conversationId": "convo-1790970939709-qiu62",
+      "userId": "client-1",
+      "role": "user",
+      "content": "cuantos clientes hay en la web",
+      "createdAt": "2026-10-02T21:14:00.444Z",
+      "provider": "gemini",
+      "status": "sending",
+      "intent": null
+    },
+    {
+      "id": "fUt6NBdXCpw",
+      "conversationId": "convo-1790970939709-qiu62",
+      "userId": "client-1",
+      "role": "user",
+      "content": "cuantos clientes hay en la web",
+      "createdAt": "2026-10-02T21:14:00.444Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "lM-2uZLZJpA",
+      "conversationId": "convo-1790970939709-qiu62",
+      "userId": "client-1",
+      "role": "assistant",
+      "content": "Como agente oficial de ArtLink, no tengo acceso a datos estadísticos en tiempo real sobre el número total de usuarios o clientes registrados en la plataforma. Mi función principal es asistirte en la navegación, el uso de las herramientas de la plataforma y proporcionarte información educativa sobre arte.\n\nSi necesitas ayuda para encontrar un artista específico, entender cómo funcionan las comisiones o tienes alguna duda sobre técnicas artísticas, estaré encantado de apoyarte.",
+      "createdAt": "2026-10-02T21:14:04.309Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": "unknown"
+    },
+    {
+      "id": "NTTRtQzWhsc",
+      "conversationId": "convo-1790970939709-qiu62",
+      "userId": "client-1",
+      "role": "user",
+      "content": "cuantos clientes hay en la web",
+      "createdAt": "2026-10-02T21:14:00.444Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "ti7KQEiBkjQ",
+      "conversationId": "convo-1790970939709-qiu62",
+      "userId": "client-1",
+      "role": "assistant",
+      "content": "Como agente oficial de ArtLink, no tengo acceso a datos estadísticos en tiempo real sobre el número total de usuarios o clientes registrados en la plataforma. Mi función principal es asistirte en la navegación, el uso de las herramientas de la plataforma y proporcionarte información educativa sobre arte.\n\nSi necesitas ayuda para encontrar un artista específico, entender cómo funcionan las comisiones o tienes alguna duda sobre técnicas artísticas, estaré encantado de apoyarte.",
+      "createdAt": "2026-10-02T21:14:04.309Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": "unknown"
+    },
+    {
+      "id": "BkSS44xXU8w",
+      "conversationId": "convo-1790970939709-qiu62",
+      "userId": "client-1",
+      "role": "user",
+      "content": "cuantos clientes hay en la web",
+      "createdAt": "2026-10-02T21:14:00.444Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "bmztWzWGVEE",
+      "conversationId": "convo-1790976398760-wbjmp",
+      "userId": "user-artist-B-1790976398340-8brd",
+      "role": "user",
+      "content": "Mensaje de usuario B",
+      "createdAt": "2026-10-02T21:26:38.766Z",
       "provider": "gemini",
       "status": "sent",
       "intent": null
