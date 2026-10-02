@@ -1,0 +1,292 @@
+{
+  "name": "ArtLink - Asistente IA Administrativo",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "artlink-admin-assistant",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "admin-webhook-001",
+      "name": "Webhook ArtLink Admin",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        200,
+        300
+      ],
+      "webhookId": "artlink-admin-assistant"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cond-valid-admin-role",
+              "leftValue": "={{ Boolean(($json.body?.message || $json.message) && typeof ($json.body?.message || $json.message) === 'string' && ($json.body?.message || $json.message).trim().length > 0 && ['admin', 'administrator', 'administrador'].includes(String($json.body?.role || $json.role || '').trim().toLowerCase())) }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "admin-validate-001",
+      "name": "Validar Rol y Sesion Admin",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        440,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": false,\n  \"message\": \"Acceso no autorizado al asistente administrativo. Se requiere rol de administrador autenticado.\",\n  \"errorCode\": \"FORBIDDEN\",\n  \"retryable\": false,\n  \"actions\": [],\n  \"quickReplies\": []\n}",
+        "options": {
+          "responseCode": 403,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Methods",
+                "value": "POST, OPTIONS, GET"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type, Authorization"
+              }
+            ]
+          }
+        }
+      },
+      "id": "admin-error-001",
+      "name": "Respond Error 403",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        680,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $input.first().json.body || $input.first().json || {};\nconst message = (body.message || '').toString().trim();\nconst sessionId = (body.sessionId || 'admin-session-' + Date.now()).toString();\nconst conversationId = (body.conversationId || body.sessionId || 'admin-convo-' + Date.now()).toString();\nconst userId = (body.userId || 'admin-1').toString();\nconst userName = (body.userName || 'Administrador').toString();\nconst role = (body.role || 'admin').toString().toLowerCase();\nconst page = (body.page || '/admin').toString();\nconst platformSummary = body.platformSummary || {};\n\nlet metricsText = '';\nif (typeof platformSummary === 'object' && Object.keys(platformSummary).length > 0) {\n  metricsText = [\n    `Usuarios registrados: ${platformSummary.usersCount ?? 'N/A'}`,\n    `Artistas activos: ${platformSummary.artistsCount ?? 'N/A'}`,\n    `Categorias activas: ${platformSummary.categoriesCount ?? 'N/A'}`,\n    `Solicitudes totales: ${platformSummary.requestsCount ?? 'N/A'}`,\n    `Solicitudes pendientes: ${platformSummary.pendingRequestsCount ?? 'N/A'}`,\n    `Inconsistencias detectadas: ${platformSummary.issuesCount ?? '0'}`\n  ].join(', ');\n} else {\n  metricsText = 'Instantánea en tiempo real de la base de datos de ArtLink';\n}\n\nconst rawHistory = Array.isArray(body.history) ? body.history : [];\nconst history = rawHistory.slice(-8).map((item) => ({\n  role: item.role === 'assistant' || item.role === 'model' ? 'assistant' : 'user',\n  content: (item.content || item.text || item.message || '').toString().slice(0, 1200)\n}));\n\nreturn [{\n  json: {\n    message,\n    sessionId,\n    conversationId,\n    userId,\n    userName,\n    role,\n    page,\n    metricsText,\n    platformSummary,\n    history,\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "admin-context-001",
+      "name": "Preparar Contexto Administrativo",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        680,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Administrador: {{ $json.userName }} (Rol: {{ $json.role }})\nSección actual del panel: {{ $json.page }}\nResumen de métricas: {{ $json.metricsText }}\n\nConsulta del administrador:\n\"{{ $json.message }}\"",
+        "options": {
+          "systemMessage": "=Eres el Asistente de IA Administrativo oficial de ArtLink impulsado por Gemini a través del workflow de N8N.\nTu función es brindar soporte analítico, diagnóstico, resumen y orientación al administrador del sistema.\n\n### REGLA DE SEGURIDAD ABSOLUTA\n- Tu rol es ESTRICTAMENTE consultivo, analítico y de navegación asistida.\n- NUNCA realices ni simules cambios destructivos, eliminaciones de usuarios/artistas, mutaciones en bases de datos ni transferencias financieras automáticas.\n- Cualquier intervención correctiva debe sugerirse como una ruta segura del panel administrativo para que el administrador la ejecute manualmente con confirmación visual.\n\n### RESPONSABILIDADES CLAVE\n1. Estado general: resumir la actividad de la plataforma con base en las métricas disponibles.\n2. Explicación de métricas: aclarar qué significa cada indicador del dashboard (usuarios registrados, artistas con comisiones abiertas, solicitudes pendientes con fondos en custodia Escrow).\n3. Auditoría de catálogo: orientar sobre artistas sin portafolio publicado o comisiones sin precio base ni plazo de entrega.\n4. Asistencia académica: generar resúmenes ejecutivos destacando la arquitectura React + Vite, JSON Server, automatización N8N y pasarela Escrow.\n5. Navegación segura: guiar al administrador hacia las rutas oficiales: Dashboard (/admin), Usuarios (/admin/usuarios), Artistas (/admin/artistas), Categorías (/admin/categorias), Solicitudes (/admin/solicitudes).\n\n### FORMATO DE RESPUESTA\n- No uses emojis en ninguna parte de la respuesta.\n- Utiliza encabezados en markdown (### Titulo), párrafos concisos y viñetas explicativas.\n- Mantén un estilo profesional, sobrio y riguroso.\n- Al final del mensaje de texto visible, puedes incluir opcionalmente un bloque JSON con las acciones de navegación sugeridas:\n```json\n{\n  \"intent\": \"admin_analysis\",\n  \"actions\": [\n    { \"label\": \"Ver Dashboard\", \"url\": \"/admin\" },\n    { \"label\": \"Revisar Solicitudes\", \"url\": \"/admin/solicitudes\" },\n    { \"label\": \"Gestionar Usuarios\", \"url\": \"/admin/usuarios\" }\n  ],\n  \"quickReplies\": [\n    \"Resumir estado general\",\n    \"Explicar métricas del dashboard\",\n    \"Detectar problemas o inconsistencias\"\n  ]\n}\n```"
+        }
+      },
+      "id": "admin-agent-001",
+      "name": "Agente IA Administrativo",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        940,
+        240
+      ],
+      "onError": "continueRegularOutput",
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.1-flash-lite",
+        "options": {
+          "temperature": 0.3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        940,
+        460
+      ],
+      "id": "admin-gemini-model-001",
+      "name": "Google Gemini Chat Model Admin",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "artlink-gemini-credentials",
+          "name": "Google Gemini ArtLink API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionKey": "sessionId",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        940,
+        640
+      ],
+      "id": "admin-memory-001",
+      "name": "Memoria Administrativa"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.first().json || {};\nconst prev = $('Preparar Contexto Administrativo').first().json || {};\n\nif (input.error || input.status === 'error' || input.name === 'Error') {\n  return [{\n    json: {\n      success: false,\n      message: 'El agente de IA no pudo procesar la consulta administrativa en este momento. Intenta nuevamente.',\n      errorCode: 'AGENT_ERROR',\n      retryable: true,\n      actions: [{ label: 'Ir al Dashboard', url: '/admin' }],\n      quickReplies: ['Resumir estado general', 'Explicar métricas del dashboard']\n    }\n  }];\n}\n\nlet rawOutput = '';\nif (typeof input.output === 'string' && input.output.trim()) {\n  rawOutput = input.output;\n} else if (input.output && typeof input.output.text === 'string' && input.output.text.trim()) {\n  rawOutput = input.output.text;\n} else if (typeof input.text === 'string' && input.text.trim()) {\n  rawOutput = input.text;\n} else if (typeof input.response === 'string' && input.response.trim()) {\n  rawOutput = input.response;\n} else if (typeof input.message === 'string' && input.message.trim()) {\n  rawOutput = input.message;\n} else if (typeof input === 'string' && input.trim()) {\n  rawOutput = input;\n}\nrawOutput = (rawOutput || '').toString();\n\nlet cleanMessage = rawOutput;\nlet actions = [];\nlet quickReplies = [];\n\nconst jsonBlockMatch = rawOutput.match(/```(?:json)?\\s*([\\s\\S]*?)\\s*```/);\nif (jsonBlockMatch) {\n  try {\n    const parsed = JSON.parse(jsonBlockMatch[1].trim());\n    if (parsed && typeof parsed === 'object') {\n      if (Array.isArray(parsed.actions)) {\n        actions = parsed.actions.filter(a => a && typeof a === 'object' && typeof a.label === 'string' && typeof a.url === 'string' && a.url.startsWith('/admin'));\n      }\n      if (Array.isArray(parsed.quickReplies)) {\n        quickReplies = parsed.quickReplies.filter(r => typeof r === 'string' && r.trim().length > 0);\n      }\n    }\n  } catch (e) {}\n}\n\ncleanMessage = cleanMessage.replace(/```(?:json)?[\\s\\S]*?```/g, '').trim();\ncleanMessage = cleanMessage.replace(/<script\\b[^<]*(?:(?!<\\/script>)<[^<]*)*<\\/script>/gi, '');\ncleanMessage = cleanMessage.replace(/<\\/?[a-z][a-z0-9]*\\b[^>]*>/gi, '');\ncleanMessage = cleanMessage.trim();\n\nif (!cleanMessage) {\n  cleanMessage = 'No se obtuvo una respuesta detallada del agente administrativo. Por favor reformula la consulta.';\n}\n\nif (actions.length === 0) {\n  actions = [\n    { label: 'Dashboard General', url: '/admin' },\n    { label: 'Supervisar Solicitudes', url: '/admin/solicitudes' }\n  ];\n}\n\nif (quickReplies.length === 0) {\n  quickReplies = [\n    'Resumir estado general',\n    'Explicar métricas del dashboard',\n    'Detectar problemas o inconsistencias'\n  ];\n}\n\nreturn [{\n  json: {\n    success: true,\n    message: cleanMessage,\n    actions,\n    quickReplies,\n    provider: 'gemini-n8n',\n    model: 'gemini-3.1-flash-lite',\n    sessionId: prev.sessionId,\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "admin-format-001",
+      "name": "Formatear Respuesta Administrativa",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Methods",
+                "value": "POST, OPTIONS, GET"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type, Authorization"
+              }
+            ]
+          }
+        }
+      },
+      "id": "admin-respond-001",
+      "name": "Respond Webhook Admin",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1440,
+        240
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook ArtLink Admin": {
+      "main": [
+        [
+          {
+            "node": "Validar Rol y Sesion Admin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar Rol y Sesion Admin": {
+      "main": [
+        [
+          {
+            "node": "Preparar Contexto Administrativo",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Error 403",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Contexto Administrativo": {
+      "main": [
+        [
+          {
+            "node": "Agente IA Administrativo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Memoria Administrativa": {
+      "ai_memory": [
+        [
+          {
+            "node": "Agente IA Administrativo",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model Admin": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agente IA Administrativo",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agente IA Administrativo": {
+      "main": [
+        [
+          {
+            "node": "Formatear Respuesta Administrativa",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatear Respuesta Administrativa": {
+      "main": [
+        [
+          {
+            "node": "Respond Webhook Admin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

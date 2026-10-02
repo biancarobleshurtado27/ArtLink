@@ -1,12 +1,36 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import AdminAssistantDrawer from '../src/components/admin/AdminAssistantDrawer'
 import {
   isAdminUser,
   auditPlatformInconsistencies,
   generateLocalAdminAnalysis,
+  sendAdminAiQueryToN8n,
 } from '../src/services/adminAiService'
+
+// Mock globalThis.fetch para pruebas de integración con el webhook administrativo de N8N
+const originalFetch = globalThis.fetch
+beforeEach(() => {
+  globalThis.fetch = vi.fn().mockImplementation((url, options) => {
+    return Promise.resolve({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        success: true,
+        message: '### Estado General de la Plataforma ArtLink\n\nBalance general del sistema...',
+        actions: [{ label: 'Ir al Dashboard', url: '/admin' }],
+        quickReplies: ['Explicar métricas del dashboard'],
+        provider: 'gemini-admin',
+      }),
+    })
+  })
+})
+
+afterEach(() => {
+  globalThis.fetch = originalFetch
+  vi.clearAllMocks()
+})
 
 vi.mock('../src/hooks/useAuth', () => ({
   default: () => ({
@@ -113,6 +137,51 @@ describe('Asistente de IA Administrativa - adminAiService', () => {
     expect(result.message).toContain('Usuarios registrados')
     expect(result.message).toContain('Artistas activos')
     expect(result.message).toContain('Solicitudes enviadas')
+  })
+
+  it('conecta con el webhook administrativo de N8N enviando payload enriquecido y validación de rol', async () => {
+    const adminUser = { id: 'admin-99', name: 'Super Admin', role: 'admin' }
+    const platformData = {
+      users: [{ id: 'u-1' }],
+      artists: [{ id: 'a-1' }],
+      requests: [{ id: 'r-1', status: 'pending' }],
+    }
+
+    const res = await sendAdminAiQueryToN8n({
+      message: 'resumen del estado',
+      user: adminUser,
+      platformData,
+    })
+
+    expect(res.success).toBe(true)
+    expect(res.message).toContain('Estado General')
+    expect(globalThis.fetch).toHaveBeenCalled()
+    const callArgs = globalThis.fetch.mock.calls[0]
+    expect(callArgs[0]).toContain('/artlink-admin-assistant')
+    const bodySent = JSON.parse(callArgs[1].body)
+    expect(bodySent.role).toBe('admin')
+    expect(bodySent.platformSummary.usersCount).toBe(1)
+  })
+
+  it('maneja respuesta de error 403 de N8N si las credenciales o rol no son válidos', async () => {
+    globalThis.fetch.mockImplementationOnce(() =>
+      Promise.resolve({
+        ok: false,
+        status: 403,
+        json: async () => ({
+          success: false,
+          message: 'Acceso denegado: se requiere rol de administrador autenticado.',
+        }),
+      })
+    )
+
+    const res = await sendAdminAiQueryToN8n({
+      message: 'consulta sin rol',
+      user: { role: 'cliente' },
+    })
+
+    expect(res.success).toBe(false)
+    expect(res.errorCode).toBe('FORBIDDEN')
   })
 })
 

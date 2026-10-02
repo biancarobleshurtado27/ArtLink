@@ -378,24 +378,154 @@ export function generateLocalAdminAnalysis(query = '', data = {}) {
   }
 }
 
+
 /**
- * Envía una consulta administrativa al Agente Gemini a través del workflow de N8N.
- * Si N8N no está disponible o responde con fallback, recurre de forma transparente
- * al motor analítico local de ArtLink sin romper la experiencia del administrador.
+ * Envía una consulta administrativa al webhook dedicado de N8N (/artlink-admin-assistant).
+ * N8N valida el rol administrativo y ejecuta el Agente de IA con Gemini con contexto enriquecido.
+ * No expone ninguna API key ni secreto en el frontend.
  *
  * @param {Object} params
- * @param {string} params.message Mensaje del administrador
- * @param {Array} [params.history] Historial previo de conversación
- * @param {Object} params.user Objeto de usuario (debe tener rol admin)
+ * @param {string} params.message
+ * @param {Object} params.user
+ * @param {Object} params.platformData
+ * @param {Array} [params.history]
+ * @param {AbortSignal} [params.signal]
+ * @param {number} [params.timeoutMs]
+ * @returns {Promise<Object>}
+ */
+export async function sendAdminAiQueryToN8n({
+  message,
+  user,
+  platformData,
+  history = [],
+  signal,
+  timeoutMs = 25000,
+}) {
+  const trimmed = (message || '').trim()
+  if (!trimmed) {
+    throw new Error('Debes proporcionar una consulta válida.')
+  }
+
+  const issues = auditPlatformInconsistencies(platformData || {})
+  const platformSummary = {
+    usersCount: platformData?.users?.length || 0,
+    artistsCount: platformData?.artists?.length || 0,
+    categoriesCount: platformData?.categories?.length || 0,
+    requestsCount: platformData?.requests?.length || 0,
+    pendingRequestsCount: (platformData?.requests || []).filter((r) => r.status === 'pending').length,
+    issuesCount: issues.length,
+  }
+
+  const payload = {
+    message: trimmed,
+    userId: user?.id || 'admin-1',
+    userName: user?.name || user?.email || 'Administrador ArtLink',
+    role: user?.role || 'admin',
+    sessionId: `admin-session-${user?.id || 'admin'}`,
+    conversationId: `admin-convo-${user?.id || 'admin'}`,
+    page: typeof window !== 'undefined' ? window.location.pathname : '/admin',
+    platformSummary,
+    history: (history || []).slice(-8).map((h) => ({
+      role: h.role === 'assistant' ? 'assistant' : 'user',
+      content: (h.content || '').slice(0, 1500),
+    })),
+  }
+
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs)
+
+  if (signal) {
+    if (signal.aborted) {
+      clearTimeout(timeoutId)
+      const err = new Error('Operación cancelada por el usuario.')
+      err.name = 'AbortError'
+      throw err
+    }
+    signal.addEventListener(
+      'abort',
+      () => {
+        clearTimeout(timeoutId)
+        controller.abort()
+      },
+      { once: true }
+    )
+  }
+
+  // Rutas candidatas: primero el proxy de Vite, luego la URL absoluta local
+  const candidateUrls = [
+    '/n8n-proxy/webhook/artlink-admin-assistant',
+    'http://localhost:5678/webhook/artlink-admin-assistant',
+  ]
+
+  let lastError = null
+  for (const url of candidateUrls) {
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        signal: controller.signal,
+      })
+
+      clearTimeout(timeoutId)
+
+      if (response.status === 403) {
+        const errJson = await response.json().catch(() => ({}))
+        return {
+          success: false,
+          message: errJson.message || 'Acceso denegado: se requiere rol de administrador autenticado.',
+          errorCode: 'FORBIDDEN',
+          provider: 'n8n-guard',
+          actions: [{ label: 'Iniciar sesión como Administrador', url: '/login' }],
+          quickReplies: [],
+        }
+      }
+
+      if (response.ok) {
+        const data = await response.json()
+        if (data && data.success && data.message) {
+          const localTemplate = generateLocalAdminAnalysis(trimmed, platformData)
+          return {
+            success: true,
+            message: data.message,
+            actions: Array.isArray(data.actions) && data.actions.length > 0
+              ? data.actions
+              : (localTemplate.actions || []),
+            quickReplies: Array.isArray(data.quickReplies) && data.quickReplies.length > 0
+              ? data.quickReplies
+              : (localTemplate.quickReplies || []),
+            provider: 'gemini-n8n',
+            model: data.model || 'gemini-3.1-flash-lite',
+          }
+        }
+      }
+    } catch (err) {
+      if (err.name === 'AbortError') {
+        clearTimeout(timeoutId)
+        throw err
+      }
+      lastError = err
+    }
+  }
+
+  clearTimeout(timeoutId)
+  throw lastError || new Error('No se pudo conectar con el webhook del asistente administrativo en N8N.')
+}
+
+/**
+ * Procesa una consulta dirigida al Asistente de IA Administrativo.
+ * Flujo:
+ * React -> POST Webhook N8N (/artlink-admin-assistant) -> Validación de rol -> Agente Gemini N8N -> React
+ * Si N8N no está en ejecución, activa respaldo analítico local.
+ *
+ * @param {Object} params
+ * @param {string} params.message Consulta en lenguaje natural
+ * @param {Array} [params.history] Historial previo
+ * @param {Object} [params.user] Usuario actual autenticado
  * @param {AbortSignal} [params.signal] Señal de cancelación
  * @returns {Promise<Object>}
  */
-export async function sendAdminAiQuery({
-  message,
-  history = [],
-  user,
-  signal,
-}) {
+export async function sendAdminAiQuery({ message, history = [], user, signal }) {
   if (!isAdminUser(user)) {
     return {
       success: false,
@@ -417,7 +547,7 @@ export async function sendAdminAiQuery({
     }
   }
 
-  // 1. Obtener datos actuales de la plataforma para enriquecer el contexto
+  // 1. Obtener datos actuales de la plataforma para enriquecer el contexto administrativo
   let platformData = { users: [], artists: [], categories: [], requests: [], portfolioItems: [], commissions: [] }
   try {
     platformData = await fetchAdminPlatformData()
@@ -425,56 +555,27 @@ export async function sendAdminAiQuery({
     console.warn('No se pudo cargar la instantánea completa para el prompt del admin:', err?.message)
   }
 
-  // 2. Construir prompt enriquecido con datos administrativos reales
-  const issues = auditPlatformInconsistencies(platformData)
-  const contextSnapshot =
-    `[DATOS_ADMIN_ARTLINK: Usuarios=${platformData.users.length}, Artistas=${platformData.artists.length}, ` +
-    `Solicitudes=${platformData.requests.length}, Pendientes=${platformData.requests.filter((r) => r.status === 'pending').length}, ` +
-    `Categorias=${platformData.categories.length}, InconsistenciasDetectadas=${issues.length}]`
-
-  const enrichedPrompt = `[ROL: Administrador ArtLink]\n${contextSnapshot}\nConsulta: ${trimmed}\n(Instrucción: Actúa como asistente de análisis y navegación de ArtLink. No realices cambios destructivos. Sugiere secciones del panel administrativo.)`
-
-  // 3. Intentar consultar el agente de Gemini a través del webhook existente de N8N
+  // 2. Intentar consultar el Agente de IA Administrativo a través del webhook de N8N
   if (isN8nChatbotConfigured()) {
     try {
-      const n8nResult = await sendMessageToChatbot({
-        message: enrichedPrompt,
-        sessionId: `admin-session-${user?.id || 'admin'}`,
-        conversationId: `admin-convo-${user?.id || 'admin'}`,
-        userId: user?.id || 'admin-1',
-        userName: user?.name || 'Administrador',
-        role: 'admin',
-        page: typeof window !== 'undefined' ? window.location.pathname : '/admin',
-        history: history.slice(-6).map((h) => ({
-          role: h.role === 'assistant' ? 'assistant' : 'user',
-          content: h.content,
-        })),
+      const n8nAdminResult = await sendAdminAiQueryToN8n({
+        message: trimmed,
+        user,
+        platformData,
+        history,
         signal,
-        timeoutMs: 15000,
       })
 
-      if (n8nResult.success && n8nResult.message && !n8nResult.isFallback) {
-        // Enriquecer la respuesta de Gemini con botones de navegación seguros
-        const localTemplate = generateLocalAdminAnalysis(trimmed, platformData)
-        return {
-          success: true,
-          message: n8nResult.message,
-          provider: 'gemini',
-          actions: localTemplate.actions || [],
-          quickReplies: localTemplate.quickReplies || [
-            'Resumir estado general',
-            'Explicar métricas del dashboard',
-            'Detectar problemas o inconsistencias',
-          ],
-        }
+      if (n8nAdminResult && n8nAdminResult.message) {
+        return n8nAdminResult
       }
     } catch (n8nError) {
       if (n8nError.name === 'AbortError') throw n8nError
-      console.warn('El webhook de N8N no respondió en tiempo, recurriendo al análisis local:', n8nError?.message)
+      console.warn('El webhook administrativo de N8N no respondió en tiempo, recurriendo al análisis local:', n8nError?.message)
     }
   }
 
-  // 4. Si N8N no está disponible o devolvió fallback, responder con el análisis estructurado local
+  // 3. Si N8N no está disponible o devolvió fallback, responder con el análisis estructurado local
   const localAnalysis = generateLocalAdminAnalysis(trimmed, platformData)
   return {
     success: true,
@@ -484,3 +585,4 @@ export async function sendAdminAiQuery({
     quickReplies: localAnalysis.quickReplies || [],
   }
 }
+
