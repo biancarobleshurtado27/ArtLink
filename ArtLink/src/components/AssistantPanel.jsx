@@ -512,7 +512,7 @@ export default function AssistantPanel({ onClose, embedded = false }) {
       <header className="assistant-header-premium" onMouseDown={embedded ? undefined : handleHeaderMouseDown}>
         <div className="artie-avatar-frame-wrap">
           <div className="artie-avatar-ring">
-            <img src={artieAvatar} alt="ArtLink AI Agent" className="artie-avatar-img" />
+            <img src={artieAvatar} alt="ArtLink AI Agent" className="artie-avatar-img" width="34" height="34" />
           </div>
           <span
             className={`artie-status-ping ${n8nAvailable ? 'status-ping-online' : 'status-ping-fallback'}`}
@@ -585,7 +585,7 @@ export default function AssistantPanel({ onClose, embedded = false }) {
               >
                 {!isUser && (
                   <div className="artie-msg-avatar-mini" aria-hidden="true">
-                    <img src={artieAvatar} alt="" />
+                    <img src={artieAvatar} alt="" width="22" height="22" />
                   </div>
                 )}
 
@@ -681,7 +681,7 @@ export default function AssistantPanel({ onClose, embedded = false }) {
         {thinking && (
           <div className="artie-chat-row artie-row-assistant artie-thinking-row" aria-live="polite">
             <div className="artie-msg-avatar-mini" aria-hidden="true">
-              <img src={artieAvatar} alt="" />
+              <img src={artieAvatar} alt="" width="22" height="22" />
             </div>
             <div className="artie-thinking-bubble">
               <div className="artie-typing-dots">
