@@ -87,6 +87,27 @@ export function sanitizeSessionUser(user) {
   if (user.email) {
     sanitized.email = String(user.email).trim().toLowerCase()
   }
+  if (user.avatar) {
+    sanitized.avatar = user.avatar
+  }
+  if (user.avatarUrl) {
+    sanitized.avatarUrl = user.avatarUrl
+  }
+  if (user.bio !== undefined) {
+    sanitized.bio = user.bio
+  }
+  if (user.description !== undefined) {
+    sanitized.description = user.description
+  }
+  if (user.phone !== undefined) {
+    sanitized.phone = user.phone
+  }
+  if (user.location !== undefined) {
+    sanitized.location = user.location
+  }
+  if (user.website !== undefined) {
+    sanitized.website = user.website
+  }
   if (user.artistProfileId) {
     sanitized.artistProfileId = user.artistProfileId
   }

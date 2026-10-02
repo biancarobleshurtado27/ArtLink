@@ -15,6 +15,7 @@ import NewRequestPage from '../pages/NewRequestPage'
 import PrivateRequestsPage from '../pages/PrivateRequestsPage'
 import MessagesPage from '../pages/MessagesPage'
 import SettingsPage from '../pages/SettingsPage'
+import SettingsProfilePage from '../pages/SettingsProfilePage'
 import { AdminDashboardPage, AdminResourcePage } from '../pages/AdminPages'
 import { LoginPage, RegisterPage } from '../pages/AuthPages'
 import ProtectedRoute from './ProtectedRoute'
@@ -44,6 +45,7 @@ export default function AppRouter() {
           <Route path="/para-artistas" element={<ParaArtistasPage />} />
           <Route path="/artista/:id" element={<ArtistProfilePage />} />
           <Route path="/ajustes" element={<SettingsPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/registro" element={<RegisterPage />} />
           <Route path="/ayuda" element={<LegalPage />} />
@@ -53,8 +55,10 @@ export default function AppRouter() {
           <Route path="/contacto" element={<LegalPage />} />
           <Route path="/acceso-denegado" element={<AccessDeniedPage />} />
 
-          <Route element={<ProtectedRoute allowedRoles={[ROLES.CLIENT, ROLES.ARTIST, ROLES.ADMIN]} />}>
+          <Route element={<ProtectedRoute allowedRoles={[ROLES.CLIENT, ROLES.ARTIST, ROLES.ADMIN, 'cliente', 'artista', 'administrador', 'client', 'artist', 'admin']} />}>
             <Route path="/perfil" element={<ProfilePage />} />
+            <Route path="/settings/profile" element={<SettingsProfilePage />} />
+            <Route path="/ajustes/perfil" element={<SettingsProfilePage />} />
             <Route path="/solicitudes" element={<PrivateRequestsPage />} />
             <Route path="/mensajes" element={<MessagesPage />} />
             <Route path="/mensajes/:conversationId" element={<MessagesPage />} />

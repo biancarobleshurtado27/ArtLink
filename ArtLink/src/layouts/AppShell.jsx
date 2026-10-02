@@ -18,6 +18,7 @@ import {
   Star,
   Sun,
   User,
+  UserCheck,
   UserRound,
   X,
   ArrowLeft,
@@ -141,7 +142,7 @@ export default function AppShell() {
   ]
 
   const isAdmin = user?.role === ROLES.ADMIN || user?.role === 'admin' || user?.role === 'administrador'
-  const isSettingsPage = location.pathname === '/ajustes'
+  const isSettingsPage = location.pathname.startsWith('/ajustes') || location.pathname.startsWith('/settings')
 
   // Si un administrador entra a /ajustes, se elimina el navbar y el sidebar
   // para mostrar exclusivamente la interfaz de ajustes
@@ -426,6 +427,10 @@ export default function AppShell() {
 
                 {/* 3. AJUSTES, SOPORTE, CREADOR Y CERRAR SESIÓN */}
                 <div className="user-popover-menu-items">
+                  <NavLink to="/settings/profile" role="menuitem" onClick={closeMenus} className="user-popover-item">
+                    <UserCheck size={18} className="user-popover-icon" aria-hidden="true" />
+                    <span>Modificar perfil</span>
+                  </NavLink>
                   <NavLink to="/ajustes" role="menuitem" onClick={closeMenus} className="user-popover-item">
                     <Settings size={18} className="user-popover-icon" aria-hidden="true" />
                     <span>Ajustes</span>

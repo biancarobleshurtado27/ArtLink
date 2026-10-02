@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import {
   Bell,
   CheckCircle2,
@@ -29,6 +29,7 @@ import {
 import useSettings from '../hooks/useSettings'
 import useAuth from '../hooks/useAuth'
 import ReadAloudButton from '../components/ReadAloudButton'
+import ProfileSettingsSection from '../components/settings/ProfileSettingsSection'
 
 const ALL_DISCIPLINES = [
   'Ilustración Digital',
@@ -41,8 +42,9 @@ const ALL_DISCIPLINES = [
   'Arte Generativo',
 ]
 
-export default function SettingsPage() {
+export default function SettingsPage({ initialTab }) {
   const navigate = useNavigate()
+  const location = useLocation()
   const { user, updateUser, logout } = useAuth()
   const {
     settings,
@@ -55,7 +57,30 @@ export default function SettingsPage() {
     statusMessage,
   } = useSettings()
 
-  const [activeTab, setActiveTab] = useState('apariencia')
+  const isProfileRoute =
+    initialTab === 'perfil' ||
+    location.pathname === '/settings/profile' ||
+    location.pathname === '/ajustes/perfil' ||
+    location.pathname.endsWith('/profile') ||
+    location.pathname.endsWith('/perfil')
+
+  const [activeTab, setActiveTab] = useState(() => {
+    if (isProfileRoute) return 'perfil'
+    if (initialTab) return initialTab
+    const params = new URLSearchParams(location.search)
+    return params.get('tab') || 'perfil'
+  })
+
+  useEffect(() => {
+    if (
+      location.pathname === '/settings/profile' ||
+      location.pathname === '/ajustes/perfil' ||
+      location.pathname.endsWith('/profile') ||
+      location.pathname.endsWith('/perfil')
+    ) {
+      setActiveTab('perfil')
+    }
+  }, [location.pathname])
 
   // Estados locales para edición de cuenta
   const [accountName, setAccountName] = useState(user?.name || '')
@@ -127,6 +152,16 @@ export default function SettingsPage() {
       <nav className="settings-tabs" aria-label="Secciones de ajustes">
         <button
           type="button"
+          className={`tab-button ${activeTab === 'perfil' ? 'is-active' : ''}`}
+          onClick={() => setActiveTab('perfil')}
+          aria-selected={activeTab === 'perfil'}
+          role="tab"
+        >
+          <UserCheck size={17} aria-hidden="true" />
+          <span>Mi perfil</span>
+        </button>
+        <button
+          type="button"
           className={`tab-button ${activeTab === 'apariencia' ? 'is-active' : ''}`}
           onClick={() => setActiveTab('apariencia')}
           aria-selected={activeTab === 'apariencia'}
@@ -186,6 +221,9 @@ export default function SettingsPage() {
           <span>Cuenta y soporte</span>
         </button>
       </nav>
+
+      {/* ── TAB 0: MODIFICAR PERFIL ── */}
+      {activeTab === 'perfil' && <ProfileSettingsSection />}
 
       {/* ── TAB 1: APARIENCIA ── */}
       {activeTab === 'apariencia' && (
@@ -842,6 +880,13 @@ export default function SettingsPage() {
                 </div>
 
                 <div className="account-actions">
+                  <button
+                    type="button"
+                    className="button button-primary"
+                    onClick={() => setActiveTab('perfil')}
+                  >
+                    <UserCheck size={16} aria-hidden="true" /> Modificar perfil completo
+                  </button>
                   <Link className="button button-outline" to="/perfil">
                     <User size={16} aria-hidden="true" /> Ver mi perfil público
                   </Link>

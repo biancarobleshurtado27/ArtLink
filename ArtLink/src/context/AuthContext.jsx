@@ -73,11 +73,18 @@ export function AuthProvider({ children }) {
       .then((res) => {
         if (!active || !res?.data) return
         const freshUser = res.data
-        // Actualizar datos no sensibles si cambiaron (avatar, artistProfileId, name)
+        // Actualizar datos no sensibles si cambiaron (avatar, artistProfileId, name, bio, etc.)
         const updated = sanitizeSessionUser({
           ...user,
           name: freshUser.name || user.name,
           role: freshUser.role || user.role,
+          avatar: freshUser.avatar || user.avatar,
+          avatarUrl: freshUser.avatarUrl || user.avatarUrl,
+          bio: freshUser.bio ?? user.bio,
+          description: freshUser.description ?? user.description,
+          phone: freshUser.phone ?? user.phone,
+          location: freshUser.location ?? user.location,
+          website: freshUser.website ?? user.website,
           artistProfileId: freshUser.artistProfileId || user.artistProfileId || null,
         })
         if (JSON.stringify(updated) !== JSON.stringify(user)) {
