@@ -45,7 +45,7 @@ export default function usePrivateRequests() {
           ...req,
           artistName: artistObj?.displayName || artistObj?.name || req.artistName || 'Artista ArtLink',
           artistUsername: artistObj?.username || 'artista',
-          artistAvatar: artistObj?.avatar || req.artistAvatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=80',
+          artistAvatar: artistObj?.avatar || req.artistAvatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(artistObj?.displayName || artistObj?.name || 'Artista')}&background=8B5CF6&color=fff`,
           artistVerified: artistObj?.verified ?? true,
           clientName: clientObj?.name || req.clientName || 'Cliente ArtLink',
           clientUsername: clientObj?.email?.split('@')[0] || req.clientUsername || 'cliente',

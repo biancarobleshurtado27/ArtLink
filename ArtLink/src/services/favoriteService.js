@@ -27,16 +27,8 @@ export async function getFavoritesByUser(userId) {
       params: { userId: String(userId) },
     })
     const artistIds = (data || []).map((item) => String(item.artistId))
-    if (artistIds.length > 0) {
-      saveLocal(cacheKey, artistIds)
-      return artistIds
-    }
-    // Si el servidor responde vacío pero existe cache válido, preservar los datos
-    if (Array.isArray(cached) && cached.length > 0) {
-      return cached
-    }
-    saveLocal(cacheKey, [])
-    return []
+    saveLocal(cacheKey, artistIds)
+    return artistIds
   } catch (error) {
     console.warn(`[favoriteService] Error al consultar favoritos en JSON Server, usando cache local:`, error?.message)
     return Array.isArray(cached) ? cached : []

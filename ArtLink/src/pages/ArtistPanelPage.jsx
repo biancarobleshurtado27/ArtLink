@@ -65,23 +65,25 @@ export default function ArtistPanelPage() {
   const [editingCommission, setEditingCommission] = useState(null)
 
   // Profile data defaults & state
-  const artistName = profile?.displayName || 'Mía Soler'
-  const artistHandle = (profile?.username || 'miasoler_art').toUpperCase()
+  const artistName = profile?.displayName || profile?.name || 'Creador ArtLink'
+  const artistHandle = (profile?.username || 'artista').toUpperCase()
   const artistAvatar =
-    profile?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=80'
+    profile?.avatar ||
+    profile?.avatarUrl ||
+    `https://ui-avatars.com/api/?name=${encodeURIComponent(artistName)}&background=8B5CF6&color=fff`
 
   // Availability & slots
   const [isPaused, setIsPaused] = useState(profile?.availability === 'closed' || false)
   const [totalSlots, setTotalSlots] = useState(profile?.slots || 5)
-  const [occupiedSlots, setOccupiedSlots] = useState(2)
+  const [occupiedSlots, setOccupiedSlots] = useState(0)
 
   // Escrow balance with localStorage persistence
   const [availableBalance, setAvailableBalance] = useState(() => {
     const saved = localStorage.getItem('artlink_artist_balance')
-    return saved !== null ? Number(saved) : 1240.0
+    return saved !== null ? Number(saved) : 0.0
   })
 
-  const [escrowCustody, setEscrowCustody] = useState(480.0)
+  const [escrowCustody, setEscrowCustody] = useState(0.0)
 
   // Toast feedback
   const [toastMessage, setToastMessage] = useState(null)
@@ -91,109 +93,92 @@ export default function ArtistPanelPage() {
   }
 
   // Active Kanban Pipeline Orders
-  const [kanbanOrders, setKanbanOrders] = useState([
-    {
-      id: 'order-101',
-      col: 'col1', // 1. Brief Aprobado
-      clientHandle: '@kaelen_Design',
-      clientName: 'Kaelen Design',
-      clientInitials: 'KD',
-      price: 220,
-      title: 'VTuber Model 2D Rig-ready',
-      deadline: 'En 14 días (28 Oct)',
-      attachmentsText: '4 adjuntos (PSD, Refs)',
-      briefDetails: {
-        specs: 'Resolución: 4000x6000 px, 300 DPI, capas separadas en grupos (Ojos, Boca, Cabello, Ropa, Físicas).',
-        description: 'Modelo estilo anime futurista con paleta pastel y toques neón. Incluir 5 expresiones emocionales estándar.',
-        clientNotes: 'Listo para pasar directo al rigger en Live2D Cubism.',
-      },
-    },
-    {
-      id: 'order-102',
-      col: 'col2', // 2. En Boceto / WIP
-      clientHandle: '@AlexR',
-      clientName: 'Alex Rivera',
-      clientInitials: 'AR',
-      price: 160,
-      title: 'Ilustración Escénica #1082',
-      isUrgent: true,
-      wipVersion: 'Boceto v1.2 subido',
-      hasFeedback: true,
-      wipImage: 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=600&q=80',
-      timeRemaining: '41 hrs restantes',
-    },
-    {
-      id: 'order-103',
-      col: 'col3', // 3. Color & Render
-      clientHandle: '@GaelMorales',
-      clientName: 'Gael Morales',
-      clientInitials: 'GM',
-      price: 45,
-      title: 'Busto Fantasía RPG D&D',
-      phaseName: 'Fase de Iluminación Final',
-      progress: 85,
-    },
-  ])
+  const [kanbanOrders, setKanbanOrders] = useState([])
 
   // Completed Orders (Col 4)
-  const [completedOrders, setCompletedOrders] = useState([
-    { id: 'term-1', clientHandle: '@stardust_vt', amount: 180, label: 'Fondos liberados' },
-    { id: 'term-2', clientHandle: '@Rin_ChibiArt', amount: 65, label: 'Fondos liberados' },
-    { id: 'term-3', clientHandle: '@NeoTokyo_Sam', amount: 320, label: 'Fondos liberados' },
-  ])
+  const [completedOrders, setCompletedOrders] = useState([])
 
   // Formats in Store (Right column)
-  const [formatsInStore, setFormatsInStore] = useState([
-    {
-      id: 'fmt-1',
-      name: 'Avatar / PFP',
-      price: 45,
-      active: true,
-      color: 'green',
-      thumb: 'https://images.unsplash.com/photo-1563089145-599997674d42?w=200&q=80',
-    },
-    {
-      id: 'fmt-2',
-      name: 'Medio Cuerpo',
-      price: 85,
-      active: true,
-      color: 'purple',
-      thumb: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&q=80',
-    },
-    {
-      id: 'fmt-3',
-      name: 'Ilustración Escénica',
-      price: 160,
-      active: true,
-      color: 'coral',
-      thumb: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=200&q=80',
-    },
-  ])
+  const [formatsInStore, setFormatsInStore] = useState([])
 
   // Recent Activity Log
-  const [activityList, setActivityList] = useState([
-    {
-      id: 'act-1',
-      iconType: 'pink',
-      title: 'Cliente @stardust_vt aprobó el render final',
-      sub: 'Fondos de $180.00 USD liberados a tu balance disponible',
-      time: 'Hoy, 10:14 AM',
-    },
-    {
-      id: 'act-2',
-      iconType: 'purple',
-      title: 'Depósito de $160.00 USD verificado y asegurado en Escrow Shield',
-      sub: 'Encargo #1082 asignado a @AlexR',
-      time: 'Ayer, 18:30 PM',
-    },
-    {
-      id: 'act-3',
-      iconType: 'mint',
-      title: 'Nueva reseña 5.0 ★ recibida de @Rin_ChibiArt',
-      sub: '"¡Increíble atención al detalle y entrega 2 días antes de lo previsto!"',
-      time: '14 Oct',
-    },
-  ])
+  const [activityList, setActivityList] = useState([])
+
+  // Sincronizar formatos en tienda a partir de comisiones reales del catálogo
+  useEffect(() => {
+    if (Array.isArray(commissions) && commissions.length > 0) {
+      setFormatsInStore(
+        commissions.map((c, idx) => ({
+          id: c.id || `fmt-${idx + 1}`,
+          name: c.title || 'Formato de Comisión',
+          price: c.price || 0,
+          active: c.status !== 'paused',
+          color: idx % 3 === 0 ? 'purple' : idx % 3 === 1 ? 'green' : 'coral',
+          thumb: c.examples?.[0] || c.image || '/images/catalog/character_design_01.jpg',
+        }))
+      )
+    } else {
+      setFormatsInStore([])
+    }
+  }, [commissions])
+
+  // Derivar pedidos activos, cupos y balance en custodia de solicitudes reales
+  useEffect(() => {
+    if (!Array.isArray(requests) || requests.length === 0) {
+      setKanbanOrders([])
+      setCompletedOrders([])
+      setOccupiedSlots(0)
+      setEscrowCustody(0.0)
+      return
+    }
+
+    const activeList = requests.filter((r) =>
+      ['pending', 'waitlist', 'accepted', 'in_progress', 'review'].includes(r.status)
+    )
+    setOccupiedSlots(activeList.length)
+
+    const inEscrowTotal = requests
+      .filter((r) => r.escrowStatus === 'held_in_escrow' || r.status === 'in_progress' || r.status === 'review')
+      .reduce((sum, r) => sum + Number(r.price || r.budget || 0), 0)
+    setEscrowCustody(inEscrowTotal)
+
+    const mapped = requests
+      .filter((r) => r.status !== 'completed' && r.status !== 'cancelled' && r.status !== 'rejected')
+      .map((r) => {
+        let col = 'col1'
+        if (r.status === 'in_progress') col = 'col2'
+        if (r.status === 'review') col = 'col3'
+
+        return {
+          id: r.id,
+          col,
+          clientHandle: r.clientUsername ? `@${r.clientUsername}` : (r.clientName || 'Cliente'),
+          clientName: r.clientName || 'Cliente ArtLink',
+          clientInitials: (r.clientName || 'CL').slice(0, 2).toUpperCase(),
+          price: r.price || r.budget || 0,
+          title: r.commissionTitle || r.title || 'Comisión personalizada',
+          deadline: r.desiredDate ? `Para ${r.desiredDate}` : 'Plazo estándar',
+          attachmentsText: r.references?.length ? `${r.references.length} referencias` : 'Sin adjuntos',
+          briefDetails: {
+            specs: r.description || 'Detalles del encargo acordados.',
+            description: r.description || '',
+            clientNotes: r.notes || '',
+          },
+          timeRemaining: 'En curso',
+        }
+      })
+    setKanbanOrders(mapped)
+
+    const completed = requests
+      .filter((r) => r.status === 'completed')
+      .map((r) => ({
+        id: r.id,
+        clientHandle: r.clientUsername ? `@${r.clientUsername}` : (r.clientName || 'Cliente'),
+        amount: r.price || r.budget || 0,
+        label: 'Fondos liberados',
+      }))
+    setCompletedOrders(completed)
+  }, [requests])
 
   // View Mode: 'kanban' or 'list'
   const [viewMode, setViewMode] = useState('kanban')
@@ -636,11 +621,11 @@ export default function ArtistPanelPage() {
                 {/* Hero Information */}
                 <div className="art-dash-hero-info">
                   <div className="art-dash-hero-title-row">
-                    <h1 className="art-dash-hero-title">¡Hola de nuevo, {artistName}! 🎨✨</h1>
+                    <h1 className="art-dash-hero-title">¡Hola de nuevo, {artistName}!</h1>
                     <span className="art-dash-handle-pill">@{artistHandle}</span>
                   </div>
                   <p className="art-dash-hero-subtitle">
-                    Panel de Creadora • Gestiona tus encargos, entregas de bocetos e ingresos asegurados en Escrow Shield.
+                    Panel de Creador • Gestiona tus encargos, entregas de bocetos e ingresos asegurados en Escrow Shield.
                   </p>
 
                   <div className="art-dash-hero-chips">
@@ -698,7 +683,7 @@ export default function ArtistPanelPage() {
                 <button
                   type="button"
                   className="art-dash-btn-lavender"
-                  onClick={() => navigate(`/artista/${profile?.id || 'artist-demo-108'}`)}
+                  onClick={() => navigate(`/artista/${profile?.id || 'artist-001'}`)}
                 >
                   <Eye size={16} /> Ver Mi Portafolio
                 </button>
@@ -722,14 +707,14 @@ export default function ArtistPanelPage() {
               </div>
               <div className="art-dash-kpi-footer">
                 <span className="art-dash-dot-indicator" />
-                <span>3 proyectos esperando hitos</span>
+                <span>{escrowCustody > 0 ? `${kanbanOrders.length} proyectos con fondos en custodia` : 'Sin proyectos en custodia activa'}</span>
               </div>
             </div>
 
             {/* Card 2: Disponible Retiro */}
             <div className="art-dash-kpi-card art-dash-kpi-card-cyan-accent">
               <div className="art-dash-kpi-top">
-                <span className="art-dash-kpi-label">BALANCE DE CREADORA</span>
+                <span className="art-dash-kpi-label">BALANCE DE CREADOR</span>
                 <div className="art-dash-kpi-icon-bubble cyan">
                   <Wallet size={17} />
                 </div>
@@ -751,15 +736,15 @@ export default function ArtistPanelPage() {
             <div className="art-dash-kpi-card">
               <div className="art-dash-kpi-top">
                 <span className="art-dash-kpi-label">REPUTACIÓN ARTLINK</span>
-                <span className="art-dash-kpi-badge-pill">TOP CREATOR ✦</span>
+                <span className="art-dash-kpi-badge-pill">PERFIL VERIFICADO</span>
               </div>
               <div>
                 <h3 className="art-dash-kpi-title">Calidad & Tiempo</h3>
-                <p className="art-dash-kpi-val purple">5.0 ★ <span style={{ fontSize: '0.95rem', fontWeight: 600, color: '#6D657B' }}>(148 reseñas)</span></p>
+                <p className="art-dash-kpi-val purple">0.0 ★ <span style={{ fontSize: '0.95rem', fontWeight: 600, color: '#6D657B' }}>(0 reseñas)</span></p>
               </div>
               <div className="art-dash-kpi-footer">
                 <span className="art-dash-kpi-tag-pill">
-                  <CheckCircle2 size={13} color="#7C3AED" /> 100% de entregas a tiempo
+                  <CheckCircle2 size={13} color="#7C3AED" /> Sin entregas calificadas aún
                 </span>
               </div>
             </div>
@@ -774,11 +759,11 @@ export default function ArtistPanelPage() {
               </div>
               <div>
                 <h3 className="art-dash-kpi-title">Tasa de Aceptación</h3>
-                <p className="art-dash-kpi-val dark">96% <span style={{ fontSize: '0.95rem', fontWeight: 600, color: '#6D657B' }}>briefs acordados</span></p>
+                <p className="art-dash-kpi-val dark">— <span style={{ fontSize: '0.95rem', fontWeight: 600, color: '#6D657B' }}>sin encargos</span></p>
               </div>
               <div className="art-dash-kpi-footer">
                 <Zap size={14} color="#EA580C" />
-                <span>Respuesta media: 1.8 hrs</span>
+                <span>Sin solicitudes previas</span>
               </div>
             </div>
           </div>
@@ -1039,20 +1024,26 @@ export default function ArtistPanelPage() {
                       </div>
 
                       <div className="art-dash-completed-card">
-                        <div className="art-dash-completed-list">
-                          {completedOrders.map((item) => (
-                            <div className="art-dash-completed-item" key={item.id}>
-                              <div className="art-dash-completed-left">
-                                <CheckCircle2 size={16} className="art-dash-check-icon" />
-                                <span>{item.clientHandle}</span>
+                        {completedOrders.length === 0 ? (
+                          <div style={{ textAlign: 'center', padding: '1.8rem 0.5rem', color: '#6D657B', fontSize: '0.8rem', fontStyle: 'italic' }}>
+                            Sin entregas finalizadas todavía
+                          </div>
+                        ) : (
+                          <div className="art-dash-completed-list">
+                            {completedOrders.map((item) => (
+                              <div className="art-dash-completed-item" key={item.id}>
+                                <div className="art-dash-completed-left">
+                                  <CheckCircle2 size={16} className="art-dash-check-icon" />
+                                  <span>{item.clientHandle}</span>
+                                </div>
+                                <div className="art-dash-completed-right">
+                                  <span className="art-dash-completed-amount">+${item.amount}</span>
+                                  <span className="art-dash-completed-sub">{item.label}</span>
+                                </div>
                               </div>
-                              <div className="art-dash-completed-right">
-                                <span className="art-dash-completed-amount">+${item.amount}</span>
-                                <span className="art-dash-completed-sub">{item.label}</span>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
+                            ))}
+                          </div>
+                        )}
 
                         <button
                           type="button"
@@ -1120,26 +1111,32 @@ export default function ArtistPanelPage() {
                   <h3 id="activity-heading" className="art-dash-activity-title">
                     <Zap size={18} color="#7C3AED" /> Registro de Actividad Reciente
                   </h3>
-                  <span className="art-dash-activity-sync-time">Actualizado hace 4 min</span>
+                  <span className="art-dash-activity-sync-time">Actualizado recientemente</span>
                 </div>
 
                 <div className="art-dash-activity-list">
-                  {activityList.map((act) => (
-                    <div className="art-dash-activity-row" key={act.id}>
-                      <div className="art-dash-activity-left">
-                        <div className={`art-dash-activity-icon ${act.iconType}`}>
-                          {act.iconType === 'pink' && <ShieldCheck size={18} />}
-                          {act.iconType === 'purple' && <Lock size={18} />}
-                          {act.iconType === 'mint' && <Star size={18} />}
-                        </div>
-                        <div className="art-dash-activity-desc">
-                          <span className="art-dash-activity-main-text">{act.title}</span>
-                          <span className="art-dash-activity-sub-text">{act.sub}</span>
-                        </div>
-                      </div>
-                      <span className="art-dash-activity-time">{act.time}</span>
+                  {activityList.length === 0 ? (
+                    <div style={{ textAlign: 'center', padding: '2rem 1rem', color: '#6D657B', fontSize: '0.85rem' }}>
+                      No hay actividad reciente registrada en tu taller.
                     </div>
-                  ))}
+                  ) : (
+                    activityList.map((act) => (
+                      <div className="art-dash-activity-row" key={act.id}>
+                        <div className="art-dash-activity-left">
+                          <div className={`art-dash-activity-icon ${act.iconType}`}>
+                            {act.iconType === 'pink' && <ShieldCheck size={18} />}
+                            {act.iconType === 'purple' && <Lock size={18} />}
+                            {act.iconType === 'mint' && <Star size={18} />}
+                          </div>
+                          <div className="art-dash-activity-desc">
+                            <span className="art-dash-activity-main-text">{act.title}</span>
+                            <span className="art-dash-activity-sub-text">{act.sub}</span>
+                          </div>
+                        </div>
+                        <span className="art-dash-activity-time">{act.time}</span>
+                      </div>
+                    ))
+                  )}
                 </div>
               </section>
             </div>
@@ -1152,69 +1149,34 @@ export default function ArtistPanelPage() {
                   <h4 className="art-dash-upcoming-title">
                     <Calendar size={18} color="#7C3AED" /> Próximas Entregas
                   </h4>
-                  <span className="art-dash-upcoming-pill">7 DÍAS</span>
+                  <span className="art-dash-upcoming-pill">PROGRAMACIÓN</span>
                 </div>
 
                 <div className="art-dash-upcoming-list">
-                  {/* Item 1 */}
-                  <div
-                    className="art-dash-upcoming-item"
-                    onClick={() => openWipUpload(kanbanOrders.find((o) => o.id === 'order-102'))}
-                    title="Click para subir versión de AlexR"
-                  >
-                    <div className="art-dash-date-badge cyan">
-                      <span className="art-dash-date-day">VIE</span>
-                      <span className="art-dash-date-num">17</span>
+                  {kanbanOrders.length === 0 ? (
+                    <div style={{ textAlign: 'center', padding: '1.5rem 0.5rem', color: '#6D657B', fontSize: '0.82rem' }}>
+                      No hay entregas pendientes programadas.
                     </div>
-                    <div className="art-dash-upcoming-info">
-                      <span className="art-dash-upcoming-name">Entrega de Ajustes AlexR</span>
-                      <span className="art-dash-upcoming-sub">Boceto v1.3 ajustando paleta de color</span>
-                      <span className="art-dash-upcoming-tag green">¡Faltan 41 horas!</span>
-                    </div>
-                  </div>
-
-                  {/* Item 2 */}
-                  <div
-                    className="art-dash-upcoming-item"
-                    onClick={() => {
-                      const o = kanbanOrders.find((x) => x.id === 'order-103')
-                      if (o) {
-                        setTargetRenderOrder(o)
-                        setShowFinalRenderModal(true)
-                      }
-                    }}
-                    title="Click para ver render D&D"
-                  >
-                    <div className="art-dash-date-badge orange">
-                      <span className="art-dash-date-day">DOM</span>
-                      <span className="art-dash-date-num">19</span>
-                    </div>
-                    <div className="art-dash-upcoming-info">
-                      <span className="art-dash-upcoming-name">Render Busto D&D</span>
-                      <span className="art-dash-upcoming-sub">Entrega de PSD layered a @GaelMorales</span>
-                      <span className="art-dash-upcoming-tag coral">En curso (85%)</span>
-                    </div>
-                  </div>
-
-                  {/* Item 3 */}
-                  <div
-                    className="art-dash-upcoming-item"
-                    onClick={() => {
-                      const o = kanbanOrders.find((x) => x.id === 'order-101')
-                      if (o) setSelectedBriefOrder(o)
-                    }}
-                    title="Click para ver brief VTuber"
-                  >
-                    <div className="art-dash-date-badge purple">
-                      <span className="art-dash-date-day">MAR</span>
-                      <span className="art-dash-date-num">28</span>
-                    </div>
-                    <div className="art-dash-upcoming-info">
-                      <span className="art-dash-upcoming-name">VTuber Rig Assets</span>
-                      <span className="art-dash-upcoming-sub">Corte de capas listo para animación Live2D</span>
-                      <span className="art-dash-upcoming-tag purple">14 días disponibles</span>
-                    </div>
-                  </div>
+                  ) : (
+                    kanbanOrders.slice(0, 3).map((order) => (
+                      <div
+                        key={order.id}
+                        className="art-dash-upcoming-item"
+                        onClick={() => openWipUpload(order)}
+                        title={`Click para gestionar ${order.clientHandle}`}
+                      >
+                        <div className="art-dash-date-badge cyan">
+                          <span className="art-dash-date-day">ENC</span>
+                          <span className="art-dash-date-num">#</span>
+                        </div>
+                        <div className="art-dash-upcoming-info">
+                          <span className="art-dash-upcoming-name">{order.title}</span>
+                          <span className="art-dash-upcoming-sub">{order.clientHandle}</span>
+                          <span className="art-dash-upcoming-tag green">{order.deadline}</span>
+                        </div>
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
 
@@ -1719,47 +1681,53 @@ export default function ArtistPanelPage() {
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.85rem' }}>
-              {completedOrders.map((ord, idx) => (
-                <div
-                  key={ord.id}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    padding: '0.75rem',
-                    background: '#FFFDF8',
-                    border: '1.5px solid #1E192B',
-                    borderRadius: '0.65rem',
-                  }}
-                >
-                  <div>
-                    <strong>Encargo #{1080 - idx} — {ord.clientHandle}</strong>
-                    <div style={{ color: '#6D657B', fontSize: '0.74rem' }}>
-                      Custodia Escrow Shield liberada con éxito
+              {completedOrders.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '2rem 1rem', color: '#6D657B' }}>
+                  No existen comprobantes ni liquidaciones de facturación aún.
+                </div>
+              ) : (
+                completedOrders.map((ord, idx) => (
+                  <div
+                    key={ord.id}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      padding: '0.75rem',
+                      background: '#FFFDF8',
+                      border: '1.5px solid #1E192B',
+                      borderRadius: '0.65rem',
+                    }}
+                  >
+                    <div>
+                      <strong>Encargo #{1080 - idx} — {ord.clientHandle}</strong>
+                      <div style={{ color: '#6D657B', fontSize: '0.74rem' }}>
+                        Custodia Escrow Shield liberada con éxito
+                      </div>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      <span style={{ fontFamily: 'var(--heading)', fontWeight: 800, color: '#059669' }}>
+                        +${ord.amount}.00 USD
+                      </span>
+                      <button
+                        type="button"
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          color: '#7C3AED',
+                          fontSize: '0.72rem',
+                          fontWeight: 700,
+                          cursor: 'pointer',
+                          display: 'block',
+                        }}
+                        onClick={() => showToast('Descargando comprobante fiscal en PDF...')}
+                      >
+                        Descargar Recibo
+                      </button>
                     </div>
                   </div>
-                  <div style={{ textAlign: 'right' }}>
-                    <span style={{ fontFamily: 'var(--heading)', fontWeight: 800, color: '#059669' }}>
-                      +${ord.amount}.00 USD
-                    </span>
-                    <button
-                      type="button"
-                      style={{
-                        background: 'none',
-                        border: 'none',
-                        color: '#7C3AED',
-                        fontSize: '0.72rem',
-                        fontWeight: 700,
-                        cursor: 'pointer',
-                        display: 'block',
-                      }}
-                      onClick={() => showToast('📥 Descargando comprobante fiscal en PDF...')}
-                    >
-                      Descargar Recibo
-                    </button>
-                  </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
 
             <div className="art-dash-modal-actions">

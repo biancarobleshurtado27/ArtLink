@@ -19,14 +19,10 @@ export async function getNotificationsByUser(userId) {
 
   try {
     const list = (await apiClient.get('/notifications', { params: { userId } })).data
-    if (Array.isArray(list) && list.length > 0) {
+    if (Array.isArray(list)) {
       saveLocal(cacheKey, list)
       return list
     }
-    if (Array.isArray(cached) && cached.length > 0) {
-      return cached
-    }
-    saveLocal(cacheKey, [])
     return []
   } catch (error) {
     return Array.isArray(cached) ? cached : []
