@@ -1388,12 +1388,355 @@
   "reviews": [],
   "follows": [],
   "likes": [],
-  "messages": [],
-  "conversations": [],
-  "favorites": [],
+  "messages": [
+    {
+      "id": "Haa9FqKGLxM",
+      "conversationId": "WRyzUT4yayc",
+      "senderId": "client-1",
+      "receiverId": "artist-demo-101",
+      "content": "holaaaa",
+      "createdAt": "2026-10-02T20:56:40.904Z",
+      "readAt": null,
+      "isDemoData": false,
+      "text": "holaaaa",
+      "read": false
+    },
+    {
+      "id": "HpCrXjSnkRI",
+      "conversationId": "5TOZHbMkdCo",
+      "senderId": "client-1",
+      "receiverId": "artist-demo-103",
+      "content": "holaaa como estas",
+      "createdAt": "2026-10-02T20:57:06.118Z",
+      "readAt": null,
+      "isDemoData": false,
+      "text": "holaaa como estas",
+      "read": false
+    }
+  ],
+  "conversations": [
+    {
+      "id": "WRyzUT4yayc",
+      "participantIds": [
+        "client-1",
+        "artist-demo-101"
+      ],
+      "createdAt": "2026-10-02T20:56:40.871Z",
+      "updatedAt": "2026-10-02T20:56:40.904Z",
+      "lastMessageId": "Haa9FqKGLxM",
+      "relatedArtistProfileId": "artist-demo-101",
+      "relatedRequestId": null,
+      "isDemoData": false
+    },
+    {
+      "id": "5TOZHbMkdCo",
+      "participantIds": [
+        "client-1",
+        "artist-demo-103"
+      ],
+      "createdAt": "2026-10-02T20:57:05.960Z",
+      "updatedAt": "2026-10-02T20:57:06.118Z",
+      "lastMessageId": "HpCrXjSnkRI",
+      "relatedArtistProfileId": "artist-demo-103",
+      "relatedRequestId": null,
+      "isDemoData": false
+    },
+    {
+      "id": "krh81OZQxXM",
+      "userId": "user-test-1790975167203-oodj",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-02T21:06:07.751Z",
+      "updatedAt": "2026-10-02T21:06:07.751Z",
+      "page": "/explorar"
+    },
+    {
+      "id": "K-GajUzlQ0s",
+      "userId": "user-client-A-1790975167824-xosa",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-02T21:06:08.022Z",
+      "updatedAt": "2026-10-02T21:06:08.022Z",
+      "page": "/"
+    },
+    {
+      "id": "J-1MDOSALv4",
+      "userId": "user-artist-B-1790975167824-txj0",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-02T21:06:08.261Z",
+      "updatedAt": "2026-10-02T21:06:08.261Z",
+      "page": "/"
+    }
+  ],
+  "favorites": [
+    {
+      "id": "QtyWhAQ2pDo",
+      "userId": "user-fav-01",
+      "artistId": "artist-101",
+      "createdAt": "2026-10-02T21:06:08.336Z"
+    },
+    {
+      "id": "0YoUUj7M_C0",
+      "userId": "user-fav-01",
+      "artistId": "artist-102",
+      "createdAt": "2026-10-02T21:06:08.769Z"
+    }
+  ],
   "portfolio": [],
   "notifications": [],
   "proposals": [],
-  "chatMessages": [],
+  "chatMessages": [
+    {
+      "id": "xG3ZnSSN7eI",
+      "conversationId": "convo-1790970939709-qiu62",
+      "userId": "client-1",
+      "role": "user",
+      "content": "Explorar artistas",
+      "createdAt": "2026-10-02T20:55:06.812Z",
+      "provider": "gemini",
+      "status": "sending",
+      "intent": null
+    },
+    {
+      "id": "TzgInVWCmWg",
+      "conversationId": "convo-1790970939709-qiu62",
+      "userId": "client-1",
+      "role": "user",
+      "content": "Explorar artistas",
+      "createdAt": "2026-10-02T20:55:06.812Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "mbGGtIPqv6U",
+      "conversationId": "convo-1790970939709-qiu62",
+      "userId": "client-1",
+      "role": "user",
+      "content": "Explorar artistas",
+      "createdAt": "2026-10-02T20:55:06.812Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "_MAvyhcybvU",
+      "conversationId": "convo-1790970939709-qiu62",
+      "userId": "client-1",
+      "role": "assistant",
+      "content": "El tiempo de espera para la respuesta del agente se ha agotado. Intenta nuevamente.",
+      "createdAt": "2026-10-02T20:55:37.751Z",
+      "provider": "local-fallback",
+      "status": "error",
+      "intent": null
+    },
+    {
+      "id": "zww6EWUDxv4",
+      "conversationId": "convo-1790970939709-qiu62",
+      "userId": "client-1",
+      "role": "user",
+      "content": "Explorar artistas",
+      "createdAt": "2026-10-02T20:55:06.812Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "RuLuSOnl82k",
+      "conversationId": "convo-1790970939709-qiu62",
+      "userId": "client-1",
+      "role": "assistant",
+      "content": "El tiempo de espera para la respuesta del agente se ha agotado. Intenta nuevamente.",
+      "createdAt": "2026-10-02T20:55:37.751Z",
+      "provider": "local-fallback",
+      "status": "error",
+      "intent": null
+    },
+    {
+      "id": "tvbWcq_3Axs",
+      "conversationId": "convo-1790970939709-qiu62",
+      "userId": "client-1",
+      "role": "user",
+      "content": "Explorar artistas",
+      "createdAt": "2026-10-02T20:55:57.374Z",
+      "provider": "gemini",
+      "status": "sending",
+      "intent": null
+    },
+    {
+      "id": "xwQ3HxZjC7U",
+      "conversationId": "convo-1790970939709-qiu62",
+      "userId": "client-1",
+      "role": "user",
+      "content": "Explorar artistas",
+      "createdAt": "2026-10-02T20:55:57.374Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "nJU06uTzwRk",
+      "conversationId": "convo-1790970939709-qiu62",
+      "userId": "client-1",
+      "role": "user",
+      "content": "Explorar artistas",
+      "createdAt": "2026-10-02T20:55:57.374Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "ewKsFyv1iZ4",
+      "conversationId": "convo-1790970939709-qiu62",
+      "userId": "client-1",
+      "role": "assistant",
+      "content": "¡Hola! Es un gusto saludarte. Como agente oficial de ArtLink, estoy aquí para ayudarte a encontrar al artista ideal para tu proyecto.\n\nActualmente, puedes explorar nuestra comunidad filtrando por diversas disciplinas, estilos, rangos de precio o disponibilidad. Tenemos una amplia variedad de profesionales en áreas como:\n\n*   **Arte digital e Ilustración:** Dibujo digital, ilustración vectorial, concept art y diseño de personajes.\n*   **3D y Animación:** Modelado 3D, motion graphics y arte para videojuegos.\n*   **Especialidades:** Modelos VTuber (incluyendo Live2D), pixel art y manga/cómic.\n\nPara comenzar, ¿te gustaría que apliquemos algún filtro específico o prefieres ver las categorías principales?",
+      "createdAt": "2026-10-02T20:56:02.708Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": "search_artists"
+    },
+    {
+      "id": "BKv7OVf5rxI",
+      "conversationId": "convo-1790970939709-qiu62",
+      "userId": "client-1",
+      "role": "user",
+      "content": "Explorar artistas",
+      "createdAt": "2026-10-02T20:55:57.374Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "UjbocbwSvBs",
+      "conversationId": "convo-1790970939709-qiu62",
+      "userId": "client-1",
+      "role": "assistant",
+      "content": "¡Hola! Es un gusto saludarte. Como agente oficial de ArtLink, estoy aquí para ayudarte a encontrar al artista ideal para tu proyecto.\n\nActualmente, puedes explorar nuestra comunidad filtrando por diversas disciplinas, estilos, rangos de precio o disponibilidad. Tenemos una amplia variedad de profesionales en áreas como:\n\n*   **Arte digital e Ilustración:** Dibujo digital, ilustración vectorial, concept art y diseño de personajes.\n*   **3D y Animación:** Modelado 3D, motion graphics y arte para videojuegos.\n*   **Especialidades:** Modelos VTuber (incluyendo Live2D), pixel art y manga/cómic.\n\nPara comenzar, ¿te gustaría que apliquemos algún filtro específico o prefieres ver las categorías principales?",
+      "createdAt": "2026-10-02T20:56:02.708Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": "search_artists"
+    },
+    {
+      "id": "nMctJx-KKZc",
+      "conversationId": "convo-1790970939709-qiu62",
+      "userId": "client-1",
+      "role": "user",
+      "content": "quien fue van gohd",
+      "createdAt": "2026-10-02T20:56:17.524Z",
+      "provider": "gemini",
+      "status": "sending",
+      "intent": null
+    },
+    {
+      "id": "uI2BJsdDAKc",
+      "conversationId": "convo-1790970939709-qiu62",
+      "userId": "client-1",
+      "role": "user",
+      "content": "quien fue van gohd",
+      "createdAt": "2026-10-02T20:56:17.524Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "h2ahdei639c",
+      "conversationId": "convo-1790970939709-qiu62",
+      "userId": "client-1",
+      "role": "user",
+      "content": "quien fue van gohd",
+      "createdAt": "2026-10-02T20:56:17.524Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "EzEB3XZpx1Y",
+      "conversationId": "convo-1790970939709-qiu62",
+      "userId": "client-1",
+      "role": "assistant",
+      "content": "Vincent van Gogh (1853–1890) fue un pintor neerlandés, considerado una de las figuras más influyentes de la historia del arte occidental. Es el máximo exponente del **Postimpresionismo**.\n\nAquí te comparto algunos puntos clave sobre su vida y obra:\n\n*   **Estilo:** Se caracterizó por el uso de colores vibrantes, pinceladas enérgicas y texturizadas (impasto) y una carga emocional profunda. Su técnica buscaba expresar sentimientos más que representar la realidad de forma objetiva.\n*   **Etapas:** Aunque su carrera artística fue breve (apenas una década), produjo más de 2,000 obras, incluyendo cerca de 900 pinturas. Sus periodos incluyen desde sus inicios con tonos oscuros y terrosos hasta su etapa en Francia, donde su paleta se volvió brillante y llena de luz.\n*   **Obras icónicas:** Entre sus trabajos más reconocidos se encuentran *La noche estrellada*, *Los girasoles*, *Terraza de café por la noche* y numerosos autorretratos.\n*   **Legado:** A pesar de que tuvo poco reconocimiento comercial en vida, su influencia en el Expresionismo y en el arte moderno posterior es incalculable.\n\nEs importante recordar que Van Gogh es un artista histórico y no forma parte de la comunidad de artistas activos en ArtLink. Si buscas artistas contemporáneos que trabajen con técnicas pictóricas similares o estilos expresivos, puedo ayudarte a explorar nuestra plataforma.",
+      "createdAt": "2026-10-02T20:56:21.015Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": "famous_artist_info"
+    },
+    {
+      "id": "HGUkuIHWKlI",
+      "conversationId": "convo-1790970939709-qiu62",
+      "userId": "client-1",
+      "role": "user",
+      "content": "quien fue van gohd",
+      "createdAt": "2026-10-02T20:56:17.524Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "oFXmYFkW7Kc",
+      "conversationId": "convo-1790970939709-qiu62",
+      "userId": "client-1",
+      "role": "assistant",
+      "content": "Vincent van Gogh (1853–1890) fue un pintor neerlandés, considerado una de las figuras más influyentes de la historia del arte occidental. Es el máximo exponente del **Postimpresionismo**.\n\nAquí te comparto algunos puntos clave sobre su vida y obra:\n\n*   **Estilo:** Se caracterizó por el uso de colores vibrantes, pinceladas enérgicas y texturizadas (impasto) y una carga emocional profunda. Su técnica buscaba expresar sentimientos más que representar la realidad de forma objetiva.\n*   **Etapas:** Aunque su carrera artística fue breve (apenas una década), produjo más de 2,000 obras, incluyendo cerca de 900 pinturas. Sus periodos incluyen desde sus inicios con tonos oscuros y terrosos hasta su etapa en Francia, donde su paleta se volvió brillante y llena de luz.\n*   **Obras icónicas:** Entre sus trabajos más reconocidos se encuentran *La noche estrellada*, *Los girasoles*, *Terraza de café por la noche* y numerosos autorretratos.\n*   **Legado:** A pesar de que tuvo poco reconocimiento comercial en vida, su influencia en el Expresionismo y en el arte moderno posterior es incalculable.\n\nEs importante recordar que Van Gogh es un artista histórico y no forma parte de la comunidad de artistas activos en ArtLink. Si buscas artistas contemporáneos que trabajen con técnicas pictóricas similares o estilos expresivos, puedo ayudarte a explorar nuestra plataforma.",
+      "createdAt": "2026-10-02T20:56:21.015Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": "famous_artist_info"
+    },
+    {
+      "id": "Cfi7qjdCUV4",
+      "conversationId": "convo-1790975167751-7f9ip",
+      "userId": "user-test-1790975167203-oodj",
+      "role": "user",
+      "content": "Hola asistente de ArtLink",
+      "createdAt": "2026-10-02T21:06:07.763Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "yzhkbwQukAk",
+      "conversationId": "convo-1790975167751-7f9ip",
+      "userId": "user-test-1790975167203-oodj",
+      "role": "assistant",
+      "content": "Hola, te ayudo a buscar ilustradores digitales.",
+      "createdAt": "2026-10-02T21:06:07.788Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "L47vrFa4b3Q",
+      "conversationId": "convo-1790975167751-7f9ip",
+      "userId": "user-test-1790975167203-oodj",
+      "role": "assistant",
+      "content": "Puedo recomendarte artistas de estilo anime.",
+      "createdAt": "2026-10-02T21:06:07.805Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "zpjlgH8wXho",
+      "conversationId": "convo-1790975168022-4gwf5",
+      "userId": "user-client-A-1790975167824-xosa",
+      "role": "user",
+      "content": "Mensaje de usuario A",
+      "createdAt": "2026-10-02T21:06:08.028Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "vye9PJCFPSw",
+      "conversationId": "convo-1790975168261-oq1mq",
+      "userId": "user-artist-B-1790975167824-txj0",
+      "role": "user",
+      "content": "Mensaje de usuario B",
+      "createdAt": "2026-10-02T21:06:08.265Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    }
+  ],
   "$schema": "./node_modules/json-server/schema.json"
 }

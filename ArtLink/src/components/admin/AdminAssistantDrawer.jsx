@@ -9,6 +9,8 @@ import {
   Compass,
   ExternalLink,
   Layers,
+  Maximize2,
+  Minimize2,
   RefreshCw,
   RotateCcw,
   Send,
@@ -20,6 +22,12 @@ import {
 } from 'lucide-react'
 import useAuth from '../../hooks/useAuth'
 import { isAdminUser, sendAdminAiQuery } from '../../services/adminAiService'
+
+const DEFAULT_WIDTH = 460
+const MIN_WIDTH = 340
+const MAX_WIDTH = 1100
+const EXPANDED_WIDTH = 840
+
 
 const INITIAL_WELCOME_MESSAGE = {
   id: 'admin-ai-welcome',
@@ -56,6 +64,107 @@ export default function AdminAssistantDrawer({ open, onClose }) {
   const threadEndRef = useRef(null)
   const inputRef = useRef(null)
   const abortControllerRef = useRef(null)
+
+  // Estado de ancho personalizable para agrandar o achicar la ventana
+  const [drawerWidth, setDrawerWidth] = useState(() => {
+    try {
+      const saved = localStorage.getItem('artlink_admin_ai_width')
+      const parsed = saved ? parseInt(saved, 10) : null
+      if (parsed && !isNaN(parsed) && parsed >= MIN_WIDTH && parsed <= MAX_WIDTH) {
+        return parsed
+      }
+    } catch {
+      // Ignorar fallos de localStorage en entornos restringidos
+    }
+    return DEFAULT_WIDTH
+  })
+  const [isResizing, setIsResizing] = useState(false)
+  const resizeRef = useRef({ startX: 0, startWidth: DEFAULT_WIDTH })
+
+  // Guardar preferencia de ancho
+  useEffect(() => {
+    try {
+      localStorage.setItem('artlink_admin_ai_width', String(drawerWidth))
+    } catch {
+      // Ignorar
+    }
+  }, [drawerWidth])
+
+  const isEnlarged = drawerWidth >= 700
+
+  // Alternar entre tamaño estándar y tamaño ampliado
+  function handleToggleSize() {
+    if (isEnlarged) {
+      setDrawerWidth(DEFAULT_WIDTH)
+    } else {
+      const targetWidth = Math.min(EXPANDED_WIDTH, typeof window !== 'undefined' ? window.innerWidth - 40 : EXPANDED_WIDTH)
+      setDrawerWidth(targetWidth)
+    }
+  }
+
+  // Redimensionamiento mediante cursor (arrastrar borde izquierdo)
+  function handleMouseDownResize(e) {
+    e.preventDefault()
+    resizeRef.current = {
+      startX: e.clientX,
+      startWidth: drawerWidth,
+    }
+    setIsResizing(true)
+    if (typeof document !== 'undefined') {
+      document.body.style.cursor = 'ew-resize'
+      document.body.style.userSelect = 'none'
+    }
+
+    const handleMouseMove = (moveEvent) => {
+      // Al estar anclado a la derecha, mover a la izquierda aumenta el ancho
+      const deltaX = resizeRef.current.startX - moveEvent.clientX
+      const calculatedWidth = resizeRef.current.startWidth + deltaX
+      const maxAllowed = Math.min(MAX_WIDTH, typeof window !== 'undefined' ? window.innerWidth - 30 : MAX_WIDTH)
+      const clamped = Math.max(MIN_WIDTH, Math.min(maxAllowed, calculatedWidth))
+      setDrawerWidth(clamped)
+    }
+
+    const handleMouseUp = () => {
+      setIsResizing(false)
+      if (typeof document !== 'undefined') {
+        document.body.style.cursor = ''
+        document.body.style.userSelect = ''
+      }
+      window.removeEventListener('mousemove', handleMouseMove)
+      window.removeEventListener('mouseup', handleMouseUp)
+    }
+
+    window.addEventListener('mousemove', handleMouseMove)
+    window.addEventListener('mouseup', handleMouseUp)
+  }
+
+  // Soporte táctil para redimensionar en tablets
+  function handleTouchStartResize(e) {
+    if (!e.touches || e.touches.length === 0) return
+    resizeRef.current = {
+      startX: e.touches[0].clientX,
+      startWidth: drawerWidth,
+    }
+    setIsResizing(true)
+
+    const handleTouchMove = (moveEvent) => {
+      if (!moveEvent.touches || moveEvent.touches.length === 0) return
+      const deltaX = resizeRef.current.startX - moveEvent.touches[0].clientX
+      const calculatedWidth = resizeRef.current.startWidth + deltaX
+      const maxAllowed = Math.min(MAX_WIDTH, typeof window !== 'undefined' ? window.innerWidth - 20 : MAX_WIDTH)
+      const clamped = Math.max(MIN_WIDTH, Math.min(maxAllowed, calculatedWidth))
+      setDrawerWidth(clamped)
+    }
+
+    const handleTouchEnd = () => {
+      setIsResizing(false)
+      window.removeEventListener('touchmove', handleTouchMove)
+      window.removeEventListener('touchend', handleTouchEnd)
+    }
+
+    window.addEventListener('touchmove', handleTouchMove)
+    window.addEventListener('touchend', handleTouchEnd)
+  }
 
   // Acceso exclusivo por rol: solo admin / administrator
   const hasAccess = isAdminUser(user)
@@ -175,11 +284,25 @@ export default function AdminAssistantDrawer({ open, onClose }) {
       />
 
       <aside
-        className="admin-ai-drawer"
+        className={`admin-ai-drawer ${isResizing ? 'is-resizing' : ''} ${isEnlarged ? 'is-enlarged' : ''}`}
+        style={{ width: `${drawerWidth}px` }}
         role="dialog"
         aria-modal="true"
         aria-label="Asistente de IA Administrativa"
       >
+        {/* Tirador para arrastrar y agrandar/achicar */}
+        <div
+          className="admin-ai-resize-handle"
+          onMouseDown={handleMouseDownResize}
+          onTouchStart={handleTouchStartResize}
+          title="Arrastra hacia la izquierda o derecha para cambiar el tamaño"
+          aria-label="Arrastrar para redimensionar"
+          role="separator"
+          aria-orientation="vertical"
+        >
+          <div className="admin-ai-resize-grip" />
+        </div>
+
         {/* Cabecera del Drawer */}
         <header className="admin-ai-header">
           <div className="admin-ai-title-wrap">
@@ -196,6 +319,19 @@ export default function AdminAssistantDrawer({ open, onClose }) {
           </div>
 
           <div className="admin-ai-header-btns">
+            <button
+              type="button"
+              className="admin-ai-btn-icon"
+              onClick={handleToggleSize}
+              title={isEnlarged ? 'Achicar ventana (modo normal)' : 'Agrandar ventana (modo amplio)'}
+              aria-label={isEnlarged ? 'Achicar ventana' : 'Agrandar ventana'}
+            >
+              {isEnlarged ? (
+                <Minimize2 size={15} aria-hidden="true" />
+              ) : (
+                <Maximize2 size={15} aria-hidden="true" />
+              )}
+            </button>
             <button
               type="button"
               className="admin-ai-btn-icon"

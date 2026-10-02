@@ -145,4 +145,35 @@ describe('Componente AdminAssistantDrawer', () => {
       expect(screen.getAllByText(/Estado General de la Plataforma ArtLink/i).length).toBeGreaterThan(0)
     })
   })
+
+  it('permite agrandar y achicar la ventana mediante el botón de alternar tamaño y dispone del tirador de arrastre', () => {
+    render(
+      <MemoryRouter>
+        <AdminAssistantDrawer open={true} onClose={() => {}} />
+      </MemoryRouter>
+    )
+
+    const drawer = screen.getByRole('dialog', { name: /Asistente de IA Administrativa/i })
+    const resizeHandle = screen.getByLabelText(/Arrastrar para redimensionar/i)
+    expect(resizeHandle).toBeInTheDocument()
+
+    // Botón para agrandar ventana
+    const toggleBtn = screen.getByRole('button', { name: /Agrandar ventana/i })
+    expect(toggleBtn).toBeInTheDocument()
+    expect(drawer).toHaveStyle({ width: '460px' })
+
+    // Clic para agrandar a modo amplio
+    fireEvent.click(toggleBtn)
+    expect(drawer.className).toContain('is-enlarged')
+
+    // El botón cambia de etiqueta a achicar ventana
+    const shrinkBtn = screen.getByRole('button', { name: /Achicar ventana/i })
+    expect(shrinkBtn).toBeInTheDocument()
+
+    // Clic para achicar de vuelta a tamaño estándar
+    fireEvent.click(shrinkBtn)
+    expect(drawer.className).not.toContain('is-enlarged')
+    expect(drawer).toHaveStyle({ width: '460px' })
+  })
 })
+

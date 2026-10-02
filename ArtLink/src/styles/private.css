@@ -963,7 +963,8 @@
   top: 0;
   right: 0;
   bottom: 0;
-  width: 440px;
+  width: 460px;
+  min-width: 320px;
   max-width: 95vw;
   height: 100vh;
   background: #FFFDF8;
@@ -974,7 +975,48 @@
   flex-direction: column;
   animation: adminAiSlideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   box-sizing: border-box;
+  transition: width 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
+.admin-ai-drawer.is-resizing {
+  transition: none !important;
+  user-select: none;
+}
+
+/* Tirador interactivo de redimensionamiento */
+.admin-ai-resize-handle {
+  position: absolute;
+  top: 0;
+  left: -8px;
+  width: 16px;
+  height: 100%;
+  cursor: ew-resize;
+  z-index: 105;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  touch-action: none;
+}
+
+.admin-ai-resize-grip {
+  width: 4px;
+  height: 48px;
+  border-radius: 9999px;
+  background: #CBD5E1;
+  border: 1px solid #1E192B;
+  transition: background 0.15s ease, transform 0.15s ease, height 0.15s ease, box-shadow 0.15s ease;
+  pointer-events: none;
+}
+
+.admin-ai-resize-handle:hover .admin-ai-resize-grip,
+.admin-ai-drawer.is-resizing .admin-ai-resize-grip {
+  background: #7C3AED;
+  height: 64px;
+  transform: scaleX(1.4);
+  box-shadow: 0 0 8px rgba(124, 58, 237, 0.5);
+}
+
 
 @keyframes adminAiSlideIn {
   from {
@@ -1396,8 +1438,12 @@
 
 @media (max-width: 480px) {
   .admin-ai-drawer {
-    width: 100vw;
-    max-width: 100vw;
+    width: 100vw !important;
+    max-width: 100vw !important;
+  }
+
+  .admin-ai-resize-handle {
+    display: none;
   }
 
   .admin-ai-floating-btn {
