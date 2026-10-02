@@ -14,11 +14,14 @@ import {
   X,
   ShieldCheck,
   CheckCircle2,
-  ChevronRight
+  ChevronRight,
+  Bot
 } from 'lucide-react'
 import logoArtLink from '../assets/logo-artlink.png'
 import useAuth from '../hooks/useAuth'
 import { roleLabels } from '../utils/roles'
+import AdminAssistantDrawer from '../components/admin/AdminAssistantDrawer'
+import { isAdminUser } from '../services/adminAiService'
 
 /**
  * Layout exclusivo de Administración para ArtLink.
@@ -27,6 +30,7 @@ import { roleLabels } from '../utils/roles'
  */
 export default function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [aiDrawerOpen, setAiDrawerOpen] = useState(false)
   const { user, logout } = useAuth()
   const location = useLocation()
   const navigate = useNavigate()
@@ -144,6 +148,22 @@ export default function AdminLayout() {
                 <span>Reportes y Gráficas</span>
               </a>
             </li>
+            {isAdminUser(user) && (
+              <li>
+                <button
+                  type="button"
+                  className="admin-nav-item admin-nav-ai-btn"
+                  onClick={() => setAiDrawerOpen(true)}
+                  title="Asistente de IA para análisis y supervisión"
+                >
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+                    <Bot size={18} className="admin-nav-icon" aria-hidden="true" />
+                    <span>Asistente IA</span>
+                  </span>
+                  <span className="admin-nav-ai-pill">GEMINI</span>
+                </button>
+              </li>
+            )}
             <li>
               <NavLink
                 to="/ajustes"
@@ -232,6 +252,21 @@ export default function AdminLayout() {
               <span>Vista pública</span>
             </Link>
 
+            {/* Asistente IA exclusivo de Administrador */}
+            {isAdminUser(user) && (
+              <button
+                type="button"
+                className="admin-topbar-ai-btn"
+                onClick={() => setAiDrawerOpen(true)}
+                title="Abrir Asistente IA Administrativo"
+                aria-label="Abrir Asistente IA"
+              >
+                <Bot size={15} aria-hidden="true" />
+                <span>Asistente IA</span>
+                <span className="admin-topbar-ai-dot" />
+              </button>
+            )}
+
             {/* Perfil de administrador */}
             <div className="admin-topbar-user">
               <span className="admin-topbar-name">{user?.name || 'Administrador'}</span>
@@ -252,6 +287,28 @@ export default function AdminLayout() {
         <main className="admin-main-viewport">
           <Outlet />
         </main>
+
+        {/* Disparador Flotante Rápido para el Administrador */}
+        {isAdminUser(user) && !aiDrawerOpen && (
+          <button
+            type="button"
+            className="admin-ai-floating-btn"
+            onClick={() => setAiDrawerOpen(true)}
+            title="Asistente de IA ArtLink"
+            aria-label="Abrir Asistente IA"
+          >
+            <Bot size={20} aria-hidden="true" />
+            <span>Asistente IA</span>
+          </button>
+        )}
+
+        {/* Drawer Desplegable con Asistencia Exclusiva por Rol */}
+        {isAdminUser(user) && (
+          <AdminAssistantDrawer
+            open={aiDrawerOpen}
+            onClose={() => setAiDrawerOpen(false)}
+          />
+        )}
       </div>
     </div>
   )

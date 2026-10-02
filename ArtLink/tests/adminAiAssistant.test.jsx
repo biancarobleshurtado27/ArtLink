@@ -1,0 +1,148 @@
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
+import { describe, expect, it, vi } from 'vitest'
+import AdminAssistantDrawer from '../src/components/admin/AdminAssistantDrawer'
+import {
+  isAdminUser,
+  auditPlatformInconsistencies,
+  generateLocalAdminAnalysis,
+} from '../src/services/adminAiService'
+
+vi.mock('../src/hooks/useAuth', () => ({
+  default: () => ({
+    user: { id: 'admin-1', name: 'Administrador ArtLink', role: 'admin' },
+  }),
+}))
+
+vi.mock('../src/services/userService', () => ({
+  getUsers: vi.fn().mockResolvedValue([{ id: '1', role: 'cliente' }]),
+}))
+vi.mock('../src/services/artistService', () => ({
+  getArtists: vi.fn().mockResolvedValue([{ id: '1', availability: 'open' }]),
+}))
+vi.mock('../src/services/categoryService', () => ({
+  getCategories: vi.fn().mockResolvedValue([{ id: '1' }]),
+}))
+vi.mock('../src/services/requestService', () => ({
+  getRequests: vi.fn().mockResolvedValue([{ id: '1', status: 'pending' }]),
+}))
+vi.mock('../src/services/portfolioService', () => ({
+  getPortfolioItems: vi.fn().mockResolvedValue([{ id: '1', artistId: '1' }]),
+}))
+vi.mock('../src/services/commissionService', () => ({
+  getCommissions: vi.fn().mockResolvedValue([{ id: '1', price: 100, deliveryDays: 5 }]),
+}))
+vi.mock('../src/services/n8nChatService', () => ({
+  sendMessageToChatbot: vi.fn().mockResolvedValue({
+    success: true,
+    message: '### Estado General de la Plataforma ArtLink\n\nBalance general del sistema...',
+  }),
+  isN8nChatbotConfigured: () => true,
+}))
+
+describe('Asistente de IA Administrativa - adminAiService', () => {
+  it('valida acceso exclusivo por rol (admin / administrator)', () => {
+    expect(isAdminUser({ role: 'admin' })).toBe(true)
+    expect(isAdminUser({ role: 'administrator' })).toBe(true)
+    expect(isAdminUser({ role: 'administrador' })).toBe(true)
+    expect(isAdminUser({ role: 'cliente' })).toBe(false)
+    expect(isAdminUser({ role: 'artista' })).toBe(false)
+    expect(isAdminUser(null)).toBe(false)
+    expect(isAdminUser({})).toBe(false)
+  })
+
+  it('detecta inconsistencias en artistas sin portafolio y comisiones sin precio o plazo', () => {
+    const mockData = {
+      artists: [
+        { id: 'art-1', displayName: 'Artista Uno' },
+        { id: 'art-2', displayName: 'Artista Dos' },
+      ],
+      portfolioItems: [
+        { id: 'item-1', artistId: 'art-1' },
+        { id: 'item-2', artistId: 'art-1' },
+      ],
+      commissions: [
+        { id: 'c-1', price: 0, deliveryDays: 5 },
+        { id: 'c-2', price: 100 },
+      ],
+      requests: [{ id: 'req-1', status: 'pending' }],
+      users: [{ id: 'u-1', active: false }],
+    }
+
+    const issues = auditPlatformInconsistencies(mockData)
+    expect(issues.length).toBeGreaterThanOrEqual(3)
+
+    const portfolioIssue = issues.find((i) => i.id === 'artists-incomplete-portfolio')
+    expect(portfolioIssue).toBeDefined()
+    expect(portfolioIssue.affectedItems.some((a) => a.id === 'art-2')).toBe(true)
+
+    const commissionIssue = issues.find((i) => i.id === 'commissions-missing-details')
+    expect(commissionIssue).toBeDefined()
+
+    const requestIssue = issues.find((i) => i.id === 'requests-pending-backlog')
+    expect(requestIssue).toBeDefined()
+  })
+
+  it('genera resumen analítico para presentación académica con arquitectura y métricas', () => {
+    const mockData = {
+      users: [{ id: '1', role: 'cliente' }, { id: '2', role: 'artista' }],
+      artists: [{ id: '1', availability: 'open' }],
+      categories: [{ id: 'cat-1' }],
+      requests: [{ id: 'req-1', status: 'completed' }],
+      portfolioItems: [{ id: 'p-1' }],
+      commissions: [{ id: 'c-1' }],
+    }
+
+    const result = generateLocalAdminAnalysis('resumen para presentacion academica', mockData)
+    expect(result.message).toContain('Resumen Ejecutivo para la Presentación Académica')
+    expect(result.message).toContain('Arquitectura Técnica Destacada')
+    expect(result.message).toContain('React')
+    expect(result.actions.length).toBeGreaterThan(0)
+    expect(result.message).not.toMatch(/[\u{1F300}-\u{1F9FF}]/u)
+  })
+
+  it('explica detalladamente las métricas del dashboard sin cambios destructivos', () => {
+    const mockData = {
+      users: [{ id: '1', role: 'cliente' }],
+      artists: [{ id: '1', availability: 'open' }],
+      requests: [{ id: 'r-1', status: 'pending' }],
+    }
+
+    const result = generateLocalAdminAnalysis('explicar metricas del dashboard', mockData)
+    expect(result.message).toContain('Explicación de las Métricas del Dashboard')
+    expect(result.message).toContain('Usuarios registrados')
+    expect(result.message).toContain('Artistas activos')
+    expect(result.message).toContain('Solicitudes enviadas')
+  })
+})
+
+describe('Componente AdminAssistantDrawer', () => {
+  it('se renderiza correctamente para usuarios con rol de administrador', () => {
+    render(
+      <MemoryRouter>
+        <AdminAssistantDrawer open={true} onClose={() => {}} />
+      </MemoryRouter>
+    )
+
+    expect(screen.getByRole('dialog', { name: /Asistente de IA Administrativa/i })).toBeInTheDocument()
+    expect(screen.getByText('Asistente IA')).toBeInTheDocument()
+    expect(screen.getByText(/Consola de análisis y supervisión/i)).toBeInTheDocument()
+    expect(screen.getByText(/Asistente consultivo/i)).toBeInTheDocument()
+    expect(screen.getByPlaceholderText(/Pregunta sobre métricas, solicitudes/i)).toBeInTheDocument()
+  })
+
+  it('permite enviar una consulta mediante los botones de atajos rápidos', async () => {
+    render(
+      <MemoryRouter>
+        <AdminAssistantDrawer open={true} onClose={() => {}} />
+      </MemoryRouter>
+    )
+
+    const chipBtn = screen.getByRole('button', { name: 'Resumir estado general' })
+    fireEvent.click(chipBtn)
+
+    await waitFor(() => {
+      expect(screen.getAllByText(/Estado General de la Plataforma ArtLink/i).length).toBeGreaterThan(0)
+    })
+  })
+})
