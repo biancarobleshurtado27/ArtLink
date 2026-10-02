@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600" shape-rendering="crispEdges">
+  <defs>
+    <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0f051d"/>
+      <stop offset="60%" stop-color="#2d124d"/>
+      <stop offset="100%" stop-color="#5b146f"/>
+    </linearGradient>
+  </defs>
+  <!-- Background Sky -->
+  <rect width="800" height="600" fill="url(#skyGrad)"/>
+  
+  <!-- Pixel Moon -->
+  <rect x="620" y="60" width="80" height="80" fill="#fde047" opacity="0.9"/>
+  <rect x="640" y="40" width="40" height="20" fill="#fde047" opacity="0.9"/>
+  <rect x="640" y="140" width="40" height="20" fill="#fde047" opacity="0.9"/>
+  <rect x="600" y="80" width="20" height="40" fill="#fde047" opacity="0.9"/>
+  <rect x="700" y="80" width="20" height="40" fill="#fde047" opacity="0.9"/>
+
+  <!-- Distant Skyline Silhouettes -->
+  <rect x="40" y="240" width="120" height="360" fill="#1b1035"/>
+  <rect x="180" y="200" width="100" height="400" fill="#180e30"/>
+  <rect x="300" y="260" width="140" height="340" fill="#1f133d"/>
+  <rect x="460" y="180" width="110" height="420" fill="#180e30"/>
+  <rect x="590" y="220" width="150" height="380" fill="#1b1035"/>
+
+  <!-- Midground Neon Buildings -->
+  <rect x="80" y="280" width="140" height="320" fill="#241447"/>
+  <rect x="100" y="300" width="20" height="20" fill="#06b6d4"/>
+  <rect x="140" y="300" width="20" height="20" fill="#f43f5e"/>
+  <rect x="180" y="300" width="20" height="20" fill="#06b6d4"/>
+  <rect x="100" y="340" width="20" height="20" fill="#f43f5e"/>
+  <rect x="140" y="340" width="20" height="20" fill="#eab308"/>
+  <rect x="180" y="340" width="20" height="20" fill="#f43f5e"/>
+  <rect x="100" y="380" width="20" height="20" fill="#06b6d4"/>
+  <rect x="140" y="380" width="20" height="20" fill="#06b6d4"/>
+  <rect x="180" y="380" width="20" height="20" fill="#eab308"/>
+
+  <rect x="260" y="220" width="160" height="380" fill="#1e113b"/>
+  <!-- Neon Sign -->
+  <rect x="290" y="250" width="100" height="30" fill="#ec4899"/>
+  <rect x="300" y="255" width="80" height="20" fill="#fdf2f8"/>
+  <text x="340" y="270" fill="#be185d" font-family="monospace" font-weight="900" font-size="12" text-anchor="middle">ARTLINK</text>
+
+  <!-- Foreground Grid / Highway -->
+  <polygon points="0,520 800,520 800,600 0,600" fill="#110724"/>
+  <line x1="0" y1="520" x2="800" y2="520" stroke="#f43f5e" stroke-width="4"/>
+  <line x1="0" y1="550" x2="800" y2="550" stroke="#06b6d4" stroke-width="2"/>
+  <line x1="0" y1="580" x2="800" y2="580" stroke="#a855f7" stroke-width="3"/>
+  <line x1="100" y1="520" x2="40" y2="600" stroke="#06b6d4" stroke-width="2"/>
+  <line x1="250" y1="520" x2="200" y2="600" stroke="#06b6d4" stroke-width="2"/>
+  <line x1="400" y1="520" x2="400" y2="600" stroke="#f43f5e" stroke-width="3"/>
+  <line x1="550" y1="520" x2="600" y2="600" stroke="#06b6d4" stroke-width="2"/>
+  <line x1="700" y1="520" x2="760" y2="600" stroke="#06b6d4" stroke-width="2"/>
+
+  <!-- Pixel Floating Drone -->
+  <rect x="470" y="140" width="60" height="24" fill="#06b6d4"/>
+  <rect x="490" y="130" width="20" height="10" fill="#f8fafc"/>
+  <rect x="460" y="146" width="10" height="12" fill="#ec4899"/>
+  <rect x="530" y="146" width="10" height="12" fill="#ec4899"/>
+  <!-- Tag -->
+  <rect x="15" y="15" width="160" height="30" fill="#0f172a" rx="4"/>
+  <text x="95" y="35" fill="#38bdf8" font-family="monospace" font-weight="800" font-size="13" text-anchor="middle">PIXEL ART 16-BIT</text>
+</svg>

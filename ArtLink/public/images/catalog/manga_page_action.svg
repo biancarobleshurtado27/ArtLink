@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <!-- Manga Page White Canvas with Border -->
+  <rect width="800" height="600" fill="#f3f4f6"/>
+  <rect x="30" y="20" width="740" height="560" fill="#ffffff" stroke="#18181b" stroke-width="4" rx="4"/>
+
+  <!-- Panel 1 (Top Hero Panel) -->
+  <g transform="translate(50, 40)">
+    <rect width="690" height="230" fill="#fafafa" stroke="#18181b" stroke-width="4"/>
+    <!-- Speedlines Pattern -->
+    
+      <line x1="0" y1="0" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+      <line x1="0" y1="230" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+    
+      <line x1="30" y1="0" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+      <line x1="30" y1="230" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+    
+      <line x1="60" y1="0" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+      <line x1="60" y1="230" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+    
+      <line x1="90" y1="0" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+      <line x1="90" y1="230" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+    
+      <line x1="120" y1="0" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+      <line x1="120" y1="230" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+    
+      <line x1="150" y1="0" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+      <line x1="150" y1="230" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+    
+      <line x1="180" y1="0" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+      <line x1="180" y1="230" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+    
+      <line x1="210" y1="0" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+      <line x1="210" y1="230" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+    
+      <line x1="240" y1="0" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+      <line x1="240" y1="230" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+    
+      <line x1="270" y1="0" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+      <line x1="270" y1="230" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+    
+      <line x1="300" y1="0" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+      <line x1="300" y1="230" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+    
+      <line x1="330" y1="0" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+      <line x1="330" y1="230" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+    
+      <line x1="360" y1="0" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+      <line x1="360" y1="230" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+    
+      <line x1="390" y1="0" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+      <line x1="390" y1="230" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+    
+      <line x1="420" y1="0" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+      <line x1="420" y1="230" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+    
+      <line x1="450" y1="0" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+      <line x1="450" y1="230" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+    
+      <line x1="480" y1="0" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+      <line x1="480" y1="230" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+    
+      <line x1="510" y1="0" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+      <line x1="510" y1="230" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+    
+      <line x1="540" y1="0" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+      <line x1="540" y1="230" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+    
+      <line x1="570" y1="0" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+      <line x1="570" y1="230" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+    
+      <line x1="600" y1="0" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+      <line x1="600" y1="230" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+    
+      <line x1="630" y1="0" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+      <line x1="630" y1="230" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+    
+      <line x1="660" y1="0" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+      <line x1="660" y1="230" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+    
+      <line x1="690" y1="0" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+      <line x1="690" y1="230" x2="350" y2="115" stroke="#a1a1aa" stroke-width="1.5" opacity="0.6"/>
+    
+    <!-- Manga Character Dynamic Attack Pose Inking -->
+    <circle cx="350" cy="115" r="45" fill="#fff" stroke="#18181b" stroke-width="3"/>
+    <path d="M 330 95 L 345 105 L 360 95" stroke="#18181b" stroke-width="4" fill="none"/>
+    <path d="M 320 135 Q 350 150 380 135" stroke="#18181b" stroke-width="4" fill="#18181b"/>
+    <!-- Hair Spikes -->
+    <polygon points="320,80 300,50 340,70" fill="#18181b"/>
+    <polygon points="340,70 355,40 370,70" fill="#18181b"/>
+    <polygon points="370,70 400,55 385,85" fill="#18181b"/>
+    <!-- Katana Slash Arc -->
+    <path d="M 120 200 Q 350 30 580 180" stroke="#18181b" stroke-width="7" fill="none"/>
+    <path d="M 140 190 Q 350 50 560 170" stroke="#e4e4e7" stroke-width="3" fill="none"/>
+    <!-- Sound Effect Katakana / SFX -->
+    <text x="560" y="90" fill="#18181b" font-family="sans-serif" font-weight="900" font-size="44" font-style="italic">ズバッ!!</text>
+  </g>
+
+  <!-- Panel 2 (Bottom Left Close-up) -->
+  <g transform="translate(50, 285)">
+    <rect width="330" height="270" fill="#ffffff" stroke="#18181b" stroke-width="4"/>
+    <!-- Screentone Dot Simulation -->
+    <defs>
+      <pattern id="screentone" width="8" height="8" patternUnits="userSpaceOnUse">
+        <circle cx="4" cy="4" r="1.5" fill="#71717a"/>
+      </pattern>
+    </defs>
+    <rect width="330" height="270" fill="url(#screentone)" opacity="0.4"/>
+    <!-- Intense Anime Eyes Close-up -->
+    <rect x="30" y="80" width="270" height="100" fill="#fff" stroke="#18181b" stroke-width="3"/>
+    <!-- Left Eye -->
+    <path d="M 60 115 Q 90 95 120 120" stroke="#18181b" stroke-width="5" fill="none"/>
+    <ellipse cx="90" cy="130" rx="18" ry="24" fill="#18181b"/>
+    <circle cx="85" cy="120" r="6" fill="#fff"/>
+    <!-- Right Eye -->
+    <path d="M 180 120 Q 210 95 240 115" stroke="#18181b" stroke-width="5" fill="none"/>
+    <ellipse cx="210" cy="130" rx="18" ry="24" fill="#18181b"/>
+    <circle cx="215" cy="120" r="6" fill="#fff"/>
+    <!-- Speech Bubble -->
+    <polygon points="260,200 290,225 240,220" fill="#fff" stroke="#18181b" stroke-width="2"/>
+    <ellipse cx="230" cy="225" rx="75" ry="30" fill="#fff" stroke="#18181b" stroke-width="3"/>
+    <text x="230" y="230" fill="#000" font-family="sans-serif" font-weight="800" font-size="12" text-anchor="middle">¡Aún no termina!</text>
+  </g>
+
+  <!-- Panel 3 (Bottom Right Reaction) -->
+  <g transform="translate(395, 285)">
+    <rect width="345" height="270" fill="#ffffff" stroke="#18181b" stroke-width="4"/>
+    <!-- Diagonal Motion Lines -->
+    <line x1="0" y1="0" x2="345" y2="270" stroke="#d4d4d8" stroke-width="2"/>
+    <line x1="50" y1="0" x2="345" y2="220" stroke="#d4d4d8" stroke-width="2"/>
+    <line x1="0" y1="50" x2="290" y2="270" stroke="#d4d4d8" stroke-width="2"/>
+    <!-- Shading Silhouette -->
+    <path d="M 100 270 Q 150 140 220 140 Q 290 140 320 270 Z" fill="#27272a"/>
+    <circle cx="220" cy="100" r="35" fill="#27272a"/>
+    <!-- Dramatic Exclamation -->
+    <text x="170" y="80" fill="#18181b" font-family="sans-serif" font-weight="900" font-size="32">!?</text>
+  </g>
+</svg>

@@ -7,8 +7,9 @@ import StarRating from './StarRating'
 import { handleImageError } from '../utils/imageFallback'
 
 export default function ArtistCard({ artist, favorited = false, onFavorite }) {
-  const initial = (artist.displayName || '?').trim().charAt(0).toUpperCase()
-  const cover = artist.image || artist.avatar
+  const name = artist.displayName || artist.name || 'Artista'
+  const initial = name.trim().charAt(0).toUpperCase()
+  const cover = artist.image || artist.coverUrl || artist.banner || artist.avatar || artist.avatarUrl
 
   return (
     <Card className="artist-card">
@@ -18,7 +19,7 @@ export default function ArtistCard({ artist, favorited = false, onFavorite }) {
             className="artist-card-img"
             src={cover}
             onError={handleImageError}
-            alt=""
+            alt={`Muestra de arte de ${name}`}
             aria-hidden="true"
           />
         )}
@@ -27,7 +28,7 @@ export default function ArtistCard({ artist, favorited = false, onFavorite }) {
       <div className="artist-card-body">
         <div className="artist-card-top">
           <div className="artist-name-row">
-            <h3>{artist.displayName}</h3>
+            <h3>{name}</h3>
             {artist.verified && <Badge tone="mint">Artista destacado</Badge>}
           </div>
           <div className="artist-top-actions">

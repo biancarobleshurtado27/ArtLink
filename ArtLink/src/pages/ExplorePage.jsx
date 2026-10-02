@@ -530,7 +530,7 @@ export default function ExplorePage() {
               const isLiked = Boolean(likedMap[artist.id])
               const isBookmarked = favorites.isFavorite(artist.id)
               const name = artist.displayName || artist.name || 'Artista'
-              const coverImg = artist.banner || artist.avatar || artist.works?.[0]?.image
+              const coverImg = artist.image || artist.banner || artist.coverUrl || artist.works?.[0]?.image || artist.avatar || artist.avatarUrl
 
               return (
                 <article key={artist.id} className="destacada-card" aria-label={`Perfil de ${name}`}>

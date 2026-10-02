@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <rect width="800" height="600" fill="#faf5ff"/>
+  
+  <!-- Geometric Abstract Shapes Background -->
+  <circle cx="400" cy="280" r="220" fill="#e9d5ff"/>
+  <circle cx="280" cy="200" r="140" fill="#fbcfe8" opacity="0.8"/>
+  <polygon points="400,100 600,450 200,450" fill="#c084fc" opacity="0.3"/>
+  <rect x="520" y="80" width="160" height="160" fill="#f43f5e" rx="30" opacity="0.8"/>
+  <ellipse cx="220" cy="420" rx="140" ry="70" fill="#06b6d4" opacity="0.7"/>
+
+  <!-- Clean Vector Character Face -->
+  <g transform="translate(400, 310)">
+    <!-- Neck -->
+    <rect x="-25" y="80" width="50" height="80" fill="#fbcfe8"/>
+    <!-- Face Silhouette -->
+    <path d="M -70 -60 Q -70 80 0 110 Q 70 80 70 -60 Z" fill="#fce7f3" stroke="#1e192b" stroke-width="4"/>
+    <!-- Minimalist Hair -->
+    <path d="M -90 -60 Q -100 -140 0 -140 Q 100 -140 90 -60 Q 50 -100 0 -90 Q -50 -100 -90 -60 Z" fill="#7c3aed" stroke="#1e192b" stroke-width="4"/>
+    <!-- Stylized Sunglasses -->
+    <rect x="-65" y="-30" width="55" height="35" rx="6" fill="#1e192b"/>
+    <rect x="10" y="-30" width="55" height="35" rx="6" fill="#1e192b"/>
+    <line x1="-10" y1="-15" x2="10" y2="-15" stroke="#1e192b" stroke-width="6"/>
+    <!-- Glass Reflections -->
+    <polygon points="-55,-25 -25,-25 -40, -5" fill="#ec4899"/>
+    <polygon points="20,-25 50,-25 35, -5" fill="#ec4899"/>
+    <!-- Nose & Lips -->
+    <line x1="0" y1="15" x2="0" y2="35" stroke="#1e192b" stroke-width="4" stroke-linecap="round"/>
+    <path d="M -20 55 Q 0 70 20 55" stroke="#e11d48" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <!-- Earring -->
+    <circle cx="-75" cy="10" r="16" fill="none" stroke="#facc15" stroke-width="5"/>
+  </g>
+
+  <!-- Brutalist / Vector Typography Tag -->
+  <g transform="translate(50, 50)">
+    <rect width="240" height="48" fill="#1e192b" rx="6"/>
+    <text x="120" y="31" fill="#fff" font-family="sans-serif" font-weight="900" font-size="16" text-anchor="middle">CHROMA VECTOR FLAT</text>
+  </g>
+</svg>

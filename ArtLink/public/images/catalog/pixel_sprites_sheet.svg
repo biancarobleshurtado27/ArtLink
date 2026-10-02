@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600" shape-rendering="crispEdges">
+  <rect width="800" height="600" fill="#1e1e2f"/>
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#2a2a3e" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="800" height="600" fill="url(#grid)"/>
+
+  <!-- Sprite Sheet Header -->
+  <rect x="40" y="30" width="720" height="60" fill="#12121a" rx="8" stroke="#3b82f6" stroke-width="2"/>
+  <text x="60" y="68" fill="#60a5fa" font-family="monospace" font-weight="900" font-size="20">CHARACTER SPRITE SHEET • 4-FRAME RUN CYCLE</text>
+
+  <!-- 4 Frames -->
+  
+    <g transform="translate(70, 140)">
+      <rect width="150" height="220" fill="#161622" stroke="#475569" stroke-dasharray="4,4" stroke-width="2" rx="6"/>
+      <text x="75" y="25" fill="#94a3b8" font-family="monospace" font-size="12" text-anchor="middle">FRAME 01</text>
+      <!-- Pixel Character -->
+      <rect x="55" y="50" width="40" height="40" fill="#fbcfe8"/>
+      <rect x="60" y="45" width="30" height="15" fill="#7c3aed"/>
+      <rect x="65" y="65" width="8" height="8" fill="#1e1b4b"/>
+      <rect x="80" y="65" width="8" height="8" fill="#1e1b4b"/>
+      <rect x="50" y="90" width="50" height="55" fill="#8b5cf6"/>
+      <!-- Sword -->
+      <rect x="85" y="75" width="10" height="60" fill="#38bdf8"/>
+      <rect x="80" y="105" width="20" height="8" fill="#facc15"/>
+      <!-- Legs animated -->
+      <rect x="45" y="145" width="16" height="40" fill="#4338ca"/>
+      <rect x="88" y="145" width="16" height="50" fill="#3730a3"/>
+      <!-- Boots -->
+      <rect x="43" y="190" width="20" height="15" fill="#1e1b4b"/>
+      <rect x="86" y="190" width="20" height="15" fill="#1e1b4b"/>
+    </g>
+    <g transform="translate(245, 140)">
+      <rect width="150" height="220" fill="#161622" stroke="#475569" stroke-dasharray="4,4" stroke-width="2" rx="6"/>
+      <text x="75" y="25" fill="#94a3b8" font-family="monospace" font-size="12" text-anchor="middle">FRAME 02</text>
+      <!-- Pixel Character -->
+      <rect x="55" y="50" width="40" height="40" fill="#fbcfe8"/>
+      <rect x="60" y="45" width="30" height="15" fill="#7c3aed"/>
+      <rect x="65" y="65" width="8" height="8" fill="#1e1b4b"/>
+      <rect x="80" y="65" width="8" height="8" fill="#1e1b4b"/>
+      <rect x="50" y="90" width="50" height="55" fill="#8b5cf6"/>
+      <!-- Sword -->
+      <rect x="89" y="72" width="10" height="60" fill="#38bdf8"/>
+      <rect x="84" y="102" width="20" height="8" fill="#facc15"/>
+      <!-- Legs animated -->
+      <rect x="65" y="145" width="16" height="50" fill="#4338ca"/>
+      <rect x="68" y="145" width="16" height="40" fill="#3730a3"/>
+      <!-- Boots -->
+      <rect x="63" y="190" width="20" height="15" fill="#1e1b4b"/>
+      <rect x="66" y="190" width="20" height="15" fill="#1e1b4b"/>
+    </g>
+    <g transform="translate(420, 140)">
+      <rect width="150" height="220" fill="#161622" stroke="#475569" stroke-dasharray="4,4" stroke-width="2" rx="6"/>
+      <text x="75" y="25" fill="#94a3b8" font-family="monospace" font-size="12" text-anchor="middle">FRAME 03</text>
+      <!-- Pixel Character -->
+      <rect x="55" y="50" width="40" height="40" fill="#fbcfe8"/>
+      <rect x="60" y="45" width="30" height="15" fill="#7c3aed"/>
+      <rect x="65" y="65" width="8" height="8" fill="#1e1b4b"/>
+      <rect x="80" y="65" width="8" height="8" fill="#1e1b4b"/>
+      <rect x="50" y="90" width="50" height="55" fill="#8b5cf6"/>
+      <!-- Sword -->
+      <rect x="93" y="69" width="10" height="60" fill="#38bdf8"/>
+      <rect x="88" y="99" width="20" height="8" fill="#facc15"/>
+      <!-- Legs animated -->
+      <rect x="45" y="145" width="16" height="40" fill="#4338ca"/>
+      <rect x="88" y="145" width="16" height="50" fill="#3730a3"/>
+      <!-- Boots -->
+      <rect x="43" y="190" width="20" height="15" fill="#1e1b4b"/>
+      <rect x="86" y="190" width="20" height="15" fill="#1e1b4b"/>
+    </g>
+    <g transform="translate(595, 140)">
+      <rect width="150" height="220" fill="#161622" stroke="#475569" stroke-dasharray="4,4" stroke-width="2" rx="6"/>
+      <text x="75" y="25" fill="#94a3b8" font-family="monospace" font-size="12" text-anchor="middle">FRAME 04</text>
+      <!-- Pixel Character -->
+      <rect x="55" y="50" width="40" height="40" fill="#fbcfe8"/>
+      <rect x="60" y="45" width="30" height="15" fill="#7c3aed"/>
+      <rect x="65" y="65" width="8" height="8" fill="#1e1b4b"/>
+      <rect x="80" y="65" width="8" height="8" fill="#1e1b4b"/>
+      <rect x="50" y="90" width="50" height="55" fill="#8b5cf6"/>
+      <!-- Sword -->
+      <rect x="97" y="66" width="10" height="60" fill="#38bdf8"/>
+      <rect x="92" y="96" width="20" height="8" fill="#facc15"/>
+      <!-- Legs animated -->
+      <rect x="65" y="145" width="16" height="50" fill="#4338ca"/>
+      <rect x="68" y="145" width="16" height="40" fill="#3730a3"/>
+      <!-- Boots -->
+      <rect x="63" y="190" width="20" height="15" fill="#1e1b4b"/>
+      <rect x="66" y="190" width="20" height="15" fill="#1e1b4b"/>
+    </g>
+
+  <!-- Tileset preview section at bottom -->
+  <rect x="40" y="400" width="720" height="160" fill="#12121a" stroke="#22c55e" stroke-width="2" rx="8"/>
+  <text x="60" y="435" fill="#4ade80" font-family="monospace" font-weight="800" font-size="16">TILESET ASSETS (16x16 GRASSLAND &amp; DUNGEON)</text>
+  
+  <g transform="translate(60, 460)">
+    
+      <rect x="0" y="0" width="65" height="65" fill="#15803d" stroke="#334155" stroke-width="2"/>
+      <rect x="10" y="10" width="45" height="15" fill="#4ade80"/>
+      <rect x="20" y="35" width="25" height="15" fill="#166534"/>
+    
+      <rect x="85" y="0" width="65" height="65" fill="#854d0e" stroke="#334155" stroke-width="2"/>
+      <rect x="95" y="10" width="45" height="15" fill="#d97706"/>
+      <rect x="105" y="35" width="25" height="15" fill="#78350f"/>
+    
+      <rect x="170" y="0" width="65" height="65" fill="#15803d" stroke="#334155" stroke-width="2"/>
+      <rect x="180" y="10" width="45" height="15" fill="#4ade80"/>
+      <rect x="190" y="35" width="25" height="15" fill="#166534"/>
+    
+      <rect x="255" y="0" width="65" height="65" fill="#854d0e" stroke="#334155" stroke-width="2"/>
+      <rect x="265" y="10" width="45" height="15" fill="#d97706"/>
+      <rect x="275" y="35" width="25" height="15" fill="#78350f"/>
+    
+      <rect x="340" y="0" width="65" height="65" fill="#15803d" stroke="#334155" stroke-width="2"/>
+      <rect x="350" y="10" width="45" height="15" fill="#4ade80"/>
+      <rect x="360" y="35" width="25" height="15" fill="#166534"/>
+    
+      <rect x="425" y="0" width="65" height="65" fill="#854d0e" stroke="#334155" stroke-width="2"/>
+      <rect x="435" y="10" width="45" height="15" fill="#d97706"/>
+      <rect x="445" y="35" width="25" height="15" fill="#78350f"/>
+    
+      <rect x="510" y="0" width="65" height="65" fill="#15803d" stroke="#334155" stroke-width="2"/>
+      <rect x="520" y="10" width="45" height="15" fill="#4ade80"/>
+      <rect x="530" y="35" width="25" height="15" fill="#166534"/>
+    
+      <rect x="595" y="0" width="65" height="65" fill="#854d0e" stroke="#334155" stroke-width="2"/>
+      <rect x="605" y="10" width="45" height="15" fill="#d97706"/>
+      <rect x="615" y="35" width="25" height="15" fill="#78350f"/>
+    
+  </g>
+</svg>

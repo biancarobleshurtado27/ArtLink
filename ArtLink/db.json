@@ -26,109 +26,120 @@
       "email": "mateo@artlink.demo",
       "password": "123",
       "role": "artist",
-      "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=80",
+      "avatar": "/images/hero/thumbs/sora-2.jpg",
       "active": true,
-      "passwordDemo": "artista123"
+      "passwordDemo": "artista123",
+      "avatarUrl": "/images/hero/thumbs/sora-2.jpg"
     },
     {
       "id": "artist-demo-101",
-      "name": "Pixel Foundry",
+      "name": "Sora Moon Studio",
       "email": "pixelfoundry@demo.artlink.local",
       "password": "123",
       "role": "artist",
-      "avatar": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&q=80",
+      "avatar": "/images/hero/thumbs/sora-1.jpg",
       "active": true,
-      "passwordDemo": "123"
+      "passwordDemo": "123",
+      "avatarUrl": "/images/hero/thumbs/sora-1.jpg"
     },
     {
       "id": "artist-demo-102",
-      "name": "Voxel Studio Lab",
+      "name": "Kaelen Character Lab",
       "email": "voxelstudio@demo.artlink.local",
       "password": "123",
       "role": "artist",
-      "avatar": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&q=80",
+      "avatar": "/images/hero/thumbs/shop-1.jpg",
       "active": true,
-      "passwordDemo": "123"
+      "passwordDemo": "123",
+      "avatarUrl": "/images/hero/thumbs/shop-1.jpg"
     },
     {
       "id": "artist-demo-103",
-      "name": "Chroma Vector Works",
+      "name": "Aether Worldbuilding",
       "email": "chromavector@demo.artlink.local",
       "password": "123",
       "role": "artist",
-      "avatar": "https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=400&q=80",
+      "avatar": "/images/hero/thumbs/azure-1.jpg",
       "active": true,
-      "passwordDemo": "123"
+      "passwordDemo": "123",
+      "avatarUrl": "/images/hero/thumbs/azure-1.jpg"
     },
     {
       "id": "artist-demo-104",
-      "name": "Aether Concept Art",
+      "name": "Renzo 3D Forge",
       "email": "aetherconcept@demo.artlink.local",
       "password": "123",
       "role": "artist",
-      "avatar": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&q=80",
+      "avatar": "/images/hero/thumbs/shop-2.jpg",
       "active": true,
-      "passwordDemo": "123"
+      "passwordDemo": "123",
+      "avatarUrl": "/images/hero/thumbs/shop-2.jpg"
     },
     {
       "id": "artist-demo-105",
-      "name": "Nexus UI Labs",
+      "name": "Stardust Virtual Lab",
       "email": "nexusui@demo.artlink.local",
       "password": "123",
       "role": "artist",
-      "avatar": "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=400&q=80",
+      "avatar": "/images/hero/thumbs/sora-2.jpg",
       "active": true,
-      "passwordDemo": "123"
+      "passwordDemo": "123",
+      "avatarUrl": "/images/hero/thumbs/sora-2.jpg"
     },
     {
       "id": "artist-demo-106",
-      "name": "Glitch Dimension",
+      "name": "Mía Rigging Studio",
       "email": "glitchdim@demo.artlink.local",
       "password": "123",
       "role": "artist",
-      "avatar": "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=400&q=80",
+      "avatar": "/images/hero/thumbs/shop-3.jpg",
       "active": true,
-      "passwordDemo": "123"
+      "passwordDemo": "123",
+      "avatarUrl": "/images/hero/thumbs/shop-3.jpg"
     },
     {
       "id": "artist-demo-107",
-      "name": "Kinetics 3D Motion",
+      "name": "Pixel Foundry 16-Bit",
       "email": "kinetics3d@demo.artlink.local",
       "password": "123",
       "role": "artist",
-      "avatar": "https://images.unsplash.com/photo-1633167606207-d840b5070fc2?w=400&q=80",
+      "avatar": "/images/hero/thumbs/shop-4.jpg",
       "active": true,
-      "passwordDemo": "123"
+      "passwordDemo": "123",
+      "avatarUrl": "/images/hero/thumbs/shop-4.jpg"
     },
     {
       "id": "artist-demo-108",
-      "name": "Mythos Character Forge",
+      "name": "LevelForge Game Assets",
       "email": "mythosforge@demo.artlink.local",
       "password": "123",
       "role": "artist",
-      "avatar": "https://images.unsplash.com/photo-1563089145-599997674d42?w=400&q=80",
+      "avatar": "/images/hero/thumbs/azure-2.jpg",
       "active": true,
-      "passwordDemo": "123"
+      "passwordDemo": "123",
+      "avatarUrl": "/images/hero/thumbs/azure-2.jpg"
     },
     {
       "id": "artist-demo-109",
-      "name": "TypoGraphix Digital",
+      "name": "Kinetics Visual Motion",
       "email": "typographix@demo.artlink.local",
       "password": "123",
       "role": "artist",
-      "avatar": "https://images.unsplash.com/photo-1533134486753-c833f0ed4866?w=400&q=80",
+      "avatar": "/images/hero/thumbs/sora-4.jpg",
       "active": true,
-      "passwordDemo": "123"
+      "passwordDemo": "123",
+      "avatarUrl": "/images/hero/thumbs/sora-4.jpg"
     },
     {
       "id": "artist-demo-110",
-      "name": "Aura Digital Matte",
+      "name": "Chroma Vector Works",
       "email": "auramatte@demo.artlink.local",
       "password": "123",
       "role": "artist",
-      "avatar": "https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400&q=80",
+      "avatar": "/images/hero/thumbs/shop-1.jpg",
       "active": true,
-      "passwordDemo": "123"
+      "passwordDemo": "123",
+      "avatarUrl": "/images/hero/thumbs/shop-1.jpg"
     },
     {
       "name": "Bianca Robles Hurtado",
@@ -157,843 +168,1220 @@
       "termsVersion": "1.0",
       "id": "NlFFPtqd1uk",
       "password": "1234567890"
+    },
+    {
+      "id": "artist-demo-111",
+      "name": "Tinta Digital Manga",
+      "email": "tintamanga@artlink.local",
+      "password": "123",
+      "role": "artist",
+      "avatar": "/images/hero/thumbs/sora-1.jpg",
+      "avatarUrl": "/images/hero/thumbs/sora-1.jpg",
+      "active": true,
+      "passwordDemo": "123"
+    },
+    {
+      "id": "artist-demo-112",
+      "name": "Chimera Creature Design",
+      "email": "chimera_forge@artlink.local",
+      "password": "123",
+      "role": "artist",
+      "avatar": "/images/hero/thumbs/azure-1.jpg",
+      "avatarUrl": "/images/hero/thumbs/azure-1.jpg",
+      "active": true,
+      "passwordDemo": "123"
     }
   ],
   "artistProfiles": [
     {
       "id": "artist-demo-101",
       "userId": "artist-demo-101",
-      "displayName": "Pixel Foundry",
-      "username": "pixelfoundry",
-      "avatar": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&q=80",
-      "banner": "https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=1200&q=80",
-      "bio": "Entorno de prueba de ArtLink. Taller de creación de pixel art para videojuegos retro, sprites 16-bit e interfaces vintage.",
+      "displayName": "Sora Moon Studio",
+      "name": "Sora Moon Studio",
+      "username": "soramoon",
+      "avatar": "/images/hero/thumbs/sora-1.jpg",
+      "avatarUrl": "/images/hero/thumbs/sora-1.jpg",
+      "banner": "/images/hero/soramoon.jpg",
+      "coverUrl": "/images/hero/soramoon.jpg",
+      "image": "/images/hero/soramoon.jpg",
+      "bio": "Ilustración digital y pintura de personajes estilo anime con acabados luminosos, paletas celestiales e iluminación cinemática.",
       "disciplines": [
-        "Pixel Art",
-        "Ilustración"
+        "Ilustración Digital",
+        "Pintura Digital"
       ],
       "styles": [
-        "16-bit",
-        "Cyberpunk",
-        "Chibi"
+        "Anime",
+        "Fantasía Luminosa",
+        "Luz Cinemática"
       ],
-      "location": "Servidor Sintético 01",
+      "location": "Tokio / Remoto",
       "availability": "open",
-      "slots": 4,
+      "slots": 3,
       "rating": 4.9,
       "verified": true,
-      "basePrice": 80,
+      "basePrice": 120,
       "isDemo": false,
+      "verificationBadge": "Artista destacado",
       "socialLinks": {
-        "web": "https://demo.artlink.local/pixelfoundry"
-      },
-      "verificationBadge": "Artista destacado"
+        "web": "https://artlink.local/soramoon",
+        "x": "@soramoon_art"
+      }
     },
     {
       "id": "artist-demo-102",
       "userId": "artist-demo-102",
-      "displayName": "Voxel Studio Lab",
-      "username": "voxelstudio",
-      "avatar": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&q=80",
-      "banner": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&q=80",
-      "bio": "Laboratorio de experimentación volumétrica y dioramas 3D low-poly para maquetas y juegos.",
+      "displayName": "Kaelen Character Lab",
+      "name": "Kaelen Character Lab",
+      "username": "kaelen_design",
+      "avatar": "/images/hero/thumbs/shop-1.jpg",
+      "avatarUrl": "/images/hero/thumbs/shop-1.jpg",
+      "banner": "/images/catalog/character_design_01.jpg",
+      "coverUrl": "/images/catalog/character_design_01.jpg",
+      "image": "/images/catalog/character_design_01.jpg",
+      "bio": "Especialista en diseño de personajes y hojas de modelo turnaround (frente, perfil, espalda) para producciones conceptuales y videojuegos.",
       "disciplines": [
-        "Voxel Art",
-        "Modelado 3D"
+        "Diseño de Personajes",
+        "Concept Art"
       ],
       "styles": [
-        "Low-Poly",
-        "Isométrico",
-        "Diorama"
+        "Character Sheet",
+        "Cyberpunk",
+        "Mecha",
+        "Fantasía"
       ],
-      "location": "Entorno Isométrico Alfa",
+      "location": "Madrid, España",
       "availability": "open",
       "slots": 2,
-      "rating": 4.8,
-      "verified": true,
-      "basePrice": 120,
-      "isDemo": false,
-      "socialLinks": {
-        "web": "https://demo.artlink.local/voxelstudio"
-      },
-      "verificationBadge": "Artista destacado"
-    },
-    {
-      "id": "artist-demo-103",
-      "userId": "artist-demo-103",
-      "displayName": "Chroma Vector Works",
-      "username": "chromavector",
-      "avatar": "https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=400&q=80",
-      "banner": "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=1200&q=80",
-      "bio": "Creación de identidades visuales, infografías limpias e ilustraciones vectoriales escalables.",
-      "disciplines": [
-        "Ilustración Vectorial",
-        "Diseño Gráfico"
-      ],
-      "styles": [
-        "Flat Art",
-        "Minimalista",
-        "Geométrico"
-      ],
-      "location": "Cluster Gráfico Vectorial",
-      "availability": "open",
-      "slots": 5,
-      "rating": 4.7,
-      "verified": true,
-      "basePrice": 90,
-      "isDemo": false,
-      "socialLinks": {
-        "web": "https://demo.artlink.local/chromavector"
-      },
-      "verificationBadge": "Artista destacado"
-    },
-    {
-      "id": "artist-demo-104",
-      "userId": "artist-demo-104",
-      "displayName": "Aether Concept Art",
-      "username": "aetherconcept",
-      "avatar": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&q=80",
-      "banner": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200&q=80",
-      "bio": "Conceptualización de mundos de ciencia ficción y atmósferas fantásticas de gran escala.",
-      "disciplines": [
-        "Concept Art",
-        "Arte Digital"
-      ],
-      "styles": [
-        "Sci-Fi",
-        "Fantasía Épica",
-        "Cinematográfico"
-      ],
-      "location": "Estación Orbital Beta",
-      "availability": "waitlist",
-      "slots": 0,
-      "rating": 5,
-      "verified": true,
-      "basePrice": 220,
-      "isDemo": false,
-      "socialLinks": {
-        "web": "https://demo.artlink.local/aetherconcept"
-      },
-      "verificationBadge": "Artista destacado"
-    },
-    {
-      "id": "artist-demo-105",
-      "userId": "artist-demo-105",
-      "displayName": "Nexus UI Labs",
-      "username": "nexusui",
-      "avatar": "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=400&q=80",
-      "banner": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&q=80",
-      "bio": "Diseño de interfaces de usuario modernas, tableros interactivos y sistemas de diseño listos para desarrollo.",
-      "disciplines": [
-        "Diseño UI/UX",
-        "Diseño Gráfico"
-      ],
-      "styles": [
-        "Glassmorphism",
-        "Dark Mode",
-        "Sistemas de Diseño"
-      ],
-      "location": "Plataforma Prototipo UX",
-      "availability": "open",
-      "slots": 3,
-      "rating": 4.9,
-      "verified": true,
-      "basePrice": 150,
-      "isDemo": false,
-      "socialLinks": {
-        "web": "https://demo.artlink.local/nexusui"
-      },
-      "verificationBadge": "Artista destacado"
-    },
-    {
-      "id": "artist-demo-106",
-      "userId": "artist-demo-106",
-      "displayName": "Glitch Dimension",
-      "username": "glitchdim",
-      "avatar": "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=400&q=80",
-      "banner": "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=1200&q=80",
-      "bio": "Exploración de arte generativo algorítmico, texturas datamosh y estética cyberpunk experimental.",
-      "disciplines": [
-        "Arte Generativo",
-        "Arte Digital"
-      ],
-      "styles": [
-        "Glitch Art",
-        "Procedural",
-        "Datamosh"
-      ],
-      "location": "Subred Experimental 404",
-      "availability": "open",
-      "slots": 3,
-      "rating": 4.8,
-      "verified": true,
-      "basePrice": 70,
-      "isDemo": false,
-      "socialLinks": {
-        "web": "https://demo.artlink.local/glitchdim"
-      },
-      "verificationBadge": "Artista destacado"
-    },
-    {
-      "id": "artist-demo-107",
-      "userId": "artist-demo-107",
-      "displayName": "Kinetics 3D Motion",
-      "username": "kinetics3d",
-      "avatar": "https://images.unsplash.com/photo-1633167606207-d840b5070fc2?w=400&q=80",
-      "banner": "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?w=1200&q=80",
-      "bio": "Renderizado tridimensional de objetos cinéticos, animación de bucles y composiciones dinámicas metálicas.",
-      "disciplines": [
-        "Modelado 3D",
-        "Animación"
-      ],
-      "styles": [
-        "CGI",
-        "Fluido",
-        "Metálico Futurista"
-      ],
-      "location": "Render Farm Virtual",
-      "availability": "open",
-      "slots": 2,
-      "rating": 4.9,
-      "verified": true,
-      "basePrice": 190,
-      "isDemo": false,
-      "socialLinks": {
-        "web": "https://demo.artlink.local/kinetics3d"
-      },
-      "verificationBadge": "Artista destacado"
-    },
-    {
-      "id": "artist-demo-108",
-      "userId": "artist-demo-108",
-      "displayName": "Mythos Character Forge",
-      "username": "mythosforge",
-      "avatar": "https://images.unsplash.com/photo-1563089145-599997674d42?w=400&q=80",
-      "banner": "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=1200&q=80",
-      "bio": "Modelado y diseño de personajes heroicos, criaturas fantásticas y atuendos estilizados para narrativas interactivas.",
-      "disciplines": [
-        "Character Design",
-        "Ilustración"
-      ],
-      "styles": [
-        "Estilizado",
-        "Fantasía Épica",
-        "Mecha"
-      ],
-      "location": "Gremio de Creación 09",
-      "availability": "open",
-      "slots": 4,
       "rating": 5,
       "verified": true,
       "basePrice": 160,
       "isDemo": false,
+      "verificationBadge": "Artista destacado",
       "socialLinks": {
-        "web": "https://demo.artlink.local/mythosforge"
-      },
-      "verificationBadge": "Artista destacado"
+        "web": "https://artlink.local/kaelen",
+        "x": "@kaelen_design"
+      }
+    },
+    {
+      "id": "artist-demo-103",
+      "userId": "artist-demo-103",
+      "displayName": "Aether Worldbuilding",
+      "name": "Aether Worldbuilding",
+      "username": "aether_concept",
+      "avatar": "/images/hero/thumbs/azure-1.jpg",
+      "avatarUrl": "/images/hero/thumbs/azure-1.jpg",
+      "banner": "/images/catalog/concept_art_01.jpg",
+      "coverUrl": "/images/catalog/concept_art_01.jpg",
+      "image": "/images/catalog/concept_art_01.jpg",
+      "bio": "Concept art de entornos, arquitectura futurista y escenarios de fantasía para animación, cine y desarrollo de videojuegos.",
+      "disciplines": [
+        "Concept Art",
+        "Fondos y Escenarios"
+      ],
+      "styles": [
+        "Worldbuilding",
+        "Sci-Fi",
+        "Fantasía Épica",
+        "Matte Painting"
+      ],
+      "location": "Vancouver, Canadá",
+      "availability": "open",
+      "slots": 4,
+      "rating": 4.9,
+      "verified": true,
+      "basePrice": 180,
+      "isDemo": false,
+      "verificationBadge": "Artista destacado",
+      "socialLinks": {
+        "web": "https://artlink.local/aether"
+      }
+    },
+    {
+      "id": "artist-demo-104",
+      "userId": "artist-demo-104",
+      "displayName": "Renzo 3D Forge",
+      "name": "Renzo 3D Forge",
+      "username": "renzo_3d",
+      "avatar": "/images/hero/thumbs/shop-2.jpg",
+      "avatarUrl": "/images/hero/thumbs/shop-2.jpg",
+      "banner": "/images/catalog/model_3d_showcase.svg",
+      "coverUrl": "/images/catalog/model_3d_showcase.svg",
+      "image": "/images/catalog/model_3d_showcase.svg",
+      "bio": "Modelado 3D hard-surface, personajes en ZBrush, topología limpia y texturizado PBR 4K listo para motores Unreal y Unity.",
+      "disciplines": [
+        "Modelado 3D",
+        "Escultura Digital"
+      ],
+      "styles": [
+        "PBR Render",
+        "Hard Surface",
+        "ZBrush",
+        "Low-Poly/High-Poly"
+      ],
+      "location": "Kyoto, Japón",
+      "availability": "open",
+      "slots": 2,
+      "rating": 4.8,
+      "verified": true,
+      "basePrice": 190,
+      "isDemo": false,
+      "verificationBadge": "Artista destacado",
+      "socialLinks": {
+        "web": "https://artlink.local/renzo3d"
+      }
+    },
+    {
+      "id": "artist-demo-105",
+      "userId": "artist-demo-105",
+      "displayName": "Stardust Virtual Lab",
+      "name": "Stardust Virtual Lab",
+      "username": "stardust_vt",
+      "avatar": "/images/hero/thumbs/sora-2.jpg",
+      "avatarUrl": "/images/hero/thumbs/sora-2.jpg",
+      "banner": "/images/catalog/vtuber_model_01.jpg",
+      "coverUrl": "/images/catalog/vtuber_model_01.jpg",
+      "image": "/images/catalog/vtuber_model_01.jpg",
+      "bio": "Creación de modelos y avatares VTuber 2D listos para streaming en Twitch/YouTube, con hojas de diseño, atuendos y expresiones.",
+      "disciplines": [
+        "Modelos VTuber",
+        "Diseño de Personajes"
+      ],
+      "styles": [
+        "Anime VTuber",
+        "Streaming Ready",
+        "Chibi",
+        "Expresiones"
+      ],
+      "location": "Seúl, Corea del Sur",
+      "availability": "open",
+      "slots": 3,
+      "rating": 5,
+      "verified": true,
+      "basePrice": 220,
+      "isDemo": false,
+      "verificationBadge": "Artista destacado",
+      "socialLinks": {
+        "web": "https://artlink.local/stardust"
+      }
+    },
+    {
+      "id": "artist-demo-106",
+      "userId": "artist-demo-106",
+      "displayName": "Mía Rigging Studio",
+      "name": "Mía Rigging Studio",
+      "username": "miasoler_art",
+      "avatar": "/images/hero/thumbs/shop-3.jpg",
+      "avatarUrl": "/images/hero/thumbs/shop-3.jpg",
+      "banner": "/images/catalog/live2d_rigging_model.svg",
+      "coverUrl": "/images/catalog/live2d_rigging_model.svg",
+      "image": "/images/catalog/live2d_rigging_model.svg",
+      "bio": "Ilustración y separación precisa en capas PSD para Live2D Cubism, optimizada con deformadores y rangos de física elástica.",
+      "disciplines": [
+        "Live2D",
+        "Ilustración Digital"
+      ],
+      "styles": [
+        "Cubism Ready",
+        "Separación en Capas",
+        "Rigging 2D",
+        "Físicas"
+      ],
+      "location": "Buenos Aires, Argentina",
+      "availability": "open",
+      "slots": 2,
+      "rating": 4.9,
+      "verified": true,
+      "basePrice": 160,
+      "isDemo": false,
+      "verificationBadge": "Artista destacado",
+      "socialLinks": {
+        "web": "https://artlink.local/miasoler"
+      }
+    },
+    {
+      "id": "artist-demo-107",
+      "userId": "artist-demo-107",
+      "displayName": "Pixel Foundry 16-Bit",
+      "name": "Pixel Foundry 16-Bit",
+      "username": "pixelfoundry",
+      "avatar": "/images/hero/thumbs/shop-4.jpg",
+      "avatarUrl": "/images/hero/thumbs/shop-4.jpg",
+      "banner": "/images/catalog/pixel_art_cyber_city.svg",
+      "coverUrl": "/images/catalog/pixel_art_cyber_city.svg",
+      "image": "/images/catalog/pixel_art_cyber_city.svg",
+      "bio": "Auténtico pixel art artesanal para videojuegos indie: escenarios isométricos, sprites animados cuadro por cuadro y fondos retro.",
+      "disciplines": [
+        "Pixel Art",
+        "Arte para Videojuegos"
+      ],
+      "styles": [
+        "16-Bit",
+        "Isometric",
+        "Retro Arcade",
+        "Sprites"
+      ],
+      "location": "Berlín, Alemania",
+      "availability": "open",
+      "slots": 5,
+      "rating": 4.9,
+      "verified": true,
+      "basePrice": 80,
+      "isDemo": false,
+      "verificationBadge": "Artista destacado",
+      "socialLinks": {
+        "web": "https://artlink.local/pixelfoundry"
+      }
+    },
+    {
+      "id": "artist-demo-108",
+      "userId": "artist-demo-108",
+      "displayName": "LevelForge Game Assets",
+      "name": "LevelForge Game Assets",
+      "username": "levelforge",
+      "avatar": "/images/hero/thumbs/azure-2.jpg",
+      "avatarUrl": "/images/hero/thumbs/azure-2.jpg",
+      "banner": "/images/catalog/game_assets_pack.svg",
+      "coverUrl": "/images/catalog/game_assets_pack.svg",
+      "image": "/images/catalog/game_assets_pack.svg",
+      "bio": "Assets 2D para videojuegos: paquetes de iconos de inventario, interfaces de usuario HUD, armas y tilesets de nivel modulares.",
+      "disciplines": [
+        "Arte para Videojuegos",
+        "Diseño de Props"
+      ],
+      "styles": [
+        "Game UI",
+        "Icons Pack",
+        "Tilesets",
+        "RPG Assets"
+      ],
+      "location": "Austin, Texas",
+      "availability": "open",
+      "slots": 4,
+      "rating": 4.8,
+      "verified": true,
+      "basePrice": 90,
+      "isDemo": false,
+      "verificationBadge": "Artista destacado",
+      "socialLinks": {
+        "web": "https://artlink.local/levelforge"
+      }
     },
     {
       "id": "artist-demo-109",
       "userId": "artist-demo-109",
-      "displayName": "TypoGraphix Digital",
-      "username": "typographix",
-      "avatar": "https://images.unsplash.com/photo-1533134486753-c833f0ed4866?w=400&q=80",
-      "banner": "https://images.unsplash.com/photo-1558655146-d09347e92766?w=1200&q=80",
-      "bio": "Laboratorio de rotulación experimental, cartelería de impacto y fuentes tipográficas personalizadas.",
+      "displayName": "Kinetics Visual Motion",
+      "name": "Kinetics Visual Motion",
+      "username": "kinetics_motion",
+      "avatar": "/images/hero/thumbs/sora-4.jpg",
+      "avatarUrl": "/images/hero/thumbs/sora-4.jpg",
+      "banner": "/images/catalog/motion_graphics_frame.svg",
+      "coverUrl": "/images/catalog/motion_graphics_frame.svg",
+      "image": "/images/catalog/motion_graphics_frame.svg",
+      "bio": "Animación y motion graphics de alto impacto: secuencias de títulos cinemáticos, tipografía cinética y transiciones dinámicas para creadores.",
       "disciplines": [
-        "Tipografía Digital",
-        "Diseño Gráfico"
+        "Motion Graphics",
+        "Animación 2D"
       ],
       "styles": [
-        "Brutalismo",
-        "Lettering",
-        "Monocromo"
+        "Kinetic Typography",
+        "Keyframes",
+        "Looping Animation"
       ],
-      "location": "Atelier Tipográfico Central",
+      "location": "Londres, Reino Unido",
       "availability": "open",
-      "slots": 6,
-      "rating": 4.8,
+      "slots": 3,
+      "rating": 4.7,
       "verified": true,
-      "basePrice": 85,
+      "basePrice": 140,
       "isDemo": false,
+      "verificationBadge": "Artista destacado",
       "socialLinks": {
-        "web": "https://demo.artlink.local/typographix"
-      },
-      "verificationBadge": "Artista destacado"
+        "web": "https://artlink.local/kinetics"
+      }
     },
     {
       "id": "artist-demo-110",
       "userId": "artist-demo-110",
-      "displayName": "Aura Digital Matte",
-      "username": "auramatte",
-      "avatar": "https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400&q=80",
-      "banner": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200&q=80",
-      "bio": "Pintura digital de paisajes cinemáticos, fondos escénicos hiperdetallados y atmósferas envolventes para producciones.",
+      "displayName": "Chroma Vector Works",
+      "name": "Chroma Vector Works",
+      "username": "chromavector",
+      "avatar": "/images/hero/thumbs/shop-1.jpg",
+      "avatarUrl": "/images/hero/thumbs/shop-1.jpg",
+      "banner": "/images/catalog/vector_art_composition.svg",
+      "coverUrl": "/images/catalog/vector_art_composition.svg",
+      "image": "/images/catalog/vector_art_composition.svg",
+      "bio": "Ilustración vectorial pura y arte flat geométrico: personajes estilizados, composiciones de líneas limpias y cartelería de colores vibrantes.",
       "disciplines": [
-        "Matte Painting",
-        "Arte Digital"
+        "Arte Vectorial",
+        "Diseño Gráfico"
       ],
       "styles": [
-        "Atmósferas Cinemáticas",
-        "Realismo Fantástico",
-        "Paisaje"
+        "Flat Art",
+        "Geométrico",
+        "Minimalista",
+        "Línea Limpia"
       ],
-      "location": "Horizonte Digital Estudio",
+      "location": "Santiago, Chile",
+      "availability": "open",
+      "slots": 5,
+      "rating": 4.8,
+      "verified": true,
+      "basePrice": 85,
+      "isDemo": false,
+      "verificationBadge": "Artista destacado",
+      "socialLinks": {
+        "web": "https://artlink.local/chromavector"
+      }
+    },
+    {
+      "id": "artist-demo-111",
+      "userId": "artist-demo-111",
+      "displayName": "Tinta Digital Manga",
+      "name": "Tinta Digital Manga",
+      "username": "tintamanga",
+      "avatar": "/images/hero/thumbs/sora-1.jpg",
+      "avatarUrl": "/images/hero/thumbs/sora-1.jpg",
+      "banner": "/images/catalog/manga_page_action.svg",
+      "coverUrl": "/images/catalog/manga_page_action.svg",
+      "image": "/images/catalog/manga_page_action.svg",
+      "bio": "Dibujo de cómic y manga digital: entintado dinámico con tramas mecánicas, diseño de páginas, viñetas de acción shonen y narrativa visual.",
+      "disciplines": [
+        "Cómic y Manga Digital",
+        "Entintado"
+      ],
+      "styles": [
+        "Manga Shonen",
+        "Líneas Cinéticas",
+        "Tramas Screentone"
+      ],
+      "location": "Bogotá, Colombia",
+      "availability": "open",
+      "slots": 4,
+      "rating": 5,
+      "verified": true,
+      "basePrice": 110,
+      "isDemo": false,
+      "verificationBadge": "Artista destacado",
+      "socialLinks": {
+        "web": "https://artlink.local/tintamanga"
+      }
+    },
+    {
+      "id": "artist-demo-112",
+      "userId": "artist-demo-112",
+      "displayName": "Chimera Creature Design",
+      "name": "Chimera Creature Design",
+      "username": "chimera_forge",
+      "avatar": "/images/hero/thumbs/azure-1.jpg",
+      "avatarUrl": "/images/hero/thumbs/azure-1.jpg",
+      "banner": "/images/catalog/creature_design_dragon.svg",
+      "coverUrl": "/images/catalog/creature_design_dragon.svg",
+      "image": "/images/catalog/creature_design_dragon.svg",
+      "bio": "Diseño de criaturas fantásticas, monstruos, dragones y bestias para mundos de fantasía épica con estudios de anatomía y biología ficticia.",
+      "disciplines": [
+        "Diseño de Criaturas",
+        "Concept Art"
+      ],
+      "styles": [
+        "Anatomía Fantástica",
+        "Bestiario",
+        "Monstruos",
+        "Dragones"
+      ],
+      "location": "Lima, Perú",
       "availability": "waitlist",
       "slots": 1,
       "rating": 4.9,
       "verified": true,
-      "basePrice": 210,
+      "basePrice": 150,
       "isDemo": false,
+      "verificationBadge": "Artista destacado",
       "socialLinks": {
-        "web": "https://demo.artlink.local/auramatte"
-      },
-      "verificationBadge": "Artista destacado"
+        "web": "https://artlink.local/chimera"
+      }
     },
     {
       "id": "artist-001",
       "userId": "user-artist-001",
       "displayName": "Mateo Ríos",
+      "name": "Mateo Ríos",
       "username": "mateorios",
-      "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=80",
-      "banner": "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=1200&q=80",
-      "bio": "Ilustrador editorial especializado en mundos narrativos y personajes expresivos.",
+      "avatar": "/images/hero/thumbs/sora-2.jpg",
+      "avatarUrl": "/images/hero/thumbs/sora-2.jpg",
+      "banner": "/images/hero/azure_isles.jpg",
+      "coverUrl": "/images/hero/azure_isles.jpg",
+      "image": "/images/hero/portfolio/forest-guardian.jpg",
+      "bio": "Ilustrador digital y concept artist apasionado por la fantasía, la naturaleza mágica y la creación de mundos visuales.",
       "disciplines": [
-        "Ilustración",
-        "Ilustración 2D",
-        "Concept art"
+        "Ilustración Digital",
+        "Concept Art"
       ],
       "styles": [
-        "Editorial",
-        "Fantástico",
-        "Colorido"
+        "Fantasía",
+        "Pintura Digital",
+        "Atmósfera"
       ],
-      "location": "Bogotá, Colombia",
+      "location": "Medellín, Colombia",
       "availability": "open",
       "slots": 5,
       "rating": 4.9,
       "verified": true,
       "basePrice": 80,
       "isDemo": false,
+      "verificationBadge": "Artista destacado",
       "socialLinks": {
-        "instagram": "https://instagram.com/mateorios",
-        "behance": "https://behance.net/mateorios"
-      },
-      "verificationBadge": "Artista destacado"
+        "web": "https://artlink.local/mateorios"
+      }
     }
   ],
   "categories": [
     {
       "id": "cat-1",
-      "name": "Pixel Art",
-      "slug": "pixel-art",
-      "color": "#F59E0B"
-    },
-    {
-      "id": "cat-2",
-      "name": "Voxel Art",
-      "slug": "voxel-art",
-      "color": "#3B82F6"
-    },
-    {
-      "id": "cat-3",
-      "name": "Ilustración Vectorial",
-      "slug": "ilustracion-vectorial",
-      "color": "#10B981"
-    },
-    {
-      "id": "cat-4",
-      "name": "Concept Art",
-      "slug": "concept-art",
+      "name": "Ilustración Digital",
+      "slug": "ilustracion-digital",
       "color": "#8B5CF6"
     },
     {
-      "id": "cat-5",
-      "name": "Diseño UI/UX",
-      "slug": "diseno-ui-ux",
-      "color": "#06B6D4"
-    },
-    {
-      "id": "cat-6",
-      "name": "Arte Generativo",
-      "slug": "arte-generativo",
+      "id": "cat-2",
+      "name": "Diseño de Personajes",
+      "slug": "diseno-de-personajes",
       "color": "#EC4899"
     },
     {
-      "id": "cat-7",
+      "id": "cat-3",
+      "name": "Concept Art",
+      "slug": "concept-art",
+      "color": "#3B82F6"
+    },
+    {
+      "id": "cat-4",
       "name": "Modelado 3D",
       "slug": "modelado-3d",
       "color": "#6366F1"
     },
     {
+      "id": "cat-5",
+      "name": "Modelos VTuber",
+      "slug": "modelos-vtuber",
+      "color": "#F472B6"
+    },
+    {
+      "id": "cat-6",
+      "name": "Live2D",
+      "slug": "live2d",
+      "color": "#A855F7"
+    },
+    {
+      "id": "cat-7",
+      "name": "Pixel Art",
+      "slug": "pixel-art",
+      "color": "#F59E0B"
+    },
+    {
       "id": "cat-8",
-      "name": "Character Design",
-      "slug": "character-design",
-      "color": "#EF4444"
+      "name": "Arte para Videojuegos",
+      "slug": "arte-para-videojuegos",
+      "color": "#10B981"
     },
     {
       "id": "cat-9",
-      "name": "Tipografía Digital",
-      "slug": "tipografia-digital",
-      "color": "#84CC16"
+      "name": "Motion Graphics",
+      "slug": "motion-graphics",
+      "color": "#06B6D4"
     },
     {
       "id": "cat-10",
-      "name": "Matte Painting",
-      "slug": "matte-painting",
+      "name": "Arte Vectorial",
+      "slug": "arte-vectorial",
       "color": "#14B8A6"
+    },
+    {
+      "id": "cat-11",
+      "name": "Cómic y Manga Digital",
+      "slug": "comic-y-manga-digital",
+      "color": "#EF4444"
+    },
+    {
+      "id": "cat-12",
+      "name": "Fondos y Escenarios",
+      "slug": "fondos-y-escenarios",
+      "color": "#2DD4BF"
+    },
+    {
+      "id": "cat-13",
+      "name": "Diseño de Criaturas",
+      "slug": "diseno-de-criaturas",
+      "color": "#E11D48"
     }
   ],
   "portfolioItems": [
     {
       "id": "art-101",
       "artistId": "artist-demo-101",
-      "title": "Consola Arcade Cibernética",
-      "category": "Pixel Art",
-      "image": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800&q=80",
-      "description": "Ilustración en cuadrícula de 16 colores simulando hardware retrofuturista.",
-      "likes": 142,
-      "createdAt": "2024-01-15T10:00:00Z"
+      "title": "Tardes de Lavanda",
+      "category": "Ilustración Digital",
+      "image": "/images/hero/soramoon.jpg",
+      "imageUrl": "/images/hero/soramoon.jpg",
+      "description": "Ilustración digital terminada con paleta pastel y atmósfera cálida celestial.",
+      "tags": [
+        "anime",
+        "iluminación",
+        "retrato digital",
+        "color"
+      ],
+      "likes": 184,
+      "createdAt": "2026-01-15T10:00:00Z"
     },
     {
       "id": "art-102",
       "artistId": "artist-demo-101",
-      "title": "Ciudad Neón 16-Bit",
-      "category": "Pixel Art",
-      "image": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&q=80",
-      "description": "Panorámica nocturna estilo pixel art con iluminación de letreros sintéticos.",
-      "likes": 215,
-      "createdAt": "2024-02-10T14:30:00Z"
+      "title": "Princesa del Crepúsculo",
+      "category": "Ilustración Digital",
+      "image": "/images/hero/portfolio/fantasy-girl.jpg",
+      "imageUrl": "/images/hero/portfolio/fantasy-girl.jpg",
+      "description": "Retrato ilustrado con acabado pictórico y toques cósmicos.",
+      "tags": [
+        "anime",
+        "fantasía",
+        "retrato digital"
+      ],
+      "likes": 142,
+      "createdAt": "2026-02-10T14:00:00Z"
     },
     {
       "id": "art-103",
       "artistId": "artist-demo-101",
-      "title": "Mazmorra Isométrica Retro",
-      "category": "Pixel Art",
-      "image": "https://images.unsplash.com/photo-1563089145-599997674d42?w=800&q=80",
-      "description": "Set de baldosas y props para videojuego de exploración en perspectiva isométrica.",
-      "likes": 178,
-      "createdAt": "2024-03-05T09:15:00Z"
+      "title": "Retrato Invernal de Cristal",
+      "category": "Ilustración Digital",
+      "image": "/images/hero/portfolio/winter-portrait.jpg",
+      "imageUrl": "/images/hero/portfolio/winter-portrait.jpg",
+      "description": "Composición digital con iluminación de escarcha y reflejos suaves.",
+      "tags": [
+        "pintura digital",
+        "color",
+        "fantasía"
+      ],
+      "likes": 128,
+      "createdAt": "2026-02-28T18:00:00Z"
     },
     {
       "id": "art-104",
       "artistId": "artist-demo-102",
-      "title": "Santuario Flotante Voxel",
-      "category": "Voxel Art",
-      "image": "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?w=800&q=80",
-      "description": "Diorama cúbico con vegetación procedural y templo en suspensión.",
-      "likes": 198,
-      "createdAt": "2024-01-20T11:00:00Z"
+      "title": "Ronin Cyberpunk Razor-7 Model Sheet",
+      "category": "Diseño de Personajes",
+      "image": "/images/catalog/character_design_01.jpg",
+      "imageUrl": "/images/catalog/character_design_01.jpg",
+      "description": "Lámina de diseño de personaje con vistas ortogonales (frente, perfil, espalda), desglose de armadura y expresiones.",
+      "tags": [
+        "turnaround",
+        "character sheet",
+        "cyberpunk",
+        "model sheet"
+      ],
+      "likes": 245,
+      "createdAt": "2026-02-05T12:00:00Z"
     },
     {
       "id": "art-105",
       "artistId": "artist-demo-102",
-      "title": "Rover de Exploración Low-Poly",
-      "category": "Voxel Art",
-      "image": "https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?w=800&q=80",
-      "description": "Modelo vehicular simplificado optimizado para motores de juego en tiempo real.",
-      "likes": 164,
-      "createdAt": "2024-02-18T16:00:00Z"
+      "title": "Guardiana del Bosque Ancestral",
+      "category": "Diseño de Personajes",
+      "image": "/images/hero/portfolio/forest-guardian.jpg",
+      "imageUrl": "/images/hero/portfolio/forest-guardian.jpg",
+      "description": "Exploración de diseño para personaje chamánico con detalles orgánicos.",
+      "tags": [
+        "fantasía",
+        "personajes",
+        "concept art"
+      ],
+      "likes": 190,
+      "createdAt": "2026-02-20T16:00:00Z"
     },
     {
       "id": "art-106",
-      "artistId": "artist-demo-102",
-      "title": "Isla Cúbica de Cristal",
-      "category": "Voxel Art",
-      "image": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&q=80",
-      "description": "Composición geométrica con iluminación cáustica simulada.",
-      "likes": 220,
-      "createdAt": "2024-03-12T13:45:00Z"
+      "artistId": "artist-demo-103",
+      "title": "Neo-Tokyo Cyber Canyon",
+      "category": "Concept Art",
+      "image": "/images/catalog/concept_art_01.jpg",
+      "imageUrl": "/images/catalog/concept_art_01.jpg",
+      "description": "Escenario conceptual de metrópolis vertical con peces holográficos y niebla lumínica.",
+      "tags": [
+        "sci-fi",
+        "entornos",
+        "iluminación",
+        "matte painting"
+      ],
+      "likes": 312,
+      "createdAt": "2026-01-20T10:00:00Z"
     },
     {
       "id": "art-107",
       "artistId": "artist-demo-103",
-      "title": "Fauna Sintética Vectorial",
-      "category": "Ilustración Vectorial",
-      "image": "https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=800&q=80",
-      "description": "Estudio de formas orgánicas puras con trazados bezier matemáticos.",
-      "likes": 135,
-      "createdAt": "2024-01-25T12:00:00Z"
+      "title": "Archipiélago Esmeralda Flotante",
+      "category": "Fondos y Escenarios",
+      "image": "/images/hero/azure_isles.jpg",
+      "imageUrl": "/images/hero/azure_isles.jpg",
+      "description": "Concept art de santuarios aéreos con cascadas suspendidas y atmósfera cálida.",
+      "tags": [
+        "fantasía",
+        "escenarios",
+        "arquitectura"
+      ],
+      "likes": 215,
+      "createdAt": "2026-02-12T11:00:00Z"
     },
     {
       "id": "art-108",
       "artistId": "artist-demo-103",
-      "title": "Sistema Modular de Glifos",
-      "category": "Ilustración Vectorial",
-      "image": "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=800&q=80",
-      "description": "Familia de pictogramas contemporáneos basados en rejilla de 24 píxeles.",
-      "likes": 180,
-      "createdAt": "2024-02-22T17:10:00Z"
+      "title": "Taller del Alquimista Arcano",
+      "category": "Concept Art",
+      "image": "/images/hero/magic_shop.jpg",
+      "imageUrl": "/images/hero/magic_shop.jpg",
+      "description": "Diseño de interior isométrico con frascos mágicos y utilería de fantasía.",
+      "tags": [
+        "props",
+        "interiores",
+        "magia"
+      ],
+      "likes": 189,
+      "createdAt": "2026-03-01T15:00:00Z"
     },
     {
       "id": "art-109",
-      "artistId": "artist-demo-103",
-      "title": "Afiche Constructivista Digital",
-      "category": "Ilustración Vectorial",
-      "image": "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=800&q=80",
-      "description": "Póster experimental combinando geometría euclidiana y gradientes de alta saturación.",
-      "likes": 245,
-      "createdAt": "2024-03-19T10:20:00Z"
+      "artistId": "artist-demo-104",
+      "title": "Busto Mecha Cyber Samurai 3D (PBR & Wireframe)",
+      "category": "Modelado 3D",
+      "image": "/images/catalog/model_3d_showcase.svg",
+      "imageUrl": "/images/catalog/model_3d_showcase.svg",
+      "description": "Renderizado de alta calidad con materiales metálicos y vista simultánea de malla poligonal.",
+      "tags": [
+        "3d",
+        "pbr",
+        "wireframe",
+        "blender",
+        "zbrush"
+      ],
+      "likes": 260,
+      "createdAt": "2026-02-14T09:00:00Z"
     },
     {
       "id": "art-110",
       "artistId": "artist-demo-104",
-      "title": "Bastión Espacial en Órbita",
-      "category": "Concept Art",
-      "image": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80",
-      "description": "Ilustración conceptual para escena de llegada interplanetaria.",
-      "likes": 310,
-      "createdAt": "2024-01-30T15:00:00Z"
+      "title": "Prop Cibernético de Iluminación 3D",
+      "category": "Modelado 3D",
+      "image": "/images/hero/portfolio/form-lamp.jpg",
+      "imageUrl": "/images/hero/portfolio/form-lamp.jpg",
+      "description": "Modelo 3D texturizado para escenografía de videojuegos.",
+      "tags": [
+        "props",
+        "texturas",
+        "3d render"
+      ],
+      "likes": 135,
+      "createdAt": "2026-02-25T14:00:00Z"
     },
     {
       "id": "art-111",
-      "artistId": "artist-demo-104",
-      "title": "Circuito del Núcleo Estelar",
-      "category": "Concept Art",
-      "image": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80",
-      "description": "Exploración de maquinaria estelar futurista con iluminación bioluminiscente.",
-      "likes": 275,
-      "createdAt": "2024-02-27T08:40:00Z"
+      "artistId": "artist-demo-105",
+      "title": "Luna Starweaver - VTuber Model Design Sheet",
+      "category": "Modelos VTuber",
+      "image": "/images/catalog/vtuber_model_01.jpg",
+      "imageUrl": "/images/catalog/vtuber_model_01.jpg",
+      "description": "Diseño completo frontal con accesorios celestiales, varita, calzado y vista previa para streaming.",
+      "tags": [
+        "vtuber",
+        "avatar",
+        "character sheet",
+        "streaming"
+      ],
+      "likes": 380,
+      "createdAt": "2026-02-18T10:00:00Z"
     },
     {
       "id": "art-112",
-      "artistId": "artist-demo-104",
-      "title": "Puerta del Abismo Cósmico",
-      "category": "Concept Art",
-      "image": "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=800&q=80",
-      "description": "Entorno conceptual para producción de cine de ciencia ficción.",
-      "likes": 340,
-      "createdAt": "2024-03-24T18:00:00Z"
+      "artistId": "artist-demo-106",
+      "title": "Modelo Live2D Desglosado en Capas PSD",
+      "category": "Live2D",
+      "image": "/images/catalog/live2d_rigging_model.svg",
+      "imageUrl": "/images/catalog/live2d_rigging_model.svg",
+      "description": "Esquema de jerarquía de parámetros, ojos, boca y físicas para sincronización labial y movimiento fluido.",
+      "tags": [
+        "live2d",
+        "cubism",
+        "rigging",
+        "capas"
+      ],
+      "likes": 295,
+      "createdAt": "2026-02-22T13:00:00Z"
     },
     {
       "id": "art-113",
-      "artistId": "artist-demo-105",
-      "title": "Tablero de Telemetría Cuántica",
-      "category": "Diseño UI/UX",
-      "image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80",
-      "description": "Interfaz oscura analítica con visualización de datos en tiempo real.",
-      "likes": 190,
-      "createdAt": "2024-02-02T09:00:00Z"
+      "artistId": "artist-demo-106",
+      "title": "Boceto Preparatorio con Puntos de Deformación",
+      "category": "Live2D",
+      "image": "/images/wip_sketch.jpg",
+      "imageUrl": "/images/wip_sketch.jpg",
+      "description": "Fase técnica preliminar con líneas de articulación y corte de siluetas.",
+      "tags": [
+        "live2d",
+        "wip",
+        "boceto"
+      ],
+      "likes": 140,
+      "createdAt": "2026-03-02T16:00:00Z"
     },
     {
       "id": "art-114",
-      "artistId": "artist-demo-105",
-      "title": "Prototipo Móvil Fintech Glass",
-      "category": "Diseño UI/UX",
-      "image": "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=800&q=80",
-      "description": "Sistema de pantallas para aplicación financiera con componentes traslúcidos.",
-      "likes": 210,
-      "createdAt": "2024-02-28T14:15:00Z"
+      "artistId": "artist-demo-107",
+      "title": "Metrópolis Cyberpunk Isométrica 16-Bit",
+      "category": "Pixel Art",
+      "image": "/images/catalog/pixel_art_cyber_city.svg",
+      "imageUrl": "/images/catalog/pixel_art_cyber_city.svg",
+      "description": "Escenario pixelado con cuadrícula de perspectiva, edificios neón y luna estilizada.",
+      "tags": [
+        "pixel art",
+        "cyberpunk",
+        "16-bit",
+        "escenario"
+      ],
+      "likes": 275,
+      "createdAt": "2026-01-30T11:00:00Z"
     },
     {
       "id": "art-115",
-      "artistId": "artist-demo-105",
-      "title": "Biblioteca de Tokens de Diseño",
-      "category": "Diseño UI/UX",
-      "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80",
-      "description": "Estructura de variables, tipografías y paletas normalizadas para desarrollo web.",
-      "likes": 165,
-      "createdAt": "2024-03-28T11:50:00Z"
+      "artistId": "artist-demo-107",
+      "title": "Hoja de Sprites de Personaje (Ciclo de Carrera 4-Frame)",
+      "category": "Pixel Art",
+      "image": "/images/catalog/pixel_sprites_sheet.svg",
+      "imageUrl": "/images/catalog/pixel_sprites_sheet.svg",
+      "description": "Animación por cuadros de héroe con espada y módulos de terreno para videojuegos.",
+      "tags": [
+        "sprites",
+        "animación",
+        "tileset",
+        "pixel art"
+      ],
+      "likes": 220,
+      "createdAt": "2026-02-15T15:00:00Z"
     },
     {
       "id": "art-116",
-      "artistId": "artist-demo-106",
-      "title": "Aberración Cromática Ondulada",
-      "category": "Arte Generativo",
-      "image": "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=800&q=80",
-      "description": "Ruptura de canales RGB mediante algoritmos de distorsión por desplazamiento.",
-      "likes": 145,
-      "createdAt": "2024-02-05T16:20:00Z"
+      "artistId": "artist-demo-108",
+      "title": "Pack de Iconos RPG Fantasy & Pociones Mágicas (64x64 HD)",
+      "category": "Arte para Videojuegos",
+      "image": "/images/catalog/game_assets_pack.svg",
+      "imageUrl": "/images/catalog/game_assets_pack.svg",
+      "description": "Conjunto de 12 elementos esenciales de inventario con marcos brillantes e iconografía limpia.",
+      "tags": [
+        "game assets",
+        "iconos",
+        "rpg",
+        "videojuegos"
+      ],
+      "likes": 195,
+      "createdAt": "2026-02-19T10:00:00Z"
     },
     {
       "id": "art-117",
-      "artistId": "artist-demo-106",
-      "title": "Cascada Binaria Procedural",
-      "category": "Arte Generativo",
-      "image": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&q=80",
-      "description": "Matriz algorítmica generada con scripts matemáticos en canvas interactivo.",
-      "likes": 188,
-      "createdAt": "2024-03-02T19:30:00Z"
+      "artistId": "artist-demo-108",
+      "title": "Taller de Producción Isométrica 2D",
+      "category": "Arte para Videojuegos",
+      "image": "/images/hero/portfolio/cozy-workshop.jpg",
+      "imageUrl": "/images/hero/portfolio/cozy-workshop.jpg",
+      "description": "Escenario completo de interiores con utilería modular para juegos de simulación.",
+      "tags": [
+        "escenario",
+        "assets 2d",
+        "isometric"
+      ],
+      "likes": 160,
+      "createdAt": "2026-02-27T17:00:00Z"
     },
     {
       "id": "art-118",
-      "artistId": "artist-demo-107",
-      "title": "Núcleo Metálico Levitante",
-      "category": "Modelado 3D",
-      "image": "https://images.unsplash.com/photo-1633167606207-d840b5070fc2?w=800&q=80",
-      "description": "Render con trazado de rayos simulando aleaciones de cromo líquido pulido.",
-      "likes": 230,
-      "createdAt": "2024-02-08T13:00:00Z"
-    },
-    {
-      "id": "art-119",
-      "artistId": "artist-demo-107",
-      "title": "Cintas de Energía Tridimensional",
-      "category": "Modelado 3D",
-      "image": "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?w=800&q=80",
-      "description": "Estudio de simulación de fluidos y materiales reflectivos en movimiento continuo.",
-      "likes": 295,
-      "createdAt": "2024-03-06T15:45:00Z"
+      "artistId": "artist-demo-109",
+      "title": "Keyframe de Secuencia de Movimiento 'Kinetics 60FPS'",
+      "category": "Motion Graphics",
+      "image": "/images/catalog/motion_graphics_frame.svg",
+      "imageUrl": "/images/catalog/motion_graphics_frame.svg",
+      "description": "Composición representativa de secuencia de apertura con estelas de curvas Bezier y línea de tiempo.",
+      "tags": [
+        "motion graphics",
+        "keyframes",
+        "animación",
+        "timeline"
+      ],
+      "likes": 180,
+      "createdAt": "2026-02-24T12:00:00Z"
     },
     {
       "id": "art-120",
-      "artistId": "artist-demo-108",
-      "title": "Autómata Centinela MK-IV",
-      "category": "Character Design",
-      "image": "https://images.unsplash.com/photo-1563089145-599997674d42?w=800&q=80",
-      "description": "Hoja de diseño y turn-around para guardián robótico con iluminación interna.",
-      "likes": 320,
-      "createdAt": "2024-02-12T10:10:00Z"
+      "artistId": "artist-demo-110",
+      "title": "Composición Vectorial Retrofuturista Flat",
+      "category": "Arte Vectorial",
+      "image": "/images/catalog/vector_art_composition.svg",
+      "imageUrl": "/images/catalog/vector_art_composition.svg",
+      "description": "Ilustración de personaje con lentes de sol y formas geométricas puras escalables infinitamente.",
+      "tags": [
+        "vectorial",
+        "flat",
+        "geométrico",
+        "ilustración"
+      ],
+      "likes": 170,
+      "createdAt": "2026-02-26T16:00:00Z"
     },
     {
       "id": "art-121",
-      "artistId": "artist-demo-108",
-      "title": "Yelmo Cibernético del Vórtice",
-      "category": "Character Design",
-      "image": "https://images.unsplash.com/photo-1578632767115-351597cf2477?w=800&q=80",
-      "description": "Diseño de indumentaria y armadura para protagonista de aventura espacial.",
-      "likes": 260,
-      "createdAt": "2024-03-10T12:00:00Z"
+      "artistId": "artist-demo-111",
+      "title": "Página de Acción Shonen con Líneas Cinéticas y Tramas",
+      "category": "Cómic y Manga Digital",
+      "image": "/images/catalog/manga_page_action.svg",
+      "imageUrl": "/images/catalog/manga_page_action.svg",
+      "description": "Página de tres viñetas con corte de espada, onomatopeya en kanji y plano cerrado de mirada intensa.",
+      "tags": [
+        "manga",
+        "cómic",
+        "viñetas",
+        "screentone"
+      ],
+      "likes": 290,
+      "createdAt": "2026-02-28T14:00:00Z"
     },
     {
       "id": "art-122",
-      "artistId": "artist-demo-108",
-      "title": "Silueta Espectral de Cristal",
-      "category": "Character Design",
-      "image": "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&q=80",
-      "description": "Concepto de entidad mística compuesta por fracturas de luz astral.",
-      "likes": 310,
-      "createdAt": "2024-03-29T17:15:00Z"
-    },
-    {
-      "id": "art-123",
-      "artistId": "artist-demo-109",
-      "title": "Alfabeto Monocromo Brutalista",
-      "category": "Tipografía Digital",
-      "image": "https://images.unsplash.com/photo-1533134486753-c833f0ed4866?w=800&q=80",
-      "description": "Composición de caracteres display con cortes geométricos de alto contraste.",
-      "likes": 155,
-      "createdAt": "2024-02-14T11:20:00Z"
-    },
-    {
-      "id": "art-124",
-      "artistId": "artist-demo-109",
-      "title": "Retícula Tipográfica Experimental",
-      "category": "Tipografía Digital",
-      "image": "https://images.unsplash.com/photo-1558655146-d09347e92766?w=800&q=80",
-      "description": "Exploración de diagramación asimétrica y jerarquía visual tipográfica.",
-      "likes": 182,
-      "createdAt": "2024-03-14T14:40:00Z"
-    },
-    {
-      "id": "art-125",
-      "artistId": "artist-demo-109",
-      "title": "Pintura Gestual Tipográfica",
-      "category": "Tipografía Digital",
-      "image": "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=800&q=80",
-      "description": "Fusión de caligrafía digital con trazos gestuales de acuarela sintética.",
-      "likes": 205,
-      "createdAt": "2024-03-31T09:30:00Z"
-    },
-    {
-      "id": "art-126",
-      "artistId": "artist-demo-110",
-      "title": "Valle Brumoso del Crepúsculo",
-      "category": "Matte Painting",
-      "image": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800&q=80",
-      "description": "Pintura digital de paisaje de alta resolución para fondo de producción fílmica.",
-      "likes": 380,
-      "createdAt": "2024-02-16T18:00:00Z"
-    },
-    {
-      "id": "art-127",
-      "artistId": "artist-demo-110",
-      "title": "Santuario del Bosque Esmeralda",
-      "category": "Matte Painting",
-      "image": "https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800&q=80",
-      "description": "Composición ambiental con rayos solares volumétricos y follaje denso.",
-      "likes": 290,
-      "createdAt": "2024-03-18T16:15:00Z"
-    },
-    {
-      "id": "art-128",
-      "artistId": "artist-demo-110",
-      "title": "Cordillera de los Vientos",
-      "category": "Matte Painting",
-      "image": "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800&q=80",
-      "description": "Vista panorámica de picos montañosos bajo un manto de neblina matutina.",
-      "likes": 345,
-      "createdAt": "2024-04-02T12:00:00Z"
+      "artistId": "artist-demo-112",
+      "title": "Estudio Anatómico de Dragón Abisal",
+      "category": "Diseño de Criaturas",
+      "image": "/images/catalog/creature_design_dragon.svg",
+      "imageUrl": "/images/catalog/creature_design_dragon.svg",
+      "description": "Lámina técnica con silueta de vuelo, estructura de alas membranosas, garras y notas de hábitat.",
+      "tags": [
+        "criaturas",
+        "bestiario",
+        "dragones",
+        "anatomía"
+      ],
+      "likes": 235,
+      "createdAt": "2026-03-01T12:00:00Z"
     },
     {
       "id": "port-mateo-01",
       "artistId": "artist-001",
-      "title": "Guardiana del bosque",
-      "category": "Ilustración 2D",
-      "image": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=900&q=80",
-      "description": "Ilustración fantástica de personaje con iluminación mágica.",
-      "likes": 42,
-      "createdAt": "2026-02-01T00:00:00.000Z"
+      "title": "Guardiana del Bosque",
+      "category": "Ilustración Digital",
+      "image": "/images/hero/portfolio/forest-guardian.jpg",
+      "imageUrl": "/images/hero/portfolio/forest-guardian.jpg",
+      "description": "Ilustración de personaje chamánico entre la vegetación mágica.",
+      "tags": [
+        "fantasía",
+        "ilustración",
+        "naturaleza"
+      ],
+      "likes": 195,
+      "createdAt": "2026-02-10T10:00:00Z"
     },
     {
       "id": "port-mateo-02",
       "artistId": "artist-001",
-      "title": "Islas flotantes",
-      "category": "Concept art",
-      "image": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=900&q=80",
-      "description": "Concept art de arquitectura suspendida y cielo abierto.",
-      "likes": 28,
-      "createdAt": "2026-03-01T00:00:00.000Z"
+      "title": "Santuario de las Nubes Celestes",
+      "category": "Concept Art",
+      "image": "/images/hero/portfolio/sky-sanctuary.jpg",
+      "imageUrl": "/images/hero/portfolio/sky-sanctuary.jpg",
+      "description": "Pintura de entorno con arquitectura etérea y cielos luminosos.",
+      "tags": [
+        "concept art",
+        "cielos",
+        "fantasía"
+      ],
+      "likes": 165,
+      "createdAt": "2026-02-18T14:00:00Z"
+    },
+    {
+      "id": "port-mateo-03",
+      "artistId": "artist-001",
+      "title": "Retrato Iluminado de Fantasía",
+      "category": "Ilustración Digital",
+      "image": "/images/hero/portfolio/fantasy-girl.jpg",
+      "imageUrl": "/images/hero/portfolio/fantasy-girl.jpg",
+      "description": "Pintura digital con contrastes de luz y atmósfera cósmica.",
+      "tags": [
+        "retrato",
+        "pintura digital"
+      ],
+      "likes": 140,
+      "createdAt": "2026-02-25T11:00:00Z"
     }
   ],
   "commissions": [
     {
       "id": "comm-101",
       "artistId": "artist-demo-101",
-      "title": "Hoja de Sprites de Personaje 16-Bit",
-      "description": "Creación de personaje pixel art con 4 ciclos de movimiento básicos.",
-      "price": 80,
-      "deliveryDays": 5,
-      "revisions": 2,
-      "includes": "Archivos PNG con fondo transparente y archivo de proyecto",
-      "featured": true,
-      "category": "Pixel Art"
+      "title": "Retrato Ilustrado Anime Full-Color",
+      "category": "Ilustración Digital",
+      "description": "Ilustración digital de busto o medio cuerpo estilo anime con iluminación cuidada, paleta personalizada y archivo a 300 DPI.",
+      "price": 120,
+      "deliveryDays": 10,
+      "examples": [
+        "/images/hero/soramoon.jpg",
+        "/images/hero/portfolio/fantasy-girl.jpg"
+      ],
+      "status": "available",
+      "revisions": 3,
+      "features": [
+        "Archivo PNG y PSD",
+        "Uso personal y redes",
+        "Boceto preliminar"
+      ]
     },
     {
       "id": "comm-102",
       "artistId": "artist-demo-101",
-      "title": "Escenario Completo en Perspectiva Pixel",
-      "description": "Fondo de escenario estático o con capas parallax para videojuego 2D.",
-      "price": 140,
-      "deliveryDays": 10,
-      "revisions": 3,
-      "includes": "Capas separadas en PSD/PNG",
-      "featured": false,
-      "category": "Pixel Art"
+      "title": "Ilustración Completa con Fondo Cinemático",
+      "category": "Ilustración Digital",
+      "description": "Personaje completo con fondo ilustrado detallado, efectos de partículas y composición cinemática.",
+      "price": 190,
+      "deliveryDays": 16,
+      "examples": [
+        "/images/hero/soramoon.jpg"
+      ],
+      "status": "available",
+      "revisions": 4,
+      "features": [
+        "Resolución 4K",
+        "Licencia comercial básica",
+        "Paleta de color editable"
+      ]
     },
     {
       "id": "comm-103",
       "artistId": "artist-demo-102",
-      "title": "Diorama Voxel Isométrico",
-      "description": "Modelado de una escena o habitación temática en bloques cúbicos detallados.",
-      "price": 120,
-      "deliveryDays": 7,
-      "revisions": 2,
-      "includes": "Render 4K y archivo .vox / .obj",
-      "featured": true,
-      "category": "Voxel Art"
+      "title": "Hoja de Personaje Turnaround Completa",
+      "category": "Diseño de Personajes",
+      "description": "Vistas ortogonales frontal, lateral y trasera, 3 expresiones faciales y desglose de accesorios para 3D o animación.",
+      "price": 220,
+      "deliveryDays": 14,
+      "examples": [
+        "/images/catalog/character_design_01.jpg"
+      ],
+      "status": "available",
+      "revisions": 3,
+      "features": [
+        "Model Sheet en alta resolución",
+        "Paleta de colores oficial",
+        "Notas de diseño"
+      ]
     },
     {
       "id": "comm-104",
       "artistId": "artist-demo-103",
-      "title": "Kit de Ilustraciones Vectoriales de Marca",
-      "description": "Conjunto de 3 ilustraciones corporativas o de producto en curvas escalables.",
-      "price": 90,
-      "deliveryDays": 6,
-      "revisions": 2,
-      "includes": "Formatos SVG, AI y exportaciones optimizadas",
-      "featured": true,
-      "category": "Ilustración Vectorial"
+      "title": "Concept Art de Entorno / Escenario",
+      "category": "Concept Art",
+      "description": "Pintura conceptual de paisaje sci-fi o fantasía con moodboard, valores tonales y 2 variaciones de iluminación.",
+      "price": 210,
+      "deliveryDays": 16,
+      "examples": [
+        "/images/catalog/concept_art_01.jpg",
+        "/images/hero/azure_isles.jpg"
+      ],
+      "status": "available",
+      "revisions": 3,
+      "features": [
+        "Resolución para impresión",
+        "Miniaturas exploratorias",
+        "Capas de atmósfera separadas"
+      ]
     },
     {
       "id": "comm-105",
       "artistId": "artist-demo-104",
-      "title": "Ilustración de Entorno Sci-Fi Cinemático",
-      "description": "Concept art a todo color con iluminación dramática y detalles atmosféricos.",
-      "price": 220,
-      "deliveryDays": 14,
+      "title": "Modelado 3D de Personaje / Prop con Texturas PBR",
+      "category": "Modelado 3D",
+      "description": "Malla limpia optimizada (low o mid-poly), UV mapping sin solapes y mapas de texturas 4K (Albedo, Normal, Roughness, Metalness).",
+      "price": 250,
+      "deliveryDays": 20,
+      "examples": [
+        "/images/catalog/model_3d_showcase.svg"
+      ],
+      "status": "available",
       "revisions": 3,
-      "includes": "Bocetos iniciales, selección tonal y pintura final en alta resolución",
-      "featured": true,
-      "category": "Concept Art"
+      "features": [
+        "Archivos FBX, OBJ y Blend",
+        "Texturas PBR 4K",
+        "Listo para Unity/Unreal"
+      ]
     },
     {
       "id": "comm-106",
       "artistId": "artist-demo-105",
-      "title": "Diseño de UI para Dashboard Web",
-      "description": "Arquitectura visual y maquetación de pantalla principal con componentes UI.",
-      "price": 150,
-      "deliveryDays": 8,
-      "revisions": 3,
-      "includes": "Archivo Figma editable con autolayout y tokens",
-      "featured": true,
-      "category": "Diseño UI/UX"
+      "title": "Modelo VTuber Anime 2D de Cuerpo Completo",
+      "category": "Modelos VTuber",
+      "description": "Diseño y model sheet completo de avatar VTuber con frontal, ropa, accesorios y expresiones emocionales para streaming.",
+      "price": 280,
+      "deliveryDays": 18,
+      "examples": [
+        "/images/catalog/vtuber_model_01.jpg"
+      ],
+      "status": "available",
+      "revisions": 4,
+      "features": [
+        "Hoja de especificaciones",
+        "Archivos de alta resolución",
+        "Garantía de originalidad"
+      ]
     },
     {
       "id": "comm-107",
       "artistId": "artist-demo-106",
-      "title": "Pieza Generativa / Textura Glitch",
-      "description": "Composición digital algorítmica para portadas de álbumes o visuales de escenario.",
-      "price": 70,
-      "deliveryDays": 4,
-      "revisions": 2,
-      "includes": "Arte final en alta resolución y variaciones cromáticas",
-      "featured": true,
-      "category": "Arte Generativo"
+      "title": "Separación de Capas e Ilustración Live2D Rig-Ready",
+      "category": "Live2D",
+      "description": "Archivo PSD con más de 60 capas cortadas y nombradas profesionalmente para rigging en Cubism (ojos, boca, física de pelo).",
+      "price": 200,
+      "deliveryDays": 15,
+      "examples": [
+        "/images/catalog/live2d_rigging_model.svg"
+      ],
+      "status": "available",
+      "revisions": 3,
+      "features": [
+        "PSD preparado para Live2D",
+        "Capas transparentes limpias",
+        "Guía de parámetros"
+      ]
     },
     {
       "id": "comm-108",
       "artistId": "artist-demo-107",
-      "title": "Bucle de Animación 3D para Redes",
-      "description": "Renderizado continuo de un objeto o logotipo tridimensional en movimiento armónico.",
-      "price": 190,
-      "deliveryDays": 10,
-      "revisions": 2,
-      "includes": "Video MP4 sin pérdida y secuencia de frames",
-      "featured": true,
-      "category": "Modelado 3D"
+      "title": "Hoja de Sprites Animados Pixel Art",
+      "category": "Pixel Art",
+      "description": "Personaje pixelado en resolución 16x16 o 32x32 con 4 ciclos de animación (idle, walk, run, attack).",
+      "price": 95,
+      "deliveryDays": 8,
+      "examples": [
+        "/images/catalog/pixel_sprites_sheet.svg",
+        "/images/catalog/pixel_art_cyber_city.svg"
+      ],
+      "status": "available",
+      "revisions": 3,
+      "features": [
+        "Sprite sheet PNG transparente",
+        "Archivo Aseprite/GIF",
+        "Paleta de colores indexada"
+      ]
     },
     {
       "id": "comm-109",
       "artistId": "artist-demo-108",
-      "title": "Diseño de Personaje Original Completo",
-      "description": "Ficha conceptual con vista frontal, lateral y expresiones principales del personaje.",
-      "price": 160,
-      "deliveryDays": 12,
-      "revisions": 3,
-      "includes": "Hoja de especificaciones de color y trazo final",
-      "featured": true,
-      "category": "Character Design"
+      "title": "Pack de 16 Iconos de Ítems / Inventario para Juego",
+      "category": "Arte para Videojuegos",
+      "description": "Set de 16 iconos vectoriales o rasterizados de objetos RPG (pociones, armas, gemas, llaves) a 64x64 y 128x128 px.",
+      "price": 110,
+      "deliveryDays": 9,
+      "examples": [
+        "/images/catalog/game_assets_pack.svg"
+      ],
+      "status": "available",
+      "revisions": 2,
+      "features": [
+        "Iconos PNG transparentes",
+        "Fondo oscuro y claro",
+        "Exportación vectorial SVG"
+      ]
     },
     {
       "id": "comm-110",
       "artistId": "artist-demo-109",
-      "title": "Logotipo Tipográfico y Monograma",
-      "description": "Diseño personalizado de tipografía display adaptada a la identidad del proyecto.",
-      "price": 85,
-      "deliveryDays": 5,
-      "revisions": 2,
-      "includes": "Archivos vectoriales SVG y guía de aplicación tipográfica",
-      "featured": true,
-      "category": "Tipografía Digital"
+      "title": "Bucle de Motion Graphics / Identidad Visual",
+      "category": "Motion Graphics",
+      "description": "Animación en bucle de 5 a 10 segundos con tipografía cinética y elementos gráficos vectoriales para streams o videos.",
+      "price": 180,
+      "deliveryDays": 12,
+      "examples": [
+        "/images/catalog/motion_graphics_frame.svg"
+      ],
+      "status": "available",
+      "revisions": 3,
+      "features": [
+        "Video MP4 60FPS",
+        "Render ProRes / WebM",
+        "Archivo editable After Effects"
+      ]
     },
     {
       "id": "comm-111",
       "artistId": "artist-demo-110",
-      "title": "Matte Painting de Paisaje Épico",
-      "description": "Pintura de fondo con integración de elementos naturales, iluminación volumétrica y profundidad.",
-      "price": 210,
-      "deliveryDays": 14,
+      "title": "Ilustración Vectorial Flat / Geométrica",
+      "category": "Arte Vectorial",
+      "description": "Ilustración vectorial limpia para portada, póster o identidad visual de marca, escalable a cualquier dimensión.",
+      "price": 100,
+      "deliveryDays": 7,
+      "examples": [
+        "/images/catalog/vector_art_composition.svg"
+      ],
+      "status": "available",
+      "revisions": 2,
+      "features": [
+        "Archivos SVG, EPS y PDF",
+        "Curvas Bezier optimizadas",
+        "Colores Pantone/CMYK"
+      ]
+    },
+    {
+      "id": "comm-112",
+      "artistId": "artist-demo-111",
+      "title": "Página de Cómic / Manga Entintada en Alta Resolución",
+      "category": "Cómic y Manga Digital",
+      "description": "Página completa de cómic/manga con composición de viñetas, líneas de acción, tramas de semitono y globos de diálogo.",
+      "price": 130,
+      "deliveryDays": 10,
+      "examples": [
+        "/images/catalog/manga_page_action.svg"
+      ],
+      "status": "available",
       "revisions": 3,
-      "includes": "Archivo PSD por capas y exportación en resolución 6K",
-      "featured": true,
-      "category": "Matte Painting"
+      "features": [
+        "Archivo B4 a 600 DPI para imprenta",
+        "Versión webtoon optimizada",
+        "Boceto y guion técnico"
+      ]
+    },
+    {
+      "id": "comm-113",
+      "artistId": "artist-demo-112",
+      "title": "Concept Art de Criatura o Monstruo",
+      "category": "Diseño de Criaturas",
+      "description": "Diseño de bestia o criatura fantástica con vista lateral/frontal, detalles anatómicos y textura de piel o escamas.",
+      "price": 180,
+      "deliveryDays": 14,
+      "examples": [
+        "/images/catalog/creature_design_dragon.svg"
+      ],
+      "status": "available",
+      "revisions": 3,
+      "features": [
+        "Lámina de anatomía",
+        "Variaciones de color",
+        "Resolución 4K"
+      ]
     },
     {
       "id": "comm-mateo-01",
       "artistId": "artist-001",
-      "title": "Retrato editorial personalizado",
-      "description": "Ilustración a todo color de un personaje o persona con fondo narrativo.",
+      "title": "Ilustración Digital de Personaje Fantástico",
+      "category": "Ilustración Digital",
+      "description": "Personaje ilustrado a color con temática de fantasía, detalles de naturaleza e iluminación mágica.",
       "price": 80,
-      "deliveryDays": 7,
-      "revisions": 3,
-      "includes": [
-        "Archivo en alta resolución (300 DPI)",
-        "Boceto preliminar para revisión",
-        "Uso comercial básico"
+      "deliveryDays": 8,
+      "examples": [
+        "/images/hero/portfolio/forest-guardian.jpg"
       ],
-      "featured": true,
-      "category": "Ilustración 2D"
+      "status": "available",
+      "revisions": 2,
+      "features": [
+        "Archivo en alta resolución",
+        "Boceto preliminar",
+        "Uso personal"
+      ]
     }
   ],
   "requests": [
@@ -1328,6 +1716,54 @@
       "createdAt": "2026-10-02T16:59:25.221Z",
       "updatedAt": "2026-10-02T16:59:25.221Z",
       "page": "/"
+    },
+    {
+      "id": "TaK6OW2R5Q0",
+      "userId": "user-test-1790967663416-q6r3",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-02T19:01:03.826Z",
+      "updatedAt": "2026-10-02T19:01:03.826Z",
+      "page": "/explorar"
+    },
+    {
+      "id": "a94QaIMLDa4",
+      "userId": "user-client-A-1790967663860-4x9i",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-02T19:01:04.366Z",
+      "updatedAt": "2026-10-02T19:01:04.366Z",
+      "page": "/"
+    },
+    {
+      "id": "oAFguvsFxEQ",
+      "userId": "user-artist-B-1790967663860-tej8",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-02T19:01:04.625Z",
+      "updatedAt": "2026-10-02T19:01:04.625Z",
+      "page": "/"
+    },
+    {
+      "id": "NA55NoSz9Mc",
+      "userId": "user-test-1790967872009-yb4n",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-02T19:04:32.581Z",
+      "updatedAt": "2026-10-02T19:04:32.581Z",
+      "page": "/explorar"
+    },
+    {
+      "id": "VFXzRUfLw2g",
+      "userId": "user-client-A-1790967872617-wxly",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-02T19:04:32.849Z",
+      "updatedAt": "2026-10-02T19:04:32.849Z",
+      "page": "/"
+    },
+    {
+      "id": "-kt14zqxhCg",
+      "userId": "user-artist-B-1790967872617-1b98",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-02T19:04:33.036Z",
+      "updatedAt": "2026-10-02T19:04:33.036Z",
+      "page": "/"
     }
   ],
   "favorites": [
@@ -1347,6 +1783,117 @@
   "portfolio": [],
   "notifications": [],
   "proposals": [],
-  "chatMessages": [],
+  "chatMessages": [
+    {
+      "id": "vBGH0eyVMOA",
+      "conversationId": "convo-1790967663826-sblwm",
+      "userId": "user-test-1790967663416-q6r3",
+      "role": "user",
+      "content": "Hola asistente de ArtLink",
+      "createdAt": "2026-10-02T19:01:03.838Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "TZi36FrnWR4",
+      "conversationId": "convo-1790967663826-sblwm",
+      "userId": "user-test-1790967663416-q6r3",
+      "role": "assistant",
+      "content": "Hola, te ayudo a buscar ilustradores digitales.",
+      "createdAt": "2026-10-02T19:01:03.844Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "dFykS2VJ9lI",
+      "conversationId": "convo-1790967663826-sblwm",
+      "userId": "user-test-1790967663416-q6r3",
+      "role": "assistant",
+      "content": "Puedo recomendarte artistas de estilo anime.",
+      "createdAt": "2026-10-02T19:01:03.850Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "8gEwPGaXk_E",
+      "conversationId": "convo-1790967664366-c41gi",
+      "userId": "user-client-A-1790967663860-4x9i",
+      "role": "user",
+      "content": "Mensaje de usuario A",
+      "createdAt": "2026-10-02T19:01:04.379Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "5j7MNpdT-PM",
+      "conversationId": "convo-1790967664625-zxan6",
+      "userId": "user-artist-B-1790967663860-tej8",
+      "role": "user",
+      "content": "Mensaje de usuario B",
+      "createdAt": "2026-10-02T19:01:04.631Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "9qTySTrB3wU",
+      "conversationId": "convo-1790967872581-1nwwe",
+      "userId": "user-test-1790967872009-yb4n",
+      "role": "user",
+      "content": "Hola asistente de ArtLink",
+      "createdAt": "2026-10-02T19:04:32.595Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "hALT2nmv09s",
+      "conversationId": "convo-1790967872581-1nwwe",
+      "userId": "user-test-1790967872009-yb4n",
+      "role": "assistant",
+      "content": "Hola, te ayudo a buscar ilustradores digitales.",
+      "createdAt": "2026-10-02T19:04:32.603Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "jbgDF4gIGOE",
+      "conversationId": "convo-1790967872581-1nwwe",
+      "userId": "user-test-1790967872009-yb4n",
+      "role": "assistant",
+      "content": "Puedo recomendarte artistas de estilo anime.",
+      "createdAt": "2026-10-02T19:04:32.609Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "OYbP8KrQziY",
+      "conversationId": "convo-1790967872849-vlfk0",
+      "userId": "user-client-A-1790967872617-wxly",
+      "role": "user",
+      "content": "Mensaje de usuario A",
+      "createdAt": "2026-10-02T19:04:32.861Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "k2uk20XgmQ8",
+      "conversationId": "convo-1790967873036-rwnsg",
+      "userId": "user-artist-B-1790967872617-1b98",
+      "role": "user",
+      "content": "Mensaje de usuario B",
+      "createdAt": "2026-10-02T19:04:33.040Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    }
+  ],
   "$schema": "./node_modules/json-server/schema.json"
 }

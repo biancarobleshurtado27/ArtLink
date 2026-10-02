@@ -414,7 +414,7 @@ export default function ArtistProfilePage() {
   if (loading) return <LoadingState label="Cargando perfil del artista..." />
   if (error || !profile) return <ErrorState message={error?.message || 'No encontramos el perfil de este artista.'} />
 
-  const bannerImage = profile.banner || portfolio[0]?.image || '/images/hero/azure_isles.jpg'
+  const bannerImage = profile.banner || profile.coverUrl || profile.image || portfolio[0]?.image || '/images/hero/soramoon.jpg'
   const shareProfileUrl = typeof window !== 'undefined' ? `${window.location.origin}/artista/${profile.id}` : ''
 
   return (
@@ -450,7 +450,7 @@ export default function ArtistProfilePage() {
         <div className="artist-v2-avatar-wrap">
           <img
             className="artist-v2-avatar-img"
-            src={profile.avatar || `https://i.pravatar.cc/150?u=${profile.username || 'artist'}`}
+            src={profile.avatar || profile.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.displayName || profile.name || 'A')}&background=8B5CF6&color=fff`}
             onError={handleImageError}
             alt={`Avatar de ${profile.displayName}`}
           />
