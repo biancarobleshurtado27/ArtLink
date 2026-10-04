@@ -1534,3 +1534,148 @@
   }
 }
 
+/* ══════════════════════════════════════════════════════════════════
+   DARK MODE OVERRIDES — BANDEJA DE SOLICITUDES Y ENCARGOS PRIVADOS
+   ══════════════════════════════════════════════════════════════════ */
+
+:root[data-theme='dark'] .req-page-container,
+:root[data-theme='dark'] .requests-page {
+  background-color: var(--bg);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .req-page-title {
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .req-page-subtitle {
+  color: var(--muted);
+}
+
+:root[data-theme='dark'] .req-top-tabs-bar {
+  background: var(--surface-soft);
+  border-color: var(--line);
+}
+
+:root[data-theme='dark'] .req-tab-btn {
+  color: var(--muted);
+}
+
+:root[data-theme='dark'] .req-tab-btn.is-active {
+  background: #3D2D59;
+  border-color: var(--violet-dark);
+  color: #FFFFFF;
+}
+
+:root[data-theme='dark'] .req-filter-search-box {
+  background: var(--surface-soft);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .req-filter-search-input {
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .req-filter-search-input::placeholder {
+  color: rgba(249, 245, 255, 0.4);
+}
+
+:root[data-theme='dark'] .req-card-item,
+:root[data-theme='dark'] .req-action-card-box {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--ink);
+  box-shadow: var(--shadow);
+}
+
+:root[data-theme='dark'] .req-card-title {
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .req-card-desc {
+  color: var(--muted);
+}
+
+:root[data-theme='dark'] .req-card-user-row {
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .req-timeline-box,
+:root[data-theme='dark'] .req-timeline-step {
+  background: var(--surface-soft);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .req-timeline-title {
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .req-timeline-desc {
+  color: var(--muted);
+}
+
+:root[data-theme='dark'] .req-escrow-card,
+:root[data-theme='dark'] .req-artie-card,
+:root[data-theme='dark'] .req-export-box {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--ink);
+  box-shadow: var(--shadow);
+}
+
+:root[data-theme='dark'] .req-escrow-title,
+:root[data-theme='dark'] .req-artie-title,
+:root[data-theme='dark'] .req-export-title {
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .req-escrow-text,
+:root[data-theme='dark'] .req-artie-body-text,
+:root[data-theme='dark'] .req-export-text {
+  color: var(--muted);
+}
+
+:root[data-theme='dark'] .req-detail-modal,
+:root[data-theme='dark'] .req-modal-content {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .req-modal-header {
+  border-color: var(--line);
+}
+
+:root[data-theme='dark'] .req-modal-title {
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .req-empty-state-box {
+  background: var(--surface-soft);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .req-empty-state-title {
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .req-empty-state-desc {
+  color: var(--muted);
+}
+
+:root[data-theme='dark'] .req-btn-white {
+  background: var(--surface-soft);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .req-btn-white:hover {
+  background: #352A4E;
+  border-color: var(--violet-dark);
+}
+
+

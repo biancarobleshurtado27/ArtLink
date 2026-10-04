@@ -1226,3 +1226,119 @@
     min-width: 290px !important;
   }
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   DARK MODE OVERRIDES — ASISTENTE IA ARTIE Y CHATBOT
+   ══════════════════════════════════════════════════════════════════ */
+
+:root[data-theme='dark'] .assistant-dialog,
+:root[data-theme='dark'] .chatbot-window {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--ink);
+  box-shadow: 6px 8px 0 rgba(0, 0, 0, 0.7);
+}
+
+:root[data-theme='dark'] .artie-avatar-ring {
+  background: #3D2D59;
+  border-color: var(--violet-dark);
+}
+
+:root[data-theme='dark'] .assistant-name-text,
+:root[data-theme='dark'] .artie-bot-name {
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .artie-pro-pill,
+:root[data-theme='dark'] .artie-pill-badge {
+  background: var(--surface-soft);
+  border-color: var(--line);
+  color: var(--violet-dark);
+}
+
+:root[data-theme='dark'] .artie-status-desc,
+:root[data-theme='dark'] .artie-sub-text {
+  color: var(--muted);
+}
+
+:root[data-theme='dark'] .artie-ctrl-btn,
+:root[data-theme='dark'] .artie-icon-btn {
+  background: var(--surface-soft);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .artie-ctrl-btn:hover,
+:root[data-theme='dark'] .artie-icon-btn:hover {
+  background: #352A4E;
+  border-color: var(--violet-dark);
+}
+
+:root[data-theme='dark'] .assistant-messages,
+:root[data-theme='dark'] .chatbot-messages,
+:root[data-theme='dark'] .artie-chat-body {
+  background-color: var(--bg);
+}
+
+:root[data-theme='dark'] .chat-bubble-bot,
+:root[data-theme='dark'] .artie-bubble-bot,
+:root[data-theme='dark'] .assistant-bubble {
+  background: var(--surface-soft);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .chat-bubble-user,
+:root[data-theme='dark'] .artie-bubble-user,
+:root[data-theme='dark'] .user-bubble {
+  background: #382857;
+  border-color: var(--violet-dark);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .chat-quick-reply {
+  background: var(--surface-soft);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .chat-quick-reply:hover {
+  background: #4C3278;
+  border-color: var(--violet-dark);
+  color: #FFFFFF;
+}
+
+:root[data-theme='dark'] .assistant-composer,
+:root[data-theme='dark'] .chatbot-composer,
+:root[data-theme='dark'] .artie-composer-area {
+  background: var(--surface);
+  border-color: var(--line);
+}
+
+:root[data-theme='dark'] .assistant-composer textarea,
+:root[data-theme='dark'] .chatbot-composer input,
+:root[data-theme='dark'] .artie-input-field {
+  background: var(--surface-soft);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .assistant-composer textarea::placeholder,
+:root[data-theme='dark'] .chatbot-composer input::placeholder,
+:root[data-theme='dark'] .artie-input-field::placeholder {
+  color: rgba(249, 245, 255, 0.4);
+}
+
+:root[data-theme='dark'] .artie-chip,
+:root[data-theme='dark'] .chatbot-suggestion-pill {
+  background: var(--surface-soft);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .artie-chip:hover,
+:root[data-theme='dark'] .chatbot-suggestion-pill:hover {
+  background: #352A4E;
+  border-color: var(--violet-dark);
+}
+

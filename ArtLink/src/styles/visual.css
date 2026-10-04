@@ -2112,3 +2112,238 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px
   .hero-search-btn { width: 100%; margin-top: 0.5rem; }
   .combined-footer-columns { grid-template-columns: 1fr; gap: 1.5rem; }
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   DARK MODE OVERRIDES — VISUALES, CATÁLOGO, HERO Y TARJETAS
+   ══════════════════════════════════════════════════════════════════ */
+
+:root[data-theme='dark'] .hero-title-main {
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .hero-subtitle-main {
+  color: var(--muted);
+}
+
+:root[data-theme='dark'] .hero-search-capsule {
+  background: var(--surface-soft);
+  border-color: var(--line);
+  box-shadow: 0 2px 0 var(--line);
+}
+
+:root[data-theme='dark'] .search-select-wrapper select {
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .search-select-wrapper select option {
+  background: #211B2D;
+  color: #F9F5FF;
+}
+
+:root[data-theme='dark'] .search-chevron,
+:root[data-theme='dark'] .search-icon-crosshair,
+:root[data-theme='dark'] .search-icon-glass {
+  color: var(--muted);
+}
+
+:root[data-theme='dark'] .search-capsule-divider {
+  background: var(--line);
+}
+
+:root[data-theme='dark'] .search-input-wrapper input {
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .search-input-wrapper input::placeholder {
+  color: rgba(249, 245, 255, 0.45);
+}
+
+:root[data-theme='dark'] .trends-label {
+  color: var(--muted);
+}
+
+:root[data-theme='dark'] .trend-tag {
+  background: var(--surface-soft);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .trend-tag:hover {
+  background: #352A4E;
+  border-color: var(--violet-dark);
+  color: #FFFFFF;
+}
+
+/* Métricas del Hero */
+:root[data-theme='dark'] .hero-metric-card {
+  background: var(--surface);
+  border-color: var(--line);
+  box-shadow: 2.5px 2.5px 0 var(--line);
+}
+
+:root[data-theme='dark'] .hero-metric-card:hover {
+  box-shadow: 2.5px 4.5px 0 var(--violet-dark);
+}
+
+:root[data-theme='dark'] .metric-icon-box {
+  border-color: var(--line);
+}
+
+:root[data-theme='dark'] .metric-text-box strong {
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .metric-text-box span {
+  color: var(--muted);
+}
+
+/* Tarjetas Orbit 3D */
+:root[data-theme='dark'] .hero-orbit-card {
+  background: var(--surface);
+  border-color: var(--line);
+  box-shadow: 4px 4px 0 var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .card-orbit-center {
+  box-shadow: 6px 10px 0 var(--line);
+}
+
+:root[data-theme='dark'] .card-orbit-center:hover {
+  box-shadow: 8px 14px 0 var(--violet-dark);
+}
+
+:root[data-theme='dark'] .card-orbit-right,
+:root[data-theme='dark'] .card-orbit-left {
+  box-shadow: 3px 4px 0 var(--line);
+}
+
+:root[data-theme='dark'] .showcase-card-inner {
+  border-color: var(--line);
+  background: var(--surface-soft);
+}
+
+:root[data-theme='dark'] .showcase-card-clean {
+  border-color: var(--line);
+  background: #120E1A;
+}
+
+:root[data-theme='dark'] .showcase-card-clean .showcase-main-img-wrap {
+  background: #120E1A;
+}
+
+:root[data-theme='dark'] .showcase-clean-artist,
+:root[data-theme='dark'] .showcase-clean-artist a {
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .showcase-clean-work-title {
+  color: var(--muted);
+}
+
+:root[data-theme='dark'] .showcase-mini-nav {
+  background: var(--surface);
+  border-color: var(--line);
+}
+
+:root[data-theme='dark'] .showcase-nav-links,
+:root[data-theme='dark'] .showcase-nav-right-text {
+  color: var(--muted);
+}
+
+:root[data-theme='dark'] .showcase-thumbs-strip {
+  background: var(--surface);
+  border-color: var(--line);
+}
+
+:root[data-theme='dark'] .showcase-thumbs-label {
+  color: var(--muted);
+}
+
+:root[data-theme='dark'] .showcase-thumb-box {
+  background: var(--surface-soft);
+  border-color: var(--line);
+}
+
+:root[data-theme='dark'] .showcase-art-hover-overlay span {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--ink);
+  box-shadow: 2px 2px 0 var(--line);
+}
+
+:root[data-theme='dark'] .hero-stickers-row .sticker-white,
+:root[data-theme='dark'] .hero-landing-sticker.sticker-white {
+  background: var(--surface-soft) !important;
+  border-color: var(--line) !important;
+  color: var(--ink) !important;
+}
+
+/* Tarjetas de Catálogo, Momento y Creadores */
+:root[data-theme='dark'] .catalogue-card,
+:root[data-theme='dark'] .catalogue-item,
+:root[data-theme='dark'] .explore-card,
+:root[data-theme='dark'] .artist-card,
+:root[data-theme='dark'] .artist-card-v2,
+:root[data-theme='dark'] .creator-card,
+:root[data-theme='dark'] .momento-card {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--ink);
+  box-shadow: var(--shadow);
+}
+
+:root[data-theme='dark'] .category-pill,
+:root[data-theme='dark'] .filter-pill {
+  background: var(--surface-soft);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .category-pill:hover,
+:root[data-theme='dark'] .filter-pill:hover {
+  background: #352A4E;
+  border-color: var(--violet-dark);
+}
+
+:root[data-theme='dark'] .category-pill.is-active,
+:root[data-theme='dark'] .filter-pill.is-active {
+  background: #3D2D59;
+  border-color: var(--violet-dark);
+  color: #FFFFFF;
+}
+
+:root[data-theme='dark'] .filter-sidebar,
+:root[data-theme='dark'] .filter-panel {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .state-panel,
+:root[data-theme='dark'] .empty-state {
+  background: var(--surface-soft);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .error-state {
+  background: #35171C;
+  border-color: #EF4444;
+  color: #FCA5A5;
+}
+
+:root[data-theme='dark'] .home-step-card,
+:root[data-theme='dark'] .step-item {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .dual-action-box,
+:root[data-theme='dark'] .escrow-big-container {
+  background: var(--surface-soft);
+  border-color: var(--line);
+  color: var(--ink);
+}
+

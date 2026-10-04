@@ -1946,3 +1946,137 @@ input:checked + .art-dash-toggle-slider:before {
     padding-bottom: 1rem;
   }
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   DARK MODE OVERRIDES — PANEL DEL ARTISTA Y TALLER
+   ══════════════════════════════════════════════════════════════════ */
+
+:root[data-theme='dark'] .art-dash-page,
+:root[data-theme='dark'] .artist-dashboard {
+  background: var(--bg);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .art-dash-hero {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--ink);
+  box-shadow: var(--shadow);
+}
+
+:root[data-theme='dark'] .art-dash-hero-title {
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .art-dash-hero-subtitle {
+  color: var(--muted);
+}
+
+:root[data-theme='dark'] .art-dash-nav-capsule {
+  background: var(--surface-soft);
+  border-color: var(--line);
+}
+
+:root[data-theme='dark'] .art-dash-nav-btn {
+  color: var(--muted);
+}
+
+:root[data-theme='dark'] .art-dash-nav-btn.is-active {
+  background: #3D2D59;
+  border-color: var(--violet-dark);
+  color: #FFFFFF;
+}
+
+:root[data-theme='dark'] .art-dash-kpi-card {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--ink);
+  box-shadow: var(--shadow-soft);
+}
+
+:root[data-theme='dark'] .art-dash-kpi-label {
+  color: var(--muted);
+}
+
+:root[data-theme='dark'] .art-dash-kpi-value {
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .art-dash-kanban-col {
+  background: var(--surface-soft);
+  border-color: var(--line);
+}
+
+:root[data-theme='dark'] .art-dash-col-title {
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .art-dash-request-card {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--ink);
+  box-shadow: var(--shadow-soft);
+}
+
+:root[data-theme='dark'] .art-dash-request-title {
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .art-dash-request-client {
+  color: var(--muted);
+}
+
+:root[data-theme='dark'] .art-dash-commission-card,
+:root[data-theme='dark'] .art-dash-portfolio-item,
+:root[data-theme='dark'] .art-dash-card {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .art-dash-table-wrap,
+:root[data-theme='dark'] .art-dash-table {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .art-dash-table th {
+  background: var(--surface-soft);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .art-dash-table td {
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .art-dash-completed-card {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .art-dash-completed-left {
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .art-dash-completed-item {
+  border-color: var(--line);
+}
+
+:root[data-theme='dark'] .art-dash-modal {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .art-dash-input,
+:root[data-theme='dark'] .art-dash-select,
+:root[data-theme='dark'] .art-dash-textarea {
+  background: var(--surface-soft);
+  border-color: var(--line);
+  color: var(--ink);
+}
+

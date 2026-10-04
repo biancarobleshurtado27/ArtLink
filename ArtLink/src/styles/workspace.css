@@ -95,3 +95,68 @@
   .workspace-commission .form-actions { grid-column: auto; }
 }
 
+/* ══════════════════════════════════════════════════════════════════
+   DARK MODE OVERRIDES — WORKSPACE DEL CREADOR
+   ══════════════════════════════════════════════════════════════════ */
+
+:root[data-theme='dark'] .workspace-section,
+:root[data-theme='dark'] .metric-card,
+:root[data-theme='dark'] .workspace-item,
+:root[data-theme='dark'] .workspace-commission,
+:root[data-theme='dark'] .commission-summary-card {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .availability-status-badge {
+  background: var(--surface-soft);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .availability-form select,
+:root[data-theme='dark'] .availability-form input {
+  background: var(--surface-soft);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .inspiration-widget {
+  background: #3B2E1E;
+  border-color: #EAB308;
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .metric-card.metric-highlight {
+  background: #3B2E1E;
+  border-color: #EAB308;
+}
+
+:root[data-theme='dark'] .count-badge {
+  background: var(--surface-soft);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .status-selector {
+  background: var(--surface-soft);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .workspace-form {
+  background: var(--surface-soft);
+  border-color: var(--violet-dark);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .workspace-form input,
+:root[data-theme='dark'] .workspace-form select,
+:root[data-theme='dark'] .workspace-form textarea {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+

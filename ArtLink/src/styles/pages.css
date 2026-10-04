@@ -251,3 +251,146 @@
   .help-card span { grid-column: 2; }
   .favorite-item { grid-template-columns: 1fr; justify-items: start; }
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   DARK MODE OVERRIDES — AUTH, LANDING, PERFIL Y LEGAL
+   ══════════════════════════════════════════════════════════════════ */
+
+:root[data-theme='dark'] .auth-card {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .auth-form input {
+  background: var(--surface-soft);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .auth-aside {
+  background: #2C1622;
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .auth-aside .eyebrow,
+:root[data-theme='dark'] .auth-aside h2,
+:root[data-theme='dark'] .auth-aside p,
+:root[data-theme='dark'] .auth-aside li {
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .role-card {
+  background: var(--surface-soft);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .role-card strong {
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .role-card small {
+  color: var(--muted);
+}
+
+:root[data-theme='dark'] .role-card.is-selected {
+  background: #382857;
+  border-color: var(--violet-dark);
+}
+
+:root[data-theme='dark'] .demo-chip {
+  background: var(--surface-soft);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .demo-chip:hover {
+  background: #352A4E;
+  border-color: var(--violet-dark);
+}
+
+:root[data-theme='dark'] .terms-checkbox-group {
+  background: var(--surface-soft);
+  border-color: var(--line);
+}
+
+:root[data-theme='dark'] .terms-checkbox-group.has-error {
+  background: #35171C;
+  border-color: #EF4444;
+}
+
+:root[data-theme='dark'] .terms-checkbox-label {
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .terms-link {
+  color: var(--violet-dark);
+}
+
+:root[data-theme='dark'] .profile-card,
+:root[data-theme='dark'] .favorite-item {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--ink);
+  box-shadow: var(--shadow);
+}
+
+:root[data-theme='dark'] .favorite-item-copy span {
+  color: var(--muted);
+}
+
+:root[data-theme='dark'] .step-card,
+:root[data-theme='dark'] .testimonial-card,
+:root[data-theme='dark'] .feature-card {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .benefit-card {
+  background: var(--surface-soft);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .faq-item {
+  background: var(--surface);
+  border-color: var(--line);
+}
+
+:root[data-theme='dark'] .faq-question {
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .faq-answer {
+  border-color: var(--line);
+}
+
+:root[data-theme='dark'] .contact-card,
+:root[data-theme='dark'] .help-note {
+  background: var(--surface-soft);
+  border-color: var(--violet-dark);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .contact-form {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .contact-form input,
+:root[data-theme='dark'] .contact-form select,
+:root[data-theme='dark'] .contact-form textarea {
+  background: var(--surface-soft);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .help-card {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--ink);
+}
