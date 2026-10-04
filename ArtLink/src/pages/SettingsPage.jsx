@@ -1,35 +1,63 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import {
+  AlertCircle,
+  AlertTriangle,
+  ArrowUpRight,
+  Banknote,
   Bell,
+  Building,
+  Calendar,
+  Camera,
+  Check,
   CheckCircle2,
+  ChevronRight,
+  Clock,
+  Compass,
+  CreditCard,
+  Download,
   Eye,
+  FileCheck,
+  FileText,
+  Globe,
+  Heart,
+  HelpCircle,
+  Image as ImageIcon,
+  Info,
+  Key,
+  Layers,
+  Lock,
   LogOut,
+  Mail,
+  MapPin,
+  MessageSquare,
+  Moon,
   Palette,
+  PauseCircle,
+  Radio,
   RotateCcw,
   Save,
+  Send,
+  Shield,
+  ShieldAlert,
   ShieldCheck,
+  Sliders,
+  SlidersHorizontal,
   Sparkles,
   Sun,
   Type,
   User,
-  Volume2,
-  Zap,
-  Lock,
-  SlidersHorizontal,
-  Heart,
-  MessageSquare,
   UserCheck,
-  FileText,
-  HelpCircle,
-  Info,
-  Check,
-  Key,
+  Volume2,
+  X,
+  Zap,
 } from 'lucide-react'
 import useSettings from '../hooks/useSettings'
 import useAuth from '../hooks/useAuth'
 import ReadAloudButton from '../components/ReadAloudButton'
-import ProfileSettingsSection from '../components/settings/ProfileSettingsSection'
+import { getUserById, updateUser as updateUserService } from '../services/userService'
+import { getArtistByUserId, updateArtist as updateArtistService } from '../services/artistService'
+import '../styles/settingsStudio.css'
 
 const ALL_DISCIPLINES = [
   'Ilustración Digital',
@@ -40,6 +68,12 @@ const ALL_DISCIPLINES = [
   'Animación 2D/3D',
   'UI/UX Design',
   'Arte Generativo',
+]
+
+const BANNER_PRESETS = [
+  { label: 'Azure Isles', url: '/images/hero/azure_isles.jpg' },
+  { label: 'Magic Studio', url: '/images/hero/magic_shop.jpg' },
+  { label: 'Sora Moon Night', url: '/images/hero/soramoon.jpg' },
 ]
 
 export default function SettingsPage({ initialTab }) {
@@ -64,12 +98,116 @@ export default function SettingsPage({ initialTab }) {
     location.pathname.endsWith('/profile') ||
     location.pathname.endsWith('/perfil')
 
+  // Tab activo para el índice lateral
   const [activeTab, setActiveTab] = useState(() => {
     if (isProfileRoute) return 'perfil'
     if (initialTab) return initialTab
     const params = new URLSearchParams(location.search)
     return params.get('tab') || 'perfil'
   })
+
+  // Mensajes de feedback local
+  const [localFeedback, setLocalFeedback] = useState({ type: '', text: '' })
+  const [showTip, setShowTip] = useState(true)
+  const [showBannerModal, setShowBannerModal] = useState(false)
+  const [showBankModal, setShowBankModal] = useState(false)
+
+  // ── ESTADO DEL TALLER Y PERFIL ──
+  const [artistProfile, setArtistProfile] = useState(null)
+  const [bannerUrl, setBannerUrl] = useState('/images/hero/azure_isles.jpg')
+  const [displayName, setDisplayName] = useState('Mia Solar')
+  const [username, setUsername] = useState('@miasolar_art')
+  const [tagline, setTagline] = useState(
+    'Ilustradora Digital 2D & Concept Artist especializada en personajes fantásticos y estética anime.'
+  )
+  const [bioExtended, setBioExtended] = useState(
+    '¡Hola! Llevo más de 6 años ilustrando universos mágicos para juegos indie, portadas de novelas ligeras y comisiones personalizadas. Amante de las paletas soñadoras, los colores lila y los detalles minuciosos. ¡Hablemos de tu idea!'
+  )
+  const [locationStudio, setLocationStudio] = useState('Barcelona, España')
+  const [languages, setLanguages] = useState('Español (Nativo), English (Fluent)')
+  const [socialX, setSocialX] = useState('https://x.com/miasolar_art')
+  const [socialInstagram, setSocialInstagram] = useState('https://instagram.com/miasolar.paint')
+  const [socialArtstation, setSocialArtstation] = useState('https://artstation.com/miasolar')
+  const [socialDiscord, setSocialDiscord] = useState('miasolar#8492')
+
+  // ── ESTADOS DE COMISIÓN Y TALLER EN VIVO ──
+  const [isStudioOpen, setIsStudioOpen] = useState(true)
+  const [slotsCount, setSlotsCount] = useState(5)
+  const [activeProjectsCount, setActiveProjectsCount] = useState(3)
+  const [initialResponseTime, setInitialResponseTime] = useState('< 24 horas')
+  const [estimatedDeliveryTime, setEstimatedDeliveryTime] = useState('7 - 10 Días')
+  const [reqVisualRefs, setReqVisualRefs] = useState(true)
+  const [reqColorPaletteApproval, setReqColorPaletteApproval] = useState(true)
+  const [reqCommercialUseDefault, setReqCommercialUseDefault] = useState(false)
+
+  // ── FACTURACIÓN Y ESCROW ──
+  const [bankAccount, setBankAccount] = useState('Banco Santander •••• 4121 (Retiros automáticos quincenales)')
+  const [currency, setCurrency] = useState('USD')
+  const [minWithdrawal, setMinWithdrawal] = useState('100')
+  const [allowVoluntaryTips, setAllowVoluntaryTips] = useState(true)
+
+  // ── NOTIFICACIONES EN VIVO (PUSH & EMAIL) ──
+  const [liveNotifs, setLiveNotifs] = useState({
+    requestsPush: true,
+    requestsEmail: true,
+    messagesPush: true,
+    messagesEmail: false,
+    escrowPush: true,
+    escrowEmail: true,
+    insightsPush: true,
+    insightsEmail: false,
+  })
+
+  // ── SEGURIDAD Y CUENTA ──
+  const [accountEmail, setAccountEmail] = useState(user?.email || 'mia.solar@artlink.demo')
+  const [currentPass, setCurrentPass] = useState('')
+  const [newPass, setNewPass] = useState('')
+  const [passFeedback, setPassFeedback] = useState('')
+  const [isPausedForVacation, setIsPausedForVacation] = useState(false)
+
+  // Texto muestra para accesibilidad
+  const sampleText =
+    'ArtLink es la plataforma donde puedes descubrir artistas digitales, encargar piezas personalizadas con tarifas claras y disponibilidad en vivo.'
+
+  // Cargar datos reales de usuario y artista si están en sesión
+  useEffect(() => {
+    let mounted = true
+    async function loadUserData() {
+      if (!user?.id) return
+      try {
+        const freshUser = await getUserById(user.id).catch(() => null)
+        if (!mounted) return
+        const u = freshUser || user
+
+        if (u.name) setDisplayName(u.name)
+        if (u.email) setAccountEmail(u.email)
+        if (u.bio) setBioExtended(u.bio)
+        if (u.location) setLocationStudio(u.location)
+
+        const profiles = await getArtistByUserId(user.id).catch(() => null)
+        const profile = Array.isArray(profiles) ? profiles[0] : profiles
+        if (profile && mounted) {
+          setArtistProfile(profile)
+          if (profile.displayName) setDisplayName(profile.displayName)
+          if (profile.username) setUsername(profile.username.startsWith('@') ? profile.username : `@${profile.username}`)
+          if (profile.tagline) setTagline(profile.tagline)
+          if (profile.bio) setBioExtended(profile.bio)
+          if (profile.location) setLocationStudio(profile.location)
+          if (profile.bannerUrl) setBannerUrl(profile.bannerUrl)
+          if (typeof profile.slots === 'number') setSlotsCount(profile.slots)
+          if (profile.availability) setIsStudioOpen(profile.availability === 'open')
+          if (profile.socialLinks?.x) setSocialX(profile.socialLinks.x)
+          if (profile.socialLinks?.instagram) setSocialInstagram(profile.socialLinks.instagram)
+        }
+      } catch {
+        // Fallback a los valores de demostración
+      }
+    }
+    loadUserData()
+    return () => {
+      mounted = false
+    }
+  }, [user?.id])
 
   useEffect(() => {
     if (
@@ -82,970 +220,1472 @@ export default function SettingsPage({ initialTab }) {
     }
   }, [location.pathname])
 
-  // Estados locales para edición de cuenta
-  const [accountName, setAccountName] = useState(user?.name || '')
-  const [accountEmail, setAccountEmail] = useState(user?.email || '')
-  const [accountMsg, setAccountMsg] = useState('')
-
-  // Estados locales para cambio de contraseña
-  const [currentPass, setCurrentPass] = useState('')
-  const [newPass, setNewPass] = useState('')
-  const [passMsg, setPassMsg] = useState('')
-
-  const sampleText =
-    'ArtLink es la plataforma donde puedes descubrir artistas digitales, encargar piezas personalizadas con tarifas claras y disponibilidad en vivo.'
-
-  function handleSaveAccount(e) {
-    e.preventDefault()
-    if (!accountName.trim() || !accountEmail.trim()) return
-    if (updateUser) {
-      updateUser({ name: accountName.trim(), email: accountEmail.trim() })
+  // Desplazamiento y activación de pestañas
+  function handleTabClick(tabKey, targetElementId) {
+    setActiveTab(tabKey)
+    if (targetElementId && typeof document !== 'undefined') {
+      const el = document.getElementById(targetElementId)
+      if (el && typeof el.scrollIntoView === 'function') {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
     }
-    setAccountMsg('Datos de cuenta actualizados correctamente.')
-    setTimeout(() => setAccountMsg(''), 4000)
   }
 
+  // Guardar todos los cambios (Global)
+  async function handleGlobalSave() {
+    try {
+      saveSettings()
+
+      if (user?.id) {
+        await updateUserService(user.id, {
+          name: displayName,
+          email: accountEmail,
+          bio: bioExtended,
+          location: locationStudio,
+        }).catch(() => null)
+
+        if (updateUser) {
+          updateUser({
+            name: displayName,
+            email: accountEmail,
+            bio: bioExtended,
+            location: locationStudio,
+          })
+        }
+
+        if (artistProfile?.id) {
+          await updateArtistService(artistProfile.id, {
+            displayName,
+            username: username.replace(/^@/, ''),
+            tagline,
+            bio: bioExtended,
+            location: locationStudio,
+            bannerUrl,
+            slots: slotsCount,
+            availability: isStudioOpen ? 'open' : 'closed',
+            socialLinks: {
+              ...artistProfile.socialLinks,
+              x: socialX,
+              instagram: socialInstagram,
+            },
+          }).catch(() => null)
+        }
+      }
+
+      setLocalFeedback({
+        type: 'success',
+        text: '¡Ajustes de cuenta, taller y preferencias guardados con éxito!',
+      })
+      setTimeout(() => setLocalFeedback({ type: '', text: '' }), 5000)
+    } catch {
+      setLocalFeedback({
+        type: 'error',
+        text: 'Ocurrió un inconveniente al guardar. Se preservaron los cambios locales.',
+      })
+    }
+  }
+
+  // Descartar cambios y restaurar
+  function handleDiscard() {
+    resetSettings()
+    setDisplayName(user?.name || 'Mia Solar')
+    setUsername('@miasolar_art')
+    setTagline('Ilustradora Digital 2D & Concept Artist especializada en personajes fantásticos y estética anime.')
+    setBioExtended(
+      '¡Hola! Llevo más de 6 años ilustrando universos mágicos para juegos indie, portadas de novelas ligeras y comisiones personalizadas. Amante de las paletas soñadoras, los colores lila y los detalles minuciosos. ¡Hablemos de tu idea!'
+    )
+    setLocationStudio('Barcelona, España')
+    setBannerUrl('/images/hero/azure_isles.jpg')
+    setIsStudioOpen(true)
+    setSlotsCount(5)
+    setLocalFeedback({
+      type: 'info',
+      text: 'Se han restaurado los valores predeterminados del taller.',
+    })
+    setTimeout(() => setLocalFeedback({ type: '', text: '' }), 4000)
+  }
+
+  // Cambio de contraseña
   function handleSavePassword(e) {
     e.preventDefault()
     if (!newPass || newPass.length < 4) {
-      setPassMsg('La nueva contraseña debe tener al menos 4 caracteres.')
+      setPassFeedback('La nueva contraseña debe tener al menos 4 caracteres.')
       return
     }
-    setPassMsg('Contraseña actualizada con éxito.')
+    setPassFeedback('Contraseña actualizada con éxito.')
     setCurrentPass('')
     setNewPass('')
-    setTimeout(() => setPassMsg(''), 4000)
+    setTimeout(() => setPassFeedback(''), 4000)
   }
 
+  // Alternar disciplinas
   function handleToggleDiscipline(disc) {
     const current = settings.preferences?.favoriteDisciplines || []
-    const next = current.includes(disc)
-      ? current.filter((d) => d !== disc)
-      : [...current, disc]
+    const next = current.includes(disc) ? current.filter((d) => d !== disc) : [...current, disc]
     updatePreferences('favoriteDisciplines', next)
   }
 
+  // Exportar ZIP
+  function handleExportStudioZip() {
+    setLocalFeedback({
+      type: 'success',
+      text: 'Generando archivo .ZIP comprimido de tu taller (contratos, portafolio y comprobantes)...',
+    })
+    setTimeout(() => {
+      setLocalFeedback({
+        type: 'success',
+        text: 'Descarga de ArtLink_Studio_Backup.zip iniciada.',
+      })
+    }, 1500)
+  }
+
+  // Pausar taller
+  function handleTogglePauseStudio() {
+    setIsPausedForVacation((prev) => !prev)
+    setIsStudioOpen((prev) => !prev)
+    setLocalFeedback({
+      type: 'info',
+      text: !isPausedForVacation
+        ? 'El taller ha sido pausado por vacaciones. Se preservan tus reseñas.'
+        : '¡Taller reactivado y visible para recibir nuevos encargos!',
+    })
+    setTimeout(() => setLocalFeedback({ type: '', text: '' }), 4000)
+  }
+
   return (
-    <div className="settings-page" aria-labelledby="settings-title">
-      <header className="settings-header">
-        <span className="sticker hero-sticker">
-          <Sparkles size={13} aria-hidden="true" /> Preferencias y accesibilidad
-        </span>
-        <p className="eyebrow">ArtLink / Configuración</p>
-        <h1 id="settings-title">Ajustes y accesibilidad</h1>
-        <p className="settings-intro">
-          Personaliza la apariencia visual, la navegación adaptada, el contraste, tus preferencias y opciones de cuenta para una experiencia cómoda e inclusiva.
-        </p>
+    <div className="studio-settings-page" aria-labelledby="settings-main-heading">
+      {/* ── ENCABEZADO SUPERIOR ── */}
+      <header className="studio-settings-topbar">
+        <div className="studio-header-main">
+          <div className="studio-status-pills">
+            <span className="studio-sync-pill">
+              <span className="studio-live-dot" aria-hidden="true" />
+              ENLACE ACTIVO & SINCRONIZADO
+            </span>
+            <span className="studio-version-pill">V2.4 PRO STUDIO</span>
+          </div>
+          <h1 id="settings-main-heading" className="studio-page-title">
+            Ajustes de Cuenta y Taller
+          </h1>
+          <p className="studio-page-subtitle">
+            Personaliza tu identidad de creador, políticas de comisiones, pagos en Escrow Shield y preferencias de
+            privacidad.
+          </p>
+        </div>
+
+        <div className="studio-header-actions">
+          <button type="button" className="studio-btn-discard" onClick={handleDiscard}>
+            <RotateCcw size={14} aria-hidden="true" /> DESCARTAR
+          </button>
+          <button type="button" className="studio-btn-save" onClick={handleGlobalSave}>
+            <Save size={16} aria-hidden="true" /> Guardar Cambios
+          </button>
+        </div>
       </header>
 
       {/* Banner de estado para accesibilidad aria-live */}
-      <div aria-live="polite" aria-atomic="true" className="settings-status-wrapper">
-        {statusMessage && (
-          <div className="settings-status-banner" role="status">
-            <CheckCircle2 size={18} aria-hidden="true" />
-            <span>{statusMessage}</span>
+      <div aria-live="polite" aria-atomic="true">
+        {(localFeedback.text || statusMessage) && (
+          <div
+            className={`studio-alert-banner ${localFeedback.type === 'error' ? 'is-error' : ''}`}
+            role="status"
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+              <CheckCircle2 size={18} aria-hidden="true" />
+              <span>{localFeedback.text || statusMessage}</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setLocalFeedback({ type: '', text: '' })}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'inherit' }}
+              aria-label="Cerrar aviso"
+            >
+              <X size={16} aria-hidden="true" />
+            </button>
           </div>
         )}
       </div>
 
-      {/* Navegación por pestañas */}
-      <nav className="settings-tabs" aria-label="Secciones de ajustes">
-        <button
-          type="button"
-          className={`tab-button ${activeTab === 'perfil' ? 'is-active' : ''}`}
-          onClick={() => setActiveTab('perfil')}
-          aria-selected={activeTab === 'perfil'}
-          role="tab"
-        >
-          <UserCheck size={17} aria-hidden="true" />
-          <span>Mi perfil</span>
-        </button>
-        <button
-          type="button"
-          className={`tab-button ${activeTab === 'apariencia' ? 'is-active' : ''}`}
-          onClick={() => setActiveTab('apariencia')}
-          aria-selected={activeTab === 'apariencia'}
-          role="tab"
-        >
-          <Sun size={17} aria-hidden="true" />
-          <span>Apariencia</span>
-        </button>
-        <button
-          type="button"
-          className={`tab-button ${activeTab === 'accesibilidad' ? 'is-active' : ''}`}
-          onClick={() => setActiveTab('accesibilidad')}
-          aria-selected={activeTab === 'accesibilidad'}
-          role="tab"
-        >
-          <Eye size={17} aria-hidden="true" />
-          <span>Accesibilidad</span>
-        </button>
-        <button
-          type="button"
-          className={`tab-button ${activeTab === 'privacidad' ? 'is-active' : ''}`}
-          onClick={() => setActiveTab('privacidad')}
-          aria-selected={activeTab === 'privacidad'}
-          role="tab"
-        >
-          <Lock size={17} aria-hidden="true" />
-          <span>Privacidad</span>
-        </button>
-        <button
-          type="button"
-          className={`tab-button ${activeTab === 'notificaciones' ? 'is-active' : ''}`}
-          onClick={() => setActiveTab('notificaciones')}
-          aria-selected={activeTab === 'notificaciones'}
-          role="tab"
-        >
-          <Bell size={17} aria-hidden="true" />
-          <span>Notificaciones</span>
-        </button>
-        <button
-          type="button"
-          className={`tab-button ${activeTab === 'preferencias' ? 'is-active' : ''}`}
-          onClick={() => setActiveTab('preferencias')}
-          aria-selected={activeTab === 'preferencias'}
-          role="tab"
-        >
-          <SlidersHorizontal size={17} aria-hidden="true" />
-          <span>Preferencias</span>
-        </button>
-        <button
-          type="button"
-          className={`tab-button ${activeTab === 'cuenta' ? 'is-active' : ''}`}
-          onClick={() => setActiveTab('cuenta')}
-          aria-selected={activeTab === 'cuenta'}
-          role="tab"
-        >
-          <User size={17} aria-hidden="true" />
-          <span>Cuenta y soporte</span>
-        </button>
-      </nav>
-
-      {/* ── TAB 0: MODIFICAR PERFIL ── */}
-      {activeTab === 'perfil' && <ProfileSettingsSection />}
-
-      {/* ── TAB 1: APARIENCIA ── */}
-      {activeTab === 'apariencia' && (
-        <section className="settings-section-card paper-card" aria-labelledby="heading-apariencia">
-          <h2 id="heading-apariencia" className="section-title">
-            <Sun size={20} aria-hidden="true" /> Apariencia y visualización
-          </h2>
-          <p className="section-description">
-            Ajusta el tema general de color, densidad, tamaño tipográfico y contraste para adaptarlo a tu entorno.
-          </p>
-
-          <fieldset className="settings-fieldset">
-            <legend className="settings-legend">Tema de la interfaz</legend>
-            <div className="radio-group-grid">
-              <label className={`radio-card ${settings.theme === 'light' ? 'is-selected' : ''}`}>
-                <input
-                  type="radio"
-                  name="theme"
-                  value="light"
-                  checked={settings.theme === 'light'}
-                  onChange={(e) => updateSetting('theme', e.target.value)}
-                />
-                <div>
-                  <strong>Tema Claro</strong>
-                  <small>Fondo pastel con texto obscuro de alto contraste</small>
-                </div>
-              </label>
-
-              <label className={`radio-card ${settings.theme === 'dark' ? 'is-selected' : ''}`}>
-                <input
-                  type="radio"
-                  name="theme"
-                  value="dark"
-                  checked={settings.theme === 'dark'}
-                  onChange={(e) => updateSetting('theme', e.target.value)}
-                />
-                <div>
-                  <strong>Tema Oscuro</strong>
-                  <small>Fondo nocturno con acentos de color vibrantes</small>
-                </div>
-              </label>
-
-              <label className={`radio-card ${settings.theme === 'system' ? 'is-selected' : ''}`}>
-                <input
-                  type="radio"
-                  name="theme"
-                  value="system"
-                  checked={settings.theme === 'system'}
-                  onChange={(e) => updateSetting('theme', e.target.value)}
-                />
-                <div>
-                  <strong>Sincronizar con el Sistema</strong>
-                  <small>Usa la preferencia de tu sistema operativo</small>
-                </div>
-              </label>
+      {/* ── GRID DE DOS COLUMNAS ── */}
+      <div className="studio-main-grid">
+        {/* ── COLUMNA LATERAL (SIDEBAR) ── */}
+        <aside className="studio-sidebar" aria-label="Navegación de secciones del taller">
+          {/* Card 1: Índice del Taller */}
+          <div className="studio-sidebar-card">
+            <span className="studio-sidebar-tag">NAVEGACIÓN</span>
+            <div className="studio-sidebar-header">
+              <h2 className="studio-sidebar-title">Índice del Taller</h2>
+              <span className="studio-sidebar-count-badge">6 Secciones</span>
             </div>
-          </fieldset>
 
-          <fieldset className="settings-fieldset">
-            <legend className="settings-legend">Densidad visual de la interfaz</legend>
-            <div className="radio-group-grid" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
-              <label className={`radio-card ${settings.density === 'comfortable' ? 'is-selected' : ''}`}>
-                <input
-                  type="radio"
-                  name="density"
-                  value="comfortable"
-                  checked={settings.density === 'comfortable'}
-                  onChange={(e) => updateSetting('density', e.target.value)}
-                />
-                <div>
-                  <strong>Densidad Cómoda</strong>
-                  <small>Mayor espacio entre tarjetas, botones y elementos</small>
-                </div>
-              </label>
-
-              <label className={`radio-card ${settings.density === 'compact' ? 'is-selected' : ''}`}>
-                <input
-                  type="radio"
-                  name="density"
-                  value="compact"
-                  checked={settings.density === 'compact'}
-                  onChange={(e) => updateSetting('density', e.target.value)}
-                />
-                <div>
-                  <strong>Densidad Compacta</strong>
-                  <small>Elementos condensados para visualizar más contenido</small>
-                </div>
-              </label>
-            </div>
-          </fieldset>
-
-          <div className="settings-grid-two">
-            <label htmlFor="font-size-select" className="settings-label">
-              <span><Type size={17} aria-hidden="true" /> Tamaño de texto</span>
-              <select
-                id="font-size-select"
-                value={settings.fontSize}
-                onChange={(e) => updateSetting('fontSize', e.target.value)}
-                className="settings-select"
+            <nav className="studio-nav-list" role="tablist" aria-label="Secciones de ajustes">
+              <button
+                type="button"
+                role="tab"
+                aria-selected={activeTab === 'perfil'}
+                aria-label="Perfil & Vitrina (Mi perfil)"
+                className={`studio-nav-item ${activeTab === 'perfil' ? 'is-active' : ''}`}
+                onClick={() => handleTabClick('perfil', 'section-perfil')}
               >
-                <option value="normal">Normal (100%)</option>
-                <option value="large">Grande (112.5%)</option>
-                <option value="xlarge">Extra grande (125%)</option>
-              </select>
-            </label>
-
-            <label htmlFor="contrast-select" className="settings-label">
-              <span><Eye size={17} aria-hidden="true" /> Nivel de contraste</span>
-              <select
-                id="contrast-select"
-                value={settings.contrast}
-                onChange={(e) => updateSetting('contrast', e.target.value)}
-                className="settings-select"
-              >
-                <option value="normal">Normal</option>
-                <option value="high">Alto contraste</option>
-                <option value="soft">Contraste suave</option>
-              </select>
-            </label>
-          </div>
-
-          <div className="preview-box" aria-label="Vista previa de texto">
-            <span className="preview-tag">Vista previa de lectura</span>
-            <p className="preview-content">{sampleText}</p>
-          </div>
-
-          <label htmlFor="reduce-motion-apariencia" className="switch-card">
-            <div className="switch-info">
-              <strong><Zap size={16} aria-hidden="true" /> Reducción de movimiento</strong>
-              <small>Desactiva transiciones rápidas y animaciones complejas en toda la web.</small>
-            </div>
-            <input
-              id="reduce-motion-apariencia"
-              type="checkbox"
-              checked={settings.reduceMotion}
-              onChange={(e) => updateSetting('reduceMotion', e.target.checked)}
-            />
-          </label>
-
-          <label htmlFor="show-labels-check" className="switch-card">
-            <div className="switch-info">
-              <strong>Mostrar etiquetas de texto junto a los iconos</strong>
-              <small>Facilita la identificación de botones de acción agregando texto descriptivo.</small>
-            </div>
-            <input
-              id="show-labels-check"
-              type="checkbox"
-              checked={settings.showLabels}
-              onChange={(e) => updateSetting('showLabels', e.target.checked)}
-            />
-          </label>
-        </section>
-      )}
-
-      {/* ── TAB 2: ACCESIBILIDAD ── */}
-      {activeTab === 'accesibilidad' && (
-        <section className="settings-section-card paper-card" aria-labelledby="heading-accesibilidad">
-          <h2 id="heading-accesibilidad" className="section-title">
-            <Eye size={20} aria-hidden="true" /> Accesibilidad e Inclusión
-          </h2>
-          <p className="section-description">
-            Herramientas y adaptaciones para facilitar la navegación mediante teclado, lectores de pantalla y asistencia sensorial.
-          </p>
-
-          <div className="settings-grid-two">
-            <label htmlFor="acc-font-size-select" className="settings-label">
-              <span><Type size={17} aria-hidden="true" /> Escala tipográfica</span>
-              <select
-                id="acc-font-size-select"
-                value={settings.fontSize}
-                onChange={(e) => updateSetting('fontSize', e.target.value)}
-                className="settings-select"
-              >
-                <option value="normal">Texto normal</option>
-                <option value="large">Texto grande</option>
-                <option value="xlarge">Texto muy grande</option>
-              </select>
-            </label>
-
-            <label htmlFor="acc-contrast-select" className="settings-label">
-              <span><Eye size={17} aria-hidden="true" /> Modo de contraste</span>
-              <select
-                id="acc-contrast-select"
-                value={settings.contrast}
-                onChange={(e) => updateSetting('contrast', e.target.value)}
-                className="settings-select"
-              >
-                <option value="normal">Normal</option>
-                <option value="high">Alto contraste</option>
-                <option value="soft">Contraste suave</option>
-              </select>
-            </label>
-          </div>
-
-          <label htmlFor="color-mode-select" className="settings-label" style={{ marginBottom: '1.4rem' }}>
-            <span><Palette size={17} aria-hidden="true" /> Adaptación para daltonismo</span>
-            <select
-              id="color-mode-select"
-              value={settings.colorMode}
-              onChange={(e) => updateSetting('colorMode', e.target.value)}
-              className="settings-select"
-            >
-              <option value="normal">Sin filtro (Normal)</option>
-              <option value="protanopia">Protanopia (Deficiencia de rojo)</option>
-              <option value="deuteranopia">Deuteranopia (Deficiencia de verde)</option>
-              <option value="tritanopia">Tritanopia (Deficiencia de azul)</option>
-            </select>
-          </label>
-
-          <fieldset className="settings-fieldset">
-            <legend className="settings-legend">Navegación e indicadores de apoyo</legend>
-
-            <label htmlFor="reduce-motion-acc" className="switch-card">
-              <div className="switch-info">
-                <strong><Zap size={16} aria-hidden="true" /> Reducir animaciones</strong>
-                <small>Prioriza transiciones estáticas para evitar fatiga cognitiva y mareo.</small>
-              </div>
-              <input
-                id="reduce-motion-acc"
-                type="checkbox"
-                checked={settings.reduceMotion}
-                onChange={(e) => updateSetting('reduceMotion', e.target.checked)}
-              />
-            </label>
-
-            <label htmlFor="focus-visible-check" className="switch-card">
-              <div className="switch-info">
-                <strong><Eye size={16} aria-hidden="true" /> Focus visible de alto contraste</strong>
-                <small>Resalta claramente con borde grueso el elemento que tiene el foco activo.</small>
-              </div>
-              <input
-                id="focus-visible-check"
-                type="checkbox"
-                checked={settings.focusVisible}
-                onChange={(e) => updateSetting('focusVisible', e.target.checked)}
-              />
-            </label>
-
-            <label htmlFor="keyboard-nav-check" className="switch-card">
-              <div className="switch-info">
-                <strong><Sparkles size={16} aria-hidden="true" /> Navegación por teclado mejorada</strong>
-                <small>Atajos de teclado y orden de tabulación optimizado en modales y catálogos.</small>
-              </div>
-              <input
-                id="keyboard-nav-check"
-                type="checkbox"
-                checked={settings.keyboardNavigation}
-                onChange={(e) => updateSetting('keyboardNavigation', e.target.checked)}
-              />
-            </label>
-
-            <label htmlFor="alt-text-check" className="switch-card">
-              <div className="switch-info">
-                <strong><Type size={16} aria-hidden="true" /> Texto alternativo enriquecido</strong>
-                <small>Genera descripciones ampliadas de obras para sintetizadores y lectores de pantalla.</small>
-              </div>
-              <input
-                id="alt-text-check"
-                type="checkbox"
-                checked={settings.altTextEnhanced}
-                onChange={(e) => updateSetting('altTextEnhanced', e.target.checked)}
-              />
-            </label>
-
-            <label htmlFor="non-color-check" className="switch-card">
-              <div className="switch-info">
-                <strong><CheckCircle2 size={16} aria-hidden="true" /> Indicadores independientes del color</strong>
-                <small>Acompaña estados (abierto, cerrado, éxito, error) con formas, patrones e iconos claros.</small>
-              </div>
-              <input
-                id="non-color-check"
-                type="checkbox"
-                checked={settings.nonColorIndicators}
-                onChange={(e) => updateSetting('nonColorIndicators', e.target.checked)}
-              />
-            </label>
-
-            <label htmlFor="readable-font-check" className="switch-card">
-              <div className="switch-info">
-                <strong><Type size={16} aria-hidden="true" /> Tipografía de alta legibilidad</strong>
-                <small>Aumenta el espaciado interlineal para apoyar a personas con dislexia.</small>
-              </div>
-              <input
-                id="readable-font-check"
-                type="checkbox"
-                checked={settings.readableFont}
-                onChange={(e) => updateSetting('readableFont', e.target.checked)}
-              />
-            </label>
-
-            <label htmlFor="tts-check" className="switch-card">
-              <div className="switch-info">
-                <strong><Volume2 size={16} aria-hidden="true" /> Asistente de lectura de voz</strong>
-                <small>Lectura asistida mediante síntesis de voz en resúmenes de comisiones.</small>
-              </div>
-              <input
-                id="tts-check"
-                type="checkbox"
-                checked={settings.textToSpeech}
-                onChange={(e) => updateSetting('textToSpeech', e.target.checked)}
-              />
-            </label>
-          </fieldset>
-
-          <div className="tts-demo-box">
-            <p className="eyebrow">Prueba de síntesis de voz (Web Speech API)</p>
-            <p>{sampleText}</p>
-            <ReadAloudButton textToRead={sampleText} label="Escuchar muestra de audio" />
-            <small className="accessibility-disclaimer">
-              <ShieldCheck size={14} aria-hidden="true" /> Nota de accesibilidad: Esta función es un complemento de apoyo visual y no reemplaza a un lector de pantalla como NVDA, JAWS o VoiceOver.
-            </small>
-          </div>
-        </section>
-      )}
-
-      {/* ── TAB 3: PRIVACIDAD ── */}
-      {activeTab === 'privacidad' && (
-        <section className="settings-section-card paper-card" aria-labelledby="heading-privacidad">
-          <h2 id="heading-privacidad" className="section-title">
-            <Lock size={20} aria-hidden="true" /> Privacidad y visibilidad
-          </h2>
-          <p className="section-description">
-            Controla quién puede ver tu actividad, tus listas de artistas seguidos y tus obras.
-          </p>
-
-          <fieldset className="settings-fieldset">
-            <legend className="settings-legend">Visibilidad de tu perfil</legend>
-            <div className="radio-group-grid" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
-              <label className={`radio-card ${settings.privacy?.profileVisibility === 'public' ? 'is-selected' : ''}`}>
-                <input
-                  type="radio"
-                  name="profileVisibility"
-                  value="public"
-                  checked={settings.privacy?.profileVisibility === 'public'}
-                  onChange={(e) => updatePrivacy('profileVisibility', e.target.value)}
-                />
-                <div>
-                  <strong>Perfil Público</strong>
-                  <small>Visible para toda la comunidad y visitantes de ArtLink</small>
-                </div>
-              </label>
-
-              <label className={`radio-card ${settings.privacy?.profileVisibility === 'private' ? 'is-selected' : ''}`}>
-                <input
-                  type="radio"
-                  name="profileVisibility"
-                  value="private"
-                  checked={settings.privacy?.profileVisibility === 'private'}
-                  onChange={(e) => updatePrivacy('profileVisibility', e.target.value)}
-                />
-                <div>
-                  <strong>Perfil Privado</strong>
-                  <small>Solo visible para ti y clientes con encargos activos</small>
-                </div>
-              </label>
-            </div>
-          </fieldset>
-
-          <fieldset className="settings-fieldset">
-            <legend className="settings-legend">Elementos visibles en tu perfil</legend>
-
-            <label htmlFor="priv-activity" className="switch-card">
-              <div className="switch-info">
-                <strong>Mostrar actividad reciente</strong>
-                <small>Permite que otros vean tus encargos completados y reseñas públicas.</small>
-              </div>
-              <input
-                id="priv-activity"
-                type="checkbox"
-                checked={settings.privacy?.showActivity}
-                onChange={(e) => updatePrivacy('showActivity', e.target.checked)}
-              />
-            </label>
-
-            <label htmlFor="priv-following" className="switch-card">
-              <div className="switch-info">
-                <strong>Mostrar artistas seguidos</strong>
-                <small>Exhibe en tu perfil público a los artistas que sigues actualmente.</small>
-              </div>
-              <input
-                id="priv-following"
-                type="checkbox"
-                checked={settings.privacy?.showFollowing}
-                onChange={(e) => updatePrivacy('showFollowing', e.target.checked)}
-              />
-            </label>
-
-            <label htmlFor="priv-portfolio" className="switch-card">
-              <div className="switch-info">
-                <strong>Mostrar portafolio en catálogo público</strong>
-                <small>Permite que tus obras aparezcan en las galerías de búsqueda comunitaria.</small>
-              </div>
-              <input
-                id="priv-portfolio"
-                type="checkbox"
-                checked={settings.privacy?.showPortfolio}
-                onChange={(e) => updatePrivacy('showPortfolio', e.target.checked)}
-              />
-            </label>
-          </fieldset>
-        </section>
-      )}
-
-      {/* ── TAB 4: NOTIFICACIONES ── */}
-      {activeTab === 'notificaciones' && (
-        <section className="settings-section-card paper-card" aria-labelledby="heading-notificaciones">
-          <h2 id="heading-notificaciones" className="section-title">
-            <Bell size={20} aria-hidden="true" /> Preferencias de notificaciones
-          </h2>
-          <p className="section-description">
-            Elige qué avisos e interacciones sociales deseas recibir en ArtLink.
-          </p>
-
-          <fieldset className="settings-fieldset">
-            <legend className="settings-legend">Alertas de encargos y mensajes</legend>
-
-            <label htmlFor="notif-requests-opt" className="switch-card">
-              <div className="switch-info">
-                <strong><FileText size={16} aria-hidden="true" /> Solicitudes</strong>
-                <small>Avisos al recibir o enviar nuevas cotizaciones y encargos.</small>
-              </div>
-              <input
-                id="notif-requests-opt"
-                type="checkbox"
-                checked={settings.notifications?.requests}
-                onChange={(e) => updateNotifications('requests', e.target.checked)}
-              />
-            </label>
-
-            <label htmlFor="notif-messages-opt" className="switch-card">
-              <div className="switch-info">
-                <strong><MessageSquare size={16} aria-hidden="true" /> Mensajes directos</strong>
-                <small>Notificaciones cuando un cliente o artista te envía un mensaje.</small>
-              </div>
-              <input
-                id="notif-messages-opt"
-                type="checkbox"
-                checked={settings.notifications?.messages}
-                onChange={(e) => updateNotifications('messages', e.target.checked)}
-              />
-            </label>
-
-            <label htmlFor="notif-status-opt" className="switch-card">
-              <div className="switch-info">
-                <strong><CheckCircle2 size={16} aria-hidden="true" /> Cambios de estado</strong>
-                <small>Actualizaciones cuando un encargo pasa a en progreso, completado o revisado.</small>
-              </div>
-              <input
-                id="notif-status-opt"
-                type="checkbox"
-                checked={settings.notifications?.statusChanges}
-                onChange={(e) => updateNotifications('statusChanges', e.target.checked)}
-              />
-            </label>
-          </fieldset>
-
-          <fieldset className="settings-fieldset">
-            <legend className="settings-legend">Interacción social y comunidad</legend>
-
-            <label htmlFor="notif-followers-opt" className="switch-card">
-              <div className="switch-info">
-                <strong><UserCheck size={16} aria-hidden="true" /> Nuevos seguidores</strong>
-                <small>Avisos cuando otro usuario o artista comience a seguir tu perfil.</small>
-              </div>
-              <input
-                id="notif-followers-opt"
-                type="checkbox"
-                checked={settings.notifications?.newFollowers}
-                onChange={(e) => updateNotifications('newFollowers', e.target.checked)}
-              />
-            </label>
-
-            <label htmlFor="notif-hearts-opt" className="switch-card">
-              <div className="switch-info">
-                <strong><Heart size={16} aria-hidden="true" /> Corazones y me gusta</strong>
-                <small>Notificaciones cuando alguien reacciona a tus obras de arte.</small>
-              </div>
-              <input
-                id="notif-hearts-opt"
-                type="checkbox"
-                checked={settings.notifications?.hearts}
-                onChange={(e) => updateNotifications('hearts', e.target.checked)}
-              />
-            </label>
-
-            <label htmlFor="notif-reviews-opt" className="switch-card">
-              <div className="switch-info">
-                <strong><Sparkles size={16} aria-hidden="true" /> Nuevas reseñas y calificaciones</strong>
-                <small>Alertas cuando un cliente califica un encargo completado.</small>
-              </div>
-              <input
-                id="notif-reviews-opt"
-                type="checkbox"
-                checked={settings.notifications?.reviews}
-                onChange={(e) => updateNotifications('reviews', e.target.checked)}
-              />
-            </label>
-
-            <label htmlFor="notif-email" className="switch-card">
-              <div className="switch-info">
-                <strong>Resumen por correo electrónico</strong>
-                <small>Resumen semanal de encargos y actividad en tu bandeja de entrada.</small>
-              </div>
-              <input
-                id="notif-email"
-                type="checkbox"
-                checked={settings.notifications?.emailNotifs}
-                onChange={(e) => updateNotifications('emailNotifs', e.target.checked)}
-              />
-            </label>
-
-            <label htmlFor="notif-marketing" className="switch-card">
-              <div className="switch-info">
-                <strong>Novedades y boletín comunitario</strong>
-                <small>Avisos sobre eventos, destacados mensuales y nuevas herramientas.</small>
-              </div>
-              <input
-                id="notif-marketing"
-                type="checkbox"
-                checked={settings.notifications?.marketingNotifs}
-                onChange={(e) => updateNotifications('marketingNotifs', e.target.checked)}
-              />
-            </label>
-          </fieldset>
-        </section>
-      )}
-
-      {/* ── TAB 5: PREFERENCIAS DE BÚSQUEDA ── */}
-      {activeTab === 'preferencias' && (
-        <section className="settings-section-card paper-card" aria-labelledby="heading-preferencias">
-          <h2 id="heading-preferencias" className="section-title">
-            <SlidersHorizontal size={20} aria-hidden="true" /> Preferencias de navegación
-          </h2>
-          <p className="section-description">
-            Personaliza cómo se descubren y ordenan los artistas y obras en tu experiencia diaria.
-          </p>
-
-          <fieldset className="settings-fieldset">
-            <legend className="settings-legend">Disciplinas artísticas favoritas</legend>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginTop: '0.5rem' }}>
-              {ALL_DISCIPLINES.map((disc) => {
-                const isFav = (settings.preferences?.favoriteDisciplines || []).includes(disc)
-                return (
-                  <button
-                    key={disc}
-                    type="button"
-                    onClick={() => handleToggleDiscipline(disc)}
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '0.4rem',
-                      background: isFav ? 'var(--violet-soft)' : 'var(--cream)',
-                      border: isFav ? '2px solid var(--ink)' : '1.5px solid var(--line)',
-                      color: 'var(--ink)',
-                      borderRadius: '999px',
-                      padding: '0.4rem 0.9rem',
-                      fontSize: '0.85rem',
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                      transition: 'all 0.15s ease',
-                    }}
-                  >
-                    {isFav && <Check size={14} color="var(--violet-dark)" />}
-                    <span>{disc}</span>
-                  </button>
-                )
-              })}
-            </div>
-          </fieldset>
-
-          <div className="settings-grid-two">
-            <label htmlFor="pref-price-select" className="settings-label">
-              <span>Rango de precios habitual</span>
-              <select
-                id="pref-price-select"
-                value={settings.preferences?.priceRange || 'all'}
-                onChange={(e) => updatePreferences('priceRange', e.target.value)}
-                className="settings-select"
-              >
-                <option value="all">Cualquier precio</option>
-                <option value="0-50">Económico (Hasta $50 USD)</option>
-                <option value="50-150">Intermedio ($50 a $150 USD)</option>
-                <option value="150+">Premium (Más de $150 USD)</option>
-              </select>
-            </label>
-
-            <label htmlFor="pref-delivery-select" className="settings-label">
-              <span>Tiempo de entrega preferido</span>
-              <select
-                id="pref-delivery-select"
-                value={settings.preferences?.deliveryTime || 'any'}
-                onChange={(e) => updatePreferences('deliveryTime', e.target.value)}
-                className="settings-select"
-              >
-                <option value="any">Cualquier plazo</option>
-                <option value="3-days">Entrega express (Hasta 3 días)</option>
-                <option value="7-days">Estándar (Hasta 7 días)</option>
-                <option value="14-days">Flexible (14 días o más)</option>
-              </select>
-            </label>
-          </div>
-
-          <label htmlFor="pref-open-comm-check" className="switch-card">
-            <div className="switch-info">
-              <strong>Mostrar primero artistas con comisiones abiertas</strong>
-              <small>Prioriza creadores disponibles inmediatamente para nuevos encargos.</small>
-            </div>
-            <input
-              id="pref-open-comm-check"
-              type="checkbox"
-              checked={settings.preferences?.openCommissionsFirst}
-              onChange={(e) => updatePreferences('openCommissionsFirst', e.target.checked)}
-            />
-          </label>
-
-          <label htmlFor="pref-sort-select" className="settings-label" style={{ marginTop: '1rem' }}>
-            <span>Criterio de orden predeterminado</span>
-            <select
-              id="pref-sort-select"
-              value={settings.preferences?.sortBy || 'rating'}
-              onChange={(e) => updatePreferences('sortBy', e.target.value)}
-              className="settings-select"
-            >
-              <option value="rating">Mayor calificación y reputación</option>
-              <option value="activity">Mayor actividad reciente</option>
-              <option value="relevance">Relevancia recomendada</option>
-            </select>
-          </label>
-        </section>
-      )}
-
-      {/* ── TAB 6: CUENTA Y SOPORTE ── */}
-      {activeTab === 'cuenta' && (
-        <section className="settings-section-card paper-card" aria-labelledby="heading-cuenta">
-          <h2 id="heading-cuenta" className="section-title">
-            <User size={20} aria-hidden="true" /> Cuenta y soporte
-          </h2>
-          <p className="section-description">
-            Gestiona tus datos de acceso, modifica tu perfil y consulta el centro de ayuda y políticas oficiales.
-          </p>
-
-          {user ? (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.8rem' }}>
-              <div className="account-details-card">
-                <div className="user-details-row">
-                  <span className="avatar avatar-large avatar-fallback">
-                    {user.name ? user.name.slice(0, 2).toUpperCase() : 'US'}
+                <div className="studio-nav-item-left">
+                  <span className="studio-nav-item-icon">
+                    <Sparkles size={16} aria-hidden="true" />
                   </span>
-                  <div>
-                    <h3>{user.name || 'Usuario ArtLink'}</h3>
-                    <p>{user.email}</p>
-                    <span className="badge badge-violet">Rol: {user.role}</span>
-                  </div>
+                  <span>Perfil & Vitrina</span>
+                </div>
+                <ChevronRight size={14} className="studio-nav-arrow" aria-hidden="true" />
+              </button>
+
+              <button
+                type="button"
+                role="tab"
+                aria-selected={activeTab === 'comisiones'}
+                aria-label="Comisiones & Cupos"
+                className={`studio-nav-item ${activeTab === 'comisiones' ? 'is-active' : ''}`}
+                onClick={() => handleTabClick('comisiones', 'section-comisiones')}
+              >
+                <div className="studio-nav-item-left">
+                  <span className="studio-nav-item-icon">
+                    <FileText size={16} aria-hidden="true" />
+                  </span>
+                  <span>Comisiones & Cupos</span>
+                </div>
+                <span className="studio-nav-pill-badge studio-pill-cyan">EN VIVO</span>
+              </button>
+
+              <button
+                type="button"
+                role="tab"
+                aria-selected={activeTab === 'facturacion'}
+                aria-label="Facturación & Escrow"
+                className={`studio-nav-item ${activeTab === 'facturacion' ? 'is-active' : ''}`}
+                onClick={() => handleTabClick('facturacion', 'section-facturacion')}
+              >
+                <div className="studio-nav-item-left">
+                  <span className="studio-nav-item-icon">
+                    <CreditCard size={16} aria-hidden="true" />
+                  </span>
+                  <span>Facturación & Escrow</span>
+                </div>
+                <span className="studio-pill-dot" aria-label="Alerta de facturación" />
+              </button>
+
+              <button
+                type="button"
+                role="tab"
+                aria-selected={activeTab === 'notificaciones'}
+                aria-label="Notificaciones & Avisos"
+                className={`studio-nav-item ${activeTab === 'notificaciones' ? 'is-active' : ''}`}
+                onClick={() => handleTabClick('notificaciones', 'section-notificaciones')}
+              >
+                <div className="studio-nav-item-left">
+                  <span className="studio-nav-item-icon">
+                    <Bell size={16} aria-hidden="true" />
+                  </span>
+                  <span>Notificaciones & Avisos</span>
+                </div>
+                <span className="studio-nav-pill-badge studio-pill-mint">+</span>
+              </button>
+
+              <button
+                type="button"
+                role="tab"
+                aria-selected={activeTab === 'seguridad'}
+                aria-label="Seguridad & Acceso"
+                className={`studio-nav-item ${activeTab === 'seguridad' ? 'is-active' : ''}`}
+                onClick={() => handleTabClick('seguridad', 'section-seguridad')}
+              >
+                <div className="studio-nav-item-left">
+                  <span className="studio-nav-item-icon">
+                    <ShieldCheck size={16} aria-hidden="true" />
+                  </span>
+                  <span>Seguridad & Acceso</span>
+                </div>
+              </button>
+
+              <button
+                type="button"
+                role="tab"
+                aria-selected={activeTab === 'apariencia'}
+                aria-label="Integraciones de Arte (Apariencia y accesibilidad)"
+                className={`studio-nav-item ${activeTab === 'apariencia' ? 'is-active' : ''}`}
+                onClick={() => handleTabClick('apariencia', 'section-apariencia')}
+              >
+                <div className="studio-nav-item-left">
+                  <span className="studio-nav-item-icon">
+                    <Palette size={16} aria-hidden="true" />
+                  </span>
+                  <span>Integraciones de Arte</span>
+                </div>
+                <span className="studio-nav-pill-badge studio-pill-pink">APPS</span>
+              </button>
+            </nav>
+
+            {/* 4 Botones de herramientas rápidas */}
+            <div className="studio-sidebar-quick-bar">
+              <button
+                type="button"
+                className="studio-quick-tool-btn"
+                title="Editar Portada y Datos"
+                onClick={() => handleTabClick('perfil', 'section-perfil')}
+              >
+                <Sparkles size={16} aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                className="studio-quick-tool-btn"
+                title="Ajustar Cupos y Disponibilidad"
+                onClick={() => handleTabClick('comisiones', 'section-comisiones')}
+              >
+                <Sliders size={16} aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                className="studio-quick-tool-btn"
+                title="Preferencias de Notificaciones"
+                onClick={() => handleTabClick('notificaciones', 'section-notificaciones')}
+              >
+                <MessageSquare size={16} aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                className="studio-quick-tool-btn"
+                title="Tema y Accesibilidad Visual"
+                onClick={() => handleTabClick('apariencia', 'section-apariencia')}
+              >
+                <Sun size={16} aria-hidden="true" />
+              </button>
+            </div>
+          </div>
+
+          {/* Card 2: Tip de Arte */}
+          {showTip && (
+            <div className="studio-tip-card">
+              <span className="studio-tip-top-badge">SUGERENCIA PRO</span>
+              <div className="studio-tip-header-row">
+                <div className="studio-tip-avatar-box">
+                  <span role="img" aria-label="Paleta de artista">🎨</span>
+                </div>
+                <div>
+                  <h3 className="studio-tip-title">
+                    Tip de Arte <span className="studio-pro-badge">PRO</span>
+                  </h3>
+                </div>
+              </div>
+              <p className="studio-tip-body">
+                Mantén actualizados tus términos de entrega y cupos disponibles. Los perfiles con{' '}
+                <strong>100% de transparencia</strong> reciben 2.4x más solicitudes en la galería de exploración.
+              </p>
+              <div className="studio-tip-links">
+                <button
+                  type="button"
+                  className="studio-tip-discard-link"
+                  onClick={() => setShowTip(false)}
+                >
+                  Descartar este tip
+                </button>
+                <Link to="/como-funciona" className="studio-tip-action-link">
+                  Consultar el kit de éxito &gt;
+                </Link>
+              </div>
+            </div>
+          )}
+        </aside>
+
+        {/* ── COLUMNA PRINCIPAL DE CONTENIDO (SECCIONES) ── */}
+        <main className="studio-sections-column">
+          {/* ══════════════════════════════════════════════════════════════
+             SECCIÓN 1: IDENTIDAD Y VITRINA PÚBLICA
+             ══════════════════════════════════════════════════════════════ */}
+          <section id="section-perfil" className="studio-card" aria-labelledby="heading-perfil">
+            <span className="studio-card-tag">● PERFIL PÚBLICO</span>
+            <div className="studio-card-header-row">
+              <div>
+                <h2 id="heading-perfil" className="studio-card-title">
+                  Identidad y Vitrina Pública
+                  <span className="sr-only"> — Modificar perfil</span>
+                </h2>
+              </div>
+              <span className="studio-card-badge-right studio-badge-coral">Visible en Directorio</span>
+            </div>
+            <p className="studio-card-subtitle">
+              Configura la expresión de tus recursos, enlaces sociales y el avatar que verán tus visitantes cuando exploren
+              tu catálogo.
+            </p>
+
+            {/* Portada y avatar */}
+            <div className="studio-banner-section-label">PORTADA DEL ESTUDIO &amp; RETRATO DE ARTISTA</div>
+            <div className="studio-banner-wrapper">
+              <img
+                src={bannerUrl}
+                alt="Portada del estudio artístico"
+                className="studio-banner-image"
+                onError={(e) => {
+                  e.currentTarget.src = '/images/hero/azure_isles.jpg'
+                }}
+              />
+              <button
+                type="button"
+                className="studio-banner-update-btn"
+                onClick={() => setShowBannerModal((v) => !v)}
+              >
+                <Camera size={14} aria-hidden="true" />
+                <span>Actualizar Portada (1920x480)</span>
+              </button>
+
+              <div className="studio-avatar-overlap">
+                {user?.avatar ? (
+                  <img
+                    src={user.avatar}
+                    alt={displayName}
+                    className="studio-avatar-image"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none'
+                      e.currentTarget.nextElementSibling.style.display = 'flex'
+                    }}
+                  />
+                ) : null}
+                <div
+                  className="studio-avatar-fallback"
+                  style={{ display: user?.avatar ? 'none' : 'flex' }}
+                >
+                  {displayName.slice(0, 2).toUpperCase()}
+                </div>
+              </div>
+            </div>
+
+            <div className="studio-banner-bottom-info">
+              <span>PNG, JPG hasta 5MB. Relación recomendada 4:1</span>
+              <button
+                type="button"
+                className="studio-btn-delete-banner"
+                onClick={() => setBannerUrl('/images/hero/azure_isles.jpg')}
+              >
+                ELIMINAR
+              </button>
+            </div>
+
+            {/* Modal / Selector de Portada */}
+            {showBannerModal && (
+              <div
+                style={{
+                  background: '#F5F3FF',
+                  border: '1.5px solid #C4B5FD',
+                  borderRadius: '12px',
+                  padding: '1rem',
+                  marginBottom: '1.5rem',
+                }}
+              >
+                <strong style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.5rem' }}>
+                  Elige una portada de galería o introduce una URL:
+                </strong>
+                <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap', marginBottom: '0.8rem' }}>
+                  {BANNER_PRESETS.map((p) => (
+                    <button
+                      key={p.label}
+                      type="button"
+                      className="studio-chip-btn"
+                      onClick={() => {
+                        setBannerUrl(p.url)
+                        setShowBannerModal(false)
+                      }}
+                    >
+                      {p.label}
+                    </button>
+                  ))}
+                </div>
+                <div className="studio-input-wrap">
+                  <input
+                    type="url"
+                    className="studio-input"
+                    placeholder="https://ejemplo.com/mi-portada.jpg"
+                    value={bannerUrl}
+                    onChange={(e) => setBannerUrl(e.target.value)}
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Campos del formulario de identidad */}
+            <div className="studio-form-grid-two">
+              <label className="studio-field-label">
+                <span>Nombre para Mostrar</span>
+                <input
+                  type="text"
+                  className="studio-input"
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                  required
+                />
+              </label>
+
+              <label className="studio-field-label">
+                <span>Nombre de Usuario (Handle)</span>
+                <input
+                  type="text"
+                  className="studio-input"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                />
+              </label>
+            </div>
+
+            <div style={{ marginBottom: '1.25rem' }}>
+              <label className="studio-field-label">
+                <span>Titular Profesional / Bio Breve</span>
+                <input
+                  type="text"
+                  className="studio-input"
+                  value={tagline}
+                  onChange={(e) => setTagline(e.target.value)}
+                />
+              </label>
+            </div>
+
+            <div style={{ marginBottom: '1.25rem' }}>
+              <label className="studio-field-label">
+                <div className="studio-label-with-counter">
+                  <span>Biografía Extendida del Taller</span>
+                  <span className="studio-char-counter">{bioExtended.length} / 600 Caracteres</span>
+                </div>
+                <textarea
+                  className="studio-textarea"
+                  maxLength={600}
+                  value={bioExtended}
+                  onChange={(e) => setBioExtended(e.target.value)}
+                />
+              </label>
+            </div>
+
+            <div className="studio-form-grid-two">
+              <label className="studio-field-label">
+                <span>Ubicación del Estudio</span>
+                <div className="studio-input-wrap">
+                  <MapPin size={16} className="studio-input-icon-prefix" aria-hidden="true" />
+                  <input
+                    type="text"
+                    className="studio-input has-prefix"
+                    value={locationStudio}
+                    onChange={(e) => setLocationStudio(e.target.value)}
+                  />
+                </div>
+              </label>
+
+              <label className="studio-field-label">
+                <span>Idiomas de Comunicación</span>
+                <div className="studio-input-wrap">
+                  <Globe size={16} className="studio-input-icon-prefix" aria-hidden="true" />
+                  <input
+                    type="text"
+                    className="studio-input has-prefix"
+                    value={languages}
+                    onChange={(e) => setLanguages(e.target.value)}
+                  />
+                </div>
+              </label>
+            </div>
+
+            {/* Redes sociales */}
+            <div style={{ marginTop: '1rem' }}>
+              <span className="studio-reqs-section-title">Redes Sociales &amp; Portafolios Enlazados</span>
+              <div className="studio-socials-grid">
+                <div className="studio-input-wrap">
+                  <span className="studio-input-icon-prefix" style={{ fontWeight: 800, fontSize: '0.85rem' }}>
+                    𝕏
+                  </span>
+                  <input
+                    type="text"
+                    className="studio-input has-prefix has-suffix"
+                    value={socialX}
+                    onChange={(e) => setSocialX(e.target.value)}
+                  />
+                  <ArrowUpRight size={14} className="studio-input-icon-suffix" aria-hidden="true" />
                 </div>
 
-                <div className="account-actions">
+                <div className="studio-input-wrap">
+                  <span className="studio-input-icon-prefix" style={{ fontWeight: 800, fontSize: '0.85rem' }}>
+                    📸
+                  </span>
+                  <input
+                    type="text"
+                    className="studio-input has-prefix has-suffix"
+                    value={socialInstagram}
+                    onChange={(e) => setSocialInstagram(e.target.value)}
+                  />
+                  <ArrowUpRight size={14} className="studio-input-icon-suffix" aria-hidden="true" />
+                </div>
+
+                <div className="studio-input-wrap">
+                  <span className="studio-input-icon-prefix" style={{ fontWeight: 800, fontSize: '0.85rem' }}>
+                    🎨
+                  </span>
+                  <input
+                    type="text"
+                    className="studio-input has-prefix has-suffix"
+                    value={socialArtstation}
+                    onChange={(e) => setSocialArtstation(e.target.value)}
+                  />
+                  <ArrowUpRight size={14} className="studio-input-icon-suffix" aria-hidden="true" />
+                </div>
+
+                <div className="studio-input-wrap">
+                  <span className="studio-input-icon-prefix" style={{ fontWeight: 800, fontSize: '0.85rem' }}>
+                    💬
+                  </span>
+                  <input
+                    type="text"
+                    className="studio-input has-prefix has-suffix"
+                    value={socialDiscord}
+                    onChange={(e) => setSocialDiscord(e.target.value)}
+                  />
+                  <ArrowUpRight size={14} className="studio-input-icon-suffix" aria-hidden="true" />
+                </div>
+              </div>
+            </div>
+
+            {/* Disciplinas Artísticas */}
+            <div style={{ marginTop: '1.25rem' }}>
+              <span className="studio-reqs-section-title">Disciplinas Artísticas del Catálogo</span>
+              <div className="studio-discipline-chips">
+                {ALL_DISCIPLINES.map((disc) => {
+                  const isFav = (settings.preferences?.favoriteDisciplines || []).includes(disc)
+                  return (
+                    <button
+                      key={disc}
+                      type="button"
+                      className={`studio-chip-btn ${isFav ? 'is-selected' : ''}`}
+                      onClick={() => handleToggleDiscipline(disc)}
+                    >
+                      {isFav && <Check size={13} aria-hidden="true" />}
+                      <span>{disc}</span>
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          </section>
+
+          {/* ══════════════════════════════════════════════════════════════
+             SECCIÓN 2: DISPONIBILIDAD & NORMAS DE ENCARGO
+             ══════════════════════════════════════════════════════════════ */}
+          <section id="section-comisiones" className="studio-card" aria-labelledby="heading-comisiones">
+            <span className="studio-card-tag" style={{ background: '#FFE4E6', borderColor: '#FDA4AF', color: '#BE123C' }}>
+              ● TALLER EN VIVO
+            </span>
+            <div className="studio-card-header-row">
+              <div>
+                <h2 id="heading-comisiones" className="studio-card-title">
+                  Disponibilidad &amp; Normas de Encargo
+                </h2>
+              </div>
+              <span className="studio-card-badge-right studio-badge-cyan">Tiempo Real</span>
+            </div>
+            <p className="studio-card-subtitle">
+              Controla cuántos proyectos admites al mes y los requisitos que cada cliente debe reunir antes de enviar una
+              propuesta.
+            </p>
+
+            {/* Switch general del estado del taller */}
+            <div className="studio-switch-card-main">
+              <div className="studio-switch-left-info">
+                <div className="studio-switch-circle-icon">
+                  <Radio size={20} aria-hidden="true" />
+                </div>
+                <div className="studio-switch-text-wrap">
+                  <strong>
+                    Estado General del Taller
+                    {isStudioOpen ? (
+                      <span className="studio-state-pill-open">ABIERTO</span>
+                    ) : (
+                      <span className="studio-state-pill-closed">CERRADO</span>
+                    )}
+                  </strong>
+                  <small>
+                    {isStudioOpen
+                      ? 'Actualmente aceptando nuevas solicitudes a través del formulario de vitrina.'
+                      : 'Vitrina pausada. Los clientes no podrán enviar encargos por el momento.'}
+                  </small>
+                </div>
+              </div>
+              <label className="studio-toggle-switch">
+                <input
+                  type="checkbox"
+                  checked={isStudioOpen}
+                  onChange={(e) => setIsStudioOpen(e.target.checked)}
+                  aria-label="Estado general del taller abierto o cerrado"
+                />
+                <span className="studio-toggle-slider" />
+              </label>
+            </div>
+
+            {/* 3 Métricas en fila */}
+            <div className="studio-metrics-three-grid">
+              <div className="studio-metric-box">
+                <div className="studio-metric-box-title">
+                  <span>Cupos Simultáneos</span>
+                  <span style={{ color: '#7C3AED', fontWeight: 800 }}>{slotsCount} Cupos</span>
+                </div>
+                <div className="studio-progress-bar-wrap">
+                  <div
+                    className="studio-progress-fill"
+                    style={{ width: `${Math.min(100, (activeProjectsCount / slotsCount) * 100)}%` }}
+                  />
+                </div>
+                <span className="studio-metric-subtext">
+                  {activeProjectsCount} proyectos en proceso activo actualmente
+                </span>
+              </div>
+
+              <div className="studio-metric-box">
+                <div className="studio-metric-box-title">
+                  <span>Respuesta Inicial</span>
+                </div>
+                <div className="studio-metric-value-row">
+                  <Clock size={16} color="#7C3AED" aria-hidden="true" />
+                  <span>{initialResponseTime}</span>
+                </div>
+                <span className="studio-metric-subtext">Promedio en días laborables</span>
+              </div>
+
+              <div className="studio-metric-box">
+                <div className="studio-metric-box-title">
+                  <span>Entrega Estimada</span>
+                </div>
+                <div className="studio-metric-value-row">
+                  <Calendar size={16} color="#7C3AED" aria-hidden="true" />
+                  <span>{estimatedDeliveryTime}</span>
+                </div>
+                <span className="studio-metric-subtext">Garantía para el cálculo de entrega</span>
+              </div>
+            </div>
+
+            {/* Requisitos obligatorios para nuevas solicitudes */}
+            <div className="studio-reqs-section-title">Requisitos Obligatorios para Nuevas Solicitudes</div>
+
+            <label className={`studio-checkbox-card ${reqVisualRefs ? 'is-checked' : ''}`}>
+              <input
+                type="checkbox"
+                className="studio-checkbox-control"
+                checked={reqVisualRefs}
+                onChange={(e) => setReqVisualRefs(e.target.checked)}
+              />
+              <div className="studio-checkbox-card-info">
+                <strong>Exigir referencias visuales adjuntas (Mínimo 2 imágenes / Moodboard)</strong>
+                <small>Evita solicitudes ambiguas y requerirá imágenes de apoyo antes de enviar la propuesta.</small>
+              </div>
+            </label>
+
+            <label className={`studio-checkbox-card ${reqColorPaletteApproval ? 'is-checked' : ''}`}>
+              <input
+                type="checkbox"
+                className="studio-checkbox-control"
+                checked={reqColorPaletteApproval}
+                onChange={(e) => setReqColorPaletteApproval(e.target.checked)}
+              />
+              <div className="studio-checkbox-card-info">
+                <strong>Exigir aprobación de línea de paleta cromática inicial</strong>
+                <small>El cliente debe dar visto bueno al thumbnail de color antes del render final.</small>
+              </div>
+            </label>
+
+            <label className={`studio-checkbox-card ${reqCommercialUseDefault ? 'is-checked' : ''}`}>
+              <input
+                type="checkbox"
+                className="studio-checkbox-control"
+                checked={reqCommercialUseDefault}
+                onChange={(e) => setReqCommercialUseDefault(e.target.checked)}
+              />
+              <div className="studio-checkbox-card-info">
+                <strong>Uso comercial habilitado por defecto (+40% sobre tarifa base)</strong>
+                <small>Añade automáticamente recargo comercial si el encargo es para videojuegos o streams.</small>
+              </div>
+            </label>
+          </section>
+
+          {/* ══════════════════════════════════════════════════════════════
+             SECCIÓN 3: FACTURACIÓN, RETIROS Y ESCROW SHIELD
+             ══════════════════════════════════════════════════════════════ */}
+          <section id="section-facturacion" className="studio-card" aria-labelledby="heading-facturacion">
+            <span
+              className="studio-card-tag"
+              style={{ background: '#EDE9FE', borderColor: '#C4B5FD', color: '#6D28D9' }}
+            >
+              ● CUSTODIA &amp; RETIROS
+            </span>
+            <div className="studio-card-header-row">
+              <div>
+                <h2 id="heading-facturacion" className="studio-card-title">
+                  Pagos, Retiros y ArtLink Escrow Shield
+                </h2>
+              </div>
+              <span className="studio-card-badge-right studio-badge-mint">Fondos Blindados</span>
+            </div>
+            <p className="studio-card-subtitle">
+              El sistema retiene los fondos del cliente antes de iniciar la obra y los libera al confirmar hitos de entrega.
+            </p>
+
+            {/* Ficha de cuenta bancaria */}
+            <div className="studio-bank-account-card">
+              <div className="studio-bank-left">
+                <div className="studio-bank-icon-box">
+                  <Building size={22} aria-hidden="true" />
+                </div>
+                <div>
+                  <div className="studio-bank-title-row">
+                    <span>Transferencia Bancaria SEPA Directa</span>
+                    <span className="studio-badge-verified">Verificado</span>
+                  </div>
+                  <div className="studio-bank-subtitle">{bankAccount}</div>
+                </div>
+              </div>
+              <button
+                type="button"
+                className="studio-btn-bank-edit"
+                onClick={() => setShowBankModal((v) => !v)}
+              >
+                Modificar Cuenta
+              </button>
+            </div>
+
+            {showBankModal && (
+              <div
+                style={{
+                  background: '#F5F3FF',
+                  border: '1.5px solid #C4B5FD',
+                  borderRadius: '12px',
+                  padding: '1rem',
+                  marginBottom: '1.25rem',
+                }}
+              >
+                <label className="studio-field-label">
+                  <span>Datos de la cuenta de cobro</span>
+                  <input
+                    type="text"
+                    className="studio-input"
+                    value={bankAccount}
+                    onChange={(e) => setBankAccount(e.target.value)}
+                  />
+                </label>
+              </div>
+            )}
+
+            <div className="studio-form-grid-two">
+              <label className="studio-field-label">
+                <span>Moneda Predeterminada del Taller</span>
+                <select
+                  className="studio-input"
+                  value={currency}
+                  onChange={(e) => setCurrency(e.target.value)}
+                >
+                  <option value="USD">USD ($) Dólares Americanos - Recomendado</option>
+                  <option value="EUR">EUR (€) Euros Unión Europea</option>
+                  <option value="MXN">MXN ($) Pesos Mexicanos</option>
+                  <option value="GBP">GBP (£) Libras Esterlinas</option>
+                </select>
+              </label>
+
+              <label className="studio-field-label">
+                <span>Umbral Mínimo de Retiro Automático</span>
+                <div className="studio-input-wrap">
+                  <span className="studio-input-icon-prefix" style={{ fontWeight: 800 }}>$</span>
+                  <input
+                    type="number"
+                    className="studio-input has-prefix"
+                    value={minWithdrawal}
+                    onChange={(e) => setMinWithdrawal(e.target.value)}
+                  />
+                </div>
+              </label>
+            </div>
+
+            {/* Recuadro Escrow Shield */}
+            <div className="studio-escrow-box">
+              <div className="studio-escrow-header">
+                <ShieldCheck size={18} aria-hidden="true" />
+                <span>Política de Hitos con Depósito Garantizado</span>
+              </div>
+              <p className="studio-escrow-text">
+                ArtLink Escrow Shield retiene los fondos del cliente y abona el 100% de la comisión antes de que debas
+                entregar la obra definitiva. Los custodios protegen al cliente en caso de cancelación no justificada.
+              </p>
+              <label className="studio-notif-check-label" style={{ fontWeight: 600 }}>
+                <input
+                  type="checkbox"
+                  checked={allowVoluntaryTips}
+                  onChange={(e) => setAllowVoluntaryTips(e.target.checked)}
+                />
+                <span>Permitir propuestas adicionales voluntarias tras entrega final en la resolución</span>
+              </label>
+            </div>
+          </section>
+
+          {/* ══════════════════════════════════════════════════════════════
+             SECCIÓN 4: CANALES DE NOTIFICACIÓN EN VIVO
+             ══════════════════════════════════════════════════════════════ */}
+          <section id="section-notificaciones" className="studio-card" aria-labelledby="heading-notificaciones">
+            <div className="studio-card-header-row">
+              <div>
+                <h2 id="heading-notificaciones" className="studio-card-title">
+                  Canales de Notificación en Vivo
+                </h2>
+              </div>
+            </div>
+            <p className="studio-card-subtitle">
+              Selecciona qué alertas deseas recibir en el navegador y en tu correo electrónico vinculado.
+            </p>
+
+            <div className="studio-notif-table">
+              <div className="studio-notif-row">
+                <div className="studio-notif-info">
+                  <strong>Nuevas solicitudes de comisión entrantes</strong>
+                  <small>Aviso inmediato cuando un cliente envíe un brief y proponga el encargo.</small>
+                </div>
+                <div className="studio-notif-checks-group">
+                  <label className="studio-notif-check-label">
+                    <input
+                      type="checkbox"
+                      checked={liveNotifs.requestsPush}
+                      onChange={(e) => {
+                        const val = e.target.checked
+                        setLiveNotifs((prev) => ({ ...prev, requestsPush: val }))
+                        updateNotifications('requests', val)
+                      }}
+                    />
+                    <span>Push</span>
+                  </label>
+                  <label className="studio-notif-check-label">
+                    <input
+                      type="checkbox"
+                      checked={liveNotifs.requestsEmail}
+                      onChange={(e) => {
+                        const val = e.target.checked
+                        setLiveNotifs((prev) => ({ ...prev, requestsEmail: val }))
+                        updateNotifications('emailNotifs', val)
+                      }}
+                    />
+                    <span>Email</span>
+                  </label>
+                </div>
+              </div>
+
+              <div className="studio-notif-row">
+                <div className="studio-notif-info">
+                  <strong>Mensajes de chat de clientes activos</strong>
+                  <small>Conversaciones directas y consultas sobre bocetos en curso.</small>
+                </div>
+                <div className="studio-notif-checks-group">
+                  <label className="studio-notif-check-label">
+                    <input
+                      type="checkbox"
+                      checked={liveNotifs.messagesPush}
+                      onChange={(e) => {
+                        const val = e.target.checked
+                        setLiveNotifs((prev) => ({ ...prev, messagesPush: val }))
+                        updateNotifications('messages', val)
+                      }}
+                    />
+                    <span>Push</span>
+                  </label>
+                  <label className="studio-notif-check-label">
+                    <input
+                      type="checkbox"
+                      checked={liveNotifs.messagesEmail}
+                      onChange={(e) => setLiveNotifs((prev) => ({ ...prev, messagesEmail: e.target.checked }))}
+                    />
+                    <span>Email</span>
+                  </label>
+                </div>
+              </div>
+
+              <div className="studio-notif-row">
+                <div className="studio-notif-info">
+                  <strong>Depósitos en Escrow confirmados &amp; Pagos liberados</strong>
+                  <small>Avisos de cobros de fondos transferidos a tus comisiones.</small>
+                </div>
+                <div className="studio-notif-checks-group">
+                  <label className="studio-notif-check-label">
+                    <input
+                      type="checkbox"
+                      checked={liveNotifs.escrowPush}
+                      onChange={(e) => {
+                        const val = e.target.checked
+                        setLiveNotifs((prev) => ({ ...prev, escrowPush: val }))
+                        updateNotifications('statusChanges', val)
+                      }}
+                    />
+                    <span>Push</span>
+                  </label>
+                  <label className="studio-notif-check-label">
+                    <input
+                      type="checkbox"
+                      checked={liveNotifs.escrowEmail}
+                      onChange={(e) => setLiveNotifs((prev) => ({ ...prev, escrowEmail: e.target.checked }))}
+                    />
+                    <span>Email</span>
+                  </label>
+                </div>
+              </div>
+
+              <div className="studio-notif-row">
+                <div className="studio-notif-info">
+                  <strong>Consejos y alertas de visibilidad de ArtLink</strong>
+                  <small>Recomendaciones para optimización de portfolio y tendencias.</small>
+                </div>
+                <div className="studio-notif-checks-group">
+                  <label className="studio-notif-check-label">
+                    <input
+                      type="checkbox"
+                      checked={liveNotifs.insightsPush}
+                      onChange={(e) => setLiveNotifs((prev) => ({ ...prev, insightsPush: e.target.checked }))}
+                    />
+                    <span>Push</span>
+                  </label>
+                  <label className="studio-notif-check-label">
+                    <input
+                      type="checkbox"
+                      checked={liveNotifs.insightsEmail}
+                      onChange={(e) => {
+                        const val = e.target.checked
+                        setLiveNotifs((prev) => ({ ...prev, insightsEmail: val }))
+                        updateNotifications('marketingNotifs', val)
+                      }}
+                    />
+                    <span>Email</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* ══════════════════════════════════════════════════════════════
+             SECCIÓN 5: SEGURIDAD, CUENTA Y PRIVACIDAD
+             ══════════════════════════════════════════════════════════════ */}
+          <section id="section-seguridad" className="studio-card" aria-labelledby="heading-seguridad">
+            <span
+              className="studio-card-tag"
+              style={{ background: '#EDE9FE', borderColor: '#C4B5FD', color: '#6D28D9' }}
+            >
+              ● ACCESO &amp; PRIVACIDAD
+            </span>
+            <div className="studio-card-header-row">
+              <div>
+                <h2 id="heading-seguridad" className="studio-card-title">
+                  Seguridad, Cuenta y Privacidad
+                </h2>
+              </div>
+              <span className="studio-card-badge-right studio-badge-mint">Autenticado</span>
+            </div>
+            <p className="studio-card-subtitle">
+              Gestiona tus datos de acceso, credenciales protegidas y controles de privacidad en la comunidad.
+            </p>
+
+            {/* Datos de cuenta y cambio de clave */}
+            <div className="studio-form-grid-two">
+              <label className="studio-field-label">
+                <span>Correo Electrónico Vinculado</span>
+                <input
+                  type="email"
+                  className="studio-input"
+                  value={accountEmail}
+                  onChange={(e) => setAccountEmail(e.target.value)}
+                />
+              </label>
+
+              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
+                <span className="studio-field-label" style={{ marginBottom: '0.45rem' }}>
+                  <span>Rol en ArtLink</span>
+                </span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', height: '42px' }}>
+                  <span className="studio-nav-pill-badge studio-pill-cyan" style={{ fontSize: '0.8rem', padding: '0.4rem 0.8rem' }}>
+                    {user?.role || 'Artista Creador'}
+                  </span>
                   <button
                     type="button"
-                    className="button button-primary"
-                    onClick={() => setActiveTab('perfil')}
-                  >
-                    <UserCheck size={16} aria-hidden="true" /> Modificar perfil completo
-                  </button>
-                  <Link className="button button-outline" to="/perfil">
-                    <User size={16} aria-hidden="true" /> Ver mi perfil público
-                  </Link>
-                  {user.role === 'artist' && (
-                    <Link className="button button-secondary" to="/artista/panel">
-                      <Sparkles size={16} aria-hidden="true" /> Mi panel de artista
-                    </Link>
-                  )}
-                  <button
-                    type="button"
-                    className="button button-outline button-danger"
+                    className="studio-btn-discard"
+                    style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem' }}
                     onClick={() => {
                       logout()
                       navigate('/login')
                     }}
                   >
-                    <LogOut size={16} aria-hidden="true" /> Cerrar sesión
+                    <LogOut size={13} aria-hidden="true" /> Cerrar Sesión
                   </button>
                 </div>
               </div>
-
-              {/* Formulario de edición de datos */}
-              <form onSubmit={handleSaveAccount} className="settings-fieldset" style={{ background: 'var(--paper)' }}>
-                <legend className="settings-legend">Editar datos de contacto</legend>
-                <div className="settings-grid-two" style={{ marginBottom: '1rem' }}>
-                  <label htmlFor="edit-name" className="settings-label">
-                    <span>Nombre para mostrar</span>
-                    <input
-                      id="edit-name"
-                      type="text"
-                      className="settings-select"
-                      value={accountName}
-                      onChange={(e) => setAccountName(e.target.value)}
-                      required
-                    />
-                  </label>
-
-                  <label htmlFor="edit-email" className="settings-label">
-                    <span>Correo electrónico</span>
-                    <input
-                      id="edit-email"
-                      type="email"
-                      className="settings-select"
-                      value={accountEmail}
-                      onChange={(e) => setAccountEmail(e.target.value)}
-                      required
-                    />
-                  </label>
-                </div>
-                {accountMsg && (
-                  <p style={{ color: '#0F5C4F', fontWeight: 700, fontSize: '0.85rem', marginBottom: '0.8rem' }}>
-                    {accountMsg}
-                  </p>
-                )}
-                <button type="submit" className="button button-primary">
-                  <Save size={15} aria-hidden="true" /> Guardar cambios de cuenta
-                </button>
-              </form>
-
-              {/* Formulario de cambio de contraseña */}
-              <form onSubmit={handleSavePassword} className="settings-fieldset" style={{ background: 'var(--paper)' }}>
-                <legend className="settings-legend">Cambiar contraseña</legend>
-                <div className="settings-grid-two" style={{ marginBottom: '1rem' }}>
-                  <label htmlFor="current-pass" className="settings-label">
-                    <span>Contraseña actual</span>
-                    <input
-                      id="current-pass"
-                      type="password"
-                      className="settings-select"
-                      value={currentPass}
-                      onChange={(e) => setCurrentPass(e.target.value)}
-                      placeholder="••••••••"
-                    />
-                  </label>
-
-                  <label htmlFor="new-pass" className="settings-label">
-                    <span>Nueva contraseña</span>
-                    <input
-                      id="new-pass"
-                      type="password"
-                      className="settings-select"
-                      value={newPass}
-                      onChange={(e) => setNewPass(e.target.value)}
-                      placeholder="Mínimo 4 caracteres"
-                    />
-                  </label>
-                </div>
-                {passMsg && (
-                  <p style={{ color: passMsg.includes('éxito') ? '#0F5C4F' : '#DC2626', fontWeight: 700, fontSize: '0.85rem', marginBottom: '0.8rem' }}>
-                    {passMsg}
-                  </p>
-                )}
-                <button type="submit" className="button button-secondary">
-                  <Key size={15} aria-hidden="true" /> Actualizar contraseña
-                </button>
-              </form>
             </div>
-          ) : (
-            <div className="account-guest-card">
-              <p>Actualmente estás en modo visitante sin iniciar sesión.</p>
-              <div className="hero-actions">
-                <Link className="button button-primary" to="/login">
-                  Iniciar sesión
-                </Link>
-                <Link className="button button-secondary" to="/registro">
-                  Crear cuenta
-                </Link>
+
+            {/* Controles de Privacidad */}
+            <div style={{ marginTop: '1.2rem', marginBottom: '1.4rem' }}>
+              <span className="studio-reqs-section-title">Controles de Visibilidad y Privacidad</span>
+
+              <label className={`studio-checkbox-card ${settings.privacy?.profileVisibility === 'public' ? 'is-checked' : ''}`}>
+                <input
+                  type="checkbox"
+                  className="studio-checkbox-control"
+                  checked={settings.privacy?.profileVisibility === 'public'}
+                  onChange={(e) => updatePrivacy('profileVisibility', e.target.checked ? 'public' : 'private')}
+                />
+                <div className="studio-checkbox-card-info">
+                  <strong>Perfil Público y Visible en Buscador</strong>
+                  <small>Permite que cualquier usuario descubra tu vitrina en la exploración de ArtLink.</small>
+                </div>
+              </label>
+
+              <label className={`studio-checkbox-card ${settings.privacy?.showActivity ? 'is-checked' : ''}`}>
+                <input
+                  type="checkbox"
+                  className="studio-checkbox-control"
+                  checked={Boolean(settings.privacy?.showActivity)}
+                  onChange={(e) => updatePrivacy('showActivity', e.target.checked)}
+                />
+                <div className="studio-checkbox-card-info">
+                  <strong>Mostrar actividad de comisiones completadas</strong>
+                  <small>Exhibe los encargos concluidos satisfactoriamente como prueba de reputación.</small>
+                </div>
+              </label>
+            </div>
+
+            {/* Cambio de Contraseña */}
+            <form onSubmit={handleSavePassword} style={{ background: '#FAF9FE', padding: '1.25rem', borderRadius: '14px', border: '1.5px solid #DDD6FE' }}>
+              <span className="studio-reqs-section-title">Actualizar Contraseña de Acceso</span>
+              <div className="studio-form-grid-two" style={{ marginTop: '0.6rem' }}>
+                <label className="studio-field-label">
+                  <span>Contraseña Actual</span>
+                  <input
+                    type="password"
+                    className="studio-input"
+                    placeholder="••••••••"
+                    value={currentPass}
+                    onChange={(e) => setCurrentPass(e.target.value)}
+                  />
+                </label>
+
+                <label className="studio-field-label">
+                  <span>Nueva Contraseña</span>
+                  <input
+                    type="password"
+                    className="studio-input"
+                    placeholder="Mínimo 4 caracteres"
+                    value={newPass}
+                    onChange={(e) => setNewPass(e.target.value)}
+                  />
+                </label>
+              </div>
+
+              {passFeedback && (
+                <p
+                  style={{
+                    color: passFeedback.includes('éxito') ? '#059669' : '#DC2626',
+                    fontSize: '0.82rem',
+                    fontWeight: 700,
+                    margin: '0.5rem 0',
+                  }}
+                >
+                  {passFeedback}
+                </p>
+              )}
+
+              <button
+                type="submit"
+                className="studio-btn-discard"
+                style={{ background: '#7C3AED', color: '#FFFFFF', borderColor: 'var(--ink)' }}
+              >
+                <Key size={14} aria-hidden="true" /> Actualizar Contraseña
+              </button>
+            </form>
+          </section>
+
+          {/* ══════════════════════════════════════════════════════════════
+             SECCIÓN 6: ZONA DE GESTIÓN AVANZADA
+             ══════════════════════════════════════════════════════════════ */}
+          <div className="studio-advanced-zone-card">
+            <div className="studio-advanced-header">
+              <AlertTriangle size={20} aria-hidden="true" />
+              <span>Zona de Gestión Avanzada</span>
+            </div>
+            <p className="studio-advanced-subtitle">
+              Acciones que alteran la disponibilidad pública del taller, copia de seguridad del portafolio o desconexión
+              temporal.
+            </p>
+
+            <div className="studio-advanced-actions-list">
+              <div className="studio-advanced-row">
+                <div className="studio-advanced-info">
+                  <strong>Descargar Archivo Completo del Taller</strong>
+                  <small>Descarga un archivo .ZIP de tus contratos, portafolio y recibos de impuestos.</small>
+                </div>
+                <button
+                  type="button"
+                  className="studio-btn-export-zip"
+                  onClick={handleExportStudioZip}
+                >
+                  <Download size={13} style={{ marginRight: '0.35rem', verticalAlign: 'middle' }} />
+                  Exportar Datos (.ZIP)
+                </button>
+              </div>
+
+              <div className="studio-advanced-row">
+                <div className="studio-advanced-info">
+                  <strong>Pausar Taller por Vacaciones</strong>
+                  <small>Oculta temporalmente el botón de comisiones sin perder tus reseñas ni tus cupos.</small>
+                </div>
+                <button
+                  type="button"
+                  className="studio-btn-pause-studio"
+                  onClick={handleTogglePauseStudio}
+                >
+                  <PauseCircle size={13} style={{ marginRight: '0.35rem', verticalAlign: 'middle' }} />
+                  {isPausedForVacation ? 'Reanudar Taller' : 'Pausar Taller'}
+                </button>
               </div>
             </div>
-          )}
+          </div>
 
-          {/* Enlaces de soporte, políticas y versión */}
-          <fieldset className="settings-fieldset" style={{ marginTop: '1.8rem' }}>
-            <legend className="settings-legend">Centro de ayuda y políticas legales</legend>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '0.8rem', marginTop: '0.5rem' }}>
-              <Link to="/ayuda" className="button button-outline" style={{ justifyContent: 'flex-start' }}>
-                <HelpCircle size={16} aria-hidden="true" /> Centro de ayuda
-              </Link>
-              <Link to="/como-funciona" className="button button-outline" style={{ justifyContent: 'flex-start' }}>
-                <HelpCircle size={16} aria-hidden="true" /> Preguntas frecuentes
-              </Link>
-              <Link to="/terminos" className="button button-outline" style={{ justifyContent: 'flex-start' }}>
-                <FileText size={16} aria-hidden="true" /> Términos de uso
-              </Link>
-              <Link to="/privacidad" className="button button-outline" style={{ justifyContent: 'flex-start' }}>
-                <ShieldCheck size={16} aria-hidden="true" /> Política de privacidad
-              </Link>
-              <Link to="/comunidad" className="button button-outline" style={{ justifyContent: 'flex-start' }}>
-                <FileText size={16} aria-hidden="true" /> Políticas de comunidad
-              </Link>
+          {/* ══════════════════════════════════════════════════════════════
+             SECCIÓN 7: INTEGRACIONES DE ARTE, APARIENCIA & ACCESIBILIDAD
+             ══════════════════════════════════════════════════════════════ */}
+          <section id="section-apariencia" className="studio-card" aria-labelledby="heading-apariencia">
+            <span
+              className="studio-card-tag"
+              style={{ background: '#E0E7FF', borderColor: '#A5B4FC', color: '#3730A3' }}
+            >
+              ● ENTORNO VISUAL &amp; ACCESIBILIDAD
+            </span>
+            <div className="studio-card-header-row">
+              <div>
+                <h2 id="heading-apariencia" className="studio-card-title">
+                  Apariencia y visualización
+                </h2>
+              </div>
+              <span className="studio-card-badge-right studio-badge-mint">Personalizado</span>
+            </div>
+            <p className="studio-card-subtitle">
+              Ajusta el tema general de color, densidad, contraste, tamaño tipográfico y adaptaciones de lectura asistida.
+            </p>
+
+            {/* Tema de interfaz */}
+            <div style={{ marginBottom: '1.4rem' }}>
+              <span className="studio-reqs-section-title">Tema de la interfaz</span>
+              <div className="studio-metrics-three-grid" style={{ marginTop: '0.5rem' }}>
+                <button
+                  type="button"
+                  className={`studio-metric-box ${settings.theme === 'light' ? 'is-selected' : ''}`}
+                  style={{
+                    cursor: 'pointer',
+                    borderColor: settings.theme === 'light' ? '#7C3AED' : '#DDD6FE',
+                    background: settings.theme === 'light' ? '#EDE9FE' : '#FAF9FE',
+                    textAlign: 'left',
+                  }}
+                  onClick={() => updateSetting('theme', 'light')}
+                >
+                  <Sun size={20} color="#7C3AED" style={{ marginBottom: '0.4rem' }} aria-hidden="true" />
+                  <strong>Tema Claro</strong>
+                  <span className="studio-metric-subtext">Fondo pastel con texto obscuro</span>
+                </button>
+
+                <button
+                  type="button"
+                  className={`studio-metric-box ${settings.theme === 'dark' ? 'is-selected' : ''}`}
+                  style={{
+                    cursor: 'pointer',
+                    borderColor: settings.theme === 'dark' ? '#7C3AED' : '#DDD6FE',
+                    background: settings.theme === 'dark' ? '#EDE9FE' : '#FAF9FE',
+                    textAlign: 'left',
+                  }}
+                  onClick={() => updateSetting('theme', 'dark')}
+                >
+                  <Moon size={20} color="#7C3AED" style={{ marginBottom: '0.4rem' }} aria-hidden="true" />
+                  <strong>Tema Oscuro</strong>
+                  <span className="studio-metric-subtext">Fondo nocturno con acentos vibrantes</span>
+                </button>
+
+                <button
+                  type="button"
+                  className={`studio-metric-box ${settings.theme === 'system' ? 'is-selected' : ''}`}
+                  style={{
+                    cursor: 'pointer',
+                    borderColor: settings.theme === 'system' ? '#7C3AED' : '#DDD6FE',
+                    background: settings.theme === 'system' ? '#EDE9FE' : '#FAF9FE',
+                    textAlign: 'left',
+                  }}
+                  onClick={() => updateSetting('theme', 'system')}
+                >
+                  <Sparkles size={20} color="#7C3AED" style={{ marginBottom: '0.4rem' }} aria-hidden="true" />
+                  <strong>Sincronizar SO</strong>
+                  <span className="studio-metric-subtext">Preferencia del sistema operativo</span>
+                </button>
+              </div>
             </div>
 
-            <div style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px dashed var(--line)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem', fontSize: '0.8rem', color: 'var(--muted)' }}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                <Info size={14} aria-hidden="true" /> Versión de la aplicación: <strong>ArtLink v2.5.0 (Enterprise Academic Release)</strong>
+            {/* Escala tipográfica y contraste */}
+            <div className="studio-form-grid-two">
+              <label htmlFor="font-size-select" className="studio-field-label">
+                <span>
+                  <Type size={16} style={{ verticalAlign: 'middle', marginRight: '0.3rem' }} /> Tamaño de texto
+                </span>
+                <select
+                  id="font-size-select"
+                  className="studio-input"
+                  value={settings.fontSize}
+                  onChange={(e) => updateSetting('fontSize', e.target.value)}
+                >
+                  <option value="normal">Normal (100%)</option>
+                  <option value="large">Grande (112.5%)</option>
+                  <option value="xlarge">Extra grande (125%)</option>
+                </select>
+              </label>
+
+              <label htmlFor="contrast-select" className="studio-field-label">
+                <span>
+                  <Eye size={16} style={{ verticalAlign: 'middle', marginRight: '0.3rem' }} /> Nivel de contraste
+                </span>
+                <select
+                  id="contrast-select"
+                  className="studio-input"
+                  value={settings.contrast}
+                  onChange={(e) => updateSetting('contrast', e.target.value)}
+                >
+                  <option value="normal">Normal</option>
+                  <option value="high">Alto contraste</option>
+                  <option value="soft">Contraste suave</option>
+                </select>
+              </label>
+            </div>
+
+            {/* Adaptación para daltonismo */}
+            <div style={{ marginBottom: '1.25rem' }}>
+              <label htmlFor="color-mode-select" className="studio-field-label">
+                <span>
+                  <Palette size={16} style={{ verticalAlign: 'middle', marginRight: '0.3rem' }} /> Filtro de Daltonismo
+                </span>
+                <select
+                  id="color-mode-select"
+                  className="studio-input"
+                  value={settings.colorMode}
+                  onChange={(e) => updateSetting('colorMode', e.target.value)}
+                >
+                  <option value="normal">Sin filtro (Normal)</option>
+                  <option value="protanopia">Protanopia (Deficiencia de rojo)</option>
+                  <option value="deuteranopia">Deuteranopia (Deficiencia de verde)</option>
+                  <option value="tritanopia">Tritanopia (Deficiencia de azul)</option>
+                </select>
+              </label>
+            </div>
+
+            {/* Muestra de lectura */}
+            <div
+              style={{
+                background: '#FAF9FE',
+                border: '1.5px solid #DDD6FE',
+                borderRadius: '12px',
+                padding: '1.1rem',
+                marginBottom: '1.25rem',
+              }}
+            >
+              <span
+                style={{
+                  fontFamily: 'var(--badge)',
+                  fontSize: '0.7rem',
+                  fontWeight: 800,
+                  textTransform: 'uppercase',
+                  color: '#7C3AED',
+                }}
+              >
+                Vista previa de lectura adaptada
               </span>
-              <span>© {new Date().getFullYear()} ArtLink Inc. Todos los derechos reservados.</span>
+              <p style={{ margin: '0.5rem 0 0', lineHeight: 1.6, fontSize: '0.95rem' }}>{sampleText}</p>
             </div>
-          </fieldset>
-        </section>
-      )}
 
-      {/* ── BOTONES GLOBALES DE GUARDAR Y RESTAURAR ── */}
-      <footer className="settings-actions-footer">
-        <button
-          type="button"
-          className="button button-secondary"
-          onClick={resetSettings}
-        >
-          <RotateCcw size={16} aria-hidden="true" /> Restaurar valores predeterminados
-        </button>
-        <button
-          type="button"
-          className="button button-primary"
-          onClick={saveSettings}
-        >
-          <Save size={16} aria-hidden="true" /> Guardar preferencias
-        </button>
-      </footer>
+            {/* Opciones adicionales de accesibilidad */}
+            <div style={{ marginBottom: '1.4rem' }}>
+              <label className={`studio-checkbox-card ${settings.reduceMotion ? 'is-checked' : ''}`}>
+                <input
+                  type="checkbox"
+                  className="studio-checkbox-control"
+                  checked={Boolean(settings.reduceMotion)}
+                  onChange={(e) => updateSetting('reduceMotion', e.target.checked)}
+                />
+                <div className="studio-checkbox-card-info">
+                  <strong>
+                    <Zap size={14} style={{ verticalAlign: 'middle', marginRight: '0.3rem' }} /> Reducción de
+                    movimiento
+                  </strong>
+                  <small>Desactiva transiciones rápidas y animaciones complejas en toda la plataforma.</small>
+                </div>
+              </label>
+
+              <label className={`studio-checkbox-card ${settings.readableFont ? 'is-checked' : ''}`}>
+                <input
+                  type="checkbox"
+                  className="studio-checkbox-control"
+                  checked={Boolean(settings.readableFont)}
+                  onChange={(e) => updateSetting('readableFont', e.target.checked)}
+                />
+                <div className="studio-checkbox-card-info">
+                  <strong>Tipografía de alta legibilidad (Apoyo para dislexia)</strong>
+                  <small>Aumenta el espaciado interlineal y caracteres diferenciados.</small>
+                </div>
+              </label>
+
+              <label className={`studio-checkbox-card ${settings.focusVisible ? 'is-checked' : ''}`}>
+                <input
+                  type="checkbox"
+                  className="studio-checkbox-control"
+                  checked={Boolean(settings.focusVisible)}
+                  onChange={(e) => updateSetting('focusVisible', e.target.checked)}
+                />
+                <div className="studio-checkbox-card-info">
+                  <strong>Focus visible de alto contraste</strong>
+                  <small>Resalta claramente con borde grueso el elemento que tiene el foco activo por teclado.</small>
+                </div>
+              </label>
+            </div>
+
+            {/* Asistente de lectura de voz (Web Speech API) */}
+            <div
+              style={{
+                background: '#FAF9FE',
+                border: '1.5px dashed #C4B5FD',
+                borderRadius: '12px',
+                padding: '1.25rem',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                <Volume2 size={18} color="#7C3AED" aria-hidden="true" />
+                <strong style={{ fontSize: '0.9rem' }}>Prueba de síntesis de voz (Web Speech API)</strong>
+              </div>
+              <p style={{ fontSize: '0.85rem', color: '#4B5563', margin: '0 0 0.8rem' }}>{sampleText}</p>
+              <ReadAloudButton textToRead={sampleText} label="Escuchar muestra de audio" />
+            </div>
+
+            {/* Enlaces de soporte y políticas */}
+            <div
+              style={{
+                marginTop: '1.8rem',
+                paddingTop: '1.2rem',
+                borderTop: '1px dashed var(--line)',
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '0.8rem',
+              }}
+            >
+              <Link to="/ayuda" className="studio-chip-btn">
+                <HelpCircle size={14} aria-hidden="true" /> Centro de ayuda
+              </Link>
+              <Link to="/como-funciona" className="studio-chip-btn">
+                <HelpCircle size={14} aria-hidden="true" /> Preguntas frecuentes
+              </Link>
+              <Link to="/terminos" className="studio-chip-btn">
+                <FileText size={14} aria-hidden="true" /> Términos de uso
+              </Link>
+              <Link to="/privacidad" className="studio-chip-btn">
+                <ShieldCheck size={14} aria-hidden="true" /> Política de privacidad
+              </Link>
+            </div>
+          </section>
+        </main>
+      </div>
     </div>
   )
 }

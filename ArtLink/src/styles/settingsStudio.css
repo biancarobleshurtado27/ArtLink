@@ -1,0 +1,1335 @@
+/* ══════════════════════════════════════════════════════════════════
+   ArtLink — Ajustes de Cuenta y Taller (Studio Settings V2)
+   Inspirado fielmente en el diseño visual de referencia ArtLink Pro Studio
+   ══════════════════════════════════════════════════════════════════ */
+
+.studio-settings-page {
+  max-width: 82rem;
+  margin: 0 auto;
+  padding: 1.5rem 1.5rem 4rem;
+  font-family: var(--sans);
+  color: var(--ink);
+}
+
+/* ── HEADER SUPERIOR ── */
+.studio-settings-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.studio-header-main {
+  flex: 1;
+  min-width: 280px;
+}
+
+.studio-status-pills {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.studio-sync-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: #E6FFFA;
+  border: 1.5px solid #2DD4BF;
+  color: #0F766E;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-pill);
+  font-family: var(--badge);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.studio-live-dot {
+  width: 7px;
+  height: 7px;
+  background-color: #10B981;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25);
+  animation: studioPulse 2s infinite ease-in-out;
+}
+
+@keyframes studioPulse {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  70% { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.studio-version-pill {
+  display: inline-flex;
+  align-items: center;
+  background: #FEF08A;
+  border: 1.5px solid #CA8A04;
+  color: #854D0E;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-pill);
+  font-family: var(--badge);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+}
+
+.studio-page-title {
+  font-family: var(--heading);
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  font-weight: 800;
+  margin: 0.2rem 0 0.5rem;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+
+.studio-page-subtitle {
+  color: var(--muted);
+  font-size: 0.95rem;
+  margin: 0;
+  max-width: 48rem;
+  line-height: 1.5;
+}
+
+/* Acciones en la cabecera */
+.studio-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  align-self: flex-start;
+}
+
+.studio-btn-discard {
+  background: var(--paper);
+  border: 1.5px solid #DDD6FE;
+  color: #7C3AED;
+  font-family: var(--badge);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  padding: 0.65rem 1.4rem;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.studio-btn-discard:hover {
+  background: #F5F3FF;
+  border-color: #C4B5FD;
+  transform: translateY(-1px);
+}
+
+.studio-btn-save {
+  background: #7C3AED;
+  border: 2px solid var(--ink);
+  color: #FFFFFF;
+  font-family: var(--sans);
+  font-size: 0.88rem;
+  font-weight: 700;
+  padding: 0.65rem 1.6rem;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  box-shadow: 2px 2px 0 var(--ink);
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.studio-btn-save:hover {
+  background: #6D28D9;
+  transform: translateY(-2px);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+.studio-btn-save:active {
+  transform: translateY(0);
+  box-shadow: 1px 1px 0 var(--ink);
+}
+
+/* ── MENSAJE DE ESTADO FLOTANTE/BANNER ── */
+.studio-alert-banner {
+  background: #ECFDF5;
+  border: 2px solid var(--ink);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-firm);
+  padding: 0.85rem 1.25rem;
+  margin-bottom: 1.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  color: #065F46;
+  font-weight: 700;
+}
+
+.studio-alert-banner.is-error {
+  background: #FEF2F2;
+  color: #991B1B;
+}
+
+/* ── LAYOUT PRINCIPAL (DOS COLUMNAS) ── */
+.studio-main-grid {
+  display: grid;
+  grid-template-columns: 290px 1fr;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+/* ── COLUMNA LATERAL (SIDEBAR) ── */
+.studio-sidebar {
+  position: sticky;
+  top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.studio-sidebar-card {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 18px;
+  box-shadow: 3px 3px 0 var(--ink);
+  padding: 1.25rem;
+}
+
+.studio-sidebar-tag {
+  display: inline-block;
+  background: #FEF08A;
+  border: 1px solid #EAB308;
+  color: #854D0E;
+  font-family: var(--badge);
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.15rem 0.6rem;
+  border-radius: var(--radius-pill);
+  margin-bottom: 0.6rem;
+}
+
+.studio-sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px dashed var(--line);
+}
+
+.studio-sidebar-title {
+  font-family: var(--heading);
+  font-size: 1.05rem;
+  font-weight: 800;
+  margin: 0;
+  color: var(--ink);
+}
+
+.studio-sidebar-count-badge {
+  background: #EDE9FE;
+  color: #6D28D9;
+  font-family: var(--badge);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-pill);
+}
+
+/* Lista de navegación vertical */
+.studio-nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.studio-nav-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: transparent;
+  border: 1.5px solid transparent;
+  border-radius: 10px;
+  padding: 0.65rem 0.85rem;
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.studio-nav-item:hover {
+  background: #F3EEFF;
+  border-color: #DDD6FE;
+}
+
+.studio-nav-item.is-active {
+  background: #EDE9FE;
+  border-color: #7C3AED;
+  color: #5B21B6;
+  font-weight: 700;
+}
+
+.studio-nav-item-left {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.studio-nav-item-icon {
+  display: flex;
+  align-items: center;
+  color: #7C3AED;
+}
+
+.studio-nav-item.is-active .studio-nav-item-icon {
+  color: #5B21B6;
+}
+
+.studio-nav-pill-badge {
+  font-family: var(--badge);
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-pill);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.studio-pill-cyan {
+  background: #CCFBF1;
+  color: #0F766E;
+  border: 1px solid #2DD4BF;
+}
+
+.studio-pill-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #F43F5E;
+}
+
+.studio-pill-mint {
+  background: #DCFCE7;
+  color: #15803D;
+  border: 1px solid #86EFAC;
+}
+
+.studio-pill-pink {
+  background: #FCE7F3;
+  color: #BE185D;
+  border: 1px solid #F472B6;
+}
+
+.studio-nav-arrow {
+  color: #7C3AED;
+}
+
+/* Barra de herramientas rápida en el sidebar */
+.studio-sidebar-quick-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-top: 1rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--line);
+}
+
+.studio-quick-tool-btn {
+  background: #F9FAFB;
+  border: 1.5px solid var(--line);
+  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.studio-quick-tool-btn:hover {
+  background: #EDE9FE;
+  border-color: #7C3AED;
+  color: #6D28D9;
+  transform: translateY(-1px);
+}
+
+/* Tarjeta Tip de Arte */
+.studio-tip-card {
+  background: #FAF8FE;
+  border: 2px solid var(--ink);
+  border-radius: 18px;
+  box-shadow: 3px 3px 0 var(--ink);
+  padding: 1.25rem;
+  position: relative;
+}
+
+.studio-tip-top-badge {
+  display: inline-block;
+  background: #FCE7F3;
+  border: 1px solid #F472B6;
+  color: #9D174D;
+  font-family: var(--badge);
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 0.15rem 0.55rem;
+  border-radius: var(--radius-pill);
+  margin-bottom: 0.75rem;
+}
+
+.studio-tip-header-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.65rem;
+}
+
+.studio-tip-avatar-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #FEF08A;
+  border: 2px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  box-shadow: 2px 2px 0 var(--ink);
+  flex-shrink: 0;
+}
+
+.studio-tip-title {
+  font-family: var(--heading);
+  font-size: 0.95rem;
+  font-weight: 800;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.studio-pro-badge {
+  background: #FEF08A;
+  color: #854D0E;
+  border: 1px solid #CA8A04;
+  font-family: var(--badge);
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 0.05rem 0.4rem;
+  border-radius: 4px;
+}
+
+.studio-tip-body {
+  font-size: 0.82rem;
+  color: #4B5563;
+  line-height: 1.45;
+  margin: 0 0 1rem;
+}
+
+.studio-tip-body strong {
+  color: #6D28D9;
+}
+
+.studio-tip-links {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  border-top: 1px dashed var(--line);
+  padding-top: 0.75rem;
+}
+
+.studio-tip-discard-link {
+  color: #9CA3AF;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: var(--sans);
+  text-decoration: underline;
+}
+
+.studio-tip-discard-link:hover {
+  color: var(--ink);
+}
+
+.studio-tip-action-link {
+  color: #6D28D9;
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.studio-tip-action-link:hover {
+  text-decoration: underline;
+}
+
+/* ── COLUMNA PRINCIPAL DE SECCIONES ── */
+.studio-sections-column {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  min-width: 0;
+}
+
+/* Tarjeta estándar de sección */
+.studio-card {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 20px;
+  box-shadow: 3px 3px 0 var(--ink);
+  padding: 2rem;
+  position: relative;
+}
+
+.studio-card-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #FEF08A;
+  border: 1.5px solid #CA8A04;
+  color: #854D0E;
+  font-family: var(--badge);
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 0.2rem 0.65rem;
+  border-radius: var(--radius-pill);
+  margin-bottom: 0.6rem;
+}
+
+.studio-card-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.studio-card-title {
+  font-family: var(--heading);
+  font-size: 1.45rem;
+  font-weight: 800;
+  margin: 0;
+  color: var(--ink);
+}
+
+.studio-card-badge-right {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--badge);
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-pill);
+}
+
+.studio-badge-coral {
+  background: #FFE4E6;
+  color: #BE123C;
+  border: 1px solid #FDA4AF;
+}
+
+.studio-badge-cyan {
+  background: #CCFBF1;
+  color: #0F766E;
+  border: 1px solid #2DD4BF;
+}
+
+.studio-badge-mint {
+  background: #DCFCE7;
+  color: #15803D;
+  border: 1px solid #86EFAC;
+}
+
+.studio-card-subtitle {
+  color: var(--muted);
+  font-size: 0.88rem;
+  margin: 0 0 1.6rem;
+  line-height: 1.5;
+}
+
+/* ── SECCIÓN 1: PORTADA Y AVATAR DEL ESTUDIO ── */
+.studio-banner-section-label {
+  font-family: var(--badge);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #6B7280;
+  margin-bottom: 0.6rem;
+}
+
+.studio-banner-wrapper {
+  position: relative;
+  width: 100%;
+  height: clamp(140px, 20vw, 200px);
+  border-radius: 16px;
+  border: 2px solid var(--ink);
+  overflow: hidden;
+  background: #C4B5FD;
+}
+
+.studio-banner-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.studio-banner-update-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border: 1.5px solid var(--ink);
+  border-radius: var(--radius-pill);
+  padding: 0.4rem 0.9rem;
+  font-family: var(--badge);
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  cursor: pointer;
+  box-shadow: 2px 2px 0 var(--ink);
+  transition: all 0.15s ease;
+}
+
+.studio-banner-update-btn:hover {
+  background: #FFFFFF;
+  transform: translateY(-1px);
+}
+
+.studio-avatar-overlap {
+  position: absolute;
+  bottom: 0.8rem;
+  left: 1.2rem;
+  width: 68px;
+  height: 68px;
+  border-radius: 14px;
+  border: 3px solid #FFFFFF;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  background: var(--paper);
+}
+
+.studio-avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.studio-avatar-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #8B5CF6;
+  color: #FFFFFF;
+  font-family: var(--heading);
+  font-weight: 800;
+  font-size: 1.3rem;
+}
+
+.studio-banner-bottom-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.6rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.studio-btn-delete-banner {
+  background: none;
+  border: none;
+  color: #BE123C;
+  font-family: var(--badge);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  padding: 0;
+}
+
+.studio-btn-delete-banner:hover {
+  text-decoration: underline;
+}
+
+/* ── FORMULARIOS Y CAMPOS MODERNOS ── */
+.studio-form-grid-two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.studio-field-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.studio-label-with-counter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.studio-char-counter {
+  font-family: var(--badge);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.studio-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.studio-input-icon-prefix {
+  position: absolute;
+  left: 0.9rem;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.studio-input-icon-suffix {
+  position: absolute;
+  right: 0.9rem;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.studio-input {
+  width: 100%;
+  background: #FAF9FD;
+  border: 1.5px solid #DDD6FE;
+  border-radius: 12px;
+  padding: 0.75rem 0.95rem;
+  font-family: var(--sans);
+  font-size: 0.88rem;
+  color: var(--ink);
+  transition: all 0.15s ease;
+  outline: none;
+}
+
+.studio-input.has-prefix {
+  padding-left: 2.5rem;
+}
+
+.studio-input.has-suffix {
+  padding-right: 2.5rem;
+}
+
+.studio-input:focus {
+  background: #FFFFFF;
+  border-color: #7C3AED;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+}
+
+.studio-textarea {
+  width: 100%;
+  background: #FAF9FD;
+  border: 1.5px solid #DDD6FE;
+  border-radius: 12px;
+  padding: 0.8rem 0.95rem;
+  font-family: var(--sans);
+  font-size: 0.88rem;
+  color: var(--ink);
+  min-height: 95px;
+  resize: vertical;
+  line-height: 1.5;
+  outline: none;
+  transition: all 0.15s ease;
+}
+
+.studio-textarea:focus {
+  background: #FFFFFF;
+  border-color: #7C3AED;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+}
+
+.studio-socials-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+/* ── SECCIÓN 2: DISPONIBILIDAD & NORMAS DE ENCARGO ── */
+.studio-switch-card-main {
+  background: #FFFFFF;
+  border: 1.5px solid var(--ink);
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.4rem;
+}
+
+.studio-switch-left-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.studio-switch-circle-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #FFE4E6;
+  border: 1.5px solid #FDA4AF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #E11D48;
+  flex-shrink: 0;
+}
+
+.studio-switch-text-wrap strong {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.92rem;
+  color: var(--ink);
+}
+
+.studio-state-pill-open {
+  background: #DCFCE7;
+  color: #15803D;
+  border: 1px solid #86EFAC;
+  font-family: var(--badge);
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 0.1rem 0.5rem;
+  border-radius: var(--radius-pill);
+}
+
+.studio-state-pill-closed {
+  background: #FEE2E2;
+  color: #991B1B;
+  border: 1px solid #FCA5A5;
+  font-family: var(--badge);
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 0.1rem 0.5rem;
+  border-radius: var(--radius-pill);
+}
+
+.studio-switch-text-wrap small {
+  display: block;
+  color: var(--muted);
+  font-size: 0.78rem;
+  margin-top: 0.15rem;
+}
+
+/* Toggle Switch estilo iOS moderno */
+.studio-toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 48px;
+  height: 26px;
+  flex-shrink: 0;
+}
+
+.studio-toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.studio-toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: #D1D5DB;
+  transition: 0.25s ease;
+  border-radius: 34px;
+  border: 1.5px solid var(--ink);
+}
+
+.studio-toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: 0.25s ease;
+  border-radius: 50%;
+  border: 1.5px solid var(--ink);
+}
+
+.studio-toggle-switch input:checked + .studio-toggle-slider {
+  background-color: #7C3AED;
+}
+
+.studio-toggle-switch input:checked + .studio-toggle-slider:before {
+  transform: translateX(22px);
+}
+
+/* 3 Tarjetas de métricas y cupos */
+.studio-metrics-three-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.8rem;
+}
+
+.studio-metric-box {
+  background: #FAF9FE;
+  border: 1.5px solid #DDD6FE;
+  border-radius: 14px;
+  padding: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.studio-metric-box-title {
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.studio-metric-value-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--heading);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 0.4rem;
+}
+
+.studio-metric-subtext {
+  font-size: 0.74rem;
+  color: var(--muted);
+}
+
+.studio-progress-bar-wrap {
+  width: 100%;
+  height: 7px;
+  background: #E5E7EB;
+  border-radius: 999px;
+  overflow: hidden;
+  margin: 0.4rem 0;
+}
+
+.studio-progress-fill {
+  height: 100%;
+  background: #7C3AED;
+  border-radius: 999px;
+}
+
+/* Requisitos de encargo (checkbox cards) */
+.studio-reqs-section-title {
+  font-family: var(--badge);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin-bottom: 0.85rem;
+}
+
+.studio-checkbox-card {
+  background: #FAF9FD;
+  border: 1.5px solid #DDD6FE;
+  border-radius: 12px;
+  padding: 0.95rem 1.1rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  margin-bottom: 0.75rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.studio-checkbox-card:hover {
+  background: #F5F3FF;
+  border-color: #C4B5FD;
+}
+
+.studio-checkbox-card.is-checked {
+  background: #F3EEFF;
+  border-color: #7C3AED;
+}
+
+.studio-checkbox-control {
+  margin-top: 0.15rem;
+  width: 18px;
+  height: 18px;
+  accent-color: #7C3AED;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.studio-checkbox-card-info strong {
+  display: block;
+  font-size: 0.86rem;
+  color: var(--ink);
+  margin-bottom: 0.15rem;
+}
+
+.studio-checkbox-card-info small {
+  display: block;
+  font-size: 0.76rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+/* ── SECCIÓN 3: FACTURACIÓN & ESCROW SHIELD ── */
+.studio-bank-account-card {
+  background: #FFFFFF;
+  border: 1.5px solid #DDD6FE;
+  border-radius: 14px;
+  padding: 1.1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.4rem;
+  flex-wrap: wrap;
+}
+
+.studio-bank-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.studio-bank-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #EDE9FE;
+  border: 1.5px solid #DDD6FE;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6D28D9;
+  flex-shrink: 0;
+}
+
+.studio-bank-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.studio-badge-verified {
+  background: #FEF3C7;
+  color: #D97706;
+  border: 1px solid #FCD34D;
+  font-family: var(--badge);
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 0.08rem 0.45rem;
+  border-radius: var(--radius-pill);
+}
+
+.studio-bank-subtitle {
+  color: var(--muted);
+  font-size: 0.78rem;
+  margin-top: 0.15rem;
+}
+
+.studio-btn-bank-edit {
+  background: #FAF9FD;
+  border: 1.5px solid #DDD6FE;
+  color: #6D28D9;
+  font-family: var(--badge);
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.studio-btn-bank-edit:hover {
+  background: #EDE9FE;
+  border-color: #7C3AED;
+}
+
+/* Caja Escrow Shield */
+.studio-escrow-box {
+  background: #F8F7FF;
+  border: 1.5px solid #DDD6FE;
+  border-radius: 14px;
+  padding: 1.25rem;
+  margin-top: 1rem;
+}
+
+.studio-escrow-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--heading);
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #5B21B6;
+  margin-bottom: 0.4rem;
+}
+
+.studio-escrow-text {
+  font-size: 0.8rem;
+  color: #4B5563;
+  line-height: 1.5;
+  margin: 0 0 1rem;
+}
+
+/* ── SECCIÓN 4: CANALES DE NOTIFICACIÓN EN VIVO ── */
+.studio-notif-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.studio-notif-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  background: #FAF9FD;
+  border: 1.5px solid #DDD6FE;
+  border-radius: 12px;
+  transition: all 0.15s ease;
+}
+
+.studio-notif-row:hover {
+  background: #F5F3FF;
+}
+
+.studio-notif-info strong {
+  display: block;
+  font-size: 0.86rem;
+  color: var(--ink);
+}
+
+.studio-notif-info small {
+  display: block;
+  font-size: 0.76rem;
+  color: var(--muted);
+  margin-top: 0.1rem;
+}
+
+.studio-notif-checks-group {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  flex-shrink: 0;
+}
+
+.studio-notif-check-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--badge);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.studio-notif-check-label input {
+  accent-color: #7C3AED;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+/* ── SECCIÓN 5: ZONA DE GESTIÓN AVANZADA ── */
+.studio-advanced-zone-card {
+  background: #FFF5F5;
+  border: 2px solid #FCA5A5;
+  border-radius: 20px;
+  box-shadow: 3px 3px 0 var(--ink);
+  padding: 2rem;
+  position: relative;
+}
+
+.studio-advanced-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: #DC2626;
+  font-family: var(--heading);
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin: 0 0 0.3rem;
+}
+
+.studio-advanced-subtitle {
+  color: #7F1D1D;
+  font-size: 0.85rem;
+  margin: 0 0 1.5rem;
+  line-height: 1.45;
+}
+
+.studio-advanced-actions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.studio-advanced-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  padding: 1rem 1.2rem;
+  background: #FFFFFF;
+  border: 1.5px solid #FCA5A5;
+  border-radius: 14px;
+}
+
+.studio-advanced-info strong {
+  display: block;
+  font-size: 0.88rem;
+  color: var(--ink);
+}
+
+.studio-advanced-info small {
+  display: block;
+  font-size: 0.76rem;
+  color: #6B7280;
+  margin-top: 0.15rem;
+}
+
+.studio-btn-export-zip {
+  background: #FFFFFF;
+  border: 2px solid var(--ink);
+  color: var(--ink);
+  font-family: var(--badge);
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 0.55rem 1.1rem;
+  border-radius: var(--radius-pill);
+  box-shadow: 2px 2px 0 var(--ink);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.studio-btn-export-zip:hover {
+  background: #F3EEFF;
+  transform: translateY(-1px);
+}
+
+.studio-btn-pause-studio {
+  background: #FEF08A;
+  border: 2px solid var(--ink);
+  color: #854D0E;
+  font-family: var(--badge);
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 0.55rem 1.1rem;
+  border-radius: var(--radius-pill);
+  box-shadow: 2px 2px 0 var(--ink);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.studio-btn-pause-studio:hover {
+  background: #FDE047;
+  transform: translateY(-1px);
+}
+
+/* ── MODAL O SECCIÓN DE ACCESIBILIDAD & INTEGRACIONES ── */
+.studio-discipline-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.studio-chip-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #FAF9FD;
+  border: 1.5px solid #DDD6FE;
+  color: var(--ink);
+  border-radius: var(--radius-pill);
+  padding: 0.35rem 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.studio-chip-btn.is-selected {
+  background: #EDE9FE;
+  border-color: #7C3AED;
+  color: #5B21B6;
+}
+
+/* Responsividad */
+@media (max-width: 68rem) {
+  .studio-main-grid {
+    grid-template-columns: 260px 1fr;
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 54rem) {
+  .studio-main-grid {
+    grid-template-columns: 1fr;
+  }
+  .studio-sidebar {
+    position: static;
+  }
+  .studio-metrics-three-grid {
+    grid-template-columns: 1fr;
+  }
+  .studio-form-grid-two,
+  .studio-socials-grid {
+    grid-template-columns: 1fr;
+  }
+}
