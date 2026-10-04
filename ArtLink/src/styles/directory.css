@@ -2415,3 +2415,49 @@
     display: none !important;
   }
 }
+
+/* ── MODO OSCURO PARA CONTROLES DE AJUSTES Y DIRECTORIO ── */
+:root[data-theme='dark'] .settings-select {
+  background: var(--surface-soft);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .settings-select option {
+  background: #211B2D;
+  color: #F9F5FF;
+}
+
+:root[data-theme='dark'] .preview-box {
+  background: var(--surface-soft);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .preview-tag {
+  color: var(--violet-dark);
+}
+
+:root[data-theme='dark'] .preview-content {
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .switch-card {
+  background: var(--surface-soft);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .switch-info strong {
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .switch-info small {
+  color: var(--muted);
+}
+
+:root[data-theme='dark'] .tts-demo-box {
+  background: var(--surface-soft);
+  border-color: var(--line);
+  color: var(--ink);
+}

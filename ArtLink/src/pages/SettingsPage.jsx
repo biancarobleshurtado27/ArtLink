@@ -819,15 +819,7 @@ export default function SettingsPage({ initialTab }) {
                 </div>
 
                 {showBannerModal && (
-                  <div
-                    style={{
-                      background: '#F5F3FF',
-                      border: '1.5px solid #C4B5FD',
-                      borderRadius: '12px',
-                      padding: '1rem',
-                      marginBottom: '1.5rem',
-                    }}
-                  >
+                  <div className="studio-modal-box">
                     <strong style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.5rem' }}>
                       Elige una portada de galería o introduce una URL:
                     </strong>
@@ -862,19 +854,7 @@ export default function SettingsPage({ initialTab }) {
 
             {/* SI NO ES ARTISTA (CLIENTE O ADMIN): Fila de Avatar con sugerencias limpias */}
             {!isArtist && (
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '1.25rem',
-                  padding: '1rem',
-                  background: '#FAF9FE',
-                  border: '1.5px solid #DDD6FE',
-                  borderRadius: '14px',
-                  marginBottom: '1.5rem',
-                  flexWrap: 'wrap',
-                }}
-              >
+              <div className="studio-sub-card studio-client-avatar-row">
                 <div
                   style={{
                     width: '64px',
@@ -925,15 +905,7 @@ export default function SettingsPage({ initialTab }) {
             )}
 
             {showAvatarModal && !isArtist && (
-              <div
-                style={{
-                  background: '#F5F3FF',
-                  border: '1.5px solid #C4B5FD',
-                  borderRadius: '12px',
-                  padding: '1rem',
-                  marginBottom: '1.5rem',
-                }}
-              >
+              <div className="studio-modal-box">
                 <strong style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.5rem' }}>
                   Elige un avatar o escribe una URL:
                 </strong>
@@ -1131,7 +1103,7 @@ export default function SettingsPage({ initialTab }) {
              ══════════════════════════════════════════════════════════════ */}
           {isArtist && (
             <section id="section-comisiones" className="studio-card" aria-labelledby="heading-comisiones">
-              <span className="studio-card-tag" style={{ background: '#FFE4E6', borderColor: '#FDA4AF', color: '#BE123C' }}>
+              <span className="studio-card-tag studio-tag-coral">
                 ● TALLER EN VIVO
               </span>
               <div className="studio-card-header-row">
@@ -1183,7 +1155,7 @@ export default function SettingsPage({ initialTab }) {
                 <div className="studio-metric-box">
                   <div className="studio-metric-box-title">
                     <span>Cupos Simultáneos</span>
-                    <span style={{ color: '#7C3AED', fontWeight: 800 }}>{slotsCount} Cupos</span>
+                    <span className="studio-slots-highlight">{slotsCount} Cupos</span>
                   </div>
                   <div className="studio-progress-bar-wrap">
                     <div
@@ -1267,7 +1239,7 @@ export default function SettingsPage({ initialTab }) {
              ══════════════════════════════════════════════════════════════ */}
           {isClient && (
             <section id="section-preferencias" className="studio-card" aria-labelledby="heading-preferencias">
-              <span className="studio-card-tag" style={{ background: '#CCFBF1', borderColor: '#2DD4BF', color: '#0F766E' }}>
+              <span className="studio-card-tag studio-tag-mint">
                 ● EXPLORACIÓN &amp; RECOMENDACIONES
               </span>
               <div className="studio-card-header-row">
@@ -1373,7 +1345,7 @@ export default function SettingsPage({ initialTab }) {
              ══════════════════════════════════════════════════════════════ */}
           {isAdmin && (
             <section id="section-admin-panel" className="studio-card" aria-labelledby="heading-admin-panel">
-              <span className="studio-card-tag" style={{ background: '#EDE9FE', borderColor: '#C4B5FD', color: '#6D28D9' }}>
+              <span className="studio-card-tag studio-tag-purple">
                 ● CONSOLA DE ADMINISTRACIÓN
               </span>
               <div className="studio-card-header-row">
@@ -1388,21 +1360,9 @@ export default function SettingsPage({ initialTab }) {
                 Supervisa el estado de las órdenes, disputas de custodia Escrow y auditoría de creadores en ArtLink.
               </p>
 
-              <div
-                style={{
-                  background: '#F5F3FF',
-                  border: '1.5px solid #DDD6FE',
-                  borderRadius: '14px',
-                  padding: '1.25rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  gap: '1rem',
-                  flexWrap: 'wrap',
-                }}
-              >
+              <div className="studio-sub-card studio-admin-panel-card">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                  <ShieldCheck size={28} color="#7C3AED" aria-hidden="true" />
+                  <ShieldCheck size={28} color="var(--violet-dark)" aria-hidden="true" />
                   <div>
                     <strong style={{ display: 'block', fontSize: '0.95rem' }}>Panel Central de Administración</strong>
                     <small style={{ color: 'var(--muted)' }}>
@@ -1427,10 +1387,7 @@ export default function SettingsPage({ initialTab }) {
              ══════════════════════════════════════════════════════════════ */}
           {!isAdmin && (
             <section id="section-facturacion" className="studio-card" aria-labelledby="heading-facturacion">
-              <span
-                className="studio-card-tag"
-                style={{ background: '#EDE9FE', borderColor: '#C4B5FD', color: '#6D28D9' }}
-              >
+              <span className="studio-card-tag studio-tag-purple">
                 {isArtist ? '● CUSTODIA & RETIROS' : '● PROTECCIÓN EN COMPRAS'}
               </span>
 
@@ -1477,15 +1434,7 @@ export default function SettingsPage({ initialTab }) {
                   </div>
 
                   {showBankModal && (
-                    <div
-                      style={{
-                        background: '#F5F3FF',
-                        border: '1.5px solid #C4B5FD',
-                        borderRadius: '12px',
-                        padding: '1rem',
-                        marginBottom: '1.25rem',
-                      }}
-                    >
+                    <div className="studio-modal-box">
                       <label className="studio-field-label">
                         <span>Datos de la cuenta de cobro</span>
                         <input
@@ -1750,10 +1699,7 @@ export default function SettingsPage({ initialTab }) {
              SECCIÓN 5: SEGURIDAD, CUENTA Y PRIVACIDAD
              ══════════════════════════════════════════════════════════════ */}
           <section id="section-seguridad" className="studio-card" aria-labelledby="heading-seguridad">
-            <span
-              className="studio-card-tag"
-              style={{ background: '#EDE9FE', borderColor: '#C4B5FD', color: '#6D28D9' }}
-            >
+            <span className="studio-card-tag studio-tag-purple">
               ● ACCESO &amp; PRIVACIDAD
             </span>
             <div className="studio-card-header-row">
@@ -1847,15 +1793,7 @@ export default function SettingsPage({ initialTab }) {
             </div>
 
             {/* Formulario de cambio de contraseña */}
-            <form
-              onSubmit={handleSavePassword}
-              style={{
-                background: '#FAF9FE',
-                padding: '1.25rem',
-                borderRadius: '14px',
-                border: '1.5px solid #DDD6FE',
-              }}
-            >
+            <form onSubmit={handleSavePassword} className="studio-password-card">
               <span className="studio-reqs-section-title">Actualizar Contraseña de Acceso</span>
               <div className="studio-form-grid-two" style={{ marginTop: '0.6rem' }}>
                 <label className="studio-field-label">
@@ -1896,8 +1834,7 @@ export default function SettingsPage({ initialTab }) {
 
               <button
                 type="submit"
-                className="studio-btn-discard"
-                style={{ background: '#7C3AED', color: '#FFFFFF', borderColor: 'var(--ink)' }}
+                className="studio-btn-save"
               >
                 <Key size={14} aria-hidden="true" /> Actualizar Contraseña
               </button>
@@ -1959,10 +1896,7 @@ export default function SettingsPage({ initialTab }) {
              SECCIÓN 7: APARIENCIA, VISUALIZACIÓN & ACCESIBILIDAD
              ══════════════════════════════════════════════════════════════ */}
           <section id="section-apariencia" className="studio-card" aria-labelledby="heading-apariencia">
-            <span
-              className="studio-card-tag"
-              style={{ background: '#E0E7FF', borderColor: '#A5B4FC', color: '#3730A3' }}
-            >
+            <span className="studio-card-tag studio-tag-indigo">
               ● ENTORNO VISUAL &amp; ACCESIBILIDAD
             </span>
             <div className="studio-card-header-row">
@@ -1983,50 +1917,38 @@ export default function SettingsPage({ initialTab }) {
               <div className="studio-metrics-three-grid" style={{ marginTop: '0.5rem' }}>
                 <button
                   type="button"
-                  className={`studio-metric-box ${settings.theme === 'light' ? 'is-selected' : ''}`}
-                  style={{
-                    cursor: 'pointer',
-                    borderColor: settings.theme === 'light' ? '#7C3AED' : '#DDD6FE',
-                    background: settings.theme === 'light' ? '#EDE9FE' : '#FAF9FE',
-                    textAlign: 'left',
-                  }}
+                  className={`studio-theme-option-btn ${settings.theme === 'light' ? 'is-selected' : ''}`}
                   onClick={() => updateSetting('theme', 'light')}
                 >
-                  <Sun size={20} color="#7C3AED" style={{ marginBottom: '0.4rem' }} aria-hidden="true" />
-                  <strong>Tema Claro</strong>
-                  <span className="studio-metric-subtext">Fondo pastel con texto obscuro</span>
+                  <Sun size={20} className="studio-theme-icon" aria-hidden="true" />
+                  <div>
+                    <strong>Tema Claro</strong>
+                    <span className="studio-metric-subtext">Fondo pastel con texto obscuro</span>
+                  </div>
                 </button>
 
                 <button
                   type="button"
-                  className={`studio-metric-box ${settings.theme === 'dark' ? 'is-selected' : ''}`}
-                  style={{
-                    cursor: 'pointer',
-                    borderColor: settings.theme === 'dark' ? '#7C3AED' : '#DDD6FE',
-                    background: settings.theme === 'dark' ? '#EDE9FE' : '#FAF9FE',
-                    textAlign: 'left',
-                  }}
+                  className={`studio-theme-option-btn ${settings.theme === 'dark' ? 'is-selected' : ''}`}
                   onClick={() => updateSetting('theme', 'dark')}
                 >
-                  <Moon size={20} color="#7C3AED" style={{ marginBottom: '0.4rem' }} aria-hidden="true" />
-                  <strong>Tema Oscuro</strong>
-                  <span className="studio-metric-subtext">Fondo nocturno con acentos vibrantes</span>
+                  <Moon size={20} className="studio-theme-icon" aria-hidden="true" />
+                  <div>
+                    <strong>Tema Oscuro</strong>
+                    <span className="studio-metric-subtext">Fondo nocturno con acentos vibrantes</span>
+                  </div>
                 </button>
 
                 <button
                   type="button"
-                  className={`studio-metric-box ${settings.theme === 'system' ? 'is-selected' : ''}`}
-                  style={{
-                    cursor: 'pointer',
-                    borderColor: settings.theme === 'system' ? '#7C3AED' : '#DDD6FE',
-                    background: settings.theme === 'system' ? '#EDE9FE' : '#FAF9FE',
-                    textAlign: 'left',
-                  }}
+                  className={`studio-theme-option-btn ${settings.theme === 'system' ? 'is-selected' : ''}`}
                   onClick={() => updateSetting('theme', 'system')}
                 >
-                  <Sparkles size={20} color="#7C3AED" style={{ marginBottom: '0.4rem' }} aria-hidden="true" />
-                  <strong>Sincronizar SO</strong>
-                  <span className="studio-metric-subtext">Preferencia del sistema operativo</span>
+                  <Sparkles size={20} className="studio-theme-icon" aria-hidden="true" />
+                  <div>
+                    <strong>Sincronizar SO</strong>
+                    <span className="studio-metric-subtext">Preferencia del sistema operativo</span>
+                  </div>
                 </button>
               </div>
             </div>
@@ -2087,27 +2009,11 @@ export default function SettingsPage({ initialTab }) {
             </div>
 
             {/* Muestra de lectura */}
-            <div
-              style={{
-                background: '#FAF9FE',
-                border: '1.5px solid #DDD6FE',
-                borderRadius: '12px',
-                padding: '1.1rem',
-                marginBottom: '1.25rem',
-              }}
-            >
-              <span
-                style={{
-                  fontFamily: 'var(--badge)',
-                  fontSize: '0.7rem',
-                  fontWeight: 800,
-                  textTransform: 'uppercase',
-                  color: '#7C3AED',
-                }}
-              >
+            <div className="studio-preview-box">
+              <span className="studio-preview-tag">
                 Vista previa de lectura adaptada
               </span>
-              <p style={{ margin: '0.5rem 0 0', lineHeight: 1.6, fontSize: '0.95rem' }}>{sampleText}</p>
+              <p className="studio-preview-content">{sampleText}</p>
             </div>
 
             {/* Opciones adicionales de accesibilidad */}
@@ -2156,33 +2062,17 @@ export default function SettingsPage({ initialTab }) {
             </div>
 
             {/* Asistente de lectura de voz (Web Speech API) */}
-            <div
-              style={{
-                background: '#FAF9FE',
-                border: '1.5px dashed #C4B5FD',
-                borderRadius: '12px',
-                padding: '1.25rem',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                <Volume2 size={18} color="#7C3AED" aria-hidden="true" />
-                <strong style={{ fontSize: '0.9rem' }}>Prueba de síntesis de voz (Web Speech API)</strong>
+            <div className="studio-tts-box">
+              <div className="studio-tts-header">
+                <Volume2 size={18} className="studio-tts-icon" aria-hidden="true" />
+                <strong className="studio-tts-title">Prueba de síntesis de voz (Web Speech API)</strong>
               </div>
-              <p style={{ fontSize: '0.85rem', color: '#4B5563', margin: '0 0 0.8rem' }}>{sampleText}</p>
+              <p className="studio-tts-text">{sampleText}</p>
               <ReadAloudButton textToRead={sampleText} label="Escuchar muestra de audio" />
             </div>
 
             {/* Enlaces de soporte y políticas */}
-            <div
-              style={{
-                marginTop: '1.8rem',
-                paddingTop: '1.2rem',
-                borderTop: '1px dashed var(--line)',
-                display: 'flex',
-                flexWrap: 'wrap',
-                gap: '0.8rem',
-              }}
-            >
+            <div className="studio-settings-links-row">
               <Link to="/ayuda" className="studio-chip-btn">
                 <HelpCircle size={14} aria-hidden="true" /> Centro de ayuda
               </Link>
