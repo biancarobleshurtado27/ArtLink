@@ -222,4 +222,78 @@ describe('Integración de ruta /settings/profile en SettingsPage', () => {
       expect(screen.getByRole('heading', { name: /Modificar perfil/i })).toBeInTheDocument()
     })
   })
+
+  it('adapta el contenido para clientes sin mostrar TALLER EN VIVO ni normas de encargo de artista', async () => {
+    render(
+      <SettingsProvider>
+        <AuthContext.Provider value={{ user: mockClientUser, updateUser: vi.fn(), logout: vi.fn() }}>
+          <MemoryRouter initialEntries={['/ajustes']}>
+            <SettingsPage />
+          </MemoryRouter>
+        </AuthContext.Provider>
+      </SettingsProvider>
+    )
+
+    // Verifica encabezado de cliente
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /Ajustes y Preferencias de Cliente/i })).toBeInTheDocument()
+    })
+
+    // No debe contener secciones exclusivas de taller de artista
+    expect(screen.queryByText(/TALLER EN VIVO/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/Disponibilidad & Normas de Encargo/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/PORTADA DEL ESTUDIO/i)).not.toBeInTheDocument()
+
+    // Debe contener secciones correspondientes a clientes
+    expect(screen.getByRole('heading', { name: /Preferencias de Búsqueda y Encargos/i })).toBeInTheDocument()
+  })
+
+  it('muestra secciones completas de taller exclusivamente cuando el usuario es artista', async () => {
+    render(
+      <SettingsProvider>
+        <AuthContext.Provider value={{ user: mockArtistUser, updateUser: vi.fn(), logout: vi.fn() }}>
+          <MemoryRouter initialEntries={['/ajustes']}>
+            <SettingsPage />
+          </MemoryRouter>
+        </AuthContext.Provider>
+      </SettingsProvider>
+    )
+
+    // Verifica encabezado de taller
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /Ajustes de Cuenta y Taller/i })).toBeInTheDocument()
+    })
+
+    // Debe contener las opciones de taller
+    expect(screen.getByText(/TALLER EN VIVO/i)).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /Disponibilidad & Normas de Encargo/i })).toBeInTheDocument()
+  })
+
+  it('muestra opciones administrativas cuando el usuario es administrador', async () => {
+    const mockAdminUser = {
+      id: 'admin-user-1',
+      name: 'Admin Central',
+      email: 'admin@artlink.test',
+      role: 'administrador',
+    }
+
+    render(
+      <SettingsProvider>
+        <AuthContext.Provider value={{ user: mockAdminUser, updateUser: vi.fn(), logout: vi.fn() }}>
+          <MemoryRouter initialEntries={['/ajustes']}>
+            <SettingsPage />
+          </MemoryRouter>
+        </AuthContext.Provider>
+      </SettingsProvider>
+    )
+
+    // Verifica encabezado de administración
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /Ajustes de Administración y Plataforma/i })).toBeInTheDocument()
+      expect(screen.getByRole('heading', { name: /Consola de Control del Sistema/i })).toBeInTheDocument()
+    })
+
+    // No debe contener taller en vivo
+    expect(screen.queryByText(/TALLER EN VIVO/i)).not.toBeInTheDocument()
+  })
 })

@@ -561,6 +561,18 @@
   border: 1px solid #86EFAC;
 }
 
+.studio-badge-purple {
+  background: #EDE9FE;
+  color: #6D28D9;
+  border: 1px solid #C4B5FD;
+}
+
+.studio-badge-blue {
+  background: #E0F2FE;
+  color: #0369A1;
+  border: 1px solid #7DD3FC;
+}
+
 .studio-card-subtitle {
   color: var(--muted);
   font-size: 0.88rem;
