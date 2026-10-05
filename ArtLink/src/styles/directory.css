@@ -99,7 +99,8 @@
 }
 
 .explore-v3-subtitle {
-  color: #6B7280;
+  color: var(--muted);
+  font-weight: 500;
   font-size: 1.05rem;
   max-width: 46rem;
   margin: 0 auto 2.2rem;
@@ -2460,4 +2461,129 @@
   background: var(--surface-soft);
   border-color: var(--line);
   color: var(--ink);
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   DARK MODE OVERRIDES — EXPLORAR, CATÁLOGO Y PERFILES DE ARTISTA
+   ══════════════════════════════════════════════════════════════════ */
+
+:root[data-theme='dark'] .explore-v3-title,
+:root[data-theme='dark'] .destacadas-title-wrap h2,
+:root[data-theme='dark'] .momento-artist-name,
+:root[data-theme='dark'] .creator-full-name,
+:root[data-theme='dark'] .profile-title-row h1,
+:root[data-theme='dark'] .profile-section h2,
+:root[data-theme='dark'] .profile-aside h2,
+:root[data-theme='dark'] .request-page h1 {
+  color: var(--ink) !important;
+}
+
+:root[data-theme='dark'] .explore-v3-subtitle,
+:root[data-theme='dark'] .destacadas-counter-text,
+:root[data-theme='dark'] .momento-header p,
+:root[data-theme='dark'] .momento-artist-tag,
+:root[data-theme='dark'] .momento-price-label,
+:root[data-theme='dark'] .creator-full-bio,
+:root[data-theme='dark'] .creator-handle,
+:root[data-theme='dark'] .profile-bio-text,
+:root[data-theme='dark'] .profile-meta,
+:root[data-theme='dark'] .profile-meta span,
+:root[data-theme='dark'] .artist-handle,
+:root[data-theme='dark'] .artist-bio,
+:root[data-theme='dark'] .action-help,
+:root[data-theme='dark'] .field-help {
+  color: var(--muted) !important;
+}
+
+:root[data-theme='dark'] .explore-v3-eyebrow {
+  background: var(--surface-soft) !important;
+  border-color: var(--line) !important;
+  color: var(--ink) !important;
+  box-shadow: 2px 2px 0px #000000 !important;
+}
+
+:root[data-theme='dark'] .explore-mega-search-card {
+  background: var(--paper) !important;
+  border-color: var(--line) !important;
+  box-shadow: 5px 5px 0px #000000 !important;
+}
+
+:root[data-theme='dark'] .mega-search-input-wrap,
+:root[data-theme='dark'] .mega-search-select,
+:root[data-theme='dark'] .mega-search-filters-btn,
+:root[data-theme='dark'] .explore-tab-pill,
+:root[data-theme='dark'] .explore-sort-dropdown,
+:root[data-theme='dark'] .view-mode-btn,
+:root[data-theme='dark'] .carousel-arrow-btn,
+:root[data-theme='dark'] .category-pill-item,
+:root[data-theme='dark'] .momento-btn-view,
+:root[data-theme='dark'] .creator-action-btn-secondary {
+  background: var(--surface-soft) !important;
+  border-color: var(--line) !important;
+  color: var(--ink) !important;
+  box-shadow: 2px 2px 0px #000000 !important;
+}
+
+:root[data-theme='dark'] .mega-search-input-wrap input {
+  color: var(--ink) !important;
+}
+
+:root[data-theme='dark'] .mega-search-input-wrap input::placeholder {
+  color: rgba(249, 245, 255, 0.45) !important;
+}
+
+:root[data-theme='dark'] .mega-search-select option,
+:root[data-theme='dark'] .explore-sort-dropdown option {
+  background: #211B2D !important;
+  color: #F9F5FF !important;
+}
+
+:root[data-theme='dark'] .explore-tab-pill.is-active,
+:root[data-theme='dark'] .view-mode-btn.is-active {
+  background: var(--violet-dark) !important;
+  border-color: var(--line) !important;
+  color: #FFFFFF !important;
+}
+
+:root[data-theme='dark'] .momento-artist-card,
+:root[data-theme='dark'] .destacada-card,
+:root[data-theme='dark'] .creator-full-card,
+:root[data-theme='dark'] .creator-banner-wrap,
+:root[data-theme='dark'] .portfolio-item,
+:root[data-theme='dark'] .commission-card,
+:root[data-theme='dark'] .profile-aside .paper-card {
+  background: var(--paper) !important;
+  border-color: var(--line) !important;
+  box-shadow: 4px 4px 0px #000000 !important;
+  color: var(--ink) !important;
+}
+
+:root[data-theme='dark'] .momento-card-footer,
+:root[data-theme='dark'] .creator-footer-bar,
+:root[data-theme='dark'] .destacada-footer {
+  border-top-color: var(--line) !important;
+}
+
+:root[data-theme='dark'] .mega-search-bottom {
+  border-top-color: var(--line) !important;
+}
+
+:root[data-theme='dark'] .profile-cover {
+  background: #251E34 !important;
+  border-color: var(--line) !important;
+}
+
+:root[data-theme='dark'] .profile-cover-shape {
+  border-color: var(--line) !important;
+  background: #3B2144 !important;
+}
+
+:root[data-theme='dark'] .profile-section {
+  border-top-color: var(--line) !important;
+}
+
+:root[data-theme='dark'] .explore-filter-modal {
+  background: var(--paper) !important;
+  border-color: var(--line) !important;
+  color: var(--ink) !important;
 }

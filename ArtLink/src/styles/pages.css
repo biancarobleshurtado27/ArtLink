@@ -394,3 +394,35 @@
   border-color: var(--line);
   color: var(--ink);
 }
+
+:root[data-theme='dark'] .panel-showcase {
+  background: #182C25;
+  border-color: var(--line);
+}
+
+:root[data-theme='dark'] .mock-panel-card {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .mock-panel-table {
+  background: var(--surface);
+  border-color: var(--line);
+}
+
+:root[data-theme='dark'] .cta-band {
+  background: #2E2510;
+  border-color: #B45309;
+  color: #FEF08A;
+}
+
+:root[data-theme='dark'] .cta-band h2 {
+  color: #FEF08A;
+}
+
+:root[data-theme='dark'] .cta-band .sticker {
+  background: #3B2F14;
+  border-color: #F59E0B;
+  color: #FEF08A;
+}
