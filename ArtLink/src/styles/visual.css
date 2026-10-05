@@ -315,7 +315,7 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px
   font-weight: 800;
   line-height: 1.12;
   letter-spacing: -0.035em;
-  color: var(--ink);
+  color: #18181B;
   margin: 0 0 1.2rem;
   text-align: center;
 }
@@ -326,12 +326,10 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px
   -webkit-text-fill-color: transparent;
 }
 .hero-subtitle-main {
-  font-size: clamp(1rem, 1.7vw, 1.12rem);
-  color: var(--ink);
-  opacity: 0.92;
-  font-weight: 500;
-  line-height: 1.65;
-  max-width: 46rem;
+  font-size: clamp(0.95rem, 1.6vw, 1.05rem);
+  color: #52525B;
+  line-height: 1.6;
+  max-width: 44rem;
   margin: 0 auto 2.2rem;
   text-align: center;
 }
@@ -432,31 +430,23 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px
   font-size: 0.78rem;
 }
 .trends-label {
-  color: var(--ink);
-  font-family: var(--badge);
-  font-size: 0.78rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  color: #71717A;
+  font-weight: 600;
 }
 .trend-tag {
-  background: var(--paper);
-  border: 1.5px solid var(--ink);
+  background: #F4F4F5;
+  border: 1px solid #E4E4E7;
   border-radius: 999px;
-  padding: 0.25rem 0.75rem;
-  color: var(--ink);
-  font-weight: 700;
-  font-size: 0.78rem;
+  padding: 0.2rem 0.65rem;
+  color: #52525B;
+  font-weight: 600;
   text-decoration: none;
-  box-shadow: 2px 2px 0 var(--ink);
-  transition: all 0.15s ease;
+  transition: all 0.15s;
 }
 .trend-tag:hover {
-  background: var(--lilac);
-  border-color: var(--ink);
-  color: var(--violet-dark);
-  transform: translateY(-2px);
-  box-shadow: 2.5px 3.5px 0 var(--ink);
+  background: #EDE9FE;
+  border-color: #8B5CF6;
+  color: #6D28D9;
 }
 
 /* 4 Metrics */
@@ -736,7 +726,7 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px
   border: 2px solid #1E192B;
   border-radius: 16px;
   overflow: hidden;
-  background: var(--paper);
+  background: #18181B;
   display: flex;
   flex-direction: column;
 }
@@ -746,7 +736,7 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px
   height: 20.5rem; /* Ilustración amplia, protagonista y sin cortes */
   position: relative;
   overflow: hidden;
-  background: var(--surface-soft);
+  background: #18181B;
 }
 
 .showcase-card-clean .showcase-main-img {
