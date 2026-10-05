@@ -492,7 +492,7 @@ export default function ArtistProfilePage() {
             ) : (
               <Link className="artist-v2-btn-primary" to={`/solicitudes/nueva/${profile.id}`}>
                 <Sparkles size={16} aria-hidden="true" />
-                {isWaitlist ? 'Unirse a lista de espera' : 'Encargar Comisión'}
+                {isWaitlist ? 'Unirse a lista de espera' : 'Cotizar / Solicitar comisión'}
               </Link>
             )}
 
@@ -713,7 +713,7 @@ export default function ArtistProfilePage() {
                     className="artist-v2-btn-primary"
                     style={{ width: '100%', justifyContent: 'center', marginTop: 'auto' }}
                   >
-                    Encargar este paquete
+                    Cotizar / Solicitar comisión
                   </Link>
                 )}
               </article>
@@ -1069,7 +1069,7 @@ export default function ArtistProfilePage() {
             {!isSelf && !isClosed ? (
               <Link to={`/solicitudes/nueva/${profile.id}`} className="artist-v2-btn-primary" style={{ justifyContent: 'center' }}>
                 <Sparkles size={16} aria-hidden="true" />
-                Reservar Cupo Ahora
+                Solicitar comisión ahora
               </Link>
             ) : (
               <span className="artist-v2-btn-outline" style={{ opacity: 0.6, cursor: 'default' }}>

@@ -102,4 +102,63 @@ describe('PrivateRequestsPage - Sin datos quemados / Real data only', () => {
     expect(screen.queryByText('Kaelen Vance')).not.toBeInTheDocument()
     expect(screen.queryByText('Mía Soler')).not.toBeInTheDocument()
   })
+
+  it('permite al artista aceptar una propuesta y notifica al cliente', async () => {
+    const user = (await import('@testing-library/user-event')).default.setup()
+    const requestService = await import('../src/services/requestService')
+    const updateSpy = vi.spyOn(requestService, 'updateRequest').mockResolvedValue({ id: 'req-artist-1', status: 'in_progress' })
+    const notifSpy = vi.spyOn(notificationService, 'createNotification').mockResolvedValue({ id: 'notif-accept-1' })
+
+    const requestForArtist = {
+      id: 'req-artist-1',
+      clientId: 'client-user-99',
+      artistId: 'artist-001',
+      artistUserId: 'user-artist-001',
+      isArtist: true,
+      isClient: false,
+      artistName: 'Mateo Ríos',
+      clientName: 'Cliente Entusiasta',
+      commissionTitle: 'Pintura Fantasía',
+      description: 'Ilustración para juego de rol',
+      budget: 200,
+      price: 200,
+      status: 'pending',
+      escrowStatus: 'held_in_escrow',
+      createdAt: '2026-10-02T10:00:00Z',
+    }
+
+    vi.spyOn(useAuthModule, 'default').mockReturnValue({
+      user: { id: 'user-artist-001', name: 'Mateo Ríos', role: 'artist' },
+    })
+
+    vi.spyOn(usePrivateRequestsModule, 'default').mockReturnValue({
+      requests: [requestForArtist],
+      clientRequests: [],
+      loading: false,
+      error: null,
+      reload: vi.fn(),
+    })
+
+    render(
+      <MemoryRouter>
+        <PrivateRequestsPage />
+      </MemoryRouter>
+    )
+
+    // El botón Aceptar Solicitud debe estar visible para el artista
+    const acceptBtn = screen.getByRole('button', { name: /Aceptar Solicitud/i })
+    expect(acceptBtn).toBeInTheDocument()
+    await user.click(acceptBtn)
+
+    // Confirmar en el modal de confirmación
+    const confirmBtn = screen.getByRole('button', { name: /Confirmar y Aceptar/i })
+    expect(confirmBtn).toBeInTheDocument()
+    await user.click(confirmBtn)
+
+    expect(updateSpy).toHaveBeenCalledWith('req-artist-1', expect.objectContaining({ status: 'in_progress' }))
+    expect(notifSpy).toHaveBeenCalledWith(expect.objectContaining({
+      userId: 'client-user-99',
+      type: 'request_accepted',
+    }))
+  })
 })

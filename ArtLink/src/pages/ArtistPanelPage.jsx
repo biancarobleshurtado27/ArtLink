@@ -217,8 +217,8 @@ export default function ArtistPanelPage() {
     }
     showToast(
       nextStatus
-        ? '⏸ Solicitudes pausadas. Tu agenda figura como completa temporalmente.'
-        : '▶ Solicitudes reanudadas. Los clientes ya pueden solicitarte nuevos encargos.'
+        ? 'Solicitudes pausadas. Tu agenda figura como completa temporalmente.'
+        : 'Solicitudes reanudadas. Los clientes ya pueden solicitarte nuevos encargos.'
     )
   }
 
@@ -500,7 +500,14 @@ export default function ArtistPanelPage() {
                       </span>
                     </div>
                   </div>
-                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                    <Link
+                      to="/solicitudes"
+                      className="art-dash-btn-primary"
+                      style={{ padding: '0.45rem 0.85rem', fontSize: '0.8rem' }}
+                    >
+                      Gestionar en Solicitudes
+                    </Link>
                     <button
                       type="button"
                       className="art-dash-btn-card-outline"

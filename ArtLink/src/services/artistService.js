@@ -41,7 +41,14 @@ export async function getArtistById(id) {
   } catch (error) { throw getServiceError(error, resource) }
 }
 export async function getArtistByUserId(userId) {
-  try { return (await apiClient.get('/artistProfiles', { params: { userId } })).data } catch (error) { throw getServiceError(error, resource) }
+  try {
+    const res = await apiClient.get('/artistProfiles', { params: { userId } })
+    if (res.data && res.data.length > 0) return res.data
+    const resById = await apiClient.get('/artistProfiles', { params: { id: userId } })
+    return resById.data || []
+  } catch (error) {
+    throw getServiceError(error, resource)
+  }
 }
 export async function createArtist(artist) {
   try { return (await apiClient.post('/artistProfiles', artist)).data } catch (error) { throw getServiceError(error, resource) }

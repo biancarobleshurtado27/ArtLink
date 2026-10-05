@@ -50,7 +50,7 @@ export default function useArtistWorkspace() {
         getRequests(),
       ])
       const received = allRequests.filter(
-        (req) => req.artistId === artist.id || req.artistId === user.id
+        (req) => req.artistId === artist.id || req.artistId === user.id || req.artistUserId === user.id
       )
       setProfile(artist)
       setPortfolio(items)
@@ -69,8 +69,10 @@ export default function useArtistWorkspace() {
   }, [load])
 
   const assertOwner = useCallback((resource) => {
-    if (!profile || resource.artistId !== profile.id) throw new Error('No tienes permiso para modificar este recurso.')
-  }, [profile])
+    if (!profile || (resource.artistId !== profile.id && resource.artistId !== user?.id && resource.artistUserId !== user?.id)) {
+      throw new Error('No tienes permiso para modificar este recurso.')
+    }
+  }, [profile, user])
 
   async function mutate(action) {
     setBusy(true)

@@ -41,8 +41,21 @@ export default function usePrivateRequests() {
         const artistObj = artistsById.get(req.artistId)
         const commObj = commissionsById.get(req.packageId || req.commissionId)
         const clientObj = usersById.get(req.clientId)
+        const isClient = user ? String(req.clientId) === String(user.id) : false
+        const isArtist = user
+          ? Boolean(
+              (artistProfile && String(req.artistId) === String(artistProfile.id)) ||
+              String(req.artistId) === String(user.id) ||
+              (req.artistUserId && String(req.artistUserId) === String(user.id)) ||
+              (artistObj?.userId && String(artistObj.userId) === String(user.id))
+            )
+          : false
+
         return {
           ...req,
+          isClient,
+          isArtist,
+          artistUserId: req.artistUserId || artistObj?.userId || (isArtist ? user.id : req.artistId),
           artistName: artistObj?.displayName || artistObj?.name || req.artistName || 'Artista ArtLink',
           artistUsername: artistObj?.username || 'artista',
           artistAvatar: artistObj?.avatar || req.artistAvatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(artistObj?.displayName || artistObj?.name || 'Artista')}&background=8B5CF6&color=fff`,
@@ -65,12 +78,10 @@ export default function usePrivateRequests() {
       }
 
       // Solicitudes realizadas por el usuario como cliente
-      const myClientRequests = enriched.filter((request) => String(request.clientId) === String(user.id))
+      const myClientRequests = enriched.filter((request) => request.isClient)
 
       // Solicitudes recibidas como artista (si aplica)
-      const myArtistRequests = artistProfile
-        ? enriched.filter((request) => String(request.artistId) === String(artistProfile.id) || String(request.artistId) === String(user.id))
-        : enriched.filter((request) => String(request.artistId) === String(user.id))
+      const myArtistRequests = enriched.filter((request) => request.isArtist)
 
       // Combinar sin duplicados para centro de conversaciones
       const requestMap = new Map()

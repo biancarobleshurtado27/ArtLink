@@ -13,6 +13,7 @@ import {
   Sparkles,
   Star,
   UploadCloud,
+  X,
 } from 'lucide-react'
 import { Link, useLocation, useParams, useSearchParams } from 'react-router-dom'
 import Avatar from '../components/Avatar'
@@ -22,6 +23,8 @@ import LoadingState from '../components/LoadingState'
 import useArtistProfile from '../hooks/useArtistProfile'
 import useAuth from '../hooks/useAuth'
 import { createRequest } from '../services/requestService'
+import { createNotification } from '../services/notificationService'
+import { triggerNotificationsUpdate } from '../hooks/useNotificationBadges'
 import {
   getCommissionDraft,
   removeCommissionDraft,
@@ -120,6 +123,7 @@ export default function NewRequestPage() {
 
   const [fieldErrors, setFieldErrors] = useState({})
   const [submitError, setSubmitError] = useState('')
+  const [submitSuccess, setSubmitSuccess] = useState(false)
   const [createdRequest, setCreatedRequest] = useState(null)
   const [submitting, setSubmitting] = useState(false)
 
@@ -145,7 +149,12 @@ export default function NewRequestPage() {
 
   const isClosed = profile?.availability === 'closed'
   const isSelfRequest = Boolean(
-    user && profile && (user.id === profile.userId || user.id === profile.id)
+    user && profile && (
+      String(user.id) === String(profile.userId) ||
+      String(user.id) === String(profile.id) ||
+      (user.username && user.username === profile.username) ||
+      (user.email && user.email === profile.userEmail)
+    )
   )
 
   useEffect(() => {
@@ -190,12 +199,21 @@ export default function NewRequestPage() {
 
   async function handleSubmit(e) {
     e.preventDefault()
-    if (isClosed || isSelfRequest) return
+    if (isClosed) return
+    if (!user) {
+      setSubmitError('Debes iniciar sesión con tu cuenta para enviar una propuesta de comisión.')
+      return
+    }
+    if (isSelfRequest) {
+      setSubmitError('No puedes solicitarte una comisión a ti mismo.')
+      return
+    }
     setSubmitError('')
 
     const errors = validate()
     if (Object.keys(errors).length > 0) {
       setFieldErrors(errors)
+      setSubmitError(errors.description || errors.termsAccepted || 'Por favor completa todos los campos requeridos.')
       return
     }
 
@@ -206,9 +224,17 @@ export default function NewRequestPage() {
         .toISOString()
         .split('T')[0]
 
+      const targetArtistUserId = profile.userId || profile.id
+
       const requestPayload = {
-        clientId: user ? user.id : 'guest-user',
+        clientId: user.id,
+        clientName: user.name || 'Cliente',
+        clientEmail: user.email || '',
+        clientAvatar: user.avatar || '',
         artistId: profile.id,
+        artistUserId: targetArtistUserId,
+        artistName: profile.displayName || profile.name || 'Artista',
+        artistAvatar: profile.avatar || profile.avatarUrl || '',
         commissionId: selectedFormat.id,
         commissionTitle: selectedFormat.title,
         price: Number(selectedFormat.price),
@@ -216,18 +242,55 @@ export default function NewRequestPage() {
         description: description.trim(),
         desiredDate: desiredDate || futureDate,
         references: refFiles,
+        paymentMethod,
         status: 'waitlist',
+        escrowStatus: 'held_in_escrow',
         createdAt: new Date().toISOString(),
       }
-      
-      let request
-      try {
-        request = await createRequest(requestPayload)
-      } catch (reqErr) {
-        request = { ...requestPayload, id: `req-${Date.now()}` }
+
+      const request = await createRequest(requestPayload)
+
+      // 1. Notificación formal persistente para el artista receptor
+      await createNotification({
+        userId: targetArtistUserId,
+        type: 'commission_request',
+        title: 'Nueva propuesta de comisión',
+        message: `${user.name || 'Un cliente'} te ha enviado una propuesta de encargo para "${selectedFormat.title}" ($${totalPrice} USD) bajo custodia Escrow.`,
+        requestId: request.id,
+        read: false,
+        createdAt: new Date().toISOString(),
+      })
+
+      if (profile.userId && profile.id && String(profile.userId) !== String(profile.id)) {
+        await createNotification({
+          userId: profile.id,
+          type: 'commission_request',
+          title: 'Nueva propuesta de comisión',
+          message: `${user.name || 'Un cliente'} te ha enviado una propuesta de encargo para "${selectedFormat.title}" ($${totalPrice} USD) bajo custodia Escrow.`,
+          requestId: request.id,
+          read: false,
+          createdAt: new Date().toISOString(),
+        }).catch(() => {})
       }
-      removeCommissionDraft(user?.id, profile.id, selectedFormat.id)
+
+      // 2. Notificación para el solicitante
+      await createNotification({
+        userId: user.id,
+        type: 'proposal_sent',
+        title: 'Propuesta de comisión enviada',
+        message: `Tu propuesta para "${selectedFormat.title}" fue enviada a ${profile.displayName}. Fondos protegidos en custodia Escrow ($${totalPrice} USD).`,
+        requestId: request.id,
+        read: false,
+        createdAt: new Date().toISOString(),
+      }).catch(() => {})
+
+      // 3. Notificar a la app para actualizar badges en vivo
+      triggerNotificationsUpdate()
+
+      // 4. Limpiar borrador y desplegar modal y alerta
+      removeCommissionDraft(user.id, profile.id, selectedFormat.id)
       setCreatedRequest(request)
+      setSubmitSuccess(true)
     } catch (err) {
       setSubmitError(err.message || 'Ocurrió un error al procesar la propuesta de comisión.')
     } finally {
@@ -296,7 +359,7 @@ export default function NewRequestPage() {
                   fontWeight: 'bold',
                 }}
               >
-                ✕
+                <X size={16} aria-hidden="true" />
               </button>
               <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
                 <CheckCircle2 size={56} style={{ margin: '0 auto 1rem', color: '#8B5CF6' }} aria-hidden="true" />
@@ -411,6 +474,74 @@ export default function NewRequestPage() {
           </div>
         </div>
       </div>
+
+      {/* BANNER DE ÉXITO EN EL ENVÍO DE PROPUESTA */}
+      {submitSuccess && (
+        <div
+          className="proposal-success-banner"
+          role="status"
+          aria-live="polite"
+          style={{
+            background: '#F0FDF4',
+            border: '2px solid #16A34A',
+            borderRadius: '14px',
+            padding: '1.25rem 1.5rem',
+            marginBottom: '1.5rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '1rem',
+            boxShadow: '4px 4px 0px #1E192B',
+          }}
+        >
+          <CheckCircle2 size={32} color="#16A34A" aria-hidden="true" style={{ flexShrink: 0 }} />
+          <div>
+            <h2 style={{ margin: 0, fontSize: '1.2rem', color: '#166534', fontWeight: 800 }}>
+              ¡Propuesta de comisión enviada con éxito!
+            </h2>
+            <p style={{ margin: '0.25rem 0 0', fontSize: '0.92rem', color: '#15803D' }}>
+              Tu solicitud ha sido entregada a <strong>{profile.displayName}</strong>. Se ha generado una notificación para el artista y los fondos se encuentran protegidos bajo custodia Escrow.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* ALERTA INFORMATIVA SI NO ESTÁ AUTENTICADO */}
+      {!user && (
+        <div
+          className="guest-auth-alert"
+          role="alert"
+          style={{
+            background: '#FFFBEB',
+            border: '2px solid #F59E0B',
+            borderRadius: '14px',
+            padding: '1rem 1.25rem',
+            marginBottom: '1.5rem',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '1rem',
+            flexWrap: 'wrap',
+            boxShadow: '4px 4px 0px #1E192B',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <AlertCircle size={22} color="#D97706" aria-hidden="true" />
+            <div>
+              <strong style={{ color: '#92400E', display: 'block' }}>Inicia sesión para cotizar</strong>
+              <span style={{ fontSize: '0.88rem', color: '#B45309' }}>
+                Para formalizar tu propuesta y que llegue al artista con custodia Escrow, debes iniciar sesión.
+              </span>
+            </div>
+          </div>
+          <Link
+            to={`/iniciar-sesion?redirect=/solicitudes/nueva/${profile.id}`}
+            className="button button-primary"
+            style={{ padding: '0.5rem 1rem', fontSize: '0.88rem' }}
+          >
+            Iniciar Sesión
+          </Link>
+        </div>
+      )}
 
       {/* ── MAIN TWO-COLUMN CHECKOUT GRID ── */}
       <form onSubmit={handleSubmit} noValidate className="checkout-main-grid">
@@ -719,8 +850,42 @@ export default function NewRequestPage() {
               </p>
             ) : null}
 
+            {submitSuccess && (
+              <div
+                className="form-message form-success"
+                role="status"
+                style={{
+                  background: '#DCFCE7',
+                  color: '#166534',
+                  border: '1.5px solid #16A34A',
+                  padding: '0.75rem 0.9rem',
+                  borderRadius: 8,
+                  fontSize: '0.88rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  marginBottom: '0.75rem',
+                }}
+              >
+                <CheckCircle2 size={16} color="#16A34A" aria-hidden="true" />
+                <span>Propuesta enviada exitosamente al artista.</span>
+              </div>
+            )}
+
             {submitError && (
-              <p className="form-message form-error" role="alert">{submitError}</p>
+              <p
+                className="form-message form-error"
+                role="alert"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  marginBottom: '0.75rem',
+                }}
+              >
+                <AlertCircle size={15} aria-hidden="true" />
+                <span>{submitError}</span>
+              </p>
             )}
 
             <button

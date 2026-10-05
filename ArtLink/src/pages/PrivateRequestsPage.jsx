@@ -39,7 +39,7 @@ import ErrorState from '../components/ErrorState'
 import useAuth from '../hooks/useAuth'
 import usePrivateRequests from '../hooks/usePrivateRequests'
 import { updateRequest } from '../services/requestService'
-import { getNotificationsByUser, markNotificationAsRead } from '../services/notificationService'
+import { getNotificationsByUser, markNotificationAsRead, createNotification } from '../services/notificationService'
 import { triggerNotificationsUpdate, NOTIFICATIONS_CHANGED_EVENT } from '../hooks/useNotificationBadges'
 import FloatingStars from '../components/FloatingStars'
 import '../styles/requestsPop.css'
@@ -168,6 +168,18 @@ export default function PrivateRequestsPage() {
   const handleAcceptRequest = async (req) => {
     try {
       await updateRequest(req.id, { status: 'in_progress', escrowStatus: 'held_in_escrow' })
+
+      // Notificar formalmente al cliente solicitante
+      await createNotification({
+        userId: req.clientId,
+        type: 'request_accepted',
+        title: '¡Propuesta de comisión aceptada!',
+        message: `${req.artistName || user?.name || 'El artista'} ha aceptado tu propuesta #${req.id.slice(-6)}. El encargo se encuentra en desarrollo con fondos protegidos en custodia Escrow.`,
+        requestId: req.id,
+        read: false,
+        createdAt: new Date().toISOString(),
+      }).catch(() => {})
+
       setShowAcceptModal(false)
       setSelectedRequest(null)
       triggerToast(`Solicitud #${req.id.slice(-6)} aceptada. Fondos en custodia Escrow.`)
@@ -181,6 +193,18 @@ export default function PrivateRequestsPage() {
   const handleRejectRequest = async (req) => {
     try {
       await updateRequest(req.id, { status: 'cancelled' })
+
+      // Notificar formalmente al cliente solicitante
+      await createNotification({
+        userId: req.clientId,
+        type: 'request_rejected',
+        title: 'Propuesta de comisión no aceptada',
+        message: `${req.artistName || user?.name || 'El artista'} no puede tomar tu encargo #${req.id.slice(-6)} en este momento. La reserva de fondos ha sido liberada.`,
+        requestId: req.id,
+        read: false,
+        createdAt: new Date().toISOString(),
+      }).catch(() => {})
+
       triggerToast(`Solicitud #${req.id.slice(-6)} cancelada amablemente.`)
       reloadRequests()
       triggerNotificationsUpdate()
@@ -192,6 +216,18 @@ export default function PrivateRequestsPage() {
   const handleApproveMilestone = async (req) => {
     try {
       await updateRequest(req.id, { status: 'completed', escrowStatus: 'released' })
+
+      const targetArtist = req.artistUserId || req.artistId
+      await createNotification({
+        userId: targetArtist,
+        type: 'commission_completed',
+        title: '¡Entrega aprobada y fondos liberados!',
+        message: `${req.clientName || user?.name || 'El cliente'} ha aprobado la entrega del encargo #${req.id.slice(-6)}. Los fondos en custodia han sido liberados.`,
+        requestId: req.id,
+        read: false,
+        createdAt: new Date().toISOString(),
+      }).catch(() => {})
+
       triggerToast(`Entrega de encargo #${req.id.slice(-6)} aprobada. Fondos liberados.`)
       reloadRequests()
       triggerNotificationsUpdate()
@@ -204,6 +240,18 @@ export default function PrivateRequestsPage() {
     if (!selectedRequest) return
     try {
       await updateRequest(selectedRequest.id, { status: 'in_progress', revisionRequested: true })
+
+      const targetArtist = selectedRequest.artistUserId || selectedRequest.artistId
+      await createNotification({
+        userId: targetArtist,
+        type: 'revision_requested',
+        title: 'Solicitud de ajustes en comisión',
+        message: `${selectedRequest.clientName || user?.name || 'El cliente'} ha solicitado ajustes en el encargo #${selectedRequest.id.slice(-6)}: "${revisionNotes.slice(0, 80)}"`,
+        requestId: selectedRequest.id,
+        read: false,
+        createdAt: new Date().toISOString(),
+      }).catch(() => {})
+
       setShowRevisionModal(false)
       setRevisionNotes('')
       triggerToast(`Observaciones enviadas para el encargo #${selectedRequest.id.slice(-6)}`)
@@ -358,8 +406,8 @@ export default function PrivateRequestsPage() {
   // Conteo de elementos que requieren atención hoy
   const actionRequiredRequests = useMemo(() => {
     return requests.filter((r) => {
-      const isArtist = String(r.artistId) === userIdStr
-      const isClient = String(r.clientId) === userIdStr
+      const isArtist = r.isArtist ?? (String(r.artistId) === userIdStr || String(r.artistUserId) === userIdStr)
+      const isClient = r.isClient ?? (String(r.clientId) === userIdStr)
       if (isArtist && (r.status === 'pending' || r.status === 'waitlist')) return true
       if (isClient && r.status === 'in_review') return true
       return false
@@ -684,8 +732,8 @@ export default function PrivateRequestsPage() {
                   </div>
 
                   {actionRequiredRequests.map((req) => {
-                    const isArtist = String(req.artistId) === userIdStr
-                    const isClient = String(req.clientId) === userIdStr
+                    const isArtist = req.isArtist ?? (String(req.artistId) === userIdStr || String(req.artistUserId) === userIdStr)
+                    const isClient = req.isClient ?? (String(req.clientId) === userIdStr)
                     const counterparty = isClient ? (req.artistName || 'Artista') : (req.clientName || 'Cliente')
                     const counterpartyHandle = isClient ? (req.artistUsername || 'artista') : (req.clientUsername || 'cliente')
                     const counterpartyAvatar = isClient ? req.artistAvatar : req.clientAvatar
@@ -704,7 +752,9 @@ export default function PrivateRequestsPage() {
                                 alt={counterparty}
                                 className="req-user-avatar-img"
                               />
-                              <span className="req-user-check-badge">✓</span>
+                              <span className="req-user-check-badge">
+                                <Check size={11} aria-hidden="true" />
+                              </span>
                             </div>
                             <div className="req-user-titles">
                               <div className="req-user-name-line">
@@ -828,7 +878,7 @@ export default function PrivateRequestsPage() {
 
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
                     {filteredRequests.map((req) => {
-                      const isClient = String(req.clientId) === userIdStr
+                      const isClient = req.isClient ?? (String(req.clientId) === userIdStr)
                       const counterparty = isClient ? (req.artistName || 'Artista') : (req.clientName || 'Cliente')
                       const amount = Number(req.budget || req.price || 0)
 
