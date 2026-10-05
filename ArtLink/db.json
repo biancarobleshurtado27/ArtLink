@@ -1736,6 +1736,22 @@
       "createdAt": "2026-10-05T17:42:53.679Z",
       "updatedAt": "2026-10-05T17:42:53.679Z",
       "page": "/"
+    },
+    {
+      "id": "6RmBG8i4kws",
+      "userId": "user-test-1791222665069-cay4",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-05T17:51:05.329Z",
+      "updatedAt": "2026-10-05T17:51:05.329Z",
+      "page": "/explorar"
+    },
+    {
+      "id": "RE60qBSKafI",
+      "userId": "user-artist-B-1791222665362-hco1",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-05T17:51:05.547Z",
+      "updatedAt": "2026-10-05T17:51:05.547Z",
+      "page": "/"
     }
   ],
   "favorites": [
@@ -2720,6 +2736,50 @@
       "role": "user",
       "content": "Mensaje de usuario B",
       "createdAt": "2026-10-05T17:42:53.684Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "srq2KDbdXdY",
+      "conversationId": "convo-1791222665329-h99ok",
+      "userId": "user-test-1791222665069-cay4",
+      "role": "user",
+      "content": "Hola asistente de ArtLink",
+      "createdAt": "2026-10-05T17:51:05.340Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "oIak_A4wxkY",
+      "conversationId": "convo-1791222665329-h99ok",
+      "userId": "user-test-1791222665069-cay4",
+      "role": "assistant",
+      "content": "Hola, te ayudo a buscar ilustradores digitales.",
+      "createdAt": "2026-10-05T17:51:05.346Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "S1Q0G-b6G1k",
+      "conversationId": "convo-1791222665329-h99ok",
+      "userId": "user-test-1791222665069-cay4",
+      "role": "assistant",
+      "content": "Puedo recomendarte artistas de estilo anime.",
+      "createdAt": "2026-10-05T17:51:05.352Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "t7rt0g82Q2U",
+      "conversationId": "convo-1791222665547-ic9ad",
+      "userId": "user-artist-B-1791222665362-hco1",
+      "role": "user",
+      "content": "Mensaje de usuario B",
+      "createdAt": "2026-10-05T17:51:05.553Z",
       "provider": "gemini",
       "status": "sent",
       "intent": null

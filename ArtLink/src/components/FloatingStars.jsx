@@ -85,46 +85,38 @@ export const HEADER_SPARKLES_DATA = [
 ]
 
 // Preset ambiental para páginas (Explorar, Información, Solicitudes, Ajustes, etc.)
-// Distribución orgánica y esparcida (nunca en línea recta):
-// - Oscila suavemente entre el 2% y el 8.5% para que se sientan vivas y cercanas al contenido.
-// - Ubicadas en los márgenes laterales y esquinas para no sobreponerse a textos, títulos ni botones.
-// - Cantidad equilibrada con presencia en la parte superior y a lo largo del scroll.
+// Confinadas estrictamente a los márgenes exteriores (1.5% a 4.2%):
+// - Totalmente alejadas de componentes, tarjetas, buscadores, botones y letras.
+// - Variación oscilante en distancia, tamaño y altura para que no formen una línea recta.
+// - Decoración de fondo limpia y espaciada.
 export const PAGE_SPARKLES_DATA = [
-  // Zona Superior y esquinas altas (enmarcan desde arriba sin tapar texto)
-  { id: 'pg-1', top: '1.2rem', left: '4.2%', size: 24, color: '#F472B6', anim: 'anim-star-float-3', delay: '1.4s' },
-  { id: 'pg-2', top: '1.5rem', right: '4.5%', size: 26, color: '#FBBF24', anim: 'anim-star-float-1', delay: '2.1s' },
-  { id: 'pg-3', top: '4.2rem', left: '2.0%', size: 30, color: '#BCA6E8', anim: 'anim-star-float-1', delay: '0s' },
-  { id: 'pg-4', top: '4.8rem', right: '2.2%', size: 32, color: '#2DD4BF', anim: 'anim-star-float-2', delay: '0.8s' },
-  { id: 'pg-5', top: '7.8rem', left: '7.8%', size: 20, color: '#F472B6', anim: 'anim-star-float-2', delay: '0.4s' },
-  { id: 'pg-6', top: '8.5rem', right: '8.0%', size: 22, color: '#C084FC', anim: 'anim-star-float-3', delay: '1.7s' },
+  // Borde izquierdo exterior (oscila entre 1.5% y 4.2%, bien lejos de los componentes)
+  { id: 'pg-1', top: '1.2rem', left: '3.5%', size: 24, color: '#F472B6', anim: 'anim-star-float-3', delay: '1.4s' },
+  { id: 'pg-3', top: '5.5rem', left: '1.5%', size: 28, color: '#BCA6E8', anim: 'anim-star-float-1', delay: '0s' },
+  { id: 'pg-5', top: '12.0rem', left: '4.2%', size: 18, color: '#F472B6', anim: 'anim-star-float-2', delay: '0.4s' },
+  { id: 'pg-7', top: '19.5rem', left: '2.0%', size: 26, color: '#FBBF24', anim: 'anim-star-float-1', delay: '2.5s' },
+  { id: 'pg-9', top: '28.0rem', left: '3.8%', size: 20, color: '#A78BFA', anim: 'anim-star-float-3', delay: '1.2s' },
+  { id: 'pg-11', top: '38.5rem', left: '1.6%', size: 30, color: '#F472B6', anim: 'anim-star-float-2', delay: '3.1s' },
+  { id: 'pg-13', top: '48.0rem', left: '4.0%', size: 18, color: '#2DD4BF', anim: 'anim-star-float-1', delay: '2.2s' },
+  { id: 'pg-15', top: '59.0rem', left: '2.2%', size: 24, color: '#A78BFA', anim: 'anim-star-float-3', delay: '0.7s' },
+  { id: 'pg-17', top: '71.5rem', left: '3.6%', size: 20, color: '#FF85A1', anim: 'anim-star-float-2', delay: '1.8s' },
+  { id: 'pg-19', top: '83.0rem', left: '1.8%', size: 26, color: '#2DD4BF', anim: 'anim-star-float-1', delay: '0.9s' },
+  { id: 'pg-21', top: '96.0rem', left: '4.2%', size: 19, color: '#F472B6', anim: 'anim-star-float-3', delay: '1.5s' },
+  { id: 'pg-23', top: '108.5rem', left: '2.4%', size: 24, color: '#A78BFA', anim: 'anim-star-float-2', delay: '1.2s' },
 
-  // Bordes laterales orgánicos (oscilan entre 2% y 8.5% para evitar la línea recta)
-  { id: 'pg-7', top: '14.5rem', left: '3.5%', size: 24, color: '#FBBF24', anim: 'anim-star-float-2', delay: '1.0s' },
-  { id: 'pg-8', top: '16.0rem', right: '3.8%', size: 28, color: '#F472B6', anim: 'anim-star-float-3', delay: '0.3s' },
-
-  { id: 'pg-9', top: '22.5rem', left: '6.8%', size: 22, color: '#A78BFA', anim: 'anim-star-float-1', delay: '2.5s' },
-  { id: 'pg-10', top: '24.0rem', right: '7.2%', size: 24, color: '#2DD4BF', anim: 'anim-star-float-2', delay: '1.6s' },
-
-  { id: 'pg-11', top: '31.5rem', left: '2.2%', size: 26, color: '#F472B6', anim: 'anim-star-float-3', delay: '3.1s' },
-  { id: 'pg-12', top: '33.5rem', right: '2.5%', size: 22, color: '#FBBF24', anim: 'anim-star-float-1', delay: '0.5s' },
-
-  { id: 'pg-13', top: '41.5rem', left: '8.2%', size: 20, color: '#2DD4BF', anim: 'anim-star-float-2', delay: '2.2s' },
-  { id: 'pg-14', top: '43.5rem', right: '8.5%', size: 26, color: '#BCA6E8', anim: 'anim-star-float-3', delay: '1.3s' },
-
-  { id: 'pg-15', top: '52.0rem', left: '3.2%', size: 23, color: '#A78BFA', anim: 'anim-star-float-1', delay: '0.7s' },
-  { id: 'pg-16', top: '54.0rem', right: '3.0%', size: 21, color: '#70D6FF', anim: 'anim-star-float-2', delay: '2.3s' },
-
-  { id: 'pg-17', top: '63.0rem', left: '7.2%', size: 24, color: '#FF85A1', anim: 'anim-star-float-3', delay: '1.8s' },
-  { id: 'pg-18', top: '65.5rem', right: '7.5%', size: 22, color: '#FBBF24', anim: 'anim-star-float-1', delay: '1.1s' },
-
-  { id: 'pg-19', top: '75.0rem', left: '2.5%', size: 22, color: '#2DD4BF', anim: 'anim-star-float-2', delay: '0.9s' },
-  { id: 'pg-20', top: '77.5rem', right: '2.2%', size: 25, color: '#C084FC', anim: 'anim-star-float-3', delay: '2.6s' },
-
-  { id: 'pg-21', top: '87.0rem', left: '6.5%', size: 23, color: '#F472B6', anim: 'anim-star-float-1', delay: '1.5s' },
-  { id: 'pg-22', top: '89.5rem', right: '6.8%', size: 21, color: '#BCA6E8', anim: 'anim-star-float-2', delay: '2.0s' },
-
-  { id: 'pg-23', top: '99.0rem', left: '3.0%', size: 20, color: '#A78BFA', anim: 'anim-star-float-3', delay: '1.2s' },
-  { id: 'pg-24', top: '101.5rem', right: '3.2%', size: 24, color: '#FF85A1', anim: 'anim-star-float-1', delay: '2.4s' },
+  // Borde derecho exterior (oscila entre 1.5% y 4.2%, bien lejos de los componentes)
+  { id: 'pg-2', top: '2.0rem', right: '3.8%', size: 26, color: '#FBBF24', anim: 'anim-star-float-1', delay: '2.1s' },
+  { id: 'pg-4', top: '7.2rem', right: '1.6%', size: 30, color: '#2DD4BF', anim: 'anim-star-float-2', delay: '0.8s' },
+  { id: 'pg-6', top: '14.8rem', right: '4.0%', size: 20, color: '#C084FC', anim: 'anim-star-float-3', delay: '1.7s' },
+  { id: 'pg-8', top: '23.0rem', right: '2.2%', size: 28, color: '#F472B6', anim: 'anim-star-float-1', delay: '0.3s' },
+  { id: 'pg-10', top: '33.0rem', right: '4.2%', size: 18, color: '#2DD4BF', anim: 'anim-star-float-2', delay: '1.6s' },
+  { id: 'pg-12', top: '43.5rem', right: '1.8%', size: 24, color: '#FBBF24', anim: 'anim-star-float-3', delay: '0.5s' },
+  { id: 'pg-14', top: '53.0rem', right: '3.6%', size: 26, color: '#BCA6E8', anim: 'anim-star-float-1', delay: '1.3s' },
+  { id: 'pg-16', top: '65.0rem', right: '2.0%', size: 20, color: '#70D6FF', anim: 'anim-star-float-2', delay: '2.3s' },
+  { id: 'pg-18', top: '77.0rem', right: '4.0%', size: 22, color: '#FBBF24', anim: 'anim-star-float-3', delay: '1.1s' },
+  { id: 'pg-20', top: '90.0rem', right: '1.5%', size: 28, color: '#C084FC', anim: 'anim-star-float-1', delay: '2.6s' },
+  { id: 'pg-22', top: '102.5rem', right: '3.8%', size: 20, color: '#BCA6E8', anim: 'anim-star-float-2', delay: '2.0s' },
+  { id: 'pg-24', top: '115.0rem', right: '2.2%', size: 24, color: '#FF85A1', anim: 'anim-star-float-3', delay: '2.4s' },
 ]
 
 // Preset sutil para formularios o paneles más compactos (Login, Registro, Ajustes)
