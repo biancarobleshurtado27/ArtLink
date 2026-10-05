@@ -1,6 +1,17 @@
 import { describe, it, expect } from 'vitest'
 import { render } from '@testing-library/react'
-import FloatingStars, { SparkleStar, HERO_SPARKLES_DATA, HEADER_SPARKLES_DATA } from '../src/components/FloatingStars'
+import FloatingStars, {
+  SparkleStar,
+  HERO_SPARKLES_DATA,
+  HEADER_SPARKLES_DATA,
+  PAGE_SPARKLES_DATA,
+  SUBTLE_SPARKLES_DATA,
+  DecorativeStars,
+  AnimatedStars,
+  BackgroundDecoration,
+  HeroDecoration,
+  DecorativeStar,
+} from '../src/components/FloatingStars'
 
 describe('FloatingStars Component', () => {
   it('renders SparkleStar SVG with correct attributes and without emojis', () => {
@@ -25,6 +36,27 @@ describe('FloatingStars Component', () => {
     const stars = container.querySelectorAll('.hero-floating-star')
     expect(stars.length).toBe(HEADER_SPARKLES_DATA.length)
     expect(container.querySelector('.floating-stars-container')).toBeTruthy()
+  })
+
+  it('renders page variant with bleed class and PAGE_SPARKLES_DATA', () => {
+    const { container } = render(<FloatingStars variant="page" />)
+    const stars = container.querySelectorAll('.hero-floating-star')
+    expect(stars.length).toBe(PAGE_SPARKLES_DATA.length)
+    expect(container.querySelector('.floating-stars-container--bleed')).toBeTruthy()
+  })
+
+  it('renders subtle variant with SUBTLE_SPARKLES_DATA', () => {
+    const { container } = render(<FloatingStars variant="subtle" />)
+    const stars = container.querySelectorAll('.hero-floating-star')
+    expect(stars.length).toBe(SUBTLE_SPARKLES_DATA.length)
+  })
+
+  it('exposes compatible aliases for reusable decoration system', () => {
+    expect(DecorativeStars).toBe(FloatingStars)
+    expect(AnimatedStars).toBe(FloatingStars)
+    expect(BackgroundDecoration).toBe(FloatingStars)
+    expect(HeroDecoration).toBe(FloatingStars)
+    expect(DecorativeStar).toBe(SparkleStar)
   })
 
   it('renders custom star configurations passed as props', () => {

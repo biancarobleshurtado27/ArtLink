@@ -41,7 +41,7 @@ import usePrivateRequests from '../hooks/usePrivateRequests'
 import { updateRequest } from '../services/requestService'
 import { getNotificationsByUser, markNotificationAsRead, createNotification } from '../services/notificationService'
 import { triggerNotificationsUpdate, NOTIFICATIONS_CHANGED_EVENT } from '../hooks/useNotificationBadges'
-import FloatingStars from '../components/FloatingStars'
+import FloatingStars, { DecorativeStar } from '../components/FloatingStars'
 import '../styles/requestsPop.css'
 
 export default function PrivateRequestsPage() {
@@ -491,8 +491,8 @@ export default function PrivateRequestsPage() {
                 ? '0 pendientes de acción'
                 : `${pendingActionCount} ${pendingActionCount === 1 ? 'pendiente' : 'pendientes'} de acción`}
             </span>
-            <span className="req-badge-escrow-active">
-              ✦ ESCROW SHIELD ACTIVO
+            <span className="req-badge-escrow-active" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+              <DecorativeStar size={11} color="#7C3AED" /> ESCROW SHIELD ACTIVO
             </span>
           </div>
         </div>
@@ -1137,8 +1137,9 @@ export default function PrivateRequestsPage() {
                 <h3 className="req-artie-title-main">Optimiza tu Flujo</h3>
               </div>
             </div>
-            <p className="req-artie-body-text">
-              ✦ <strong>Dato pro:</strong> Responder oportunamente y registrar avances de bocetos protege el cronograma del encargo y asegura la liberación puntual de fondos en custodia.
+            <p className="req-artie-body-text" style={{ display: 'flex', alignItems: 'flex-start', gap: '0.4rem' }}>
+              <DecorativeStar size={13} color="#7C3AED" style={{ flexShrink: 0, marginTop: '2px' }} />
+              <span><strong>Dato pro:</strong> Responder oportunamente y registrar avances de bocetos protege el cronograma del encargo y asegura la liberación puntual de fondos en custodia.</span>
             </p>
             <button
               type="button"

@@ -63,9 +63,18 @@ export async function unlikeArtwork(userId, portfolioItemId) {
   saveLocal(cacheKey, next)
 
   try {
-    const { like } = await getLikeStatus(userId, portfolioItemId)
-    if (!like) return { success: true }
-    await apiClient.delete(`/likes/${like.id}`)
+    const { data } = await apiClient.get('/likes', {
+      params: {
+        userId: String(userId),
+        portfolioItemId: String(portfolioItemId),
+      },
+    })
+    const matches = (data || []).filter(
+      (item) => String(item.userId) === String(userId) && String(item.portfolioItemId) === String(portfolioItemId)
+    )
+    if (matches.length > 0) {
+      await Promise.all(matches.map((m) => apiClient.delete(`/likes/${m.id}`).catch(() => {})))
+    }
     return { success: true }
   } catch (error) {
     return { success: true }

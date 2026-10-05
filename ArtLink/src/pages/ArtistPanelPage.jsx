@@ -41,7 +41,7 @@ import EmptyState from '../components/EmptyState'
 import ErrorState from '../components/ErrorState'
 import LoadingState from '../components/LoadingState'
 import PortfolioForm from '../components/PortfolioForm'
-import FloatingStars from '../components/FloatingStars'
+import FloatingStars, { DecorativeStar } from '../components/FloatingStars'
 import useArtistWorkspace from '../hooks/useArtistWorkspace'
 import { handleImageError } from '../utils/imageFallback'
 import '../styles/artistDashboard.css'
@@ -227,7 +227,7 @@ export default function ArtistPanelPage() {
     if (artieApplied) return
     setTotalSlots((prev) => prev + 1)
     setArtieApplied(true)
-    showToast('✨ ¡Sugerencia de Artie aplicada! Se añadió +1 cupo libre y se optimizó tu tarifa base a $250 USD.')
+    showToast('¡Sugerencia de Artie aplicada! Se añadió +1 cupo libre y se optimizó tu tarifa base a $250 USD.')
   }
 
   // Toggle Format Switch in Store
@@ -395,7 +395,7 @@ export default function ArtistPanelPage() {
 
     setFormatsInStore((prev) => [...prev, newFmt])
     setShowNewFormatModal(false)
-    showToast(`✨ ¡Nuevo formato "${name}" ($${priceVal} USD) añadido a tu tienda!`)
+    showToast(`¡Nuevo formato "${name}" ($${priceVal} USD) añadido a tu tienda!`)
   }
 
   // Update total slots
@@ -749,7 +749,11 @@ export default function ArtistPanelPage() {
               </div>
               <div>
                 <h3 className="art-dash-kpi-title">Calidad & Tiempo</h3>
-                <p className="art-dash-kpi-val purple">0.0 ★ <span style={{ fontSize: '0.95rem', fontWeight: 600, color: '#6D657B' }}>(0 reseñas)</span></p>
+                <p className="art-dash-kpi-val purple" style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                  <span>0.0</span>
+                  <Star size={16} fill="currentColor" color="#F59E0B" aria-hidden="true" />
+                  <span style={{ fontSize: '0.95rem', fontWeight: 600, color: '#6D657B' }}>(0 reseñas)</span>
+                </p>
               </div>
               <div className="art-dash-kpi-footer">
                 <span className="art-dash-kpi-tag-pill">
@@ -1294,8 +1298,8 @@ export default function ArtistPanelPage() {
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', fontSize: '0.86rem' }}>
               <div style={{ background: '#F3EEFF', padding: '0.75rem', borderRadius: '0.65rem', border: '1.5px solid #1E192B' }}>
-                <strong style={{ display: 'block', color: '#6D28D9', marginBottom: '0.2rem' }}>
-                  ✦ Fondos asegurados en Escrow: ${selectedBriefOrder.price}.00 USD
+                <strong style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#6D28D9', marginBottom: '0.2rem' }}>
+                  <DecorativeStar size={12} color="#6D28D9" /> Fondos asegurados en Escrow: ${selectedBriefOrder.price}.00 USD
                 </strong>
                 <span style={{ color: '#6D657B', fontSize: '0.78rem' }}>
                   El pago ya fue depositado y está resguardado por ArtLink Shield.
@@ -1450,8 +1454,11 @@ export default function ArtistPanelPage() {
             </div>
 
             <form onSubmit={handleFinalRenderSubmit}>
-              <div style={{ background: '#FEF08A', border: '1.5px solid #1E192B', borderRadius: '0.65rem', padding: '0.75rem', marginBottom: '1rem', fontSize: '0.82rem', fontWeight: 600 }}>
-                ✦ Al subir el render final, los fondos de ${targetRenderOrder?.price || 45}.00 USD en custodia Escrow se transferirán inmediatamente a tu <strong>Balance Disponible de Retiro</strong>.
+              <div style={{ background: '#FEF08A', border: '1.5px solid #1E192B', borderRadius: '0.65rem', padding: '0.75rem', marginBottom: '1rem', fontSize: '0.82rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <DecorativeStar size={14} color="#7C3AED" />
+                <span>
+                  Al subir el render final, los fondos de ${targetRenderOrder?.price || 45}.00 USD en custodia Escrow se transferirán inmediatamente a tu <strong>Balance Disponible de Retiro</strong>.
+                </span>
               </div>
 
               <div className="art-dash-form-group">
