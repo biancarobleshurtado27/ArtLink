@@ -1289,6 +1289,8 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px
   padding: 4.5rem 1.5rem;
   background-color: #FAF8F5;
   border-bottom: 1px solid #D4CFC7;
+  position: relative;
+  overflow: hidden;
 }
 .section-header-row {
   display: flex;
@@ -1399,6 +1401,8 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px
   justify-content: center;
   width: 100%;
   box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
 }
 .section-featured-creators .section-content-centered {
   width: 100%;

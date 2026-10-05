@@ -420,7 +420,7 @@ export default function ArtistProfilePage() {
 
   return (
     <div className="artist-profile-page-v2">
-      <FloatingStars variant="header" />
+      <FloatingStars variant="page" />
       {/* ── 1. BANNER ILUSTRADO SUPERIOR ── */}
       <section className="artist-v2-banner" aria-label={`Portada de ${profile.displayName}`}>
         <img

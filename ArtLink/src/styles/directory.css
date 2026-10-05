@@ -51,6 +51,7 @@
   margin: 0 auto;
   max-width: 82rem;
   padding: 0 1rem 3rem;
+  position: relative;
 }
 
 /* 1. HERO SECTION */

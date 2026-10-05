@@ -420,7 +420,7 @@ export default function ArtistPanelPage() {
 
   return (
     <div className="art-dash-container" aria-label="Panel de Creador ArtLink">
-      <FloatingStars variant="header" />
+      <FloatingStars variant="page" />
       {/* Toast Notification */}
       {toastMessage && (
         <div className="art-dash-toast" role="status">

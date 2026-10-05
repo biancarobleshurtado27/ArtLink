@@ -58,34 +58,62 @@ export const HERO_SPARKLES_DATA = [
   { id: 'sp-20', bottom: '1.6rem', right: '7%', size: 26, color: '#F472B6', anim: 'anim-star-float-2', delay: '0.9s' },
   { id: 'sp-extra-7', bottom: '6.2rem', left: '17%', size: 18, color: '#C084FC', anim: 'anim-star-float-3', delay: '1.9s' },
   { id: 'sp-extra-8', bottom: '6rem', right: '18%', size: 17, color: '#2DD4BF', anim: 'anim-star-float-1', delay: '0.6s' },
+  { id: 'sp-extra-9', top: '16.5rem', left: '12%', size: 18, color: '#FF85A1', anim: 'anim-star-float-1', delay: '1.7s' },
+  { id: 'sp-extra-10', top: '17rem', right: '13%', size: 20, color: '#70D6FF', anim: 'anim-star-float-2', delay: '2.4s' },
+  { id: 'sp-extra-11', top: '35rem', left: '8%', size: 17, color: '#A78BFA', anim: 'anim-star-float-3', delay: '0.8s' },
+  { id: 'sp-extra-12', top: '36rem', right: '9%', size: 19, color: '#FBBF24', anim: 'anim-star-float-1', delay: '1.9s' },
+  { id: 'sp-extra-13', bottom: '12rem', left: '6%', size: 19, color: '#2DD4BF', anim: 'anim-star-float-2', delay: '1.2s' },
+  { id: 'sp-extra-14', bottom: '12.5rem', right: '6.5%', size: 21, color: '#F472B6', anim: 'anim-star-float-3', delay: '2.7s' },
 ]
 
 // Preset controlado para cabeceras y banners principales de otras páginas
 export const HEADER_SPARKLES_DATA = [
-  { id: 'hdr-1', top: '1rem', left: '3%', size: 22, color: '#F472B6', anim: 'anim-star-float-1', delay: '0s' },
-  { id: 'hdr-2', top: '2.2rem', right: '4%', size: 24, color: '#BCA6E8', anim: 'anim-star-float-2', delay: '0.8s' },
-  { id: 'hdr-3', top: '4.5rem', left: '8%', size: 18, color: '#2DD4BF', anim: 'anim-star-float-3', delay: '1.5s' },
-  { id: 'hdr-4', top: '4rem', right: '9%', size: 20, color: '#FBBF24', anim: 'anim-star-float-1', delay: '2.2s' },
-  { id: 'hdr-5', bottom: '0.8rem', left: '5%', size: 16, color: '#A78BFA', anim: 'anim-star-float-2', delay: '0.4s' },
-  { id: 'hdr-6', bottom: '1rem', right: '6%', size: 18, color: '#F472B6', anim: 'anim-star-float-3', delay: '1.8s' },
+  { id: 'hdr-1', top: '0.8rem', left: '2.5%', size: 22, color: '#F472B6', anim: 'anim-star-float-1', delay: '0s' },
+  { id: 'hdr-2', top: '1.2rem', right: '3%', size: 24, color: '#BCA6E8', anim: 'anim-star-float-2', delay: '0.8s' },
+  { id: 'hdr-3', top: '3.2rem', left: '6%', size: 18, color: '#2DD4BF', anim: 'anim-star-float-3', delay: '1.5s' },
+  { id: 'hdr-4', top: '3.5rem', right: '7%', size: 20, color: '#FBBF24', anim: 'anim-star-float-1', delay: '2.2s' },
+  { id: 'hdr-5', top: '6.2rem', left: '1.5%', size: 19, color: '#C084FC', anim: 'anim-star-float-2', delay: '0.5s' },
+  { id: 'hdr-6', top: '6.8rem', right: '2%', size: 21, color: '#FF85A1', anim: 'anim-star-float-3', delay: '1.7s' },
+  { id: 'hdr-7', top: '2rem', left: '15%', size: 16, color: '#FDE047', anim: 'anim-star-float-1', delay: '1.1s' },
+  { id: 'hdr-8', top: '2.5rem', right: '16%', size: 17, color: '#70D6FF', anim: 'anim-star-float-2', delay: '2.6s' },
+  { id: 'hdr-9', bottom: '0.8rem', left: '4%', size: 18, color: '#A78BFA', anim: 'anim-star-float-2', delay: '0.4s' },
+  { id: 'hdr-10', bottom: '1.1rem', right: '5%', size: 19, color: '#F472B6', anim: 'anim-star-float-3', delay: '1.8s' },
+  { id: 'hdr-11', bottom: '1.8rem', left: '11%', size: 15, color: '#2DD4BF', anim: 'anim-star-float-1', delay: '1.3s' },
+  { id: 'hdr-12', bottom: '1.5rem', right: '12%', size: 16, color: '#FBBF24', anim: 'anim-star-float-2', delay: '2.0s' },
 ]
 
 // Preset ambiental para páginas con contenido general (Explorar, Información, Solicitudes)
 export const PAGE_SPARKLES_DATA = [
-  { id: 'pg-1', top: '2rem', left: '2.5%', size: 20, color: '#F472B6', anim: 'anim-star-float-1', delay: '0s' },
-  { id: 'pg-2', top: '3rem', right: '3%', size: 22, color: '#BCA6E8', anim: 'anim-star-float-2', delay: '1.1s' },
-  { id: 'pg-3', top: '10rem', left: '1.8%', size: 16, color: '#2DD4BF', anim: 'anim-star-float-3', delay: '1.9s' },
-  { id: 'pg-4', top: '12rem', right: '2%', size: 18, color: '#FBBF24', anim: 'anim-star-float-1', delay: '0.6s' },
-  { id: 'pg-5', top: '22rem', left: '2.2%', size: 18, color: '#A78BFA', anim: 'anim-star-float-2', delay: '2.4s' },
-  { id: 'pg-6', top: '24rem', right: '2.5%', size: 20, color: '#F472B6', anim: 'anim-star-float-3', delay: '1.3s' },
+  { id: 'pg-1', top: '1.5rem', left: '2%', size: 20, color: '#F472B6', anim: 'anim-star-float-1', delay: '0s' },
+  { id: 'pg-2', top: '2rem', right: '2.5%', size: 22, color: '#BCA6E8', anim: 'anim-star-float-2', delay: '1.1s' },
+  { id: 'pg-3', top: '6.5rem', left: '1.2%', size: 17, color: '#FBBF24', anim: 'anim-star-float-3', delay: '0.4s' },
+  { id: 'pg-4', top: '7rem', right: '1.5%', size: 19, color: '#2DD4BF', anim: 'anim-star-float-1', delay: '1.8s' },
+  { id: 'pg-5', top: '12rem', left: '2.5%', size: 18, color: '#C084FC', anim: 'anim-star-float-2', delay: '2.2s' },
+  { id: 'pg-6', top: '14rem', right: '2%', size: 21, color: '#FF85A1', anim: 'anim-star-float-3', delay: '0.7s' },
+  { id: 'pg-7', top: '20rem', left: '1.5%', size: 19, color: '#70D6FF', anim: 'anim-star-float-1', delay: '1.4s' },
+  { id: 'pg-8', top: '22rem', right: '1.8%', size: 18, color: '#FBBF24', anim: 'anim-star-float-2', delay: '2.5s' },
+  { id: 'pg-9', top: '29rem', left: '2.2%', size: 20, color: '#A78BFA', anim: 'anim-star-float-3', delay: '0.9s' },
+  { id: 'pg-10', top: '31rem', right: '2.4%', size: 22, color: '#2DD4BF', anim: 'anim-star-float-1', delay: '1.6s' },
+  { id: 'pg-11', top: '38rem', left: '1.8%', size: 17, color: '#F472B6', anim: 'anim-star-float-2', delay: '2.8s' },
+  { id: 'pg-12', top: '40rem', right: '1.6%', size: 19, color: '#C084FC', anim: 'anim-star-float-3', delay: '0.3s' },
+  { id: 'pg-13', top: '48rem', left: '2.4%', size: 18, color: '#FBBF24', anim: 'anim-star-float-1', delay: '1.7s' },
+  { id: 'pg-14', top: '51rem', right: '2.1%', size: 20, color: '#70D6FF', anim: 'anim-star-float-2', delay: '2.3s' },
+  { id: 'pg-15', bottom: '8rem', left: '2%', size: 19, color: '#2DD4BF', anim: 'anim-star-float-3', delay: '1.0s' },
+  { id: 'pg-16', bottom: '7.5rem', right: '2.5%', size: 21, color: '#FF85A1', anim: 'anim-star-float-1', delay: '2.1s' },
+  { id: 'pg-17', bottom: '2rem', left: '3%', size: 18, color: '#BCA6E8', anim: 'anim-star-float-2', delay: '0.6s' },
+  { id: 'pg-18', bottom: '1.8rem', right: '3.2%', size: 20, color: '#FBBF24', anim: 'anim-star-float-3', delay: '1.9s' },
 ]
 
 // Preset sutil para formularios o paneles más compactos (Login, Registro, Ajustes)
 export const SUBTLE_SPARKLES_DATA = [
-  { id: 'sub-1', top: '1.5rem', left: '4%', size: 18, color: '#F472B6', anim: 'anim-star-float-1', delay: '0.2s' },
-  { id: 'sub-2', top: '2rem', right: '5%', size: 20, color: '#BCA6E8', anim: 'anim-star-float-2', delay: '1.3s' },
-  { id: 'sub-3', bottom: '2rem', left: '6%', size: 16, color: '#2DD4BF', anim: 'anim-star-float-3', delay: '2s' },
-  { id: 'sub-4', bottom: '1.8rem', right: '5%', size: 18, color: '#FBBF24', anim: 'anim-star-float-1', delay: '0.9s' },
+  { id: 'sub-1', top: '1.2rem', left: '3%', size: 18, color: '#F472B6', anim: 'anim-star-float-1', delay: '0.2s' },
+  { id: 'sub-2', top: '1.5rem', right: '3.5%', size: 20, color: '#BCA6E8', anim: 'anim-star-float-2', delay: '1.3s' },
+  { id: 'sub-3', top: '4.8rem', left: '2%', size: 16, color: '#2DD4BF', anim: 'anim-star-float-3', delay: '2.1s' },
+  { id: 'sub-4', top: '5.2rem', right: '2.5%', size: 17, color: '#FBBF24', anim: 'anim-star-float-1', delay: '0.6s' },
+  { id: 'sub-5', bottom: '4.8rem', left: '2.5%', size: 17, color: '#C084FC', anim: 'anim-star-float-2', delay: '1.7s' },
+  { id: 'sub-6', bottom: '4.5rem', right: '2%', size: 16, color: '#70D6FF', anim: 'anim-star-float-3', delay: '0.4s' },
+  { id: 'sub-7', bottom: '1.2rem', left: '4%', size: 18, color: '#F472B6', anim: 'anim-star-float-1', delay: '2.4s' },
+  { id: 'sub-8', bottom: '1rem', right: '4.5%', size: 19, color: '#FBBF24', anim: 'anim-star-float-2', delay: '1.1s' },
 ]
 
 const VARIANT_MAP = {

@@ -216,6 +216,7 @@ export default function ParaArtistasPage() {
 
   return (
     <div className="info-page">
+      <FloatingStars variant="page" />
       {/* 1. HERO PRINCIPAL */}
       <section className="page-hero" aria-labelledby="for-artists-title">
         <FloatingStars variant="header" />

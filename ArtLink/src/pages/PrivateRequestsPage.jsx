@@ -406,7 +406,7 @@ export default function PrivateRequestsPage() {
 
   return (
     <div className="req-page-container">
-      <FloatingStars variant="header" />
+      <FloatingStars variant="page" />
       {/* Toast Feedback Notification */}
       {toastMessage && (
         <div

@@ -1,7 +1,7 @@
 /* Estilos de las páginas informativas, landing, perfil y legal de ArtLink */
 
 /* ---------- Página informativa genérica ---------- */
-.info-page { width: 100%; }
+.info-page { width: 100%; position: relative; }
 
 /* ---------- Hero de página ---------- */
 .page-hero { align-items: flex-start; display: flex; flex-direction: column; gap: .6rem; margin: 1rem auto clamp(3rem, 8vw, 6rem); max-width: var(--container); position: relative; }

@@ -161,6 +161,7 @@ export default function ComoFuncionaPage() {
 
   return (
     <div className="info-page">
+      <FloatingStars variant="page" />
       {/* 1. HERO PRINCIPAL */}
       <section className="page-hero" aria-labelledby="how-title">
         <FloatingStars variant="header" />

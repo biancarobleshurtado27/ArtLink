@@ -376,7 +376,7 @@ export default function SettingsPage({ initialTab }) {
 
   return (
     <div className="studio-settings-page" aria-labelledby="settings-main-heading">
-      <FloatingStars variant="subtle" />
+      <FloatingStars variant="page" />
       {/* ── ENCABEZADO SUPERIOR ADAPTATIVO ── */}
       <header className="studio-settings-topbar">
         <div className="studio-header-main">

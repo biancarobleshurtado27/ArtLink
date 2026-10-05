@@ -55,6 +55,7 @@
   color: #1E192B;
   background: #FFFDF8;
   flex: 1 1 0;
+  position: relative !important;
 }
 
 /* ── Top Header & Filter Bar ── */

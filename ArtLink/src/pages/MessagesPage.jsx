@@ -27,6 +27,7 @@ import useAuth from '../hooks/useAuth'
 import usePrivateRequests from '../hooks/usePrivateRequests'
 import apiClient from '../services/apiClient'
 import AssistantPanel from '../components/AssistantPanel'
+import FloatingStars from '../components/FloatingStars'
 import artieAvatar from '../assets/artie-avatar.png'
 import { triggerNotificationsUpdate } from '../hooks/useNotificationBadges'
 import {
@@ -647,6 +648,7 @@ export default function MessagesPage() {
 
   return (
     <div className="chat-view-container">
+      <FloatingStars variant="subtle" />
       <div className={`chat-three-column-grid ${!showOrderDetails ? 'is-details-closed' : ''} ${hasActiveChat ? 'has-active-chat' : 'is-inbox-view'}`}>
         {/* ══════════════════════════════════════════════════════════════════
             COLUMNA 1: BANDEJA DE CONVERSACIONES REALES

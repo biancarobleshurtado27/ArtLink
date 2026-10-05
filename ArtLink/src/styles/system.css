@@ -3222,6 +3222,7 @@ img, svg, video {
 
 .admin-console-view {
   width: 100% !important;
+  position: relative !important;
 }
 
 .admin-dashboard-hero {
