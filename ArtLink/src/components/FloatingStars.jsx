@@ -87,6 +87,8 @@ export const HEADER_SPARKLES_DATA = [
 // Preset ambiental para páginas largas (Explorar, Información, Solicitudes, Ajustes...)
 // Las posiciones verticales usan porcentajes para repartirse por TODA la altura real
 // del contenedor, evitando que las estrellas queden agrupadas en la parte superior.
+// El salto vertical es de 1.8% entre estrellas consecutivas, bastante mayor que la
+// altura de una estrella, asi que nunca se tocan entre si.
 export const PAGE_SPARKLES_DATA = [
   { id: 'pg-1', top: '1.5%', left: '1.4%', size: 21, color: '#F472B6', anim: 'anim-star-float-1', delay: '0s' },
   { id: 'pg-2', top: '3.2%', right: '2.2%', size: 22, color: '#BCA6E8', anim: 'anim-star-float-2', delay: '1.1s' },
@@ -192,8 +194,13 @@ const BLEED_VARIANTS = new Set(['page', 'ambient', 'spread', 'scattered'])
 // contenedor de contenido) y su equivalente como fraccion del margen exterior.
 const SOURCE_EDGE_MIN = 1
 const SOURCE_EDGE_MAX = 4.8
-const GUTTER_EDGE_MIN = 0.06
-const GUTTER_EDGE_MAX = 0.72
+
+// La banda del margen se recorre casi completa para que las estrellas queden
+// bien esparcidas a lo largo del borde. El maximo se queda en 0.86 porque la
+// estrella se ancla por su borde izquierdo y todavia necesita caber dentro del
+// margen antes de que overflow:hidden la recorte.
+const GUTTER_EDGE_MIN = 0.04
+const GUTTER_EDGE_MAX = 0.86
 
 /**
  * Convierte una posicion horizontal en porcentaje (medida desde el borde del

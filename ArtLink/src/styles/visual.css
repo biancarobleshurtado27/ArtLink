@@ -202,9 +202,11 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px
 }
 
 /* Cajon exterior donde viven las estrellas decorativas.
-   Sirve para separarlas del area de texto: el contenido nunca invade este margen. */
+   Sirve para separarlas del area de texto: el contenido nunca invade este margen.
+   Es holgado a proposito, para que las estrellas se repartan a lo largo de toda
+   la banda en vez de amontonarse pegadas al contenido. */
 :root {
-  --stars-gutter: clamp(1.5rem, 3.5vw, 5rem);
+  --stars-gutter: clamp(2rem, 5vw, 7rem);
 }
 
 .floating-stars-container {
