@@ -184,6 +184,31 @@ const VARIANT_MAP = {
   minimal: SUBTLE_SPARKLES_DATA,
 }
 
+// Variantes cuyo contenedor se extiende hacia el margen exterior de la pagina,
+// para que las estrellas queden en los bordes y no junto al texto.
+const BLEED_VARIANTS = new Set(['page', 'ambient', 'spread', 'scattered'])
+
+// Rango horizontal original de los presets (porcentaje respecto al ancho del
+// contenedor de contenido) y su equivalente como fraccion del margen exterior.
+const SOURCE_EDGE_MIN = 1
+const SOURCE_EDGE_MAX = 4.8
+const GUTTER_EDGE_MIN = 0.06
+const GUTTER_EDGE_MAX = 0.72
+
+/**
+ * Convierte una posicion horizontal en porcentaje (medida desde el borde del
+ * area de contenido) a una fraccion del margen exterior de la pagina.
+ * Asi la estrella se aleja de las letras y queda pegada al borde real.
+ */
+function percentToGutter(percent) {
+  const value = Number.parseFloat(percent)
+  if (!Number.isFinite(value)) return null
+  const ratio = (value - SOURCE_EDGE_MIN) / (SOURCE_EDGE_MAX - SOURCE_EDGE_MIN)
+  const clamped = Math.min(1, Math.max(0, ratio))
+  const gutterFraction = GUTTER_EDGE_MIN + clamped * (GUTTER_EDGE_MAX - GUTTER_EDGE_MIN)
+  return `calc(var(--stars-gutter) * ${gutterFraction.toFixed(3)})`
+}
+
 /**
  * Componente reutilizable de estrellitas flotantes con movimiento suave.
  * Diseñado específicamente para acompañar el estilo pastel scrapbook de ArtLink
@@ -194,33 +219,44 @@ export default function FloatingStars({
   stars = null,
   className = '',
   inline = false,
+  // Fuerza el margen exterior aunque el preset no lo pida por defecto.
+  edge = null,
 }) {
   const activeStars = stars || VARIANT_MAP[variant] || HEADER_SPARKLES_DATA
+  const usesBleed = edge === null ? BLEED_VARIANTS.has(variant) : edge
 
-  const content = activeStars.map((sp) => (
-    <span
-      key={sp.id}
-      className={`hero-floating-star ${sp.anim || 'anim-star-float-1'}`}
-      style={{
-        top: sp.top,
-        bottom: sp.bottom,
-        left: sp.left,
-        right: sp.right,
-        animationDelay: sp.delay || '0s',
-      }}
-      aria-hidden="true"
-    >
-      <SparkleStar size={sp.size} color={sp.color} />
-    </span>
-  ))
+  const content = activeStars.map((sp) => {
+    // En modo borde las estrellas se repositionan al margen exterior.
+    const left = usesBleed && sp.left ? percentToGutter(sp.left) : sp.left
+    const right = usesBleed && sp.right ? percentToGutter(sp.right) : sp.right
+
+    return (
+      <span
+        key={sp.id}
+        className={`hero-floating-star ${sp.anim || 'anim-star-float-1'}`}
+        style={{
+          top: sp.top,
+          bottom: sp.bottom,
+          left: left ?? undefined,
+          right: right ?? undefined,
+          animationDelay: sp.delay || '0s',
+        }}
+        aria-hidden="true"
+      >
+        <SparkleStar size={sp.size} color={sp.color} />
+      </span>
+    )
+  })
 
   if (inline) {
     return <>{content}</>
   }
 
+  const edgeClass = usesBleed ? ' floating-stars-container--bleed' : ' floating-stars-container--inset'
+
   return (
     <div
-      className={`floating-stars-container ${className}`.trim()}
+      className={`floating-stars-container${edgeClass} ${className}`.trim()}
       aria-hidden="true"
       style={{ pointerEvents: 'none' }}
     >

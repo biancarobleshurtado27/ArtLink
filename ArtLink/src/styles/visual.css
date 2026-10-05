@@ -201,12 +201,31 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px
   overflow: hidden;
 }
 
+/* Cajon exterior donde viven las estrellas decorativas.
+   Sirve para separarlas del area de texto: el contenido nunca invade este margen. */
+:root {
+  --stars-gutter: clamp(1.5rem, 3.5vw, 5rem);
+}
+
 .floating-stars-container {
   position: absolute;
   inset: 0;
   pointer-events: none;
   overflow: hidden;
   z-index: 0;
+}
+
+/* Variante ambiental de pagina completa: el contenedor se extiende hacia el
+   margen exterior de la pagina para que las estrellas queden en los bordes,
+   nunca junto a las letras ni a los botones. */
+.floating-stars-container--bleed {
+  inset: 0 calc(-1 * var(--stars-gutter));
+}
+
+/* Variantes dentro de recuadros que ya tienen su propio padding
+   (heroes, formularios, chat): margen reducido y sin sangrado. */
+.floating-stars-container--inset {
+  --stars-gutter: clamp(0.4rem, 1.4vw, 1.4rem);
 }
 
 .hero-floating-star {
