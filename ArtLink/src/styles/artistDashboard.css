@@ -11,6 +11,7 @@
   font-family: var(--sans, 'Plus Jakarta Sans', sans-serif);
   color: #1E192B;
   box-sizing: border-box;
+  position: relative;
 }
 
 /* --------------------------------------------------------------------------

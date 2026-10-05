@@ -6,6 +6,7 @@ import useArtists from '../hooks/useArtists'
 import useFavorites from '../hooks/useFavorites'
 import Badge from '../components/Badge'
 import EmptyState from '../components/EmptyState'
+import FloatingStars from '../components/FloatingStars'
 import { getArtistByUserId } from '../services/artistService'
 import { handleImageError } from '../utils/imageFallback'
 import { ROLES, roleLabels } from '../utils/roles'
@@ -27,7 +28,8 @@ export default function ProfilePage() {
 
   if (!user) {
     return (
-      <section className="auth-panel" aria-labelledby="profile-guest-title">
+      <section className="auth-panel" aria-labelledby="profile-guest-title" style={{ position: 'relative' }}>
+        <FloatingStars variant="minimal" />
         <p className="eyebrow">ArtLink / mi perfil</p>
         <h1 id="profile-guest-title">Esta sección es para tu cuenta</h1>
         <p className="private-intro">Inicia sesión para ver tu perfil, tus solicitudes y tus artistas guardados.</p>
@@ -45,6 +47,7 @@ export default function ProfilePage() {
 
   return (
     <div className="profile-page" aria-labelledby="profile-title">
+      <FloatingStars variant="subtle" />
       <section className="profile-card">
         <div className="profile-card-avatar">
           {user.avatar

@@ -75,7 +75,7 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px
 .state-panel { align-items: center; background: var(--lilac); border: 2px dashed var(--violet); display: flex; flex-direction: column; justify-content: center; min-height: 14rem; padding: 2rem; text-align: center; }.state-panel h2 { font-size: 1.5rem; margin: .7rem 0 .4rem; }.state-panel p { color: var(--muted); margin: 0; }.empty-state svg { color: var(--violet); }.error-state { background: #FFF0F5; border-color: var(--rose); }.error-state svg { color: #B52D68; }.loading-dots { animation: pulse 1s ease-in-out infinite; color: var(--violet); font-size: 2rem; letter-spacing: .25rem; line-height: 1; }.loading-dots + p { font-size: .8rem; }.modal-backdrop { align-items: center; background: rgba(30, 25, 43, .6); display: flex; inset: 0; justify-content: center; padding: 1rem; position: fixed; z-index: 20; }.modal { background: var(--paper); border: 2px solid var(--ink); box-shadow: var(--shadow); max-width: 32rem; padding: 1.4rem; width: 100%; }.modal-header { align-items: center; display: flex; justify-content: space-between; }.modal-header h2 { font-size: 1.5rem; margin: 0; }
 
 /* ── DISEÑO DE LA PÁGINA DE SOLICITUD DE COMISIÓN (CHECKOUT) ── */
-.request-page-wrapper { max-width: 82rem; margin: 0 auto; }
+.request-page-wrapper { max-width: 82rem; margin: 0 auto; position: relative; }
 .checkout-breadcrumb { display: flex; align-items: center; gap: .3rem; font-size: .82rem; margin-bottom: 1rem; }
 .breadcrumb-current { color: var(--muted); font-weight: 600; }
 .checkout-header-banner { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }

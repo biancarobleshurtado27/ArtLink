@@ -92,7 +92,7 @@
 .testimonial-card footer small { color: var(--muted); }
 
 /* ---------- Legal / Ayuda ---------- */
-.legal-page { margin: 0 auto; max-width: var(--container-narrow); }
+.legal-page { margin: 0 auto; max-width: var(--container-narrow); position: relative; }
 .legal-block { border-bottom: 1px dashed var(--line); margin-top: 1.7rem; padding-bottom: 1.4rem; }
 .legal-block h2 { font-size: 1.25rem; margin-bottom: .5rem; }
 .legal-block p, .contact-card p { color: var(--muted); font-size: .9rem; }
@@ -123,7 +123,7 @@
 .rotate-180 { transform: rotate(180deg); }
 
 /* ---------- Perfil ---------- */
-.profile-page { margin: 0 auto; max-width: var(--container); }
+.profile-page { margin: 0 auto; max-width: var(--container); position: relative; }
 .profile-card { align-items: center; background: var(--paper); border: 2px solid var(--ink); border-radius: var(--radius); box-shadow: var(--shadow); display: grid; gap: 1.5rem; grid-template-columns: auto 1fr auto; padding: clamp(1.3rem, 4vw, 2.2rem); }
 .profile-card-avatar { align-items: center; display: flex; flex-direction: column; gap: .7rem; }
 .avatar-img { object-fit: cover; }

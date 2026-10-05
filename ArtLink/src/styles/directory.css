@@ -1283,6 +1283,7 @@
   margin: 0 auto;
   max-width: 82rem;
   padding: 0 1rem 4rem;
+  position: relative;
 }
 
 /* 1. BANNER DEL ARTISTA */

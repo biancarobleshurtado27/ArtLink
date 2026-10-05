@@ -17,6 +17,7 @@ import {
 import { Link, useLocation, useParams, useSearchParams } from 'react-router-dom'
 import Avatar from '../components/Avatar'
 import DecorativeStar from '../components/DecorativeStar'
+import FloatingStars from '../components/FloatingStars'
 import ErrorState from '../components/ErrorState'
 import LoadingState from '../components/LoadingState'
 import useArtistProfile from '../hooks/useArtistProfile'
@@ -262,6 +263,7 @@ export default function NewRequestPage() {
 
   return (
     <div className="request-page-wrapper" aria-labelledby="checkout-title" style={{ position: 'relative' }}>
+      <FloatingStars variant="header" />
       {/* ── TARJETA SUPERPUESTA DE CONFIRMACIÓN DE PROPUESTA (OVERLAY MODAL) ── */}
       {createdRequest && (
         <div className="confirmation-overlay">

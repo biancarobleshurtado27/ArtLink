@@ -41,6 +41,7 @@ import EmptyState from '../components/EmptyState'
 import ErrorState from '../components/ErrorState'
 import LoadingState from '../components/LoadingState'
 import PortfolioForm from '../components/PortfolioForm'
+import FloatingStars from '../components/FloatingStars'
 import useArtistWorkspace from '../hooks/useArtistWorkspace'
 import { handleImageError } from '../utils/imageFallback'
 import '../styles/artistDashboard.css'
@@ -419,6 +420,7 @@ export default function ArtistPanelPage() {
 
   return (
     <div className="art-dash-container" aria-label="Panel de Creador ArtLink">
+      <FloatingStars variant="header" />
       {/* Toast Notification */}
       {toastMessage && (
         <div className="art-dash-toast" role="status">

@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom'
 import { ArrowLeft, Mail, MessageCircleQuestion } from 'lucide-react'
 import ContactForm from '../components/ContactForm'
+import FloatingStars from '../components/FloatingStars'
 
 const sections = {
   '/ayuda': {
@@ -121,6 +122,7 @@ export default function LegalPage() {
 
   return (
     <section className="legal-page" aria-labelledby="legal-title">
+      <FloatingStars variant="header" />
       <Link className="back-link" to="/"><ArrowLeft size={16} aria-hidden="true" /> Volver al inicio</Link>
       <p className="eyebrow">{config.eyebrow}</p>
       <h1 id="legal-title">{config.title}</h1>
