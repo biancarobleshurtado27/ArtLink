@@ -365,7 +365,6 @@ export default function HomePage() {
 
       {/* ── 3. SECCIÓN CATEGORÍAS POPULARES ── */}
       <section className="section-popular-categories" aria-labelledby="cat-popular-title">
-        <FloatingStars variant="header" />
         <div className="section-content-centered">
           <div className="section-header-row">
             <div>

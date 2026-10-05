@@ -47,7 +47,7 @@ export default function ProfilePage() {
 
   return (
     <div className="profile-page" aria-labelledby="profile-title">
-      <FloatingStars variant="header" />
+      <FloatingStars variant="page" />
       <section className="profile-card">
         <div className="profile-card-avatar">
           {user.avatar

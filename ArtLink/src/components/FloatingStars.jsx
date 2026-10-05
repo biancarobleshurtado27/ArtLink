@@ -82,26 +82,79 @@ export const HEADER_SPARKLES_DATA = [
   { id: 'hdr-12', bottom: '1.5rem', right: '12%', size: 16, color: '#FBBF24', anim: 'anim-star-float-2', delay: '2.0s' },
 ]
 
-// Preset ambiental para páginas con contenido general (Explorar, Información, Solicitudes)
+// Preset ambiental para páginas largas (Explorar, Información, Solicitudes, Ajustes...)
+// Las posiciones verticales usan porcentajes para repartirse por TODA la altura real
+// del contenedor, evitando que las estrellas queden agrupadas en la parte superior.
 export const PAGE_SPARKLES_DATA = [
-  { id: 'pg-1', top: '1.5rem', left: '2%', size: 20, color: '#F472B6', anim: 'anim-star-float-1', delay: '0s' },
-  { id: 'pg-2', top: '2rem', right: '2.5%', size: 22, color: '#BCA6E8', anim: 'anim-star-float-2', delay: '1.1s' },
-  { id: 'pg-3', top: '6.5rem', left: '1.2%', size: 17, color: '#FBBF24', anim: 'anim-star-float-3', delay: '0.4s' },
-  { id: 'pg-4', top: '7rem', right: '1.5%', size: 19, color: '#2DD4BF', anim: 'anim-star-float-1', delay: '1.8s' },
-  { id: 'pg-5', top: '12rem', left: '2.5%', size: 18, color: '#C084FC', anim: 'anim-star-float-2', delay: '2.2s' },
-  { id: 'pg-6', top: '14rem', right: '2%', size: 21, color: '#FF85A1', anim: 'anim-star-float-3', delay: '0.7s' },
-  { id: 'pg-7', top: '20rem', left: '1.5%', size: 19, color: '#70D6FF', anim: 'anim-star-float-1', delay: '1.4s' },
-  { id: 'pg-8', top: '22rem', right: '1.8%', size: 18, color: '#FBBF24', anim: 'anim-star-float-2', delay: '2.5s' },
-  { id: 'pg-9', top: '29rem', left: '2.2%', size: 20, color: '#A78BFA', anim: 'anim-star-float-3', delay: '0.9s' },
-  { id: 'pg-10', top: '31rem', right: '2.4%', size: 22, color: '#2DD4BF', anim: 'anim-star-float-1', delay: '1.6s' },
-  { id: 'pg-11', top: '38rem', left: '1.8%', size: 17, color: '#F472B6', anim: 'anim-star-float-2', delay: '2.8s' },
-  { id: 'pg-12', top: '40rem', right: '1.6%', size: 19, color: '#C084FC', anim: 'anim-star-float-3', delay: '0.3s' },
-  { id: 'pg-13', top: '48rem', left: '2.4%', size: 18, color: '#FBBF24', anim: 'anim-star-float-1', delay: '1.7s' },
-  { id: 'pg-14', top: '51rem', right: '2.1%', size: 20, color: '#70D6FF', anim: 'anim-star-float-2', delay: '2.3s' },
-  { id: 'pg-15', bottom: '8rem', left: '2%', size: 19, color: '#2DD4BF', anim: 'anim-star-float-3', delay: '1.0s' },
-  { id: 'pg-16', bottom: '7.5rem', right: '2.5%', size: 21, color: '#FF85A1', anim: 'anim-star-float-1', delay: '2.1s' },
-  { id: 'pg-17', bottom: '2rem', left: '3%', size: 18, color: '#BCA6E8', anim: 'anim-star-float-2', delay: '0.6s' },
-  { id: 'pg-18', bottom: '1.8rem', right: '3.2%', size: 20, color: '#FBBF24', anim: 'anim-star-float-3', delay: '1.9s' },
+  { id: 'pg-1', top: '1.5%', left: '1.4%', size: 21, color: '#F472B6', anim: 'anim-star-float-1', delay: '0s' },
+  { id: 'pg-2', top: '3.2%', right: '2.2%', size: 22, color: '#BCA6E8', anim: 'anim-star-float-2', delay: '1.1s' },
+  { id: 'pg-3', top: '5%', left: '3.6%', size: 17, color: '#FBBF24', anim: 'anim-star-float-3', delay: '0.4s' },
+  { id: 'pg-4', top: '6.6%', right: '1.2%', size: 19, color: '#2DD4BF', anim: 'anim-star-float-1', delay: '1.8s' },
+
+  { id: 'pg-5', top: '8.4%', left: '1.8%', size: 18, color: '#C084FC', anim: 'anim-star-float-2', delay: '2.2s' },
+  { id: 'pg-6', top: '10.2%', right: '3.4%', size: 21, color: '#FF85A1', anim: 'anim-star-float-3', delay: '0.7s' },
+  { id: 'pg-7', top: '12%', left: '4.8%', size: 16, color: '#70D6FF', anim: 'anim-star-float-1', delay: '1.4s' },
+  { id: 'pg-8', top: '13.8%', right: '2.6%', size: 18, color: '#FBBF24', anim: 'anim-star-float-2', delay: '2.5s' },
+
+  { id: 'pg-9', top: '15.6%', left: '1.1%', size: 20, color: '#A78BFA', anim: 'anim-star-float-3', delay: '0.9s' },
+  { id: 'pg-10', top: '17.4%', right: '1.6%', size: 22, color: '#2DD4BF', anim: 'anim-star-float-1', delay: '1.6s' },
+  { id: 'pg-11', top: '19.2%', left: '3.1%', size: 17, color: '#F472B6', anim: 'anim-star-float-2', delay: '2.8s' },
+  { id: 'pg-12', top: '21%', right: '4.2%', size: 19, color: '#C084FC', anim: 'anim-star-float-3', delay: '0.3s' },
+
+  { id: 'pg-13', top: '22.8%', left: '1.6%', size: 18, color: '#FBBF24', anim: 'anim-star-float-1', delay: '1.7s' },
+  { id: 'pg-14', top: '24.6%', right: '2.4%', size: 20, color: '#70D6FF', anim: 'anim-star-float-2', delay: '2.3s' },
+  { id: 'pg-15', top: '26.4%', left: '4.4%', size: 16, color: '#FF85A1', anim: 'anim-star-float-3', delay: '1.0s' },
+  { id: 'pg-16', top: '28.2%', right: '1%', size: 21, color: '#2DD4BF', anim: 'anim-star-float-1', delay: '2.1s' },
+
+  { id: 'pg-17', top: '30%', left: '2.6%', size: 19, color: '#BCA6E8', anim: 'anim-star-float-2', delay: '0.6s' },
+  { id: 'pg-18', top: '31.8%', right: '3.2%', size: 20, color: '#F472B6', anim: 'anim-star-float-3', delay: '1.9s' },
+  { id: 'pg-19', top: '33.6%', left: '1.3%', size: 17, color: '#A78BFA', anim: 'anim-star-float-1', delay: '2.7s' },
+  { id: 'pg-20', top: '35.4%', right: '4.8%', size: 18, color: '#FBBF24', anim: 'anim-star-float-2', delay: '0.8s' },
+
+  { id: 'pg-21', top: '37.2%', left: '3.9%', size: 21, color: '#C084FC', anim: 'anim-star-float-3', delay: '2.4s' },
+  { id: 'pg-22', top: '39%', right: '1.4%', size: 16, color: '#70D6FF', anim: 'anim-star-float-1', delay: '1.2s' },
+  { id: 'pg-23', top: '40.8%', left: '1.9%', size: 20, color: '#F472B6', anim: 'anim-star-float-2', delay: '0.5s' },
+  { id: 'pg-24', top: '42.6%', right: '2.8%', size: 19, color: '#2DD4BF', anim: 'anim-star-float-3', delay: '2.6s' },
+
+  { id: 'pg-25', top: '44.4%', left: '4.6%', size: 18, color: '#FBBF24', anim: 'anim-star-float-1', delay: '1.3s' },
+  { id: 'pg-26', top: '46.2%', right: '1%', size: 22, color: '#A78BFA', anim: 'anim-star-float-2', delay: '2.0s' },
+  { id: 'pg-27', top: '48%', left: '1.5%', size: 17, color: '#FF85A1', anim: 'anim-star-float-3', delay: '0.9s' },
+  { id: 'pg-28', top: '49.8%', right: '3.8%', size: 20, color: '#BCA6E8', anim: 'anim-star-float-1', delay: '1.6s' },
+
+  { id: 'pg-29', top: '51.6%', left: '3.3%', size: 19, color: '#2DD4BF', anim: 'anim-star-float-2', delay: '2.2s' },
+  { id: 'pg-30', top: '53.4%', right: '2%', size: 16, color: '#C084FC', anim: 'anim-star-float-3', delay: '0.4s' },
+  { id: 'pg-31', top: '55.2%', left: '1%', size: 21, color: '#FBBF24', anim: 'anim-star-float-1', delay: '1.7s' },
+  { id: 'pg-32', top: '57%', right: '4.4%', size: 18, color: '#70D6FF', anim: 'anim-star-float-2', delay: '2.5s' },
+
+  { id: 'pg-33', top: '58.8%', left: '2.9%', size: 20, color: '#F472B6', anim: 'anim-star-float-3', delay: '1.1s' },
+  { id: 'pg-34', top: '60.6%', right: '1.7%', size: 17, color: '#A78BFA', anim: 'anim-star-float-1', delay: '2.3s' },
+  { id: 'pg-35', top: '62.4%', left: '4.2%', size: 19, color: '#2DD4BF', anim: 'anim-star-float-2', delay: '0.7s' },
+  { id: 'pg-36', top: '64.2%', right: '3%', size: 21, color: '#FF85A1', anim: 'anim-star-float-3', delay: '1.9s' },
+
+  { id: 'pg-37', top: '66%', left: '1.2%', size: 16, color: '#BCA6E8', anim: 'anim-star-float-1', delay: '2.8s' },
+  { id: 'pg-38', top: '67.8%', right: '2.5%', size: 20, color: '#FBBF24', anim: 'anim-star-float-2', delay: '1.4s' },
+  { id: 'pg-39', top: '69.6%', left: '3.7%', size: 18, color: '#C084FC', anim: 'anim-star-float-3', delay: '0.6s' },
+  { id: 'pg-40', top: '71.4%', right: '1.1%', size: 19, color: '#70D6FF', anim: 'anim-star-float-1', delay: '2.1s' },
+
+  { id: 'pg-41', top: '73.2%', left: '2.2%', size: 21, color: '#F472B6', anim: 'anim-star-float-2', delay: '1.5s' },
+  { id: 'pg-42', top: '75%', right: '3.6%', size: 17, color: '#2DD4BF', anim: 'anim-star-float-3', delay: '0.8s' },
+  { id: 'pg-43', top: '76.8%', left: '4.8%', size: 18, color: '#FBBF24', anim: 'anim-star-float-1', delay: '2.4s' },
+  { id: 'pg-44', top: '78.6%', right: '2.1%', size: 20, color: '#A78BFA', anim: 'anim-star-float-2', delay: '1.0s' },
+
+  { id: 'pg-45', top: '80.4%', left: '1%', size: 19, color: '#FF85A1', anim: 'anim-star-float-3', delay: '2.6s' },
+  { id: 'pg-46', top: '82.2%', right: '4%', size: 16, color: '#BCA6E8', anim: 'anim-star-float-1', delay: '0.5s' },
+  { id: 'pg-47', top: '84%', left: '3%', size: 21, color: '#C084FC', anim: 'anim-star-float-2', delay: '1.3s' },
+  { id: 'pg-48', top: '85.8%', right: '1.5%', size: 18, color: '#2DD4BF', anim: 'anim-star-float-3', delay: '2.7s' },
+
+  { id: 'pg-49', top: '87.6%', left: '4.4%', size: 17, color: '#70D6FF', anim: 'anim-star-float-1', delay: '1.8s' },
+  { id: 'pg-50', top: '89.4%', right: '2.7%', size: 20, color: '#FBBF24', anim: 'anim-star-float-2', delay: '0.9s' },
+  { id: 'pg-51', top: '91.2%', left: '1.7%', size: 19, color: '#F472B6', anim: 'anim-star-float-3', delay: '2.0s' },
+  { id: 'pg-52', top: '93%', right: '3.4%', size: 16, color: '#A78BFA', anim: 'anim-star-float-1', delay: '1.2s' },
+
+  { id: 'pg-53', top: '94.8%', left: '2.6%', size: 21, color: '#2DD4BF', anim: 'anim-star-float-2', delay: '2.4s' },
+  { id: 'pg-54', top: '96.6%', right: '1.9%', size: 18, color: '#FF85A1', anim: 'anim-star-float-3', delay: '0.6s' },
+  { id: 'pg-55', top: '98.2%', left: '4%', size: 17, color: '#BCA6E8', anim: 'anim-star-float-1', delay: '1.6s' },
+  { id: 'pg-56', top: '99%', right: '2.3%', size: 20, color: '#C084FC', anim: 'anim-star-float-2', delay: '2.9s' },
 ]
 
 // Preset sutil para formularios o paneles más compactos (Login, Registro, Ajustes)
@@ -123,6 +176,8 @@ const VARIANT_MAP = {
   banner: HEADER_SPARKLES_DATA,
   page: PAGE_SPARKLES_DATA,
   ambient: PAGE_SPARKLES_DATA,
+  spread: PAGE_SPARKLES_DATA,
+  scattered: PAGE_SPARKLES_DATA,
   subtle: SUBTLE_SPARKLES_DATA,
   minimal: SUBTLE_SPARKLES_DATA,
 }
