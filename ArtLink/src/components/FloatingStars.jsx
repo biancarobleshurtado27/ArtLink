@@ -131,6 +131,29 @@ export const SUBTLE_SPARKLES_DATA = [
   { id: 'sub-8', bottom: '1rem', right: '4.5%', size: 19, color: '#FBBF24', anim: 'anim-star-float-2', delay: '1.1s' },
 ]
 
+// Preset exclusivo para /solicitudes (PrivateRequestsPage):
+// Con cantidad moderada, alternancia orgánica y ubicadas en los márgenes exteriores,
+// sin aproximarse al filtro lateral ni a las tarjetas de propuestas ni botones.
+export const REQUESTS_SPARKLES_DATA = [
+  // Borde izquierdo exterior
+  { id: 'req-sp-1', top: '0.8rem', left: '2.2%', size: 22, color: '#F472B6', anim: 'anim-star-float-1', delay: '0s' },
+  { id: 'req-sp-2', top: '8.5rem', left: '1.4%', size: 26, color: '#BCA6E8', anim: 'anim-star-float-2', delay: '0.9s' },
+  { id: 'req-sp-3', top: '18.0rem', left: '3.0%', size: 18, color: '#2DD4BF', anim: 'anim-star-float-3', delay: '1.7s' },
+  { id: 'req-sp-4', top: '30.5rem', left: '1.5%', size: 24, color: '#FBBF24', anim: 'anim-star-float-1', delay: '2.5s' },
+  { id: 'req-sp-5', top: '44.0rem', left: '2.6%', size: 20, color: '#A78BFA', anim: 'anim-star-float-2', delay: '0.6s' },
+  { id: 'req-sp-6', top: '58.0rem', left: '1.3%', size: 25, color: '#FF85A1', anim: 'anim-star-float-3', delay: '2.1s' },
+  { id: 'req-sp-7', top: '74.0rem', left: '2.4%', size: 19, color: '#2DD4BF', anim: 'anim-star-float-1', delay: '1.3s' },
+
+  // Borde derecho exterior
+  { id: 'req-sp-8', top: '1.5rem', right: '2.6%', size: 24, color: '#FBBF24', anim: 'anim-star-float-2', delay: '1.4s' },
+  { id: 'req-sp-9', top: '9.8rem', right: '1.5%', size: 28, color: '#2DD4BF', anim: 'anim-star-float-3', delay: '0.3s' },
+  { id: 'req-sp-10', top: '20.5rem', right: '3.1%', size: 18, color: '#C084FC', anim: 'anim-star-float-1', delay: '2.0s' },
+  { id: 'req-sp-11', top: '33.0rem', right: '1.6%', size: 26, color: '#F472B6', anim: 'anim-star-float-2', delay: '0.8s' },
+  { id: 'req-sp-12', top: '47.0rem', right: '2.8%', size: 20, color: '#70D6FF', anim: 'anim-star-float-3', delay: '2.7s' },
+  { id: 'req-sp-13', top: '62.0rem', right: '1.5%', size: 24, color: '#BCA6E8', anim: 'anim-star-float-1', delay: '1.1s' },
+  { id: 'req-sp-14', top: '78.0rem', right: '2.9%', size: 22, color: '#FBBF24', anim: 'anim-star-float-2', delay: '1.9s' },
+]
+
 const VARIANT_MAP = {
   hero: HERO_SPARKLES_DATA,
   full: HERO_SPARKLES_DATA,
@@ -142,10 +165,12 @@ const VARIANT_MAP = {
   scattered: PAGE_SPARKLES_DATA,
   subtle: SUBTLE_SPARKLES_DATA,
   minimal: SUBTLE_SPARKLES_DATA,
+  requests: REQUESTS_SPARKLES_DATA,
+  solicitudes: REQUESTS_SPARKLES_DATA,
 }
 
 // Variantes cuyo contenedor se extiende hacia todo el ancho de la página
-const BLEED_VARIANTS = new Set(['page', 'ambient', 'spread', 'scattered'])
+const BLEED_VARIANTS = new Set(['page', 'ambient', 'spread', 'scattered', 'requests', 'solicitudes'])
 
 /**
  * Componente reutilizable de estrellitas flotantes con movimiento suave.

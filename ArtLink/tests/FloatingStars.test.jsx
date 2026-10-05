@@ -6,6 +6,7 @@ import FloatingStars, {
   HEADER_SPARKLES_DATA,
   PAGE_SPARKLES_DATA,
   SUBTLE_SPARKLES_DATA,
+  REQUESTS_SPARKLES_DATA,
   DecorativeStars,
   AnimatedStars,
   BackgroundDecoration,
@@ -23,6 +24,13 @@ describe('FloatingStars Component', () => {
     const path = svg.querySelector('path')
     expect(path).toBeTruthy()
     expect(path.getAttribute('fill')).toBe('#F472B6')
+  })
+
+  it('renders requests variant with bleed class and REQUESTS_SPARKLES_DATA', () => {
+    const { container } = render(<FloatingStars variant="requests" />)
+    const stars = container.querySelectorAll('.hero-floating-star')
+    expect(stars.length).toBe(REQUESTS_SPARKLES_DATA.length)
+    expect(container.querySelector('.floating-stars-container--bleed')).toBeTruthy()
   })
 
   it('renders hero variant with all stars from HERO_SPARKLES_DATA', () => {
