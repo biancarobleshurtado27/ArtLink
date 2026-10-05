@@ -1144,7 +1144,7 @@ export default function PrivateRequestsPage() {
           onClose={() => setShowAcceptModal(false)}
         >
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <p style={{ margin: 0, color: '#374151', fontSize: '0.92rem' }}>
+            <p style={{ margin: 0, color: 'var(--ink)', fontSize: '0.92rem' }}>
               Al aceptar esta solicitud de <strong>{selectedRequest.clientName || 'Cliente'}</strong>, se activará el contrato con fondos en custodia Escrow por <strong>${(selectedRequest.budget || selectedRequest.price || 0).toFixed(2)} USD</strong>.
             </p>
             <div style={{ background: '#F0FDF4', border: '1.5px solid #16A34A', borderRadius: 8, padding: '0.75rem', fontSize: '0.85rem', color: '#166534' }}>
@@ -1178,7 +1178,7 @@ export default function PrivateRequestsPage() {
           onClose={() => setShowRevisionModal(false)}
         >
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <p style={{ margin: 0, color: '#4B5563', fontSize: '0.9rem' }}>
+            <p style={{ margin: 0, color: 'var(--ink)', fontSize: '0.9rem' }}>
               Indica los ajustes o revisiones necesarias que el artista debe realizar antes de autorizar la entrega final:
             </p>
             <textarea
@@ -1186,7 +1186,7 @@ export default function PrivateRequestsPage() {
               value={revisionNotes}
               onChange={(e) => setRevisionNotes(e.target.value)}
               placeholder="Describe detalladamente los cambios deseados..."
-              style={{ width: '100%', padding: '0.65rem', border: '1.5px solid #1E192B', borderRadius: 8, fontSize: '0.88rem', boxSizing: 'border-box' }}
+              style={{ width: '100%', padding: '0.65rem', border: '1.5px solid var(--line)', background: 'var(--surface-soft)', color: 'var(--ink)', borderRadius: 8, fontSize: '0.88rem', boxSizing: 'border-box' }}
             />
             <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
               <button
@@ -1216,12 +1216,12 @@ export default function PrivateRequestsPage() {
           onClose={() => setShowRoadmapModal(false)}
         >
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', paddingBottom: '0.75rem', borderBottom: '1.5px solid #E5E7EB' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', paddingBottom: '0.75rem', borderBottom: '1.5px solid var(--line)' }}>
               <div>
                 <strong style={{ display: 'block', fontSize: '1rem' }}>
                   {selectedRequest.commissionTitle || selectedRequest.description || 'Comisión personalizada'}
                 </strong>
-                <small style={{ color: '#6B7280' }}>
+                <small style={{ color: 'var(--muted)' }}>
                   Presupuesto: ${(selectedRequest.budget || selectedRequest.price || 0).toFixed(2)} USD • Fecha acordada: {selectedRequest.desiredDate || 'Flexible'}
                 </small>
               </div>
@@ -1241,9 +1241,10 @@ export default function PrivateRequestsPage() {
                     alignItems: 'center',
                     gap: '0.75rem',
                     padding: '0.65rem 0.85rem',
-                    border: '1.5px solid #1E192B',
+                    border: '1.5px solid var(--line)',
                     borderRadius: 8,
-                    background: step.status === 'Actual' ? '#EDE9FE' : '#FFFFFF',
+                    background: step.status === 'Actual' ? 'var(--lilac)' : 'var(--paper)',
+                    color: 'var(--ink)',
                   }}
                 >
                   <span
@@ -1264,7 +1265,7 @@ export default function PrivateRequestsPage() {
                   </span>
                   <div style={{ flex: 1 }}>
                     <strong style={{ fontSize: '0.85rem', display: 'block' }}>{step.title}</strong>
-                    <small style={{ color: '#6B7280' }}>Estado: {step.status}</small>
+                    <small style={{ color: 'var(--muted)' }}>Estado: {step.status}</small>
                   </div>
                 </div>
               ))}
@@ -1302,20 +1303,20 @@ export default function PrivateRequestsPage() {
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', fontSize: '0.85rem' }}>
-              <div style={{ background: '#FFFDF8', border: '1.5px solid #1E192B', padding: '0.65rem', borderRadius: 6 }}>
-                <span style={{ color: '#6B7280', fontSize: '0.75rem', display: 'block' }}>Monto asegurado:</span>
+              <div style={{ background: 'var(--surface-soft)', border: '1.5px solid var(--line)', padding: '0.65rem', borderRadius: 6, color: 'var(--ink)' }}>
+                <span style={{ color: 'var(--muted)', fontSize: '0.75rem', display: 'block' }}>Monto asegurado:</span>
                 <strong style={{ fontSize: '1.1rem' }}>${(selectedRequest.budget || selectedRequest.price || 0).toFixed(2)} USD</strong>
               </div>
-              <div style={{ background: '#FFFDF8', border: '1.5px solid #1E192B', padding: '0.65rem', borderRadius: 6 }}>
-                <span style={{ color: '#6B7280', fontSize: '0.75rem', display: 'block' }}>Contraparte:</span>
+              <div style={{ background: 'var(--surface-soft)', border: '1.5px solid var(--line)', padding: '0.65rem', borderRadius: 6, color: 'var(--ink)' }}>
+                <span style={{ color: 'var(--muted)', fontSize: '0.75rem', display: 'block' }}>Contraparte:</span>
                 <strong>{selectedRequest.artistName || selectedRequest.clientName || 'Creador ArtLink'}</strong>
               </div>
-              <div style={{ background: '#FFFDF8', border: '1.5px solid #1E192B', padding: '0.65rem', borderRadius: 6 }}>
-                <span style={{ color: '#6B7280', fontSize: '0.75rem', display: 'block' }}>Garantía:</span>
+              <div style={{ background: 'var(--surface-soft)', border: '1.5px solid var(--line)', padding: '0.65rem', borderRadius: 6, color: 'var(--ink)' }}>
+                <span style={{ color: 'var(--muted)', fontSize: '0.75rem', display: 'block' }}>Garantía:</span>
                 <strong>Satisfacción o reembolso 100%</strong>
               </div>
-              <div style={{ background: '#FFFDF8', border: '1.5px solid #1E192B', padding: '0.65rem', borderRadius: 6 }}>
-                <span style={{ color: '#6B7280', fontSize: '0.75rem', display: 'block' }}>Estado de Escrow:</span>
+              <div style={{ background: 'var(--surface-soft)', border: '1.5px solid var(--line)', padding: '0.65rem', borderRadius: 6, color: 'var(--ink)' }}>
+                <span style={{ color: 'var(--muted)', fontSize: '0.75rem', display: 'block' }}>Estado de Escrow:</span>
                 <strong style={{ color: '#059669' }}>{selectedRequest.escrowStatus || 'Protegido'}</strong>
               </div>
             </div>
@@ -1340,7 +1341,7 @@ export default function PrivateRequestsPage() {
         onClose={() => setShowBotTemplatesModal(false)}
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
-          <p style={{ margin: 0, color: '#4B5563', fontSize: '0.88rem' }}>
+          <p style={{ margin: 0, color: 'var(--ink)', fontSize: '0.88rem' }}>
             Selecciona una plantilla predeterminada para responder cotizaciones en menos de 2 minutos y asegurar la insignia de <em>Respuesta Veloz</em>:
           </p>
 
@@ -1361,16 +1362,17 @@ export default function PrivateRequestsPage() {
             <div
               key={i}
               style={{
-                border: '1.5px solid #1E192B',
+                border: '1.5px solid var(--line)',
                 borderRadius: 8,
                 padding: '0.75rem',
-                background: '#FFFDF8',
+                background: 'var(--surface-soft)',
+                color: 'var(--ink)',
               }}
             >
               <strong style={{ fontSize: '0.85rem', display: 'block', marginBottom: '0.25rem' }}>
                 {tpl.title}
               </strong>
-              <p style={{ fontSize: '0.8rem', color: '#4B5563', margin: '0 0 0.5rem', lineHeight: 1.4 }}>
+              <p style={{ fontSize: '0.8rem', color: 'var(--muted)', margin: '0 0 0.5rem', lineHeight: 1.4 }}>
                 {tpl.text}
               </p>
               <button
@@ -1413,20 +1415,20 @@ export default function PrivateRequestsPage() {
 
             <div>
               <strong>Descripción / Brief:</strong>
-              <p style={{ background: '#F9FAFB', border: '1px solid #1E192B', borderRadius: 6, padding: '0.75rem', marginTop: '0.25rem' }}>
+              <p style={{ background: 'var(--surface-soft)', border: '1px solid var(--line)', color: 'var(--ink)', borderRadius: 6, padding: '0.75rem', marginTop: '0.25rem' }}>
                 {selectedRequest.description || selectedRequest.commissionTitle || 'Sin descripción detallada provista.'}
               </p>
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
               <div>
-                <small style={{ color: '#6B7280', display: 'block' }}>Presupuesto:</small>
+                <small style={{ color: 'var(--muted)', display: 'block' }}>Presupuesto:</small>
                 <strong style={{ fontSize: '1.2rem', color: '#6D28D9' }}>
                   ${(selectedRequest.budget || selectedRequest.price || 0).toFixed(2)} USD
                 </strong>
               </div>
               <div>
-                <small style={{ color: '#6B7280', display: 'block' }}>Fecha acordada:</small>
+                <small style={{ color: 'var(--muted)', display: 'block' }}>Fecha acordada:</small>
                 <strong>{selectedRequest.desiredDate || 'No definida'}</strong>
               </div>
             </div>

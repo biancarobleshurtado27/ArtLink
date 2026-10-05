@@ -2713,12 +2713,12 @@ img, svg, video {
     border: 1.5px solid transparent !important;
     box-sizing: border-box !important;
     background: transparent !important;
-    color: #1E192B !important;
+    color: var(--ink) !important;
   }
 
   .app-sidebar .sidebar-nav-item:hover {
-    background: #EDE9FE !important;
-    color: #6D28D9 !important;
+    background: var(--surface-soft) !important;
+    color: var(--violet-dark) !important;
   }
 
   .app-sidebar .sidebar-nav-item.is-active {

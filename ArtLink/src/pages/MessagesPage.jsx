@@ -582,7 +582,7 @@ export default function MessagesPage() {
           justifyContent: 'center',
         }}
       >
-        <div style={{ textAlign: 'center', padding: '3rem 1.5rem', color: '#6B7280' }}>
+        <div style={{ textAlign: 'center', padding: '3rem 1.5rem', color: 'var(--muted)' }}>
           <p style={{ fontSize: '1.1rem', fontWeight: 600 }}>Cargando conversaciones...</p>
         </div>
       </main>
@@ -802,7 +802,7 @@ export default function MessagesPage() {
                 style={{
                   padding: '1.5rem 1rem',
                   textAlign: 'center',
-                  color: '#6B7280',
+                  color: 'var(--muted)',
                   fontSize: '0.82rem',
                 }}
               >
@@ -1077,19 +1077,7 @@ export default function MessagesPage() {
                   to={`/artista/${otherParticipantDisplay.artistProfileId}`}
                   className="chat-btn-header-action"
                   title="Ver perfil completo del artista"
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '0.35rem',
-                    fontWeight: 700,
-                    fontSize: '0.82rem',
-                    padding: '0.42rem 0.75rem',
-                    background: '#FFFFFF',
-                    color: '#1E192B',
-                    border: '1.5px solid #1E192B',
-                    borderRadius: 8,
-                    textDecoration: 'none',
-                  }}
+                  style={{ textDecoration: 'none' }}
                 >
                   <User size={15} aria-hidden="true" />
                   <span>Ver perfil</span>
@@ -1101,19 +1089,6 @@ export default function MessagesPage() {
                 className={`chat-btn-header-action ${showOrderDetails ? 'is-active' : ''}`}
                 onClick={() => setShowOrderDetails((prev) => !prev)}
                 title={showOrderDetails ? 'Ocultar detalles' : 'Ver información del contacto'}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.35rem',
-                  fontWeight: 700,
-                  fontSize: '0.82rem',
-                  padding: '0.42rem 0.75rem',
-                  background: showOrderDetails ? '#8B5CF6' : '#FFFFFF',
-                  color: showOrderDetails ? '#FFFFFF' : '#1E192B',
-                  border: '1.5px solid #1E192B',
-                  borderRadius: 8,
-                  cursor: 'pointer',
-                }}
               >
                 <FileText size={15} aria-hidden="true" />
                 <span>Detalles</span>
@@ -1124,7 +1099,7 @@ export default function MessagesPage() {
           {/* Área de mensajes con scroll */}
           <div className="chat-thread-scroll-box">
             {messagesLoading ? (
-              <div style={{ textAlign: 'center', padding: '2rem', color: '#6B7280' }}>
+              <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--muted)' }}>
                 <p>Cargando mensajes...</p>
               </div>
             ) : isNewRoute || activeMessages.length === 0 ? (
@@ -1132,7 +1107,7 @@ export default function MessagesPage() {
                 style={{
                   textAlign: 'center',
                   padding: '3rem 1.5rem',
-                  color: '#6B7280',
+                  color: 'var(--muted)',
                   margin: 'auto 0',
                 }}
               >
@@ -1142,7 +1117,7 @@ export default function MessagesPage() {
                   style={{ margin: '0 auto 0.5rem', opacity: 0.7 }}
                   aria-hidden="true"
                 />
-                <p style={{ fontWeight: 600, color: '#1E192B', margin: '0 0 0.3rem' }}>
+                <p style={{ fontWeight: 600, color: 'var(--ink)', margin: '0 0 0.3rem' }}>
                   Inicia la conversación con {otherParticipantDisplay.name}
                 </p>
                 <span style={{ fontSize: '0.85rem' }}>
@@ -1452,14 +1427,15 @@ export default function MessagesPage() {
                 </div>
                 <div
                   style={{
-                    background: '#F9FAFB',
-                    border: '1.5px solid #1E192B',
+                    background: 'var(--surface-soft)',
+                    border: '1.5px solid var(--line)',
                     borderRadius: 8,
                     padding: '0.85rem',
                     fontSize: '0.82rem',
                     display: 'flex',
                     flexDirection: 'column',
                     gap: '0.5rem',
+                    color: 'var(--ink)',
                   }}
                 >
                   <div>
@@ -1500,14 +1476,15 @@ export default function MessagesPage() {
                 {relatedArtist && (
               <div
                 style={{
-                  background: '#F9FAFB',
-                  border: '1.5px solid #1E192B',
+                  background: 'var(--surface-soft)',
+                  border: '1.5px solid var(--line)',
                   borderRadius: 8,
                   padding: '0.85rem',
                   fontSize: '0.82rem',
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '0.5rem',
+                  color: 'var(--ink)',
                 }}
               >
                 <div>
@@ -1521,7 +1498,7 @@ export default function MessagesPage() {
                   </div>
                 )}
                 {relatedArtist.bio && (
-                  <p style={{ margin: 0, color: '#4B5563', lineHeight: 1.4 }}>
+                  <p style={{ margin: 0, color: 'var(--muted)', lineHeight: 1.4 }}>
                     {relatedArtist.bio}
                   </p>
                 )}
@@ -1531,8 +1508,8 @@ export default function MessagesPage() {
             {relatedRequest && (
               <div
                 style={{
-                  background: '#F9FAFB',
-                  border: '1.5px solid #1E192B',
+                  background: 'var(--surface-soft)',
+                  border: '1.5px solid var(--line)',
                   borderRadius: 8,
                   padding: '0.85rem',
                   fontSize: '0.82rem',
@@ -1540,6 +1517,7 @@ export default function MessagesPage() {
                   flexDirection: 'column',
                   gap: '0.4rem',
                   marginTop: '0.85rem',
+                  color: 'var(--ink)',
                 }}
               >
                 <strong>Solicitud Vinculada:</strong>
@@ -1614,7 +1592,7 @@ export default function MessagesPage() {
           <div className="chat-modal-window">
             <div className="chat-modal-header">
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <Sliders size={18} color="#1E192B" />
+                <Sliders size={18} />
                 <h3>Ajustes de Bandeja y Chat</h3>
               </div>
               <button
