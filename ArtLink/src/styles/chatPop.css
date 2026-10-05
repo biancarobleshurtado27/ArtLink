@@ -51,6 +51,9 @@
   padding: 0.85rem 1.5rem 0.85rem 1.5rem;
   display: flex;
   flex-direction: column;
+  /* Ancla de .floating-stars-container (position:absolute; inset:0).
+     Sin esto las estrellas decorativas se pintan sobre .main-content. */
+  position: relative;
   overflow: hidden;
   color: #1E192B;
   background: #FFFDF8;
@@ -231,6 +234,9 @@
   overflow: hidden;
   height: auto;
   transition: grid-template-columns 0.25s ease;
+  /* El contenido del chat va por encima de la decoracion de estrellas. */
+  position: relative;
+  z-index: 1;
 }
 
 .chat-three-column-grid.is-details-closed {

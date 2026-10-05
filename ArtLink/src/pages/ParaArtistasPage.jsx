@@ -20,8 +20,7 @@ import { ROLES } from '../utils/roles'
 import { RANKING_EMPTY_MESSAGE, getAvailabilityStatus } from '../utils/discoverData'
 import AvailabilityBadge from '../components/AvailabilityBadge'
 import Badge from '../components/Badge'
-import DecorativeStar from '../components/DecorativeStar'
-import FloatingStars from '../components/FloatingStars'
+import FloatingStars, { DecorativeStar } from '../components/FloatingStars'
 import { handleImageError } from '../utils/imageFallback'
 
 const artistBenefits = [

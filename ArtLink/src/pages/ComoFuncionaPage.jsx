@@ -14,8 +14,7 @@ import {
   ShieldAlert,
   UserPlus,
 } from 'lucide-react'
-import DecorativeStar from '../components/DecorativeStar'
-import FloatingStars from '../components/FloatingStars'
+import FloatingStars, { DecorativeStar } from '../components/FloatingStars'
 
 const clientSteps = [
   {

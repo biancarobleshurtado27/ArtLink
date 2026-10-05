@@ -1,4 +1,6 @@
-// Componente SVG puro para las estrellitas decorativas de 4 puntas suaves (estilo pastel scrapbook de ArtLink)
+// Componente SVG puro para las estrellitas decorativas de 4 puntas suaves (estilo pastel scrapbook de ArtLink).
+// Es la unica definicion de estrella del proyecto: se reutiliza tanto para la decoracion flotante
+// (FloatingStars) como para los distintivos y etiquetas en linea de las paginas.
 export function SparkleStar({ size = 24, color = '#F472B6', className = '' }) {
   return (
     <svg
@@ -8,7 +10,7 @@ export function SparkleStar({ size = 24, color = '#F472B6', className = '' }) {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       style={{ overflow: 'visible' }}
-      className={className}
+      className={`decorative-star ${className}`.trim()}
       aria-hidden="true"
     >
       <path
@@ -235,3 +237,6 @@ export const AnimatedStars = FloatingStars
 export const BackgroundDecoration = FloatingStars
 export const HeroDecoration = FloatingStars
 export const HeroSparkleStar = SparkleStar
+
+// Estrellita reutilizable para distintivos, etiquetas y titulos en linea.
+export const DecorativeStar = SparkleStar

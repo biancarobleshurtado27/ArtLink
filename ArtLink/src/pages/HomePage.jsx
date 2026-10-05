@@ -17,8 +17,7 @@ import {
   Palette,
   Star,
 } from 'lucide-react'
-import DecorativeStar from '../components/DecorativeStar'
-import FloatingStars from '../components/FloatingStars'
+import FloatingStars, { DecorativeStar } from '../components/FloatingStars'
 import ErrorState from '../components/ErrorState'
 import LoadingState from '../components/LoadingState'
 import useDiscoverData from '../hooks/useDiscoverData'
