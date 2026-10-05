@@ -1730,6 +1730,42 @@
   color: var(--ink) !important;
 }
 
+/* El grupo de etiqueta define su propio color, por eso necesita su propio ajuste:
+   sin esto el texto de cada filtro queda casi invisible sobre el panel oscuro. */
+:root[data-theme='dark'] .req-checkbox-label-group {
+  color: var(--ink) !important;
+}
+
+:root[data-theme='dark'] .req-checkbox-label-group > span {
+  color: var(--ink) !important;
+}
+
+:root[data-theme='dark'] .req-filter-badge-count {
+  background: var(--surface-soft) !important;
+  border: 1px solid var(--line) !important;
+  color: var(--ink) !important;
+}
+
+:root[data-theme='dark'] .req-filter-badge-count.count-purple {
+  background: var(--info-bg, #3D2D59) !important;
+  color: var(--info-text, #DDD6FE) !important;
+}
+
+:root[data-theme='dark'] .req-filter-badge-count.count-cyan {
+  background: var(--success-bg, #133D36) !important;
+  color: var(--success-text, #99F6E4) !important;
+}
+
+:root[data-theme='dark'] .req-filter-badge-count.count-pink {
+  background: var(--danger-bg, #48233C) !important;
+  color: var(--danger-text, #FBCFE8) !important;
+}
+
+:root[data-theme='dark'] .req-filter-badge-count.count-gray {
+  background: var(--surface-soft, #29213A) !important;
+  color: var(--muted, #D2C9E1) !important;
+}
+
 :root[data-theme='dark'] .req-custom-checkbox {
   background: var(--surface-soft) !important;
   border-color: var(--line) !important;
