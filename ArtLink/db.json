@@ -1664,6 +1664,30 @@
       "createdAt": "2026-10-05T17:13:10.020Z",
       "updatedAt": "2026-10-05T17:13:10.020Z",
       "page": "/"
+    },
+    {
+      "id": "PCf-WlRZUCQ",
+      "userId": "user-test-1791220979742-d627",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-05T17:22:59.995Z",
+      "updatedAt": "2026-10-05T17:22:59.995Z",
+      "page": "/explorar"
+    },
+    {
+      "id": "c2iOy040s7c",
+      "userId": "user-client-A-1791220980043-4np7",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-05T17:23:00.181Z",
+      "updatedAt": "2026-10-05T17:23:00.181Z",
+      "page": "/"
+    },
+    {
+      "id": "DpTgyA37pys",
+      "userId": "user-artist-B-1791220980043-qm1b",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-05T17:23:00.286Z",
+      "updatedAt": "2026-10-05T17:23:00.286Z",
+      "page": "/"
     }
   ],
   "favorites": [
@@ -2483,6 +2507,61 @@
       "role": "user",
       "content": "Mensaje de usuario B",
       "createdAt": "2026-10-05T17:13:10.023Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "3dZM-7mY7TE",
+      "conversationId": "convo-1791220979995-bxfo9",
+      "userId": "user-test-1791220979742-d627",
+      "role": "user",
+      "content": "Hola asistente de ArtLink",
+      "createdAt": "2026-10-05T17:23:00.005Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "8yEgQA5hY2s",
+      "conversationId": "convo-1791220979995-bxfo9",
+      "userId": "user-test-1791220979742-d627",
+      "role": "assistant",
+      "content": "Hola, te ayudo a buscar ilustradores digitales.",
+      "createdAt": "2026-10-05T17:23:00.012Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "yO_AQ6zX8Hg",
+      "conversationId": "convo-1791220979995-bxfo9",
+      "userId": "user-test-1791220979742-d627",
+      "role": "assistant",
+      "content": "Puedo recomendarte artistas de estilo anime.",
+      "createdAt": "2026-10-05T17:23:00.020Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "6zVllPmeWQM",
+      "conversationId": "convo-1791220980181-n0ioy",
+      "userId": "user-client-A-1791220980043-4np7",
+      "role": "user",
+      "content": "Mensaje de usuario A",
+      "createdAt": "2026-10-05T17:23:00.189Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "rMb0lI85ZCI",
+      "conversationId": "convo-1791220980286-sed6c",
+      "userId": "user-artist-B-1791220980043-qm1b",
+      "role": "user",
+      "content": "Mensaje de usuario B",
+      "createdAt": "2026-10-05T17:23:00.290Z",
       "provider": "gemini",
       "status": "sent",
       "intent": null
