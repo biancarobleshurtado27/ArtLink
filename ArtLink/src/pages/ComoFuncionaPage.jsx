@@ -163,7 +163,6 @@ export default function ComoFuncionaPage() {
       <FloatingStars variant="page" />
       {/* 1. HERO PRINCIPAL */}
       <section className="page-hero" aria-labelledby="how-title">
-        <FloatingStars variant="header" />
         <span className="sticker hero-sticker">
           <DecorativeStar size={12} color="#1E192B" /> Proceso transparente
         </span>

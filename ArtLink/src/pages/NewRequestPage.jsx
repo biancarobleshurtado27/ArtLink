@@ -261,7 +261,7 @@ export default function NewRequestPage() {
   }
 
   return (
-    <div className="request-page-wrapper" aria-labelledby="checkout-title" style={{ position: 'relative' }}>
+    <div className="request-page-wrapper" aria-labelledby="checkout-title">
       <FloatingStars variant="page" />
       {/* ── TARJETA SUPERPUESTA DE CONFIRMACIÓN DE PROPUESTA (OVERLAY MODAL) ── */}
       {createdRequest && (

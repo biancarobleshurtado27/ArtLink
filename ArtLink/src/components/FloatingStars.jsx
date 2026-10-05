@@ -84,81 +84,47 @@ export const HEADER_SPARKLES_DATA = [
   { id: 'hdr-12', bottom: '1.5rem', right: '12%', size: 16, color: '#FBBF24', anim: 'anim-star-float-2', delay: '2.0s' },
 ]
 
-// Preset ambiental para páginas largas (Explorar, Información, Solicitudes, Ajustes...)
-// Las posiciones verticales usan porcentajes para repartirse por TODA la altura real
-// del contenedor, evitando que las estrellas queden agrupadas en la parte superior.
-// El salto vertical es de 1.8% entre estrellas consecutivas, bastante mayor que la
-// altura de una estrella, asi que nunca se tocan entre si.
+// Preset ambiental para páginas (Explorar, Información, Solicitudes, Ajustes, etc.)
+// Diseñado como en la referencia del Hero de Inicio:
+// 1. Estrellas en la zona superior (arriba del encabezado y en las esquinas altas para no dejar espacios vacíos).
+// 2. Estrellas limpiamente esparcidas a lo largo de los bordes laterales exteriores (izquierdo y derecho).
+// 3. Cantidad equilibrada y cómoda sin aglomeraciones ni sobrecarga visual.
 export const PAGE_SPARKLES_DATA = [
-  { id: 'pg-1', top: '1.5%', left: '1.4%', size: 21, color: '#F472B6', anim: 'anim-star-float-1', delay: '0s' },
-  { id: 'pg-2', top: '3.2%', right: '2.2%', size: 22, color: '#BCA6E8', anim: 'anim-star-float-2', delay: '1.1s' },
-  { id: 'pg-3', top: '5%', left: '3.6%', size: 17, color: '#FBBF24', anim: 'anim-star-float-3', delay: '0.4s' },
-  { id: 'pg-4', top: '6.6%', right: '1.2%', size: 19, color: '#2DD4BF', anim: 'anim-star-float-1', delay: '1.8s' },
+  // Zona Superior: enmarca el título y las esquinas altas (elimina el vacío superior)
+  { id: 'pg-1', top: '1.6rem', left: '19%', size: 18, color: '#F472B6', anim: 'anim-star-float-3', delay: '1.4s' },
+  { id: 'pg-2', top: '2.0rem', right: '21%', size: 20, color: '#FBBF24', anim: 'anim-star-float-1', delay: '2.1s' },
+  { id: 'pg-3', top: '3.2rem', left: '3.5%', size: 30, color: '#F472B6', anim: 'anim-star-float-1', delay: '0s' },
+  { id: 'pg-4', top: '4.2rem', right: '3.8%', size: 32, color: '#BCA6E8', anim: 'anim-star-float-2', delay: '0.8s' },
+  { id: 'pg-5', top: '6.5rem', left: '10%', size: 20, color: '#2DD4BF', anim: 'anim-star-float-2', delay: '0.4s' },
+  { id: 'pg-6', top: '7.2rem', right: '11.5%', size: 22, color: '#C084FC', anim: 'anim-star-float-3', delay: '1.7s' },
 
-  { id: 'pg-5', top: '8.4%', left: '1.8%', size: 18, color: '#C084FC', anim: 'anim-star-float-2', delay: '2.2s' },
-  { id: 'pg-6', top: '10.2%', right: '3.4%', size: 21, color: '#FF85A1', anim: 'anim-star-float-3', delay: '0.7s' },
-  { id: 'pg-7', top: '12%', left: '4.8%', size: 16, color: '#70D6FF', anim: 'anim-star-float-1', delay: '1.4s' },
-  { id: 'pg-8', top: '13.8%', right: '2.6%', size: 18, color: '#FBBF24', anim: 'anim-star-float-2', delay: '2.5s' },
+  // Bordes Laterales: esparcidas suavemente a lo largo de los márgenes izquierdo y derecho
+  { id: 'pg-7', top: '13rem', left: '4.8%', size: 24, color: '#FBBF24', anim: 'anim-star-float-2', delay: '1.0s' },
+  { id: 'pg-8', top: '14.5rem', right: '4.2%', size: 28, color: '#F472B6', anim: 'anim-star-float-3', delay: '0.3s' },
 
-  { id: 'pg-9', top: '15.6%', left: '1.1%', size: 20, color: '#A78BFA', anim: 'anim-star-float-3', delay: '0.9s' },
-  { id: 'pg-10', top: '17.4%', right: '1.6%', size: 22, color: '#2DD4BF', anim: 'anim-star-float-1', delay: '1.6s' },
-  { id: 'pg-11', top: '19.2%', left: '3.1%', size: 17, color: '#F472B6', anim: 'anim-star-float-2', delay: '2.8s' },
-  { id: 'pg-12', top: '21%', right: '4.2%', size: 19, color: '#C084FC', anim: 'anim-star-float-3', delay: '0.3s' },
+  { id: 'pg-9', top: '21rem', left: '2.2%', size: 22, color: '#A78BFA', anim: 'anim-star-float-1', delay: '2.5s' },
+  { id: 'pg-10', top: '22.5rem', right: '2.5%', size: 24, color: '#2DD4BF', anim: 'anim-star-float-2', delay: '1.6s' },
 
-  { id: 'pg-13', top: '22.8%', left: '1.6%', size: 18, color: '#FBBF24', anim: 'anim-star-float-1', delay: '1.7s' },
-  { id: 'pg-14', top: '24.6%', right: '2.4%', size: 20, color: '#70D6FF', anim: 'anim-star-float-2', delay: '2.3s' },
-  { id: 'pg-15', top: '26.4%', left: '4.4%', size: 16, color: '#FF85A1', anim: 'anim-star-float-3', delay: '1.0s' },
-  { id: 'pg-16', top: '28.2%', right: '1%', size: 21, color: '#2DD4BF', anim: 'anim-star-float-1', delay: '2.1s' },
+  { id: 'pg-11', top: '29.5rem', left: '4.2%', size: 26, color: '#F472B6', anim: 'anim-star-float-3', delay: '3.1s' },
+  { id: 'pg-12', top: '31.5rem', right: '4%', size: 24, color: '#FBBF24', anim: 'anim-star-float-1', delay: '0.5s' },
 
-  { id: 'pg-17', top: '30%', left: '2.6%', size: 19, color: '#BCA6E8', anim: 'anim-star-float-2', delay: '0.6s' },
-  { id: 'pg-18', top: '31.8%', right: '3.2%', size: 20, color: '#F472B6', anim: 'anim-star-float-3', delay: '1.9s' },
-  { id: 'pg-19', top: '33.6%', left: '1.3%', size: 17, color: '#A78BFA', anim: 'anim-star-float-1', delay: '2.7s' },
-  { id: 'pg-20', top: '35.4%', right: '4.8%', size: 18, color: '#FBBF24', anim: 'anim-star-float-2', delay: '0.8s' },
+  { id: 'pg-13', top: '39rem', left: '2.4%', size: 20, color: '#2DD4BF', anim: 'anim-star-float-2', delay: '2.2s' },
+  { id: 'pg-14', top: '41.5rem', right: '2.8%', size: 26, color: '#BCA6E8', anim: 'anim-star-float-3', delay: '1.3s' },
 
-  { id: 'pg-21', top: '37.2%', left: '3.9%', size: 21, color: '#C084FC', anim: 'anim-star-float-3', delay: '2.4s' },
-  { id: 'pg-22', top: '39%', right: '1.4%', size: 16, color: '#70D6FF', anim: 'anim-star-float-1', delay: '1.2s' },
-  { id: 'pg-23', top: '40.8%', left: '1.9%', size: 20, color: '#F472B6', anim: 'anim-star-float-2', delay: '0.5s' },
-  { id: 'pg-24', top: '42.6%', right: '2.8%', size: 19, color: '#2DD4BF', anim: 'anim-star-float-3', delay: '2.6s' },
+  { id: 'pg-15', top: '50rem', left: '3.8%', size: 23, color: '#A78BFA', anim: 'anim-star-float-1', delay: '0.7s' },
+  { id: 'pg-16', top: '52.5rem', right: '3.5%', size: 21, color: '#70D6FF', anim: 'anim-star-float-2', delay: '2.3s' },
 
-  { id: 'pg-25', top: '44.4%', left: '4.6%', size: 18, color: '#FBBF24', anim: 'anim-star-float-1', delay: '1.3s' },
-  { id: 'pg-26', top: '46.2%', right: '1%', size: 22, color: '#A78BFA', anim: 'anim-star-float-2', delay: '2.0s' },
-  { id: 'pg-27', top: '48%', left: '1.5%', size: 17, color: '#FF85A1', anim: 'anim-star-float-3', delay: '0.9s' },
-  { id: 'pg-28', top: '49.8%', right: '3.8%', size: 20, color: '#BCA6E8', anim: 'anim-star-float-1', delay: '1.6s' },
+  { id: 'pg-17', top: '62rem', left: '2.6%', size: 24, color: '#FF85A1', anim: 'anim-star-float-3', delay: '1.8s' },
+  { id: 'pg-18', top: '64.5rem', right: '3%', size: 22, color: '#FBBF24', anim: 'anim-star-float-1', delay: '1.1s' },
 
-  { id: 'pg-29', top: '51.6%', left: '3.3%', size: 19, color: '#2DD4BF', anim: 'anim-star-float-2', delay: '2.2s' },
-  { id: 'pg-30', top: '53.4%', right: '2%', size: 16, color: '#C084FC', anim: 'anim-star-float-3', delay: '0.4s' },
-  { id: 'pg-31', top: '55.2%', left: '1%', size: 21, color: '#FBBF24', anim: 'anim-star-float-1', delay: '1.7s' },
-  { id: 'pg-32', top: '57%', right: '4.4%', size: 18, color: '#70D6FF', anim: 'anim-star-float-2', delay: '2.5s' },
+  { id: 'pg-19', top: '75rem', left: '3.6%', size: 22, color: '#2DD4BF', anim: 'anim-star-float-2', delay: '0.9s' },
+  { id: 'pg-20', top: '77.5rem', right: '2.6%', size: 25, color: '#C084FC', anim: 'anim-star-float-3', delay: '2.6s' },
 
-  { id: 'pg-33', top: '58.8%', left: '2.9%', size: 20, color: '#F472B6', anim: 'anim-star-float-3', delay: '1.1s' },
-  { id: 'pg-34', top: '60.6%', right: '1.7%', size: 17, color: '#A78BFA', anim: 'anim-star-float-1', delay: '2.3s' },
-  { id: 'pg-35', top: '62.4%', left: '4.2%', size: 19, color: '#2DD4BF', anim: 'anim-star-float-2', delay: '0.7s' },
-  { id: 'pg-36', top: '64.2%', right: '3%', size: 21, color: '#FF85A1', anim: 'anim-star-float-3', delay: '1.9s' },
+  { id: 'pg-21', top: '88rem', left: '2.4%', size: 23, color: '#F472B6', anim: 'anim-star-float-1', delay: '1.5s' },
+  { id: 'pg-22', top: '90.5rem', right: '3.2%', size: 21, color: '#BCA6E8', anim: 'anim-star-float-2', delay: '2.0s' },
 
-  { id: 'pg-37', top: '66%', left: '1.2%', size: 16, color: '#BCA6E8', anim: 'anim-star-float-1', delay: '2.8s' },
-  { id: 'pg-38', top: '67.8%', right: '2.5%', size: 20, color: '#FBBF24', anim: 'anim-star-float-2', delay: '1.4s' },
-  { id: 'pg-39', top: '69.6%', left: '3.7%', size: 18, color: '#C084FC', anim: 'anim-star-float-3', delay: '0.6s' },
-  { id: 'pg-40', top: '71.4%', right: '1.1%', size: 19, color: '#70D6FF', anim: 'anim-star-float-1', delay: '2.1s' },
-
-  { id: 'pg-41', top: '73.2%', left: '2.2%', size: 21, color: '#F472B6', anim: 'anim-star-float-2', delay: '1.5s' },
-  { id: 'pg-42', top: '75%', right: '3.6%', size: 17, color: '#2DD4BF', anim: 'anim-star-float-3', delay: '0.8s' },
-  { id: 'pg-43', top: '76.8%', left: '4.8%', size: 18, color: '#FBBF24', anim: 'anim-star-float-1', delay: '2.4s' },
-  { id: 'pg-44', top: '78.6%', right: '2.1%', size: 20, color: '#A78BFA', anim: 'anim-star-float-2', delay: '1.0s' },
-
-  { id: 'pg-45', top: '80.4%', left: '1%', size: 19, color: '#FF85A1', anim: 'anim-star-float-3', delay: '2.6s' },
-  { id: 'pg-46', top: '82.2%', right: '4%', size: 16, color: '#BCA6E8', anim: 'anim-star-float-1', delay: '0.5s' },
-  { id: 'pg-47', top: '84%', left: '3%', size: 21, color: '#C084FC', anim: 'anim-star-float-2', delay: '1.3s' },
-  { id: 'pg-48', top: '85.8%', right: '1.5%', size: 18, color: '#2DD4BF', anim: 'anim-star-float-3', delay: '2.7s' },
-
-  { id: 'pg-49', top: '87.6%', left: '4.4%', size: 17, color: '#70D6FF', anim: 'anim-star-float-1', delay: '1.8s' },
-  { id: 'pg-50', top: '89.4%', right: '2.7%', size: 20, color: '#FBBF24', anim: 'anim-star-float-2', delay: '0.9s' },
-  { id: 'pg-51', top: '91.2%', left: '1.7%', size: 19, color: '#F472B6', anim: 'anim-star-float-3', delay: '2.0s' },
-  { id: 'pg-52', top: '93%', right: '3.4%', size: 16, color: '#A78BFA', anim: 'anim-star-float-1', delay: '1.2s' },
-
-  { id: 'pg-53', top: '94.8%', left: '2.6%', size: 21, color: '#2DD4BF', anim: 'anim-star-float-2', delay: '2.4s' },
-  { id: 'pg-54', top: '96.6%', right: '1.9%', size: 18, color: '#FF85A1', anim: 'anim-star-float-3', delay: '0.6s' },
-  { id: 'pg-55', top: '98.2%', left: '4%', size: 17, color: '#BCA6E8', anim: 'anim-star-float-1', delay: '1.6s' },
-  { id: 'pg-56', top: '99%', right: '2.3%', size: 20, color: '#C084FC', anim: 'anim-star-float-2', delay: '2.9s' },
+  { id: 'pg-23', top: '101rem', left: '3.2%', size: 20, color: '#A78BFA', anim: 'anim-star-float-3', delay: '1.2s' },
+  { id: 'pg-24', top: '103.5rem', right: '2.5%', size: 24, color: '#FF85A1', anim: 'anim-star-float-1', delay: '2.4s' },
 ]
 
 // Preset sutil para formularios o paneles más compactos (Login, Registro, Ajustes)
@@ -186,35 +152,8 @@ const VARIANT_MAP = {
   minimal: SUBTLE_SPARKLES_DATA,
 }
 
-// Variantes cuyo contenedor se extiende hacia el margen exterior de la pagina,
-// para que las estrellas queden en los bordes y no junto al texto.
+// Variantes cuyo contenedor se extiende hacia todo el ancho de la página
 const BLEED_VARIANTS = new Set(['page', 'ambient', 'spread', 'scattered'])
-
-// Rango horizontal original de los presets (porcentaje respecto al ancho del
-// contenedor de contenido) y su equivalente como fraccion del margen exterior.
-const SOURCE_EDGE_MIN = 1
-const SOURCE_EDGE_MAX = 4.8
-
-// La banda del margen se recorre casi completa para que las estrellas queden
-// bien esparcidas a lo largo del borde. El maximo se queda en 0.86 porque la
-// estrella se ancla por su borde izquierdo y todavia necesita caber dentro del
-// margen antes de que overflow:hidden la recorte.
-const GUTTER_EDGE_MIN = 0.04
-const GUTTER_EDGE_MAX = 0.86
-
-/**
- * Convierte una posicion horizontal en porcentaje (medida desde el borde del
- * area de contenido) a una fraccion del margen exterior de la pagina.
- * Asi la estrella se aleja de las letras y queda pegada al borde real.
- */
-function percentToGutter(percent) {
-  const value = Number.parseFloat(percent)
-  if (!Number.isFinite(value)) return null
-  const ratio = (value - SOURCE_EDGE_MIN) / (SOURCE_EDGE_MAX - SOURCE_EDGE_MIN)
-  const clamped = Math.min(1, Math.max(0, ratio))
-  const gutterFraction = GUTTER_EDGE_MIN + clamped * (GUTTER_EDGE_MAX - GUTTER_EDGE_MIN)
-  return `calc(var(--stars-gutter) * ${gutterFraction.toFixed(3)})`
-}
 
 /**
  * Componente reutilizable de estrellitas flotantes con movimiento suave.
@@ -226,34 +165,28 @@ export default function FloatingStars({
   stars = null,
   className = '',
   inline = false,
-  // Fuerza el margen exterior aunque el preset no lo pida por defecto.
+  // Fuerza el modo bleed aunque el preset no lo pida por defecto.
   edge = null,
 }) {
   const activeStars = stars || VARIANT_MAP[variant] || HEADER_SPARKLES_DATA
   const usesBleed = edge === null ? BLEED_VARIANTS.has(variant) : edge
 
-  const content = activeStars.map((sp) => {
-    // En modo borde las estrellas se repositionan al margen exterior.
-    const left = usesBleed && sp.left ? percentToGutter(sp.left) : sp.left
-    const right = usesBleed && sp.right ? percentToGutter(sp.right) : sp.right
-
-    return (
-      <span
-        key={sp.id}
-        className={`hero-floating-star ${sp.anim || 'anim-star-float-1'}`}
-        style={{
-          top: sp.top,
-          bottom: sp.bottom,
-          left: left ?? undefined,
-          right: right ?? undefined,
-          animationDelay: sp.delay || '0s',
-        }}
-        aria-hidden="true"
-      >
-        <SparkleStar size={sp.size} color={sp.color} />
-      </span>
-    )
-  })
+  const content = activeStars.map((sp) => (
+    <span
+      key={sp.id}
+      className={`hero-floating-star ${sp.anim || 'anim-star-float-1'}`}
+      style={{
+        top: sp.top,
+        bottom: sp.bottom,
+        left: sp.left ?? undefined,
+        right: sp.right ?? undefined,
+        animationDelay: sp.delay || '0s',
+      }}
+      aria-hidden="true"
+    >
+      <SparkleStar size={sp.size} color={sp.color} />
+    </span>
+  ))
 
   if (inline) {
     return <>{content}</>

@@ -28,16 +28,18 @@ export default function ProfilePage() {
 
   if (!user) {
     return (
-      <section className="auth-panel" aria-labelledby="profile-guest-title" style={{ position: 'relative' }}>
-        <FloatingStars variant="minimal" />
-        <p className="eyebrow">ArtLink / mi perfil</p>
-        <h1 id="profile-guest-title">Esta sección es para tu cuenta</h1>
-        <p className="private-intro">Inicia sesión para ver tu perfil, tus solicitudes y tus artistas guardados.</p>
-        <div className="hero-actions">
-          <Link className="button button-primary" to="/login">Iniciar sesión</Link>
-          <Link className="button button-secondary" to="/registro">Crear cuenta</Link>
-        </div>
-      </section>
+      <div className="profile-page" aria-labelledby="profile-guest-title">
+        <FloatingStars variant="page" />
+        <section className="auth-panel">
+          <p className="eyebrow">ArtLink / mi perfil</p>
+          <h1 id="profile-guest-title">Esta sección es para tu cuenta</h1>
+          <p className="private-intro">Inicia sesión para ver tu perfil, tus solicitudes y tus artistas guardados.</p>
+          <div className="hero-actions">
+            <Link className="button button-primary" to="/login">Iniciar sesión</Link>
+            <Link className="button button-secondary" to="/registro">Crear cuenta</Link>
+          </div>
+        </section>
+      </div>
     )
   }
 

@@ -205,10 +205,6 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px
    Sirve para separarlas del area de texto: el contenido nunca invade este margen.
    Es holgado a proposito, para que las estrellas se repartan a lo largo de toda
    la banda en vez de amontonarse pegadas al contenido. */
-:root {
-  --stars-gutter: clamp(2rem, 5vw, 7rem);
-}
-
 .floating-stars-container {
   position: absolute;
   inset: 0;
@@ -217,17 +213,45 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px
   z-index: 0;
 }
 
-/* Variante ambiental de pagina completa: el contenedor se extiende hacia el
-   margen exterior de la pagina para que las estrellas queden en los bordes,
-   nunca junto a las letras ni a los botones. */
+/* Variante ambiental de página completa:
+   Se ancla a .main-content y abarca el ancho completo de la vista para posicionar
+   las estrellas bien cerca de los bordes laterales (izquierdo y derecho) de la página,
+   enmarcando el contenido sin invadir textos, tarjetas ni botones. */
 .floating-stars-container--bleed {
-  inset: 0 calc(-1 * var(--stars-gutter));
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow-x: clip;
+  overflow-y: visible;
+  z-index: 0;
 }
 
-/* Variantes dentro de recuadros que ya tienen su propio padding
-   (heroes, formularios, chat): margen reducido y sin sangrado. */
+/* Asegurar que los contenedores de página dejen que .floating-stars-container--bleed
+   se ancle a .main-content para alcanzar los bordes exteriores reales de la página */
+.main-content:not(:has(.home-container)) > .page-container,
+.explore-v3-container,
+.req-page-container,
+.studio-settings-page,
+.art-dash-container,
+.artist-profile-page-v2,
+.profile-page,
+.info-page,
+.auth-page,
+.request-page-wrapper,
+.not-found-page-wrapper,
+.access-denied-page-wrapper {
+  position: static !important;
+}
+
+/* Variantes dentro de recuadros con su propio padding (ej. destacados en inicio) */
 .floating-stars-container--inset {
-  --stars-gutter: clamp(0.4rem, 1.4vw, 1.4rem);
+  inset: 0;
+  overflow: hidden;
 }
 
 .hero-floating-star {

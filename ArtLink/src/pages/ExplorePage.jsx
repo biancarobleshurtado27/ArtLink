@@ -236,7 +236,6 @@ export default function ExplorePage() {
       <FloatingStars variant="page" />
       {/* 1. HERO SECTION */}
       <header className="explore-v3-hero" aria-labelledby="explore-hero-title">
-        <FloatingStars variant="header" />
         <div className="explore-v3-eyebrow">
           <Sparkles size={14} aria-hidden="true" />
           <span>GALERÍA VIVA & MERCADO CREATIVO</span>
