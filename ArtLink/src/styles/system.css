@@ -4065,3 +4065,157 @@ p.admin-subtitle {
 :root[data-theme='dark'] .search-icon {
   color: var(--muted);
 }
+
+/* ── ADAPTACIÓN DE ELEMENTOS Y COLORES PASTELES EN MODO OSCURO ── */
+:root[data-theme='dark'] .badge {
+  border-color: var(--line);
+  box-shadow: 1.5px 1.5px 0 #000000;
+}
+
+:root[data-theme='dark'] .badge-violet,
+:root[data-theme='dark'] .badge-info {
+  background: #3D2D59 !important;
+  color: #DDD6FE !important;
+  border-color: #5D4380 !important;
+}
+
+:root[data-theme='dark'] .badge-mint,
+:root[data-theme='dark'] .badge-success {
+  background: #133D36 !important;
+  color: #99F6E4 !important;
+  border-color: #1F5C52 !important;
+}
+
+:root[data-theme='dark'] .badge-open,
+:root[data-theme='dark'] .badge-active,
+:root[data-theme='dark'] .badge-completed {
+  background: #133D36 !important;
+  color: #99F6E4 !important;
+  border-color: #1F5C52 !important;
+}
+
+:root[data-theme='dark'] .badge-waitlist,
+:root[data-theme='dark'] .badge-pending,
+:root[data-theme='dark'] .badge-warning,
+:root[data-theme='dark'] .badge-yellow {
+  background: #42361A !important;
+  color: #FEF08A !important;
+  border-color: #635228 !important;
+}
+
+:root[data-theme='dark'] .badge-closed,
+:root[data-theme='dark'] .badge-rejected,
+:root[data-theme='dark'] .badge-danger,
+:root[data-theme='dark'] .badge-rose {
+  background: #48233C !important;
+  color: #FBCFE8 !important;
+  border-color: #6E355C !important;
+}
+
+:root[data-theme='dark'] .badge-neutral {
+  background: var(--surface-soft) !important;
+  border-color: var(--line) !important;
+  color: var(--muted) !important;
+}
+
+:root[data-theme='dark'] .badge-pill {
+  border-color: var(--line) !important;
+  box-shadow: 1.5px 1.5px 0 #000000 !important;
+}
+
+:root[data-theme='dark'] .badge-pill-purple {
+  background: #5D35C7 !important;
+  color: #FFFFFF !important;
+}
+
+:root[data-theme='dark'] .badge-pill-rose {
+  background: #48233C !important;
+  color: #FBCFE8 !important;
+  border-color: #6E355C !important;
+}
+
+:root[data-theme='dark'] .badge-pill-yellow {
+  background: #42361A !important;
+  color: #FEF08A !important;
+  border-color: #635228 !important;
+}
+
+:root[data-theme='dark'] .badge-pill-mint {
+  background: #133D36 !important;
+  color: #99F6E4 !important;
+  border-color: #1F5C52 !important;
+}
+
+:root[data-theme='dark'] .studio-badge {
+  border-color: var(--line) !important;
+  box-shadow: 2px 2px 0 #000000 !important;
+}
+
+:root[data-theme='dark'] .studio-badge.badge-mint {
+  background: #133D36 !important;
+  color: #99F6E4 !important;
+  border-color: #1F5C52 !important;
+}
+
+:root[data-theme='dark'] .studio-badge.badge-pink {
+  background: #3D2D59 !important;
+  color: #DDD6FE !important;
+  border-color: #5D4380 !important;
+}
+
+:root[data-theme='dark'] .sticker {
+  background: #3D2D59 !important;
+  border-color: var(--line) !important;
+  color: #FEF08A !important;
+  box-shadow: 2px 2px 0 #000000 !important;
+}
+
+:root[data-theme='dark'] .button-secondary {
+  background: #42361A !important;
+  color: #FEF08A !important;
+  border-color: var(--line) !important;
+  box-shadow: 2px 2px 0 #000000 !important;
+}
+
+:root[data-theme='dark'] .button-secondary:hover {
+  background: #5A4924 !important;
+  color: #FFFFFF !important;
+}
+
+:root[data-theme='dark'] .card-link {
+  background: #3D2D59 !important;
+  border-color: var(--line) !important;
+  color: #FEF08A !important;
+}
+
+:root[data-theme='dark'] .card-link:hover {
+  background: #133D36 !important;
+  color: #99F6E4 !important;
+}
+
+:root[data-theme='dark'] .filter-button {
+  background: #3D2D59 !important;
+  border-color: var(--line) !important;
+  color: #FEF08A !important;
+}
+
+:root[data-theme='dark'] .skip-link {
+  background: #42361A !important;
+  border-color: var(--line) !important;
+  color: #FEF08A !important;
+}
+
+:root[data-theme='dark'] .hero-note::before {
+  background: #133D36 !important;
+}
+
+:root[data-theme='dark'] .hero-art::before {
+  background: #48233C !important;
+  border-color: var(--line) !important;
+}
+
+:root[data-theme='dark'] .paper-card--tape::before,
+:root[data-theme='dark'] .artist-card-media::before {
+  background: #42361A !important;
+  border-color: var(--line) !important;
+}

@@ -103,6 +103,21 @@
   --text-muted: var(--muted);
   --focus-color: var(--yellow);
 
+  /* Acentos pastel suavizados y armónicos para modo oscuro */
+  --violet-soft: #3D2D59;
+  --rose-soft: #48233C;
+  --mint-soft: #133D36;
+
+  /* Estados semánticos en modo oscuro con fondos entintados y texto pastel legible */
+  --success-bg: #133D36;
+  --success-text: #99F6E4;
+  --warning-bg: #42361A;
+  --warning-text: #FEF08A;
+  --danger-bg: #48233C;
+  --danger-text: #FBCFE8;
+  --info-bg: #3D2D59;
+  --info-text: #DDD6FE;
+
   --shadow-firm: 3px 3px 0 var(--ink);
   --shadow-soft: 2px 2px 0 rgba(0, 0, 0, .45);
   color-scheme: dark;

@@ -2587,3 +2587,39 @@
   border-color: var(--line) !important;
   color: var(--ink) !important;
 }
+
+:root[data-theme='dark'] .mega-tag-pill {
+  border-color: var(--line) !important;
+  box-shadow: 1.5px 1.5px 0px #000000 !important;
+}
+
+:root[data-theme='dark'] .tag-pink {
+  background: #48233C !important;
+  color: #FBCFE8 !important;
+  border-color: #6E355C !important;
+}
+
+:root[data-theme='dark'] .tag-mint {
+  background: #133D36 !important;
+  color: #99F6E4 !important;
+  border-color: #1F5C52 !important;
+}
+
+:root[data-theme='dark'] .tag-lilac,
+:root[data-theme='dark'] .tag-purple {
+  background: #3D2D59 !important;
+  color: #DDD6FE !important;
+  border-color: #5D4380 !important;
+}
+
+:root[data-theme='dark'] .tag-yellow {
+  background: #42361A !important;
+  color: #FEF08A !important;
+  border-color: #635228 !important;
+}
+
+:root[data-theme='dark'] .tag-cyan {
+  background: #163E50 !important;
+  color: #A5F3FC !important;
+  border-color: #235870 !important;
+}
