@@ -48,6 +48,7 @@ import {
 import useSettings from '../hooks/useSettings'
 import useAuth from '../hooks/useAuth'
 import ReadAloudButton from '../components/ReadAloudButton'
+import ImagePickerField from '../components/settings/ImagePickerField'
 import { ROLES } from '../utils/roles'
 import { getUserById, updateUser as updateUserService } from '../services/userService'
 import { getArtistByUserId, updateArtist as updateArtistService } from '../services/artistService'
@@ -63,19 +64,6 @@ const ALL_DISCIPLINES = [
   'Animación 2D/3D',
   'UI/UX Design',
   'Arte Generativo',
-]
-
-const BANNER_PRESETS = [
-  { label: 'Azure Isles', url: '/images/hero/azure_isles.jpg' },
-  { label: 'Magic Studio', url: '/images/hero/magic_shop.jpg' },
-  { label: 'Sora Moon Night', url: '/images/hero/soramoon.jpg' },
-]
-
-const AVATAR_PRESETS = [
-  { label: 'Sora Moon', url: '/images/hero/thumbs/sora-1.jpg' },
-  { label: 'Mateo Ilustración', url: '/images/hero/thumbs/sora-2.jpg' },
-  { label: 'Kaelen Lab', url: '/images/hero/thumbs/shop-1.jpg' },
-  { label: 'Chroma Studio', url: '/images/hero/thumbs/shop-2.jpg' },
 ]
 
 export default function SettingsPage({ initialTab }) {
@@ -116,9 +104,7 @@ export default function SettingsPage({ initialTab }) {
   // Mensajes de feedback local
   const [localFeedback, setLocalFeedback] = useState({ type: '', text: '' })
   const [showTip, setShowTip] = useState(true)
-  const [showBannerModal, setShowBannerModal] = useState(false)
   const [showBankModal, setShowBankModal] = useState(false)
-  const [showAvatarModal, setShowAvatarModal] = useState(false)
 
   // ── ESTADO DE PERFIL DE USUARIO COMÚN Y ESPECÍFICO ──
   const [displayName, setDisplayName] = useState(user?.name || (isArtist ? 'Mia Solar' : 'Usuario ArtLink'))
@@ -139,7 +125,7 @@ export default function SettingsPage({ initialTab }) {
 
   // ── ESTADOS EXCLUSIVOS DE ARTISTA (TALLER) ──
   const [artistProfile, setArtistProfile] = useState(null)
-  const [bannerUrl, setBannerUrl] = useState('/images/hero/azure_isles.jpg')
+  const [bannerUrl, setBannerUrl] = useState(user?.banner || user?.bannerUrl || '')
   const [tagline, setTagline] = useState(
     'Ilustradora Digital 2D & Concept Artist especializada en personajes fantásticos y estética anime.'
   )
@@ -198,6 +184,7 @@ export default function SettingsPage({ initialTab }) {
         if (u.location) setLocationStudio(u.location)
         if (u.phone) setUserPhone(u.phone)
         if (u.avatar || u.avatarUrl) setUserAvatar(u.avatar || u.avatarUrl)
+        if (u.banner || u.bannerUrl) setBannerUrl(u.banner || u.bannerUrl)
 
         if (isArtist) {
           const profiles = await getArtistByUserId(user.id).catch(() => null)
@@ -209,7 +196,7 @@ export default function SettingsPage({ initialTab }) {
             if (profile.tagline) setTagline(profile.tagline)
             if (profile.bio) setBioExtended(profile.bio)
             if (profile.location) setLocationStudio(profile.location)
-            if (profile.bannerUrl) setBannerUrl(profile.bannerUrl)
+            if (profile.banner || profile.bannerUrl) setBannerUrl(profile.banner || profile.bannerUrl)
             if (typeof profile.slots === 'number') setSlotsCount(profile.slots)
             if (profile.availability) setIsStudioOpen(profile.availability === 'open')
             if (profile.socialLinks?.x) setSocialX(profile.socialLinks.x)
@@ -254,6 +241,8 @@ export default function SettingsPage({ initialTab }) {
       saveSettings()
 
       if (user?.id) {
+        // Solo se toca el registro del usuario autenticado: cada cuenta
+        // puede editar exclusivamente su propio perfil.
         const userUpdatePayload = {
           name: displayName,
           email: accountEmail,
@@ -262,6 +251,8 @@ export default function SettingsPage({ initialTab }) {
           phone: userPhone,
           avatar: userAvatar,
           avatarUrl: userAvatar,
+          banner: bannerUrl,
+          bannerUrl,
         }
 
         await updateUserService(user.id, userUpdatePayload).catch(() => null)
@@ -277,7 +268,10 @@ export default function SettingsPage({ initialTab }) {
             tagline,
             bio: bioExtended,
             location: locationStudio,
+            banner: bannerUrl,
             bannerUrl,
+            avatar: userAvatar,
+            avatarUrl: userAvatar,
             slots: slotsCount,
             availability: isStudioOpen ? 'open' : 'closed',
             socialLinks: {
@@ -315,7 +309,7 @@ export default function SettingsPage({ initialTab }) {
           : 'Coleccionista y aficionado al arte digital conceptual, cómics y encargos personalizados.')
     )
     setLocationStudio(user?.location || (isArtist ? 'Barcelona, España' : ''))
-    setBannerUrl('/images/hero/azure_isles.jpg')
+    setBannerUrl(artistProfile?.banner || artistProfile?.bannerUrl || user?.banner || user?.bannerUrl || '')
     setIsStudioOpen(true)
     setSlotsCount(5)
     setLocalFeedback({
@@ -764,180 +758,29 @@ export default function SettingsPage({ initialTab }) {
                 : 'Gestiona tu información de contacto, avatar y notas de presentación visibles para los artistas al contratar encargos.'}
             </p>
 
-            {/* SI ES ARTISTA: Portada de Taller y Avatar solapado */}
-            {isArtist && (
-              <>
-                <div className="studio-banner-section-label">PORTADA DEL ESTUDIO &amp; RETRATO DE ARTISTA</div>
-                <div className="studio-banner-wrapper">
-                  <img
-                    src={bannerUrl}
-                    alt="Portada del estudio artístico"
-                    className="studio-banner-image"
-                    onError={(e) => {
-                      e.currentTarget.src = '/images/hero/azure_isles.jpg'
-                    }}
-                  />
-                  <button
-                    type="button"
-                    className="studio-banner-update-btn"
-                    onClick={() => setShowBannerModal((v) => !v)}
-                  >
-                    <Camera size={14} aria-hidden="true" />
-                    <span>Actualizar Portada (1920x480)</span>
-                  </button>
+            {/* PORTADA Y RETRATO: archivo real del dispositivo para todos los roles */}
+            <div className="studio-banner-section-label">
+              {isArtist ? 'PORTADA DEL ESTUDIO & RETRATO DE ARTISTA' : 'PORTADA Y FOTO DE PERFIL'}
+            </div>
 
-                  <div className="studio-avatar-overlap">
-                    {userAvatar ? (
-                      <img
-                        src={userAvatar}
-                        alt={displayName}
-                        className="studio-avatar-image"
-                        onError={(e) => {
-                          e.currentTarget.style.display = 'none'
-                          if (e.currentTarget.nextElementSibling) {
-                            e.currentTarget.nextElementSibling.style.display = 'flex'
-                          }
-                        }}
-                      />
-                    ) : null}
-                    <div
-                      className="studio-avatar-fallback"
-                      style={{ display: userAvatar ? 'none' : 'flex' }}
-                    >
-                      {displayName.slice(0, 2).toUpperCase()}
-                    </div>
-                  </div>
-                </div>
+            <ImagePickerField
+              id="profile-banner-picker"
+              label="Portada"
+              shape="banner"
+              value={bannerUrl}
+              onChange={setBannerUrl}
+              hint="Elige un archivo de imagen desde tu computadora, telefono o galeria. Relación recomendada 4:1."
+            />
 
-                <div className="studio-banner-bottom-info">
-                  <span>PNG, JPG hasta 5MB. Relación recomendada 4:1</span>
-                  <button
-                    type="button"
-                    className="studio-btn-delete-banner"
-                    onClick={() => setBannerUrl('/images/hero/azure_isles.jpg')}
-                  >
-                    ELIMINAR
-                  </button>
-                </div>
-
-                {showBannerModal && (
-                  <div className="studio-modal-box">
-                    <strong style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.5rem' }}>
-                      Elige una portada de galería o introduce una URL:
-                    </strong>
-                    <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap', marginBottom: '0.8rem' }}>
-                      {BANNER_PRESETS.map((p) => (
-                        <button
-                          key={p.label}
-                          type="button"
-                          className="studio-chip-btn"
-                          onClick={() => {
-                            setBannerUrl(p.url)
-                            setShowBannerModal(false)
-                          }}
-                        >
-                          {p.label}
-                        </button>
-                      ))}
-                    </div>
-                    <div className="studio-input-wrap">
-                      <input
-                        type="url"
-                        className="studio-input"
-                        placeholder="https://ejemplo.com/mi-portada.jpg"
-                        value={bannerUrl}
-                        onChange={(e) => setBannerUrl(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                )}
-              </>
-            )}
-
-            {/* SI NO ES ARTISTA (CLIENTE O ADMIN): Fila de Avatar con sugerencias limpias */}
-            {!isArtist && (
-              <div className="studio-sub-card studio-client-avatar-row">
-                <div
-                  style={{
-                    width: '64px',
-                    height: '64px',
-                    borderRadius: '14px',
-                    border: '2px solid var(--ink)',
-                    overflow: 'hidden',
-                    background: '#8B5CF6',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#FFFFFF',
-                    fontFamily: 'var(--heading)',
-                    fontWeight: 800,
-                    fontSize: '1.3rem',
-                    flexShrink: 0,
-                  }}
-                >
-                  {userAvatar ? (
-                    <img
-                      src={userAvatar}
-                      alt={displayName}
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                      onError={(e) => {
-                        e.currentTarget.style.display = 'none'
-                      }}
-                    />
-                  ) : (
-                    displayName.slice(0, 2).toUpperCase()
-                  )}
-                </div>
-
-                <div style={{ flex: 1, minWidth: '220px' }}>
-                  <strong style={{ display: 'block', fontSize: '0.9rem' }}>Avatar de Perfil</strong>
-                  <small style={{ color: 'var(--muted)', display: 'block', marginBottom: '0.4rem' }}>
-                    Personaliza tu imagen en ArtLink seleccionando un avatar prediseñado o introduciendo tu propia URL.
-                  </small>
-                  <button
-                    type="button"
-                    className="studio-chip-btn"
-                    onClick={() => setShowAvatarModal((v) => !v)}
-                  >
-                    <Camera size={13} aria-hidden="true" />
-                    <span>Cambiar Avatar</span>
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {showAvatarModal && !isArtist && (
-              <div className="studio-modal-box">
-                <strong style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.5rem' }}>
-                  Elige un avatar o escribe una URL:
-                </strong>
-                <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap', marginBottom: '0.8rem' }}>
-                  {AVATAR_PRESETS.map((p) => (
-                    <button
-                      key={p.label}
-                      type="button"
-                      className="studio-chip-btn"
-                      onClick={() => {
-                        setUserAvatar(p.url)
-                        setShowAvatarModal(false)
-                      }}
-                    >
-                      {p.label}
-                    </button>
-                  ))}
-                </div>
-                <div className="studio-input-wrap">
-                  <input
-                    type="url"
-                    aria-label="URL de la imagen de avatar"
-                    className="studio-input"
-                    placeholder="https://ejemplo.com/avatar.jpg"
-                    value={userAvatar}
-                    onChange={(e) => setUserAvatar(e.target.value)}
-                  />
-                </div>
-              </div>
-            )}
+            <ImagePickerField
+              id="profile-avatar-picker"
+              label="Foto de perfil"
+              shape="avatar"
+              value={userAvatar}
+              onChange={setUserAvatar}
+              previewAlt={displayName}
+              initials={displayName.slice(0, 2).toUpperCase()}
+            />
 
             {/* Campos del formulario de identidad */}
             <div className="studio-form-grid-two">

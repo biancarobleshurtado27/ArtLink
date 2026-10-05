@@ -158,7 +158,7 @@ describe('ProfileSettingsSection - Modificación de Perfil', () => {
     })
   })
 
-  it('permite seleccionar un avatar sugerido rápidamente', async () => {
+  it('no ofrece avatares sugeridos ni campos de URL: solo un input real de archivos', async () => {
     render(
       <AuthContext.Provider value={{ user: mockClientUser, updateUser: vi.fn() }}>
         <MemoryRouter>
@@ -168,11 +168,84 @@ describe('ProfileSettingsSection - Modificación de Perfil', () => {
     )
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /Sora Moon/i })).toBeInTheDocument()
+      expect(screen.getByLabelText(/Nombre completo \/ para mostrar/i)).toHaveValue('Valeria Castro')
     })
 
-    fireEvent.click(screen.getByRole('button', { name: /Sora Moon/i }))
-    expect(screen.getByLabelText(/URL de la imagen de avatar/i)).toHaveValue('/images/hero/thumbs/sora-1.jpg')
+    expect(screen.queryByRole('button', { name: /Sora Moon/i })).not.toBeInTheDocument()
+    expect(screen.queryByLabelText(/URL de la imagen de avatar/i)).not.toBeInTheDocument()
+    expect(screen.queryByPlaceholderText(/https:\/\/ejemplo.com\/mi-avatar.jpg/i)).not.toBeInTheDocument()
+
+    // El input real de archivos está disponible para foto de perfil y portada.
+    const avatarInput = screen.getByLabelText(/Foto de perfil: seleccionar archivo de imagen/i)
+    const bannerInput = screen.getByLabelText(/Portada de perfil: seleccionar archivo de imagen/i)
+
+    expect(avatarInput).toHaveAttribute('type', 'file')
+    expect(bannerInput).toHaveAttribute('type', 'file')
+    expect(avatarInput.getAttribute('accept')).toContain('image/')
+  })
+
+  it('guarda la imagen elegida por el usuario desde su dispositivo como Data URL', async () => {
+    render(
+      <AuthContext.Provider value={{ user: mockClientUser, updateUser: vi.fn() }}>
+        <MemoryRouter>
+          <ProfileSettingsSection />
+        </MemoryRouter>
+      </AuthContext.Provider>
+    )
+
+    await waitFor(() => {
+      expect(screen.getByLabelText(/Nombre completo \/ para mostrar/i)).toHaveValue('Valeria Castro')
+    })
+
+    // Archivo real de imagen (bytes PNG) tal como lo entrega el dispositivo.
+    const chosenFile = new File([new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10])], 'mi-foto.png', {
+      type: 'image/png',
+    })
+
+    fireEvent.change(screen.getByLabelText(/Foto de perfil: seleccionar archivo de imagen/i), {
+      target: { files: [chosenFile] },
+    })
+
+    await waitFor(() => {
+      expect(screen.getByText(/Archivo seleccionado: mi-foto.png/i)).toBeInTheDocument()
+    })
+
+    fireEvent.click(screen.getByRole('button', { name: /Guardar cambios de perfil/i }))
+
+    await waitFor(() => {
+      expect(userService.updateUser).toHaveBeenCalled()
+    })
+
+    const [, savedPayload] = userService.updateUser.mock.calls.at(-1)
+
+    // Se persiste el archivo elegido por el usuario como Data URL, no una imagen generada ni de stock.
+    expect(savedPayload.avatar).toMatch(/^data:image\/png;base64,/)
+    expect(savedPayload.avatarUrl).toBe(savedPayload.avatar)
+    expect(savedPayload.banner).toBe('')
+  })
+
+  it('rechaza archivos que no son imágenes', async () => {
+    render(
+      <AuthContext.Provider value={{ user: mockClientUser, updateUser: vi.fn() }}>
+        <MemoryRouter>
+          <ProfileSettingsSection />
+        </MemoryRouter>
+      </AuthContext.Provider>
+    )
+
+    await waitFor(() => {
+      expect(screen.getByLabelText(/Nombre completo \/ para mostrar/i)).toHaveValue('Valeria Castro')
+    })
+
+    const notAnImage = new File(['contenido'], 'documento.pdf', { type: 'application/pdf' })
+
+    fireEvent.change(screen.getByLabelText(/Foto de perfil: seleccionar archivo de imagen/i), {
+      target: { files: [notAnImage] },
+    })
+
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toHaveTextContent(/debe ser una imagen JPG, PNG, WebP o GIF/i)
+    })
   })
 })
 
@@ -243,6 +316,14 @@ describe('Integración de ruta /settings/profile en SettingsPage', () => {
     expect(screen.queryByText(/TALLER EN VIVO/i)).not.toBeInTheDocument()
     expect(screen.queryByText(/Disponibilidad & Normas de Encargo/i)).not.toBeInTheDocument()
     expect(screen.queryByText(/PORTADA DEL ESTUDIO/i)).not.toBeInTheDocument()
+
+    // El cliente también puede elegir portada y foto de perfil con archivos reales.
+    expect(
+      screen.getByLabelText(/Portada: seleccionar archivo de imagen/i)
+    ).toHaveAttribute('type', 'file')
+    expect(
+      screen.getByLabelText(/Foto de perfil: seleccionar archivo de imagen/i)
+    ).toHaveAttribute('type', 'file')
 
     // Debe contener secciones correspondientes a clientes
     expect(screen.getByRole('heading', { name: /Preferencias de Búsqueda y Encargos/i })).toBeInTheDocument()

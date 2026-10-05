@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, Heart, LayoutDashboard, LogOut, MessageCircle, Sparkles, UserCheck } from 'lucide-react'
+import { ArrowRight, Eye, Heart, LayoutDashboard, LogOut, MessageCircle, UserCheck } from 'lucide-react'
 import useAuth from '../hooks/useAuth'
 import useArtists from '../hooks/useArtists'
 import useFavorites from '../hooks/useFavorites'
@@ -63,8 +63,10 @@ export default function ProfilePage() {
         <div className="profile-card-actions">
           <Link className="button button-primary button-small" to="/settings/profile"><UserCheck size={15} aria-hidden="true" /> Editar perfil</Link>
           <Link className="button button-outline button-small" to="/solicitudes"><MessageCircle size={15} aria-hidden="true" /> Mis solicitudes</Link>
+          {artistProfile
+            ? <Link className="button button-outline button-small" to={`/artista/${artistProfile.id}`}><Eye size={15} aria-hidden="true" /> Ver mi perfil</Link>
+            : <span className="profile-self-hint"><Eye size={15} aria-hidden="true" /> Ya estás viendo tu perfil</span>}
           {user.role === ROLES.ADMIN && <Link className="button button-outline button-small" to="/admin"><LayoutDashboard size={15} aria-hidden="true" /> Administración</Link>}
-          {artistProfile && <Link className="button button-outline button-small" to={`/artista/${artistProfile.id}`}><Sparkles size={15} aria-hidden="true" /> Mi perfil público</Link>}
           {user.role === ROLES.ARTIST && <Link className="button button-secondary button-small" to="/artista/panel"><LayoutDashboard size={15} aria-hidden="true" /> Mi espacio de artista</Link>}
           <button className="button button-outline button-small" type="button" onClick={logout}><LogOut size={15} aria-hidden="true" /> Cerrar sesión</button>
         </div>

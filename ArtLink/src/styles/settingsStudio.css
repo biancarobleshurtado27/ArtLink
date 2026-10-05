@@ -1960,3 +1960,154 @@
   color: var(--violet-dark);
 }
 
+/* ── AVISO DE "YA ESTÁS VIENDO TU PERFIL" ── */
+.profile-self-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--badge);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--muted);
+  padding: 0.45rem 0.85rem;
+  border: 1.5px dashed var(--line);
+  border-radius: var(--radius-pill);
+}
+
+/* ── SELECTOR DE IMAGENES DEL PERFIL (ARCHIVO REAL DEL DISPOSITIVO) ── */
+.studio-image-picker {
+  margin-bottom: 1.25rem;
+}
+
+.studio-image-picker-label {
+  display: block;
+  font-family: var(--badge);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #6B7280;
+  margin-bottom: 0.6rem;
+}
+
+.studio-image-picker-body {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.studio-image-picker-preview {
+  flex-shrink: 0;
+  width: 168px;
+  height: 108px;
+  border-radius: 14px;
+  border: 2px solid var(--ink);
+  box-shadow: var(--shadow-soft);
+  overflow: hidden;
+  background: #C4B5FD;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.studio-image-picker.is-avatar .studio-image-picker-preview {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+}
+
+.studio-image-picker-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.studio-image-picker-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: var(--lilac);
+  color: var(--violet-dark);
+  font-family: var(--heading);
+  font-weight: 800;
+  font-size: 1.5rem;
+}
+
+.studio-image-picker-controls {
+  flex: 1;
+  min-width: 220px;
+}
+
+.studio-image-picker-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+
+.studio-image-picker-hint,
+.studio-image-picker-filename,
+.studio-image-picker-error {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.studio-image-picker-hint {
+  color: var(--muted);
+}
+
+.studio-image-picker-filename {
+  margin-top: 0.35rem;
+  color: var(--violet-dark);
+  font-weight: 600;
+  word-break: break-word;
+}
+
+.studio-image-picker-error {
+  margin-top: 0.35rem;
+  color: #BE123C;
+  font-weight: 700;
+}
+
+.studio-image-picker-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+:root[data-theme='dark'] .studio-image-picker-label {
+  color: var(--muted);
+}
+
+:root[data-theme='dark'] .studio-image-picker-preview {
+  background: var(--lilac);
+}
+
+:root[data-theme='dark'] .studio-image-picker-hint {
+  color: var(--muted);
+}
+
+:root[data-theme='dark'] .studio-image-picker-filename {
+  color: var(--violet-dark);
+}
+
+:root[data-theme='dark'] .studio-image-picker-error {
+  color: var(--danger-text, #FBCFE8);
+  background: var(--danger-bg, #48233C);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 0.4rem 0.6rem;
+}
+

@@ -1375,6 +1375,28 @@
   display: block;
 }
 
+/* Sin avatar elegido por el artista: se muestran sus iniciales, no una imagen generada. */
+.artist-v2-avatar-fallback {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--rose);
+  color: var(--ink);
+  font-family: var(--heading);
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 800;
+}
+
+/* Sin portada elegida por el artista: panel liso, sin artwork ajeno. */
+.artist-v2-banner-empty {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--lilac) 0%, var(--rose) 100%);
+}
+
 .artist-v2-avatar-badge {
   position: absolute;
   bottom: 0.2rem;

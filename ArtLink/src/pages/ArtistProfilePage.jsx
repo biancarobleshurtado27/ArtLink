@@ -415,7 +415,10 @@ export default function ArtistProfilePage() {
   if (loading) return <LoadingState label="Cargando perfil del artista..." />
   if (error || !profile) return <ErrorState message={error?.message || 'No encontramos el perfil de este artista.'} />
 
-  const bannerImage = profile.banner || profile.coverUrl || profile.image || portfolio[0]?.image || '/images/hero/soramoon.jpg'
+  // Solo se muestran imágenes elegidas por el propio artista. Si no hay ninguna,
+// se muestra un panel liso: nunca se sustituye por artwork de otro usuario.
+  const bannerImage = profile.banner || profile.bannerUrl || profile.coverUrl || profile.image || portfolio[0]?.image || ''
+  const avatarImage = profile.avatar || profile.avatarUrl || ''
   const shareProfileUrl = typeof window !== 'undefined' ? `${window.location.origin}/artista/${profile.id}` : ''
 
   return (
@@ -423,12 +426,16 @@ export default function ArtistProfilePage() {
       <FloatingStars variant="page" />
       {/* ── 1. BANNER ILUSTRADO SUPERIOR ── */}
       <section className="artist-v2-banner" aria-label={`Portada de ${profile.displayName}`}>
-        <img
-          className="artist-v2-banner-img"
-          src={bannerImage}
-          onError={handleImageError}
-          alt={`Banner ilustrado de ${profile.displayName}`}
-        />
+        {bannerImage ? (
+          <img
+            className="artist-v2-banner-img"
+            src={bannerImage}
+            onError={handleImageError}
+            alt={`Banner ilustrado de ${profile.displayName}`}
+          />
+        ) : (
+          <div className="artist-v2-banner-empty" aria-hidden="true" />
+        )}
         <div className="artist-v2-banner-overlay" />
         <div className="artist-v2-banner-top-badges">
           <Link to="/explorar" className="artist-v2-banner-pill">
@@ -450,12 +457,18 @@ export default function ArtistProfilePage() {
       {/* ── 2. TARJETA DE ENCABEZADO CON AVATAR EN LA LÍNEA DEL BANNER ── */}
       <section className="artist-v2-header-card" aria-label={`Información de ${profile.displayName}`}>
         <div className="artist-v2-avatar-wrap">
-          <img
-            className="artist-v2-avatar-img"
-            src={profile.avatar || profile.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.displayName || profile.name || 'A')}&background=8B5CF6&color=fff`}
-            onError={handleImageError}
-            alt={`Avatar de ${profile.displayName}`}
-          />
+          {avatarImage ? (
+            <img
+              className="artist-v2-avatar-img"
+              src={avatarImage}
+              onError={handleImageError}
+              alt={`Avatar de ${profile.displayName}`}
+            />
+          ) : (
+            <span className="artist-v2-avatar-fallback" aria-hidden="true">
+              {(profile.displayName || profile.name || 'A').slice(0, 2).toUpperCase()}
+            </span>
+          )}
           {profile.verified && (
             <span className="artist-v2-avatar-badge" title="Artista destacado · Validación interna basada en actividad y reputación en ArtLink">
               <BadgeCheck size={18} aria-hidden="true" />

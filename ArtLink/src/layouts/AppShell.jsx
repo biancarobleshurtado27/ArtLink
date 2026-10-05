@@ -4,6 +4,7 @@ import {
   Bell,
   Contrast,
   ExternalLink,
+  Eye,
   HelpCircle,
   Home,
   LayoutDashboard,
@@ -427,9 +428,13 @@ export default function AppShell() {
 
                 {/* 3. AJUSTES, SOPORTE, CREADOR Y CERRAR SESIÓN */}
                 <div className="user-popover-menu-items">
+                  <NavLink to="/perfil" role="menuitem" onClick={closeMenus} className="user-popover-item">
+                    <Eye size={18} className="user-popover-icon" aria-hidden="true" />
+                    <span>Ver mi perfil</span>
+                  </NavLink>
                   <NavLink to="/settings/profile" role="menuitem" onClick={closeMenus} className="user-popover-item">
                     <UserCheck size={18} className="user-popover-icon" aria-hidden="true" />
-                    <span>Modificar perfil</span>
+                    <span>Editar perfil</span>
                   </NavLink>
                   <NavLink to="/ajustes" role="menuitem" onClick={closeMenus} className="user-popover-item">
                     <Settings size={18} className="user-popover-icon" aria-hidden="true" />

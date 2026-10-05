@@ -2,12 +2,9 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   AlertCircle,
-  Camera,
   CheckCircle2,
   DollarSign,
   Globe,
-  HelpCircle,
-  Image as ImageIcon,
   Loader2,
   Mail,
   MapPin,
@@ -22,9 +19,9 @@ import {
 import useAuth from '../../hooks/useAuth'
 import { getUserById, updateUser as updateUserService } from '../../services/userService'
 import { getArtistByUserId, updateArtist as updateArtistService, createArtist as createArtistService } from '../../services/artistService'
-import { handleImageError } from '../../utils/imageFallback'
 import { ROLES, roleLabels } from '../../utils/roles'
 import Badge from '../Badge'
+import ImagePickerField from './ImagePickerField'
 
 const AVAILABLE_DISCIPLINES = [
   'Ilustración Digital',
@@ -35,13 +32,6 @@ const AVAILABLE_DISCIPLINES = [
   'Animación 2D/3D',
   'UI/UX Design',
   'Arte Generativo',
-]
-
-const AVATAR_PRESETS = [
-  { label: 'Sora Moon', url: '/images/hero/thumbs/sora-1.jpg' },
-  { label: 'Mateo Ilustración', url: '/images/hero/thumbs/sora-2.jpg' },
-  { label: 'Kaelen Lab', url: '/images/hero/thumbs/shop-1.jpg' },
-  { label: 'Chroma Studio', url: '/images/hero/thumbs/shop-2.jpg' },
 ]
 
 export default function ProfileSettingsSection() {
@@ -55,6 +45,7 @@ export default function ProfileSettingsSection() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [avatar, setAvatar] = useState('')
+  const [banner, setBanner] = useState('')
   const [bio, setBio] = useState('')
   const [phone, setPhone] = useState('')
   const [location, setLocation] = useState('')
@@ -104,6 +95,7 @@ export default function ProfileSettingsSection() {
         setName(userData.name || '')
         setEmail(userData.email || '')
         setAvatar(userData.avatar || userData.avatarUrl || '')
+        setBanner(userData.banner || userData.bannerUrl || '')
         setBio(userData.bio || userData.description || '')
         setPhone(userData.phone || '')
         setLocation(userData.location || '')
@@ -116,6 +108,9 @@ export default function ProfileSettingsSection() {
             const profile = Array.isArray(profiles) ? profiles[0] : profiles
             if (profile && isMounted) {
               setArtistProfile(profile)
+              if (profile.banner || profile.bannerUrl) {
+                setBanner(profile.banner || profile.bannerUrl)
+              }
               setArtistDisplayName(profile.displayName || profile.name || userData.name || '')
               setArtistUsername(profile.username || '')
               setDisciplines(Array.isArray(profile.disciplines) ? profile.disciplines : [])
@@ -157,14 +152,11 @@ export default function ProfileSettingsSection() {
     )
   }
 
-  function handlePresetAvatar(presetUrl) {
-    setAvatar(presetUrl)
-  }
-
   function handleReset() {
     setName(user?.name || '')
     setEmail(user?.email || '')
     setAvatar(user?.avatar || user?.avatarUrl || '')
+    setBanner(artistProfile?.banner || artistProfile?.bannerUrl || user?.banner || user?.bannerUrl || '')
     setBio(user?.bio || user?.description || '')
     setPhone(user?.phone || '')
     setLocation(user?.location || '')
@@ -205,6 +197,8 @@ export default function ProfileSettingsSection() {
         email: email.trim().toLowerCase(),
         avatar: avatar.trim(),
         avatarUrl: avatar.trim(),
+        banner: banner.trim(),
+        bannerUrl: banner.trim(),
         bio: bio.trim(),
         description: bio.trim(),
         phone: phone.trim(),
@@ -233,6 +227,8 @@ export default function ProfileSettingsSection() {
           username: (artistUsername.trim() || name.trim().toLowerCase().replace(/\s+/g, '_')).replace(/^@/, ''),
           avatar: avatar.trim(),
           avatarUrl: avatar.trim(),
+          banner: banner.trim(),
+          bannerUrl: banner.trim(),
           bio: bio.trim(),
           location: location.trim(),
           disciplines: disciplines.length > 0 ? disciplines : ['Ilustración Digital'],
@@ -326,7 +322,7 @@ export default function ProfileSettingsSection() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
           <Badge tone="mint">{roleLabels[user?.role] || user?.role || 'Usuario'}</Badge>
           <Link to="/perfil" className="button button-outline button-small">
-            <User size={15} aria-hidden="true" /> Ver perfil público
+            <User size={15} aria-hidden="true" /> Ver mi perfil
           </Link>
         </div>
       </div>
@@ -354,113 +350,32 @@ export default function ProfileSettingsSection() {
       </div>
 
       <form onSubmit={handleSubmit} noValidate>
-        {/* ── 1. AVATAR E IMAGEN DE PERFIL ── */}
+        {/* ── 1. PORTADA Y FOTO DE PERFIL DESDE ARCHIVOS REALES ── */}
         <fieldset className="settings-fieldset">
-          <legend className="settings-legend">Imagen de perfil y avatar</legend>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap', marginBottom: '1.2rem' }}>
-            <div style={{ position: 'relative', width: '92px', height: '92px', flexShrink: 0 }}>
-              {avatar ? (
-                <img
-                  src={avatar}
-                  alt={`Vista previa de avatar de ${name || 'usuario'}`}
-                  onError={handleImageError}
-                  className="avatar avatar-large avatar-img"
-                  style={{
-                    width: '92px',
-                    height: '92px',
-                    borderRadius: '50%',
-                    border: '3px solid var(--ink)',
-                    boxShadow: 'var(--shadow-firm)',
-                    objectFit: 'cover',
-                  }}
-                />
-              ) : (
-                <span
-                  className="avatar avatar-large avatar-fallback"
-                  aria-hidden="true"
-                  style={{
-                    width: '92px',
-                    height: '92px',
-                    fontSize: '1.6rem',
-                    border: '3px solid var(--ink)',
-                    boxShadow: 'var(--shadow-firm)',
-                  }}
-                >
-                  {initials}
-                </span>
-              )}
-            </div>
+          <legend className="settings-legend">Portada y foto de perfil</legend>
+          <p style={{ margin: '0 0 1.2rem', fontSize: '0.84rem', color: 'var(--muted)' }}>
+            Selecciona las imagenes guardadas en tu computadora, telefono o galeria. No se sustituyen
+            por imágenes generadas: se usa siempre el archivo que tú eliges.
+          </p>
 
-            <div style={{ flex: 1, minWidth: '240px' }}>
-              <label htmlFor="profile-avatar-url" className="settings-label">
-                <span><ImageIcon size={15} aria-hidden="true" /> URL de la imagen de avatar</span>
-                <input
-                  id="profile-avatar-url"
-                  name="avatar"
-                  type="url"
-                  className="settings-select"
-                  placeholder="https://ejemplo.com/mi-avatar.jpg o ruta local"
-                  value={avatar}
-                  onChange={(e) => setAvatar(e.target.value)}
-                />
-              </label>
-              <p style={{ margin: '0.4rem 0 0', fontSize: '0.78rem', color: 'var(--muted)' }}>
-                Introduce una URL directa a tu imagen (PNG, JPG o WebP) o selecciona un avatar predeterminado abajo.
-              </p>
-            </div>
-          </div>
+          <ImagePickerField
+            id="profile-banner-picker"
+            label="Portada de perfil"
+            shape="banner"
+            value={banner}
+            onChange={setBanner}
+            hint="Elige un archivo de imagen desde tu dispositivo. Relación recomendada 4:1."
+          />
 
-          <div>
-            <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--ink)', display: 'block', marginBottom: '0.5rem' }}>
-              Avatares sugeridos para pruebas o uso rápido:
-            </span>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem' }}>
-              {AVATAR_PRESETS.map((preset) => (
-                <button
-                  key={preset.url}
-                  type="button"
-                  onClick={() => handlePresetAvatar(preset.url)}
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '0.4rem',
-                    padding: '0.35rem 0.75rem',
-                    background: avatar === preset.url ? 'var(--mint-soft)' : 'var(--cream)',
-                    border: avatar === preset.url ? '2px solid var(--ink)' : '1.5px solid var(--line)',
-                    borderRadius: 'var(--radius-sm)',
-                    fontSize: '0.8rem',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    color: 'var(--ink)',
-                  }}
-                >
-                  <Camera size={13} aria-hidden="true" />
-                  <span>{preset.label}</span>
-                </button>
-              ))}
-              {avatar && (
-                <button
-                  type="button"
-                  onClick={() => setAvatar('')}
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '0.3rem',
-                    padding: '0.35rem 0.75rem',
-                    background: 'var(--paper)',
-                    border: '1.5px dashed var(--line)',
-                    borderRadius: 'var(--radius-sm)',
-                    fontSize: '0.8rem',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    color: 'var(--muted)',
-                  }}
-                >
-                  Usar iniciales
-                </button>
-              )}
-            </div>
-          </div>
+          <ImagePickerField
+            id="profile-avatar-picker"
+            label="Foto de perfil"
+            shape="avatar"
+            value={avatar}
+            onChange={setAvatar}
+            previewAlt={`Vista previa de la foto de perfil de ${name || 'usuario'}`}
+            initials={initials}
+          />
         </fieldset>
 
         {/* ── 2. DATOS DE CUENTA E INFORMACIÓN PERSONAL ── */}
