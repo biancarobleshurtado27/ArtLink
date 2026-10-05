@@ -248,6 +248,37 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px
   position: static !important;
 }
 
+/* Las estrellas siempre deben actuar como capa de fondo (z-index: 0),
+   nunca encima de letras, botones ni estructuras. */
+.floating-stars-container,
+.floating-stars-container--bleed,
+.floating-stars-container--inset,
+.hero-floating-star {
+  z-index: 0 !important;
+}
+
+/* Todo el contenido de la página (títulos, textos, tarjetas, botones, buscadores)
+   se eleva a z-index: 1 para que las estrellas queden estrictamente por detrás */
+.explore-v3-hero,
+.explore-mega-search-card,
+.explore-v3-section,
+.explore-v3-container > *:not(.floating-stars-container),
+.page-container > *:not(.floating-stars-container),
+.main-content > *:not(.floating-stars-container),
+.req-page-container > *:not(.floating-stars-container),
+.studio-settings-page > *:not(.floating-stars-container),
+.art-dash-container > *:not(.floating-stars-container),
+.artist-profile-page-v2 > *:not(.floating-stars-container),
+.profile-page > *:not(.floating-stars-container),
+.info-page > *:not(.floating-stars-container),
+.auth-page > *:not(.floating-stars-container),
+.request-page-wrapper > *:not(.floating-stars-container),
+.not-found-page-wrapper > *:not(.floating-stars-container),
+.access-denied-page-wrapper > *:not(.floating-stars-container) {
+  position: relative;
+  z-index: 1;
+}
+
 /* Variantes dentro de recuadros con su propio padding (ej. destacados en inicio) */
 .floating-stars-container--inset {
   inset: 0;
