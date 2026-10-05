@@ -201,6 +201,14 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px
   overflow: hidden;
 }
 
+.floating-stars-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
 .hero-floating-star {
   position: absolute;
   pointer-events: none;
@@ -246,6 +254,15 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px
   }
   50% {
     transform: translateY(-6px) translateX(4px) scale(1.04);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-floating-star,
+  .anim-star-float-1,
+  .anim-star-float-2,
+  .anim-star-float-3 {
+    animation: none !important;
   }
 }
 

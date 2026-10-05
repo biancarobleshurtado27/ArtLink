@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom'
 import { ArrowLeft, Palette } from 'lucide-react'
+import FloatingStars from '../components/FloatingStars'
 
 export default function NotFoundPage() {
   return (
-    <section className="auth-panel" aria-labelledby="not-found-title">
+    <section className="auth-panel" aria-labelledby="not-found-title" style={{ position: 'relative' }}>
+      <FloatingStars variant="minimal" />
       <p className="eyebrow">ArtLink / error 404</p>
       <h1 id="not-found-title">Esta página no está en el lienzo</h1>
       <p className="private-intro">La dirección que buscaste no existe o se movió de lugar. Volvamos a algo bonito.</p>

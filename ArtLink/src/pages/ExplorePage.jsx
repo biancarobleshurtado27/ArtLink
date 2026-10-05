@@ -16,6 +16,7 @@ import {
 import EmptyState from '../components/EmptyState'
 import ErrorState from '../components/ErrorState'
 import LoadingState from '../components/LoadingState'
+import FloatingStars from '../components/FloatingStars'
 import useDiscoverData from '../hooks/useDiscoverData'
 import useAuth from '../hooks/useAuth'
 import useFavorites from '../hooks/useFavorites'
@@ -234,6 +235,7 @@ export default function ExplorePage() {
     <div className="explore-v3-container">
       {/* 1. HERO SECTION */}
       <header className="explore-v3-hero" aria-labelledby="explore-hero-title">
+        <FloatingStars variant="header" />
         <div className="explore-v3-eyebrow">
           <Sparkles size={14} aria-hidden="true" />
           <span>GALERÍA VIVA & MERCADO CREATIVO</span>

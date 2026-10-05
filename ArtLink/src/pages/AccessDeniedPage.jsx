@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom'
 import { ArrowLeft, LogIn } from 'lucide-react'
+import FloatingStars from '../components/FloatingStars'
 
 export default function AccessDeniedPage() {
   return (
-    <section className="auth-panel" aria-labelledby="denied-title">
+    <section className="auth-panel" aria-labelledby="denied-title" style={{ position: 'relative' }}>
+      <FloatingStars variant="minimal" />
       <p className="eyebrow">ArtLink / permisos</p>
       <h1 id="denied-title">Acceso denegado</h1>
       <p className="private-intro">Tu cuenta no tiene el rol necesario para ver esta sección. Prueba con una cuenta de prueba con los permisos adecuados.</p>

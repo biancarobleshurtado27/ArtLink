@@ -21,6 +21,7 @@ import { RANKING_EMPTY_MESSAGE, getAvailabilityStatus } from '../utils/discoverD
 import AvailabilityBadge from '../components/AvailabilityBadge'
 import Badge from '../components/Badge'
 import DecorativeStar from '../components/DecorativeStar'
+import FloatingStars from '../components/FloatingStars'
 import { handleImageError } from '../utils/imageFallback'
 
 const artistBenefits = [
@@ -217,6 +218,7 @@ export default function ParaArtistasPage() {
     <div className="info-page">
       {/* 1. HERO PRINCIPAL */}
       <section className="page-hero" aria-labelledby="for-artists-title">
+        <FloatingStars variant="header" />
         <span className="sticker hero-sticker">
           <DecorativeStar size={12} color="#1E192B" /> Estudio propio para creadores
         </span>

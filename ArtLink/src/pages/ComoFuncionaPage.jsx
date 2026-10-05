@@ -15,6 +15,7 @@ import {
   UserPlus,
 } from 'lucide-react'
 import DecorativeStar from '../components/DecorativeStar'
+import FloatingStars from '../components/FloatingStars'
 
 const clientSteps = [
   {
@@ -162,6 +163,7 @@ export default function ComoFuncionaPage() {
     <div className="info-page">
       {/* 1. HERO PRINCIPAL */}
       <section className="page-hero" aria-labelledby="how-title">
+        <FloatingStars variant="header" />
         <span className="sticker hero-sticker">
           <DecorativeStar size={12} color="#1E192B" /> Proceso transparente
         </span>

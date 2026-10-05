@@ -41,6 +41,7 @@ import usePrivateRequests from '../hooks/usePrivateRequests'
 import { updateRequest } from '../services/requestService'
 import { getNotificationsByUser, markNotificationAsRead } from '../services/notificationService'
 import { triggerNotificationsUpdate, NOTIFICATIONS_CHANGED_EVENT } from '../hooks/useNotificationBadges'
+import FloatingStars from '../components/FloatingStars'
 import '../styles/requestsPop.css'
 
 export default function PrivateRequestsPage() {
@@ -405,6 +406,7 @@ export default function PrivateRequestsPage() {
 
   return (
     <div className="req-page-container">
+      <FloatingStars variant="header" />
       {/* Toast Feedback Notification */}
       {toastMessage && (
         <div

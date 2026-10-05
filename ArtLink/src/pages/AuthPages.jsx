@@ -4,6 +4,7 @@ import { ArrowRight, Briefcase, CheckCircle2, LogIn, Palette, UserPlus } from 'l
 import logoArtLink from '../assets/logo-artlink.png'
 import { ROLES } from '../utils/roles'
 import useAuth from '../hooks/useAuth'
+import FloatingStars from '../components/FloatingStars'
 
 function AuthAside({ title, text, tips }) {
   return (
@@ -45,6 +46,7 @@ export function LoginPage() {
 
   return (
     <section className="auth-page" aria-labelledby="login-title">
+      <FloatingStars variant="subtle" />
       <div className="auth-card paper-card">
         <div className="auth-brand-badge">
           <Link to="/" className="auth-brand-link" aria-label="Ir al inicio de ArtLink">
@@ -116,6 +118,7 @@ export function RegisterPage() {
 
   return (
     <section className="auth-page" aria-labelledby="register-title">
+      <FloatingStars variant="subtle" />
       <div className="auth-card paper-card">
         <div className="auth-brand-badge">
           <Link to="/" className="auth-brand-link" aria-label="Ir al inicio de ArtLink">

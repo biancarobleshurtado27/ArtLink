@@ -51,6 +51,7 @@ import ReadAloudButton from '../components/ReadAloudButton'
 import { ROLES } from '../utils/roles'
 import { getUserById, updateUser as updateUserService } from '../services/userService'
 import { getArtistByUserId, updateArtist as updateArtistService } from '../services/artistService'
+import FloatingStars from '../components/FloatingStars'
 import '../styles/settingsStudio.css'
 
 const ALL_DISCIPLINES = [
@@ -375,6 +376,7 @@ export default function SettingsPage({ initialTab }) {
 
   return (
     <div className="studio-settings-page" aria-labelledby="settings-main-heading">
+      <FloatingStars variant="subtle" />
       {/* ── ENCABEZADO SUPERIOR ADAPTATIVO ── */}
       <header className="studio-settings-topbar">
         <div className="studio-header-main">
