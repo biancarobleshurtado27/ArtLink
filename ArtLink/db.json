@@ -626,7 +626,7 @@
       "banner": "/images/hero/azure_isles.jpg",
       "coverUrl": "/images/hero/azure_isles.jpg",
       "image": "/images/hero/portfolio/forest-guardian.jpg",
-      "bio": "Ilustrador digital y concept artist apasionado por la fantasía, la naturaleza mágica y la creación de mundos visuales.",
+      "bio": "Ilustrador de personajes de fantasía, mundos etéreos y arte conceptual para proyectos independientes y novelas.",
       "disciplines": [
         "Ilustración Digital",
         "Concept Art"
@@ -646,6 +646,41 @@
       "verificationBadge": "Artista destacado",
       "socialLinks": {
         "web": "https://artlink.local/mateorios"
+      }
+    },
+    {
+      "id": "artist-bianca",
+      "userId": "R4LaTb0C73c",
+      "displayName": "Bianca Robles Hurtado",
+      "name": "Bianca Robles Hurtado",
+      "username": "biancarobles",
+      "avatar": "/images/hero/thumbs/sora-1.jpg",
+      "avatarUrl": "/images/hero/thumbs/sora-1.jpg",
+      "banner": "/images/hero/azure_isles.jpg",
+      "coverUrl": "/images/hero/azure_isles.jpg",
+      "image": "/images/hero/azure_isles.jpg",
+      "bio": "Ilustradora conceptual y creadora visual especializada en mundos de fantasía, diseño de personajes y paletas luminosas.",
+      "disciplines": [
+        "Ilustración Digital",
+        "Diseño de Personajes",
+        "Concept Art"
+      ],
+      "styles": [
+        "Fantasía Luminosa",
+        "Anime Semirealista",
+        "Luz Cinemática"
+      ],
+      "location": "México / Remoto",
+      "availability": "open",
+      "slots": 5,
+      "rating": 4.9,
+      "verified": true,
+      "basePrice": 85,
+      "isDemo": false,
+      "verificationBadge": "Artista destacada",
+      "socialLinks": {
+        "web": "https://artlink.com/biancarobles",
+        "x": "@biancarobles_art"
       }
     }
   ],
@@ -1126,6 +1161,86 @@
       ],
       "likes": 140,
       "createdAt": "2026-02-25T11:00:00Z"
+    },
+    {
+      "id": "port-bianca-01",
+      "artistId": "artist-bianca",
+      "title": "Santuario de las Aves Celestes",
+      "category": "Concept Art",
+      "image": "/images/hero/portfolio/sky-sanctuary.jpg",
+      "description": "Composición paisajística con templos flotantes entre nubes rosadas y doradas a 300 DPI.",
+      "featured": true,
+      "likes": 38
+    },
+    {
+      "id": "port-bianca-02",
+      "artistId": "artist-bianca",
+      "title": "Guardiana del Bosque Encantado",
+      "category": "Diseño de Personajes",
+      "image": "/images/hero/portfolio/forest-guardian.jpg",
+      "description": "Diseño de personaje original con atuendo botánico, iluminación bioluminiscente y armadura ligera.",
+      "featured": true,
+      "likes": 54
+    },
+    {
+      "id": "port-bianca-03",
+      "artistId": "artist-bianca",
+      "title": "Taller de Alquimia y Flores",
+      "category": "Ilustración Digital",
+      "image": "/images/hero/portfolio/cozy-workshop.jpg",
+      "description": "Escenario interior detallado con frascos mágicos, luz de atardecer filtrada e inventario botánico.",
+      "featured": false,
+      "likes": 29
+    },
+    {
+      "id": "port-bianca-04",
+      "artistId": "artist-bianca",
+      "title": "Retrato Invernal de Cristal",
+      "category": "Ilustración Digital",
+      "image": "/images/hero/portfolio/winter-portrait.jpg",
+      "description": "Estudio de retrato con tonos fríos, texturas de escarcha y reflejos de luz prismática.",
+      "featured": true,
+      "likes": 67
+    },
+    {
+      "id": "port-bianca-05",
+      "artistId": "artist-bianca",
+      "title": "Hechicera de las Estrellas",
+      "category": "Diseño de Personajes",
+      "image": "/images/hero/portfolio/fantasy-girl.jpg",
+      "description": "Ilustración con acabados anime refinados, destellos cósmicos y efectos mágicos volumétricos.",
+      "featured": false,
+      "likes": 41
+    },
+    {
+      "id": "port-bianca-06",
+      "artistId": "artist-bianca",
+      "title": "Archipiélago Flotante en el Horizonte",
+      "category": "Concept Art",
+      "image": "/images/hero/azure_isles.jpg",
+      "description": "Pintura ambiental con islas suspendidas sobre cascadas de luz en el crepúsculo.",
+      "featured": false,
+      "likes": 33
+    },
+    {
+      "id": "port-mateo-04",
+      "artistId": "artist-001",
+      "title": "Mundo Arcano del Hechicero",
+      "category": "Concept Art",
+      "image": "/images/hero/magic_shop.jpg",
+      "description": "Concepto de tienda mágica nocturna con pociones brillantes y arquitectura gótica fantástica.",
+      "featured": true,
+      "likes": 45
+    },
+    {
+      "id": "port-mateo-05",
+      "artistId": "artist-001",
+      "title": "Dama del Invierno Glacial",
+      "category": "Ilustración Digital",
+      "image": "/images/hero/portfolio/winter-portrait.jpg",
+      "description": "Retrato de primer plano con foco suave en la mirada y tonalidades zafiro y nieve.",
+      "featured": false,
+      "likes": 32
     }
   ],
   "commissions": [
@@ -1397,6 +1512,93 @@
         "Boceto preliminar",
         "Uso personal"
       ]
+    },
+    {
+      "id": "comm-bianca-01",
+      "artistId": "artist-bianca",
+      "title": "Retrato Ilustrado de Personaje",
+      "category": "Ilustración Digital",
+      "price": 65,
+      "deliveryDays": 4,
+      "revisions": 3,
+      "status": "active",
+      "description": "Busto o medio cuerpo con iluminación cuidada, paleta de colores personalizada y entrega a 300 DPI.",
+      "examples": [
+        "/images/hero/portfolio/winter-portrait.jpg",
+        "/images/hero/portfolio/fantasy-girl.jpg"
+      ]
+    },
+    {
+      "id": "comm-bianca-02",
+      "artistId": "artist-bianca",
+      "title": "Ilustración Completa con Fondo Cinemático",
+      "category": "Concept Art",
+      "price": 150,
+      "deliveryDays": 7,
+      "revisions": 4,
+      "status": "active",
+      "description": "Escena completa con personaje principal, fondo ambiental detallado, iluminación volumétrica y narrativa.",
+      "examples": [
+        "/images/hero/portfolio/sky-sanctuary.jpg",
+        "/images/hero/azure_isles.jpg"
+      ]
+    },
+    {
+      "id": "comm-bianca-03",
+      "artistId": "artist-bianca",
+      "title": "Hoja de Diseño de Personaje (Model Sheet)",
+      "category": "Diseño de Personajes",
+      "price": 120,
+      "deliveryDays": 6,
+      "revisions": 3,
+      "status": "active",
+      "description": "Vistas de frente, tres cuartos y perfil con paleta oficial de color, accesorios y expresiones faciales.",
+      "examples": [
+        "/images/hero/portfolio/forest-guardian.jpg",
+        "/images/catalog/character_design_01.jpg"
+      ]
+    },
+    {
+      "id": "comm-bianca-04",
+      "artistId": "artist-bianca",
+      "title": "Boceto Conceptual Rápido",
+      "category": "Concept Art",
+      "price": 40,
+      "deliveryDays": 2,
+      "revisions": 2,
+      "status": "active",
+      "description": "Exploración de siluetas, poses dinámicas y composición en escala de grises con tintas de color.",
+      "examples": [
+        "/images/wip_sketch.jpg"
+      ]
+    },
+    {
+      "id": "comm-mateo-02",
+      "artistId": "artist-001",
+      "title": "Concept Art de Entorno Fantástico",
+      "category": "Concept Art",
+      "price": 140,
+      "deliveryDays": 6,
+      "revisions": 3,
+      "status": "active",
+      "description": "Paisaje épico con iluminación atmosférica, detalles arquitectónicos y archivo listo para imprenta.",
+      "examples": [
+        "/images/hero/magic_shop.jpg"
+      ]
+    },
+    {
+      "id": "comm-mateo-03",
+      "artistId": "artist-001",
+      "title": "Diseño de Criatura o Montura Mitológica",
+      "category": "Diseño de Personajes",
+      "price": 110,
+      "deliveryDays": 5,
+      "revisions": 3,
+      "status": "active",
+      "description": "Estudio visual de criatura con anatomía fantástica, variantes de textura y paleta de color.",
+      "examples": [
+        "/images/catalog/creature_design_dragon.svg"
+      ]
     }
   ],
   "requests": [
@@ -1511,9 +1713,317 @@
       "escrowStatus": "held_in_escrow",
       "desiredDate": "2026-11-05",
       "createdAt": "2026-10-04T12:00:00Z"
+    },
+    {
+      "id": "req-bianca-01",
+      "artistId": "artist-bianca",
+      "clientId": "client-1",
+      "clientName": "Alejandro Morales",
+      "clientUsername": "alex_morales",
+      "clientAvatar": "https://ui-avatars.com/api/?name=Alejandro+Morales&background=6366f1&color=fff",
+      "commissionId": "comm-bianca-01",
+      "commissionTitle": "Retrato de Paladín Solar",
+      "budget": 65,
+      "price": 65,
+      "status": "pending",
+      "escrowStatus": "held_in_escrow",
+      "desiredDate": "2026-10-24",
+      "description": "Retrato de mi personaje de rol de mesa con armadura dorada y runas solares en los hombros.",
+      "notes": "Me encantaría que tuviera una mirada decidida y fondo con tonos atardecer.",
+      "references": [
+        "/images/hero/portfolio/winter-portrait.jpg"
+      ],
+      "createdAt": "2026-10-05T14:30:00Z"
+    },
+    {
+      "id": "req-bianca-02",
+      "artistId": "artist-bianca",
+      "clientId": "client-1",
+      "clientName": "Valeria Castro",
+      "clientUsername": "valeria_c",
+      "clientAvatar": "https://ui-avatars.com/api/?name=Valeria+Castro&background=ec4899&color=fff",
+      "commissionId": "comm-bianca-02",
+      "commissionTitle": "Portada para Novela Fantástica",
+      "budget": 150,
+      "price": 150,
+      "status": "in_progress",
+      "escrowStatus": "held_in_escrow",
+      "desiredDate": "2026-10-28",
+      "description": "Ilustración a doble página de una maga invocando un vórtice estelar sobre ruinas místicas.",
+      "notes": "Ya aprobé el boceto compositivo general. Procediendo al renderizado de luz.",
+      "references": [
+        "/images/hero/azure_isles.jpg",
+        "/images/wip_sketch.jpg"
+      ],
+      "createdAt": "2026-10-04T10:15:00Z"
+    },
+    {
+      "id": "req-bianca-03",
+      "artistId": "artist-bianca",
+      "clientId": "client-1",
+      "clientName": "Sebastián Peña",
+      "clientUsername": "sebas_p",
+      "clientAvatar": "https://ui-avatars.com/api/?name=Sebastian+Pena&background=10b981&color=fff",
+      "commissionId": "comm-bianca-03",
+      "commissionTitle": "Model Sheet de Protagonista Élfica",
+      "budget": 120,
+      "price": 120,
+      "status": "review",
+      "escrowStatus": "held_in_escrow",
+      "desiredDate": "2026-10-22",
+      "description": "Ficha de personaje con tres vistas para animación 2D y paleta cromática oficial.",
+      "notes": "Boceto entregado. Pendiente de confirmación del cliente para los colores de capa.",
+      "references": [
+        "/images/hero/portfolio/forest-guardian.jpg"
+      ],
+      "createdAt": "2026-10-02T16:00:00Z"
+    },
+    {
+      "id": "req-bianca-04",
+      "artistId": "artist-bianca",
+      "clientId": "client-1",
+      "clientName": "Laura Domínguez",
+      "clientUsername": "laura_d",
+      "clientAvatar": "https://ui-avatars.com/api/?name=Laura+Dominguez&background=f59e0b&color=fff",
+      "commissionId": "comm-bianca-02",
+      "commissionTitle": "Escenario del Valle Astral",
+      "budget": 150,
+      "price": 150,
+      "status": "completed",
+      "escrowStatus": "released",
+      "desiredDate": "2026-10-01",
+      "description": "Pintura ambiental con islas flotantes y cascadas de luz.",
+      "notes": "¡Entrega final aprobada y calificada con 5 estrellas! Fondos acreditados al balance.",
+      "references": [
+        "/images/hero/portfolio/sky-sanctuary.jpg"
+      ],
+      "createdAt": "2026-09-24T11:00:00Z"
+    },
+    {
+      "id": "req-bianca-05",
+      "artistId": "artist-bianca",
+      "clientId": "client-1",
+      "clientName": "Gabriel Ortiz",
+      "clientUsername": "gabriel_art",
+      "clientAvatar": "https://ui-avatars.com/api/?name=Gabriel+Ortiz&background=8b5cf6&color=fff",
+      "commissionId": "comm-bianca-01",
+      "commissionTitle": "Retrato de Hechicera Lunar",
+      "budget": 90,
+      "price": 90,
+      "status": "completed",
+      "escrowStatus": "released",
+      "desiredDate": "2026-09-28",
+      "description": "Retrato digital con iluminación cenital plateada.",
+      "notes": "Fondos liberados satisfactoriamente.",
+      "references": [
+        "/images/hero/portfolio/fantasy-girl.jpg"
+      ],
+      "createdAt": "2026-09-20T09:30:00Z"
+    },
+    {
+      "id": "req-mateo-01",
+      "artistId": "artist-001",
+      "clientId": "client-1",
+      "clientName": "Camila Navarro",
+      "clientUsername": "camilan",
+      "clientAvatar": "https://ui-avatars.com/api/?name=Camila+Navarro&background=06b6d4&color=fff",
+      "commissionId": "comm-mateo-01",
+      "commissionTitle": "Diseño de Criatura Ancestral",
+      "budget": 110,
+      "price": 110,
+      "status": "in_progress",
+      "escrowStatus": "held_in_escrow",
+      "desiredDate": "2026-10-26",
+      "description": "Criatura cuadrúpeda con pelaje bioluminiscente y astas cristalinas.",
+      "notes": "Trabajando en la etapa de color base y oclusión ambiental.",
+      "references": [
+        "/images/catalog/creature_design_dragon.svg"
+      ],
+      "createdAt": "2026-10-03T18:00:00Z"
+    },
+    {
+      "id": "req-mateo-02",
+      "artistId": "artist-001",
+      "clientId": "client-1",
+      "clientName": "Martín Vélez",
+      "clientUsername": "martin_v",
+      "clientAvatar": "https://ui-avatars.com/api/?name=Martin+Velez&background=3b82f6&color=fff",
+      "commissionId": "comm-mateo-02",
+      "commissionTitle": "Escenario Interior de Tienda Mágica",
+      "budget": 140,
+      "price": 140,
+      "status": "review",
+      "escrowStatus": "held_in_escrow",
+      "desiredDate": "2026-10-21",
+      "description": "Concept art con iluminación crepuscular y estanterías con libros antiguos.",
+      "notes": "Boceto entregado esperando revisión del cliente.",
+      "references": [
+        "/images/hero/magic_shop.jpg"
+      ],
+      "createdAt": "2026-10-01T12:00:00Z"
+    },
+    {
+      "id": "req-cl-bianca-01",
+      "artistId": "artist-demo-101",
+      "clientId": "NlFFPtqd1uk",
+      "clientName": "Bianca Robles Hurtado",
+      "clientUsername": "biancarobles",
+      "clientAvatar": "https://i.pravatar.cc/150?u=biancarobleshurtado@gmail.com",
+      "commissionId": "comm-101",
+      "commissionTitle": "Retrato Anime Celestial de Personaje Original",
+      "budget": 120,
+      "price": 120,
+      "status": "in_progress",
+      "escrowStatus": "held_in_escrow",
+      "desiredDate": "2026-10-25",
+      "description": "Ilustración estilo anime para avatar de canal y redes sociales con detalles celestiales.",
+      "notes": "Boceto compositivo recibido y aprobado. En proceso de entintado y color.",
+      "references": [
+        "/images/hero/portfolio/winter-portrait.jpg"
+      ],
+      "createdAt": "2026-10-04T11:00:00Z"
+    },
+    {
+      "id": "req-cl-bianca-02",
+      "artistId": "artist-demo-107",
+      "clientId": "NlFFPtqd1uk",
+      "clientName": "Bianca Robles Hurtado",
+      "clientUsername": "biancarobles",
+      "clientAvatar": "https://i.pravatar.cc/150?u=biancarobleshurtado@gmail.com",
+      "commissionId": "comm-108",
+      "commissionTitle": "Hoja de Sprites Animados Pixel Art",
+      "budget": 80,
+      "price": 80,
+      "status": "completed",
+      "escrowStatus": "released",
+      "desiredDate": "2026-10-01",
+      "description": "Set de animaciones retro de 4 direcciones para personaje protagonista en 16-bit.",
+      "notes": "Entrega final aprobada y archivos recibidos en formato PNG transparente.",
+      "references": [
+        "/images/catalog/pixel_sprites_sheet.svg"
+      ],
+      "createdAt": "2026-09-25T14:20:00Z"
+    },
+    {
+      "id": "req-cl-bianca-03",
+      "artistId": "artist-001",
+      "clientId": "NlFFPtqd1uk",
+      "clientName": "Bianca Robles Hurtado",
+      "clientUsername": "biancarobles",
+      "clientAvatar": "https://i.pravatar.cc/150?u=biancarobleshurtado@gmail.com",
+      "commissionId": "comm-mateo-01",
+      "commissionTitle": "Concept Art de Criatura Mítica",
+      "budget": 110,
+      "price": 110,
+      "status": "review",
+      "escrowStatus": "held_in_escrow",
+      "desiredDate": "2026-10-22",
+      "description": "Boceto detallado de un lobo espectral con runas luminosas.",
+      "notes": "Boceto disponible para revisión del cliente.",
+      "references": [
+        "/images/catalog/creature_design_dragon.svg"
+      ],
+      "createdAt": "2026-10-02T16:00:00Z"
     }
   ],
-  "reviews": [],
+  "reviews": [
+    {
+      "id": "rev-bianca-01",
+      "artistId": "artist-bianca",
+      "requestId": "req-bianca-04",
+      "clientId": "client-1",
+      "clientName": "Laura Domínguez",
+      "clientAvatar": "https://ui-avatars.com/api/?name=Laura+Dominguez&background=f59e0b&color=fff",
+      "commissionTitle": "Escenario del Valle Astral",
+      "rating": 5,
+      "comment": "¡Un trabajo verdaderamente espectacular! La atención a los detalles de iluminación y la atmósfera mágica superaron todas mis expectativas. Bianca se comunicó en cada paso del proceso y entregó antes de la fecha límite.",
+      "createdAt": "2026-10-02T10:00:00Z"
+    },
+    {
+      "id": "rev-bianca-02",
+      "artistId": "artist-bianca",
+      "requestId": "req-bianca-05",
+      "clientId": "client-1",
+      "clientName": "Gabriel Ortiz",
+      "clientAvatar": "https://ui-avatars.com/api/?name=Gabriel+Ortiz&background=8b5cf6&color=fff",
+      "commissionTitle": "Retrato de Hechicera Lunar",
+      "rating": 5,
+      "comment": "La calidad del dibujo y la armonía de la paleta de colores son increíbles. El archivo en alta resolución quedó perfecto para imprimir como póster. Recomiendo totalmente trabajar con ella.",
+      "createdAt": "2026-09-29T14:30:00Z"
+    },
+    {
+      "id": "rev-bianca-03",
+      "artistId": "artist-bianca",
+      "requestId": "req-bianca-03",
+      "clientId": "client-1",
+      "clientName": "Sebastián Peña",
+      "clientAvatar": "https://ui-avatars.com/api/?name=Sebastian+Pena&background=10b981&color=fff",
+      "commissionTitle": "Model Sheet de Protagonista Élfica",
+      "rating": 5,
+      "comment": "Excelente disposición para incorporar las notas de revisión. Capturó la personalidad del personaje a la perfección desde el primer boceto. ¡10/10!",
+      "createdAt": "2026-09-22T18:00:00Z"
+    },
+    {
+      "id": "rev-mateo-01",
+      "artistId": "artist-001",
+      "requestId": "req-105",
+      "clientId": "client-1",
+      "clientName": "Carlos Mendoza",
+      "clientAvatar": "https://ui-avatars.com/api/?name=Carlos+Mendoza&background=6366f1&color=fff",
+      "commissionTitle": "Ilustración de Portada de Álbum Musical",
+      "rating": 5,
+      "comment": "Mateo es un profesional de primer nivel. Supo interpretar la vibra de la música y plasmarla en una portada impactante. El sistema Escrow dio mucha tranquilidad durante todo el encargo.",
+      "createdAt": "2026-10-01T15:00:00Z"
+    },
+    {
+      "id": "rev-mateo-02",
+      "artistId": "artist-001",
+      "requestId": "req-mateo-01",
+      "clientId": "client-1",
+      "clientName": "Camila Navarro",
+      "clientAvatar": "https://ui-avatars.com/api/?name=Camila+Navarro&background=06b6d4&color=fff",
+      "commissionTitle": "Diseño de Criatura Ancestral",
+      "rating": 5,
+      "comment": "Creatividad desbordante y técnica impecable. La textura del pelaje y la luz bioluminiscente quedaron de ensueño.",
+      "createdAt": "2026-09-28T12:00:00Z"
+    },
+    {
+      "id": "rev-sora-01",
+      "artistId": "artist-demo-101",
+      "requestId": "req-104",
+      "clientId": "client-1",
+      "clientName": "Mariana Soto",
+      "clientAvatar": "https://ui-avatars.com/api/?name=Mariana+Soto&background=ec4899&color=fff",
+      "commissionTitle": "Retrato Ilustrado Anime Full-Color",
+      "rating": 5,
+      "comment": "Estilo anime único y súper pulido. La entrega fue rapidísima y el trato fue muy amable en todo momento.",
+      "createdAt": "2026-09-26T16:00:00Z"
+    },
+    {
+      "id": "rev-sora-02",
+      "artistId": "artist-demo-101",
+      "requestId": "req-101",
+      "clientId": "client-1",
+      "clientName": "Andrés Gil",
+      "clientAvatar": "https://ui-avatars.com/api/?name=Andres+Gil&background=10b981&color=fff",
+      "commissionTitle": "Ilustración Completa con Fondo Cinemático",
+      "rating": 5,
+      "comment": "Una obra de arte digna de una película de animación. Los tonos celestiales y los efectos de luz son incomparables.",
+      "createdAt": "2026-09-18T11:20:00Z"
+    },
+    {
+      "id": "rev-pixel-01",
+      "artistId": "artist-demo-107",
+      "requestId": "req-108",
+      "clientId": "client-1",
+      "clientName": "Federico Ramos",
+      "clientAvatar": "https://ui-avatars.com/api/?name=Federico+Ramos&background=14b8a6&color=fff",
+      "commissionTitle": "Hoja de Sprites Animados Pixel Art",
+      "rating": 5,
+      "comment": "Animaciones cuadro por cuadro súper fluidas. Listo para importar en Godot Engine sin ningún retoque extra.",
+      "createdAt": "2026-09-15T09:45:00Z"
+    }
+  ],
   "follows": [],
   "likes": [],
   "messages": [
@@ -2047,6 +2557,30 @@
       "title": "Conversación con ArtLink AI",
       "createdAt": "2026-10-06T14:23:02.183Z",
       "updatedAt": "2026-10-06T14:23:02.183Z",
+      "page": "/"
+    },
+    {
+      "id": "D6t-e74mmOc",
+      "userId": "user-test-1791300310212-onlj",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-06T15:25:10.406Z",
+      "updatedAt": "2026-10-06T15:25:10.406Z",
+      "page": "/explorar"
+    },
+    {
+      "id": "nuwpxjoMGNQ",
+      "userId": "user-client-A-1791300310440-vstw",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-06T15:25:10.510Z",
+      "updatedAt": "2026-10-06T15:25:10.510Z",
+      "page": "/"
+    },
+    {
+      "id": "NnDpaCY8ahE",
+      "userId": "user-artist-B-1791300310440-cg5w",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-06T15:25:10.621Z",
+      "updatedAt": "2026-10-06T15:25:10.621Z",
       "page": "/"
     }
   ],
@@ -3461,6 +3995,61 @@
       "role": "user",
       "content": "Mensaje de usuario A",
       "createdAt": "2026-10-06T14:23:02.190Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "wDAOtxbsM9o",
+      "conversationId": "convo-1791300310406-9op2a",
+      "userId": "user-test-1791300310212-onlj",
+      "role": "user",
+      "content": "Hola asistente de ArtLink",
+      "createdAt": "2026-10-06T15:25:10.416Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "s2EREtv9JCE",
+      "conversationId": "convo-1791300310406-9op2a",
+      "userId": "user-test-1791300310212-onlj",
+      "role": "assistant",
+      "content": "Hola, te ayudo a buscar ilustradores digitales.",
+      "createdAt": "2026-10-06T15:25:10.422Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "eREpzPsVOTQ",
+      "conversationId": "convo-1791300310406-9op2a",
+      "userId": "user-test-1791300310212-onlj",
+      "role": "assistant",
+      "content": "Puedo recomendarte artistas de estilo anime.",
+      "createdAt": "2026-10-06T15:25:10.428Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "cw6HClBve88",
+      "conversationId": "convo-1791300310510-dxzpj",
+      "userId": "user-client-A-1791300310440-vstw",
+      "role": "user",
+      "content": "Mensaje de usuario A",
+      "createdAt": "2026-10-06T15:25:10.515Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "8Zba_BhZS-8",
+      "conversationId": "convo-1791300310621-4nd1k",
+      "userId": "user-artist-B-1791300310440-cg5w",
+      "role": "user",
+      "content": "Mensaje de usuario B",
+      "createdAt": "2026-10-06T15:25:10.624Z",
       "provider": "gemini",
       "status": "sent",
       "intent": null
