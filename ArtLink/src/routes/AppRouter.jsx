@@ -18,6 +18,7 @@ import SettingsPage from '../pages/SettingsPage'
 import SettingsProfilePage from '../pages/SettingsProfilePage'
 import { AdminDashboardPage, AdminResourcePage } from '../pages/AdminPages'
 import { LoginPage, RegisterPage } from '../pages/AuthPages'
+import ScrollToTop from '../components/ScrollToTop'
 import ProtectedRoute from './ProtectedRoute'
 import RoleRoute from './RoleRoute'
 import { ROLES } from '../utils/roles'
@@ -25,6 +26,7 @@ import { ROLES } from '../utils/roles'
 export default function AppRouter() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         {/* Rutas exclusivas del Administrador con Layout dedicado */}
         <Route element={<RoleRoute allowedRoles={[ROLES.ADMIN, 'admin', 'administrador']} />}>
