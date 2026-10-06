@@ -99,7 +99,6 @@ export default function AppShell() {
     { to: '/explorar', label: 'Explorar', accessibleLabel: 'Explorar artistas' },
     { to: '/como-funciona', label: 'Cómo funciona' },
     { to: '/para-artistas', label: 'Para artistas' },
-    { to: '/solicitudes', label: 'Solicitudes & Notificaciones', accessibleLabel: 'Solicitudes y Notificaciones' },
   ]
 
   // Enlaces de la barra lateral izquierda para usuarios autenticados
@@ -194,11 +193,6 @@ export default function AppShell() {
                     className={({ isActive }) => (isActive ? 'nav-pill active' : 'nav-pill')}
                   >
                     <span>{link.label}</span>
-                    {link.to === '/solicitudes' && totalAlertsCount > 0 && (
-                      <span className="header-notification-circle" title={`${totalAlertsCount} pendientes`}>
-                        {totalAlertsCount > 9 ? '9+' : totalAlertsCount}
-                      </span>
-                    )}
                   </NavLink>
                 ))}
               </div>
