@@ -1738,18 +1738,20 @@
   position: fixed;
   inset: 0;
   background: rgba(30, 25, 43, 0.65);
-  backdrop-filter: blur(4px);
-  z-index: 9999;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 10000;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 1.5rem;
+  animation: floatingAlertBackdropFade 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .chat-modal-window {
   background: #FFFDF8;
-  border: 3px solid #1E192B;
-  border-radius: 16px;
+  border: 2.5px solid #1E192B;
+  border-radius: 20px;
   box-shadow: 6px 6px 0 #1E192B;
   width: 100%;
   max-width: 580px;
@@ -1757,6 +1759,18 @@
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+  animation: floatingAlertCardPop 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+:root[data-theme='dark'] .chat-modal-backdrop {
+  background: rgba(10, 8, 18, 0.78);
+}
+
+:root[data-theme='dark'] .chat-modal-window {
+  background: #1C1728;
+  border-color: #3F3758;
+  box-shadow: 6px 6px 0px #0D0A14;
+  color: #F8F5FF;
 }
 
 .chat-modal-header {

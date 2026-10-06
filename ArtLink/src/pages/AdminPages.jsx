@@ -11,6 +11,7 @@ import EmptyState from '../components/EmptyState'
 import ErrorState from '../components/ErrorState'
 import LoadingState from '../components/LoadingState'
 import Modal from '../components/Modal'
+import useAlert from '../hooks/useAlert'
 import FloatingStars from '../components/FloatingStars'
 import RequestsStatusChart from '../components/admin/RequestsStatusChart'
 import ArtistsDisciplineChart from '../components/admin/ArtistsDisciplineChart'
@@ -1164,6 +1165,7 @@ export function AdminDashboardPage() {
 }
 
 export function AdminResourcePage({ resource }) {
+  const { showAlert } = useAlert()
   const config = resourceConfigs[resource] || resourceConfigs.usuarios
   const [items, setItems] = useState([])
   const [query, setQuery] = useState('')
@@ -1258,15 +1260,36 @@ export function AdminResourcePage({ resource }) {
       if (isNew) {
         const created = await create(form)
         setItems((prev) => [...prev, created])
-        setNotice(`Nuevo ${config.singularTitle.toLowerCase()} creado con éxito.`)
+        const msg = `Nuevo ${config.singularTitle.toLowerCase()} creado con éxito.`
+        setNotice(msg)
+        showAlert({
+          title: `¡${config.singularTitle} creado!`,
+          message: msg,
+          type: 'success',
+          confirmText: 'Aceptar',
+        })
       } else {
         const updated = await update(editing.id, form)
         setItems((prev) => prev.map((item) => (item.id === updated.id ? updated : item)))
-        setNotice(`${config.singularTitle} actualizado correctamente.`)
+        const msg = `${config.singularTitle} actualizado correctamente.`
+        setNotice(msg)
+        showAlert({
+          title: `¡${config.singularTitle} actualizado!`,
+          message: msg,
+          type: 'success',
+          confirmText: 'Aceptar',
+        })
       }
       setEditing(null)
     } catch (saveError) {
-      setError(saveError.message || 'Ocurrió un error al guardar el registro.')
+      const errMsg = saveError.message || 'Ocurrió un error al guardar el registro.'
+      setError(errMsg)
+      showAlert({
+        title: 'Error al guardar',
+        message: errMsg,
+        type: 'error',
+        confirmText: 'Cerrar',
+      })
     } finally {
       setSubmitting(false)
     }
@@ -1278,10 +1301,24 @@ export function AdminResourcePage({ resource }) {
     try {
       await remove(itemToDelete.id)
       setItems((prev) => prev.filter((entry) => entry.id !== itemToDelete.id))
-      setNotice(`${config.singularTitle} eliminado con éxito.`)
+      const msg = `${config.singularTitle} eliminado con éxito.`
+      setNotice(msg)
+      showAlert({
+        title: 'Registro eliminado',
+        message: msg,
+        type: 'info',
+        confirmText: 'Entendido',
+      })
       setItemToDelete(null)
     } catch (err) {
-      setError(err.message || 'Error al eliminar el registro.')
+      const errMsg = err.message || 'Error al eliminar el registro.'
+      setError(errMsg)
+      showAlert({
+        title: 'Error al eliminar',
+        message: errMsg,
+        type: 'error',
+        confirmText: 'Cerrar',
+      })
     } finally {
       setSubmitting(false)
     }

@@ -1078,25 +1078,41 @@
 .filter-modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(30, 25, 43, 0.6);
-  z-index: 100;
+  background: rgba(30, 25, 43, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 10000;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 1rem;
+  animation: floatingAlertBackdropFade 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .filter-modal-box {
-  background: #FFFFFF;
-  border: 3px solid #1E192B;
+  background: #FFFDF8;
+  border: 2.5px solid #1E192B;
   border-radius: 20px;
-  box-shadow: 8px 8px 0px #1E192B;
+  box-shadow: 6px 6px 0px #1E192B;
   max-width: 36rem;
   width: 100%;
   padding: 2rem;
   position: relative;
   max-height: 90vh;
   overflow-y: auto;
+  box-sizing: border-box;
+  animation: floatingAlertCardPop 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+:root[data-theme='dark'] .filter-modal-backdrop {
+  background: rgba(10, 8, 18, 0.78);
+}
+
+:root[data-theme='dark'] .filter-modal-box {
+  background: #1C1728;
+  border-color: #3F3758;
+  box-shadow: 6px 6px 0px #0D0A14;
+  color: #F8F5FF;
 }
 
 .filter-modal-header {

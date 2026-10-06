@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { X } from 'lucide-react'
+import { SparkleStar } from './FloatingStars'
 
 export default function Modal({ open, title, onClose, children }) {
   const closeButtonRef = useRef(null)
@@ -40,10 +41,24 @@ export default function Modal({ open, title, onClose, children }) {
   return (
     <div className="modal-backdrop" role="presentation" onMouseDown={() => onCloseRef.current?.()}>
       <section className="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" onMouseDown={(event) => event.stopPropagation()}>
+        {/* Estrellitas de esquina decorativas estilo scrapbook pastel */}
+        <span className="floating-alert-decor decor-top-left" aria-hidden="true">
+          <SparkleStar size={16} color="#F472B6" />
+        </span>
+        <span className="floating-alert-decor decor-top-right" aria-hidden="true">
+          <SparkleStar size={18} color="#2DD4BF" />
+        </span>
+
         <div className="modal-header">
           <h2 id="modal-title">{title}</h2>
-          <button ref={closeButtonRef} className="icon-button" type="button" onClick={() => onCloseRef.current?.()} aria-label="Cerrar ventana">
-            <X size={20} aria-hidden="true" />
+          <button
+            ref={closeButtonRef}
+            className="floating-alert-close-x modal-close-btn"
+            type="button"
+            onClick={() => onCloseRef.current?.()}
+            aria-label="Cerrar ventana"
+          >
+            <X size={18} aria-hidden="true" />
           </button>
         </div>
         {children}

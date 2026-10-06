@@ -1715,8 +1715,9 @@ input:checked + .art-dash-toggle-slider:before {
   position: fixed;
   inset: 0;
   background: rgba(30, 25, 43, 0.65);
-  backdrop-filter: blur(4px);
-  z-index: 100;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 10000;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1730,18 +1731,29 @@ input:checked + .art-dash-toggle-slider:before {
 }
 
 .art-dash-modal-card {
-  background: #FFFFFF;
-  border: 3px solid #1E192B;
-  border-radius: 1.35rem;
-  box-shadow: 6px 6px 0 #1E192B;
+  background: #FFFDF8;
+  border: 2.5px solid #1E192B;
+  border-radius: 20px;
+  box-shadow: 6px 6px 0px #1E192B;
   max-width: 550px;
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
-  padding: 1.8rem 2rem;
+  padding: 2rem 2.2rem;
   animation: artDashModalScale 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
   position: relative;
   box-sizing: border-box;
+}
+
+:root[data-theme='dark'] .art-dash-modal-backdrop {
+  background: rgba(10, 8, 18, 0.78);
+}
+
+:root[data-theme='dark'] .art-dash-modal-card {
+  background: #1C1728;
+  border-color: #3F3758;
+  box-shadow: 6px 6px 0px #0D0A14;
+  color: #F8F5FF;
 }
 
 @keyframes artDashModalScale {

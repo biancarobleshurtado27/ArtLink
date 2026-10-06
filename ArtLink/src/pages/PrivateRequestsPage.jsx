@@ -115,10 +115,15 @@ export default function PrivateRequestsPage() {
     return () => window.removeEventListener(NOTIFICATIONS_CHANGED_EVENT, handleUpdate)
   }, [loadNotifications, reloadRequests])
 
-  // Disparar toast temporal
-  const triggerToast = (msg) => {
-    setToastMessage(msg)
-    setTimeout(() => setToastMessage(null), 3500)
+  // Disparar alerta flotante unificada
+  const triggerToast = (msg, type = 'success') => {
+    showAlert({
+      type,
+      title: type === 'error' ? 'Aviso de error' : 'Notificación de Solicitud',
+      message: msg,
+      eyebrow: 'ArtLink / solicitud',
+      autoCloseMs: 3500,
+    })
   }
 
   // Marcar todo como leído
@@ -497,30 +502,6 @@ export default function PrivateRequestsPage() {
   return (
     <div className="req-page-container">
       <FloatingStars variant="requests" />
-      {/* Toast Feedback Notification */}
-      {toastMessage && (
-        <div
-          style={{
-            position: 'fixed',
-            top: 20,
-            right: 20,
-            zIndex: 9999,
-            background: '#1E192B',
-            color: '#FFFFFF',
-            padding: '0.75rem 1.25rem',
-            borderRadius: 8,
-            boxShadow: '3px 3px 0 #8B5CF6',
-            fontWeight: 700,
-            fontSize: '0.88rem',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-          }}
-        >
-          <CheckCircle2 size={16} color="#10B981" />
-          <span>{toastMessage}</span>
-        </div>
-      )}
 
       {/* ── 1. TOP HEADER ROW ── */}
       <header className="req-header-top-row">

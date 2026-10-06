@@ -47,6 +47,8 @@ import {
 } from 'lucide-react'
 import useSettings from '../hooks/useSettings'
 import useAuth from '../hooks/useAuth'
+import useAlert from '../hooks/useAlert'
+import Modal from '../components/Modal'
 import ReadAloudButton from '../components/ReadAloudButton'
 import ImagePickerField from '../components/settings/ImagePickerField'
 import { ROLES } from '../utils/roles'
@@ -70,6 +72,7 @@ export default function SettingsPage({ initialTab }) {
   const navigate = useNavigate()
   const location = useLocation()
   const { user, updateUser, logout } = useAuth()
+  const { showAlert } = useAlert()
   const {
     settings,
     updateSetting,
@@ -287,11 +290,23 @@ export default function SettingsPage({ initialTab }) {
         type: 'success',
         text: 'Ajustes y preferencias guardados con éxito.',
       })
+      showAlert({
+        title: '¡Ajustes guardados!',
+        message: 'Tus preferencias y perfil se han sincronizado con éxito.',
+        type: 'success',
+        confirmText: 'Entendido',
+      })
       setTimeout(() => setLocalFeedback({ type: '', text: '' }), 5000)
     } catch {
       setLocalFeedback({
         type: 'error',
         text: 'Ocurrió un inconveniente al guardar. Se preservaron los cambios locales.',
+      })
+      showAlert({
+        title: 'Error al guardar',
+        message: 'Ocurrió un inconveniente al guardar. Se preservaron los cambios locales.',
+        type: 'error',
+        confirmText: 'Aceptar',
       })
     }
   }
@@ -316,6 +331,12 @@ export default function SettingsPage({ initialTab }) {
       type: 'info',
       text: 'Se han restaurado los valores predeterminados.',
     })
+    showAlert({
+      title: 'Valores restablecidos',
+      message: 'Se han restaurado las configuraciones y datos predeterminados.',
+      type: 'info',
+      confirmText: 'Entendido',
+    })
     setTimeout(() => setLocalFeedback({ type: '', text: '' }), 4000)
   }
 
@@ -324,9 +345,21 @@ export default function SettingsPage({ initialTab }) {
     e.preventDefault()
     if (!newPass || newPass.length < 4) {
       setPassFeedback('La nueva contraseña debe tener al menos 4 caracteres.')
+      showAlert({
+        title: 'Contraseña no válida',
+        message: 'La nueva contraseña debe contener al menos 4 caracteres.',
+        type: 'warning',
+        confirmText: 'Corregir',
+      })
       return
     }
     setPassFeedback('Contraseña actualizada con éxito.')
+    showAlert({
+      title: 'Contraseña actualizada',
+      message: 'Tu contraseña de ArtLink se ha modificado correctamente.',
+      type: 'success',
+      confirmText: 'Aceptar',
+    })
     setCurrentPass('')
     setNewPass('')
     setTimeout(() => setPassFeedback(''), 4000)
@@ -347,23 +380,46 @@ export default function SettingsPage({ initialTab }) {
         ? 'Generando archivo .ZIP comprimido de tu taller (contratos, portafolio y comprobantes)...'
         : 'Generando archivo .ZIP comprimido con tus recibos de compra y licencias de encargos...',
     })
+    showAlert({
+      title: 'Exportando copia de seguridad',
+      message: isArtist
+        ? 'Generando archivo .ZIP comprimido con los contratos, portafolio y comprobantes de tu taller...'
+        : 'Generando archivo .ZIP comprimido con tus recibos de compra y licencias de encargos...',
+      type: 'info',
+      confirmText: 'Aceptar',
+    })
     setTimeout(() => {
       setLocalFeedback({
         type: 'success',
         text: 'Descarga de ArtLink_Backup.zip iniciada.',
+      })
+      showAlert({
+        title: 'Descarga lista',
+        message: 'Tu archivo comprimido ArtLink_Backup.zip ha comenzado a descargarse.',
+        type: 'success',
+        confirmText: 'Excelente',
       })
     }, 1500)
   }
 
   // Pausar taller (exclusivo artista)
   function handleTogglePauseStudio() {
-    setIsPausedForVacation((prev) => !prev)
-    setIsStudioOpen((prev) => !prev)
+    const nextPaused = !isPausedForVacation
+    setIsPausedForVacation(nextPaused)
+    setIsStudioOpen(!nextPaused)
     setLocalFeedback({
       type: 'info',
-      text: !isPausedForVacation
+      text: nextPaused
         ? 'El taller ha sido pausado por vacaciones. Se preservan tus reseñas.'
         : 'Taller reactivado y visible para recibir nuevos encargos.',
+    })
+    showAlert({
+      title: nextPaused ? 'Taller en pausa' : 'Taller reactivado',
+      message: nextPaused
+        ? 'El taller ha sido pausado por vacaciones. Tus reseñas y pedidos actuales se preservan con seguridad.'
+        : '¡Tu taller está reactivado y abierto a nuevas solicitudes de comisión!',
+      type: 'info',
+      confirmText: 'Entendido',
     })
     setTimeout(() => setLocalFeedback({ type: '', text: '' }), 4000)
   }
@@ -1278,10 +1334,14 @@ export default function SettingsPage({ initialTab }) {
                     </button>
                   </div>
 
-                  {showBankModal && (
-                    <div className="studio-modal-box">
-                      <label className="studio-field-label">
-                        <span>Datos de la cuenta de cobro</span>
+                  <Modal
+                    open={showBankModal}
+                    title="Modificar Cuenta de Cobro"
+                    onClose={() => setShowBankModal(false)}
+                  >
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', padding: '0.5rem 0' }}>
+                      <label className="studio-field-label" style={{ marginBottom: 0 }}>
+                        <span>Datos de la cuenta bancaria (IBAN, PayPal o CLABE)</span>
                         <input
                           type="text"
                           className="studio-input"
@@ -1289,8 +1349,32 @@ export default function SettingsPage({ initialTab }) {
                           onChange={(e) => setBankAccount(e.target.value)}
                         />
                       </label>
+                      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>
+                        <button
+                          type="button"
+                          className="studio-btn-discard"
+                          onClick={() => setShowBankModal(false)}
+                        >
+                          Cancelar
+                        </button>
+                        <button
+                          type="button"
+                          className="studio-btn-save"
+                          onClick={() => {
+                            setShowBankModal(false)
+                            showAlert({
+                              title: 'Cuenta actualizada',
+                              message: 'Se han guardado los datos de tu cuenta bancaria para transferencias.',
+                              type: 'success',
+                              confirmText: 'Entendido',
+                            })
+                          }}
+                        >
+                          Guardar Cuenta
+                        </button>
+                      </div>
                     </div>
-                  )}
+                  </Modal>
                 </>
               )}
 

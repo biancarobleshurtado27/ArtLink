@@ -88,11 +88,15 @@ export default function ArtistPanelPage() {
 
   const [escrowCustody, setEscrowCustody] = useState(0.0)
 
-  // Toast feedback
-  const [toastMessage, setToastMessage] = useState(null)
-  const showToast = (msg) => {
-    setToastMessage(msg)
-    setTimeout(() => setToastMessage(null), 3500)
+  // Feedback flotante unificado
+  const showToast = (msg, type = 'info') => {
+    showAlert({
+      type,
+      title: 'Notificación de Taller',
+      message: msg,
+      eyebrow: 'ArtLink / taller',
+      autoCloseMs: 3500,
+    })
   }
 
   // Active Kanban Pipeline Orders
@@ -441,13 +445,6 @@ export default function ArtistPanelPage() {
   return (
     <div className="art-dash-container" aria-label="Panel de Creador ArtLink">
       <FloatingStars variant="artist-panel" />
-      {/* Toast Notification */}
-      {toastMessage && (
-        <div className="art-dash-toast" role="status">
-          <Sparkles size={18} color="#7C3AED" />
-          <span>{toastMessage}</span>
-        </div>
-      )}
 
       {/* 1. NAVBAR EN CÁPSULA ESTILO HOME PAGE */}
       <div className="art-dash-nav-capsule-wrap">
