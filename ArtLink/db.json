@@ -155,11 +155,11 @@
       "createdAt": "2026-08-01T10:00:00Z"
     },
     {
-      "name": "Bianca Robles Hurtado",
+      "name": "Lucas Robles Hurtado",
       "email": "biancarobleshurtado27@gmail.com",
       "role": "artista",
       "passwordDemo": "1234567890",
-      "avatar": "https://i.pravatar.cc/150?u=biancarobleshurtado27@gmail.com",
+      "avatar": "/images/hero/thumbs/shop-1.jpg",
       "active": true,
       "createdAt": "2026-10-01T00:55:34.661Z",
       "termsAccepted": true,
@@ -651,15 +651,15 @@
     {
       "id": "artist-bianca",
       "userId": "R4LaTb0C73c",
-      "displayName": "Bianca Robles Hurtado",
-      "name": "Bianca Robles Hurtado",
-      "username": "biancarobles",
-      "avatar": "/images/hero/thumbs/sora-1.jpg",
-      "avatarUrl": "/images/hero/thumbs/sora-1.jpg",
+      "displayName": "Lucas Robles Hurtado",
+      "name": "Lucas Robles Hurtado",
+      "username": "lucasrobles",
+      "avatar": "/images/hero/thumbs/shop-1.jpg",
+      "avatarUrl": "/images/hero/thumbs/shop-1.jpg",
       "banner": "/images/hero/azure_isles.jpg",
       "coverUrl": "/images/hero/azure_isles.jpg",
       "image": "/images/hero/azure_isles.jpg",
-      "bio": "Ilustradora conceptual y creadora visual especializada en mundos de fantasía, diseño de personajes y paletas luminosas.",
+      "bio": "Ilustrador conceptual y creador visual especializado en mundos de fantasía, diseño de personajes y paletas luminosas.",
       "disciplines": [
         "Ilustración Digital",
         "Diseño de Personajes",
@@ -677,10 +677,10 @@
       "verified": true,
       "basePrice": 85,
       "isDemo": false,
-      "verificationBadge": "Artista destacada",
+      "verificationBadge": "Artista destacado",
       "socialLinks": {
-        "web": "https://artlink.com/biancarobles",
-        "x": "@biancarobles_art"
+        "web": "https://artlink.com/lucasrobles",
+        "x": "@lucasrobles_art"
       }
     }
   ],
@@ -1936,7 +1936,7 @@
       "clientAvatar": "https://ui-avatars.com/api/?name=Laura+Dominguez&background=f59e0b&color=fff",
       "commissionTitle": "Escenario del Valle Astral",
       "rating": 5,
-      "comment": "¡Un trabajo verdaderamente espectacular! La atención a los detalles de iluminación y la atmósfera mágica superaron todas mis expectativas. Bianca se comunicó en cada paso del proceso y entregó antes de la fecha límite.",
+      "comment": "¡Un trabajo verdaderamente espectacular! La atención a los detalles de iluminación y la atmósfera mágica superaron todas mis expectativas. Lucas se comunicó en cada paso del proceso y entregó antes de la fecha límite.",
       "createdAt": "2026-10-02T10:00:00Z"
     },
     {
@@ -1948,7 +1948,7 @@
       "clientAvatar": "https://ui-avatars.com/api/?name=Gabriel+Ortiz&background=8b5cf6&color=fff",
       "commissionTitle": "Retrato de Hechicera Lunar",
       "rating": 5,
-      "comment": "La calidad del dibujo y la armonía de la paleta de colores son increíbles. El archivo en alta resolución quedó perfecto para imprimir como póster. Recomiendo totalmente trabajar con ella.",
+      "comment": "La calidad del dibujo y la armonía de la paleta de colores son increíbles. El archivo en alta resolución quedó perfecto para imprimir como póster. Recomiendo totalmente trabajar con él.",
       "createdAt": "2026-09-29T14:30:00Z"
     },
     {
@@ -2581,6 +2581,30 @@
       "title": "Conversación con ArtLink AI",
       "createdAt": "2026-10-06T15:25:10.621Z",
       "updatedAt": "2026-10-06T15:25:10.621Z",
+      "page": "/"
+    },
+    {
+      "id": "bOjXTuqQImU",
+      "userId": "user-test-1791300863404-c6q5",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-06T15:34:23.595Z",
+      "updatedAt": "2026-10-06T15:34:23.595Z",
+      "page": "/explorar"
+    },
+    {
+      "id": "ZddINtbgYZs",
+      "userId": "user-client-A-1791300863639-m9gg",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-06T15:34:23.749Z",
+      "updatedAt": "2026-10-06T15:34:23.749Z",
+      "page": "/"
+    },
+    {
+      "id": "RCFYLbcfVgM",
+      "userId": "user-artist-B-1791300863639-ysc0",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-06T15:34:23.852Z",
+      "updatedAt": "2026-10-06T15:34:23.852Z",
       "page": "/"
     }
   ],
@@ -4050,6 +4074,61 @@
       "role": "user",
       "content": "Mensaje de usuario B",
       "createdAt": "2026-10-06T15:25:10.624Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "aJ3jv2NG79k",
+      "conversationId": "convo-1791300863595-1ctpf",
+      "userId": "user-test-1791300863404-c6q5",
+      "role": "user",
+      "content": "Hola asistente de ArtLink",
+      "createdAt": "2026-10-06T15:34:23.605Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "cfiKmykGB9E",
+      "conversationId": "convo-1791300863595-1ctpf",
+      "userId": "user-test-1791300863404-c6q5",
+      "role": "assistant",
+      "content": "Hola, te ayudo a buscar ilustradores digitales.",
+      "createdAt": "2026-10-06T15:34:23.623Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "vuhnXaldULc",
+      "conversationId": "convo-1791300863595-1ctpf",
+      "userId": "user-test-1791300863404-c6q5",
+      "role": "assistant",
+      "content": "Puedo recomendarte artistas de estilo anime.",
+      "createdAt": "2026-10-06T15:34:23.630Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "ZJnt_MFwz3I",
+      "conversationId": "convo-1791300863749-opeif",
+      "userId": "user-client-A-1791300863639-m9gg",
+      "role": "user",
+      "content": "Mensaje de usuario A",
+      "createdAt": "2026-10-06T15:34:23.754Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "AbhUOWZyZi8",
+      "conversationId": "convo-1791300863852-b8u7f",
+      "userId": "user-artist-B-1791300863639-ysc0",
+      "role": "user",
+      "content": "Mensaje de usuario B",
+      "createdAt": "2026-10-06T15:34:23.855Z",
       "provider": "gemini",
       "status": "sent",
       "intent": null
