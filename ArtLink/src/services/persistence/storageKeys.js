@@ -7,6 +7,9 @@ export const STORAGE_PREFIX = 'artlink'
 
 // Claves globales y de sesión activa
 export const ACTIVE_SESSION_KEY = `${STORAGE_PREFIX}:session:active`
+export const SESSION_LAST_ACTIVITY_KEY = `${STORAGE_PREFIX}:session:last_activity`
+export const INACTIVITY_TIMEOUT_MS = 20 * 60 * 1000 // 20 minutos de inactividad
+export const ACTIVITY_THROTTLE_MS = 10 * 1000 // Renovación controlada cada 10 segundos
 export const GLOBAL_THEME_KEY = `${STORAGE_PREFIX}:theme`
 export const GLOBAL_TEXT_SIZE_KEY = `${STORAGE_PREFIX}:text_size`
 export const GLOBAL_SETTINGS_KEY = `${STORAGE_PREFIX}:settings`
