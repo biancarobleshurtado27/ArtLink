@@ -42,6 +42,7 @@ import {
   removeReviewDraft,
   saveReviewDraft,
 } from '../services/persistence/syncService'
+import useAlert from '../hooks/useAlert'
 
 const ratingLabels = {
   1: '1 estrella (Deficiente)',
@@ -56,6 +57,7 @@ export default function ArtistProfilePage() {
   const navigate = useNavigate()
   const { profile, portfolio = [], commissions = [], reviews = [], loading, error } = useArtistProfile(id)
   const { user } = useAuth()
+  const { showAlert } = useAlert()
 
   // Estados de navegación y modales
   const [activeTab, setActiveTab] = useState('comisiones')
@@ -344,11 +346,25 @@ export default function ArtistProfilePage() {
       return
     }
     if (isSelf) {
-      setReviewError('No puedes calificar tu propio perfil de artista.')
+      const msg = 'No puedes calificar tu propio perfil de artista.'
+      setReviewError(msg)
+      showAlert({
+        type: 'error',
+        title: 'Error al enviar reseña',
+        message: msg,
+        eyebrow: 'ArtLink / error',
+      })
       return
     }
     if (!newComment.trim()) {
-      setReviewError('Por favor escribe un comentario sobre tu experiencia.')
+      const msg = 'Por favor escribe un comentario sobre tu experiencia con este artista.'
+      setReviewError(msg)
+      showAlert({
+        type: 'error',
+        title: 'Error al enviar reseña',
+        message: msg,
+        eyebrow: 'ArtLink / validación',
+      })
       return
     }
 
@@ -397,8 +413,22 @@ export default function ArtistProfilePage() {
       setNewComment('')
       setNewRating(5)
       setHoverRating(0)
+
+      showAlert({
+        type: 'success',
+        title: '¡Reseña enviada correctamente!',
+        message: `Tu valoración de ${newRating} estrellas y tu reseña para ${profile.displayName} fueron publicadas con éxito. ¡Gracias por compartir tu opinión con la comunidad!`,
+        eyebrow: 'ArtLink / reseña verificada',
+      })
     } catch (err) {
-      setReviewError(err.message || 'Error al guardar la reseña')
+      const errMsg = err.message || 'Error al guardar la reseña'
+      setReviewError(errMsg)
+      showAlert({
+        type: 'error',
+        title: 'Error al enviar una reseña',
+        message: errMsg,
+        eyebrow: 'ArtLink / error',
+      })
     } finally {
       setReviewSubmitting(false)
     }
@@ -423,7 +453,7 @@ export default function ArtistProfilePage() {
 
   return (
     <div className="artist-profile-page-v2">
-      <FloatingStars variant="page" />
+      <FloatingStars variant="artist-profile" />
       {/* ── 1. BANNER ILUSTRADO SUPERIOR ── */}
       <section className="artist-v2-banner" aria-label={`Portada de ${profile.displayName}`}>
         {bannerImage ? (

@@ -12,6 +12,7 @@ import {
 import { isValidSession, sanitizeSessionUser } from '../services/persistence/persistenceUtils'
 import { migrateGuestChatToUser } from '../services/chatPersistenceService'
 import apiClient from '../services/apiClient'
+import { AlertProvider } from './AlertContext'
 
 export const SESSION_STORAGE_KEY = 'artlink_session'
 export { INACTIVITY_TIMEOUT_MS, ACTIVITY_THROTTLE_MS, SESSION_LAST_ACTIVITY_KEY }
@@ -278,5 +279,9 @@ export function AuthProvider({ children }) {
     [user],
   )
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+  return (
+    <AuthContext.Provider value={value}>
+      <AlertProvider>{children}</AlertProvider>
+    </AuthContext.Provider>
+  )
 }

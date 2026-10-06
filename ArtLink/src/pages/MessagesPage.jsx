@@ -648,7 +648,7 @@ export default function MessagesPage() {
 
   return (
     <div className="chat-view-container">
-      <FloatingStars variant="subtle" />
+      <FloatingStars variant="messages" />
       <div className={`chat-three-column-grid ${!showOrderDetails ? 'is-details-closed' : ''} ${hasActiveChat ? 'has-active-chat' : 'is-inbox-view'}`}>
         {/* ══════════════════════════════════════════════════════════════════
             COLUMNA 1: BANDEJA DE CONVERSACIONES REALES

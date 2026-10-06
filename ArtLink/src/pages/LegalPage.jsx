@@ -122,7 +122,7 @@ export default function LegalPage() {
 
   return (
     <section className="legal-page" aria-labelledby="legal-title">
-      <FloatingStars variant="page" />
+      <FloatingStars variant="legal" />
       <Link className="back-link" to="/"><ArrowLeft size={16} aria-hidden="true" /> Volver al inicio</Link>
       <p className="eyebrow">{config.eyebrow}</p>
       <h1 id="legal-title">{config.title}</h1>

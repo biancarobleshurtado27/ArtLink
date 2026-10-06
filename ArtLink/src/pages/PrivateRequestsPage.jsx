@@ -41,12 +41,14 @@ import usePrivateRequests from '../hooks/usePrivateRequests'
 import { updateRequest } from '../services/requestService'
 import { getNotificationsByUser, markNotificationAsRead, createNotification } from '../services/notificationService'
 import { triggerNotificationsUpdate, NOTIFICATIONS_CHANGED_EVENT } from '../hooks/useNotificationBadges'
+import useAlert from '../hooks/useAlert'
 import FloatingStars, { DecorativeStar } from '../components/FloatingStars'
 import '../styles/requestsPop.css'
 
 export default function PrivateRequestsPage() {
   const navigate = useNavigate()
   const { user } = useAuth()
+  const { showAlert } = useAlert()
   const { requests, loading: requestsLoading, error: requestsError, reload: reloadRequests } = usePrivateRequests()
 
   // Notificaciones reales del usuario
@@ -182,11 +184,21 @@ export default function PrivateRequestsPage() {
 
       setShowAcceptModal(false)
       setSelectedRequest(null)
-      triggerToast(`Solicitud #${req.id.slice(-6)} aceptada. Fondos en custodia Escrow.`)
+      showAlert({
+        type: 'success',
+        title: '¡Solicitud aceptada!',
+        message: `Has aceptado la propuesta #${req.id.slice(-6)}. El encargo se encuentra en desarrollo con fondos protegidos en custodia Escrow.`,
+        eyebrow: 'ArtLink / solicitud aceptada',
+      })
       reloadRequests()
       triggerNotificationsUpdate()
     } catch (err) {
-      triggerToast('Error al aceptar la solicitud: ' + (err.message || 'Error del servidor'))
+      showAlert({
+        type: 'error',
+        title: 'Error al aceptar solicitud',
+        message: 'Error al aceptar la solicitud: ' + (err.message || 'Error del servidor'),
+        eyebrow: 'ArtLink / error',
+      })
     }
   }
 
@@ -205,11 +217,21 @@ export default function PrivateRequestsPage() {
         createdAt: new Date().toISOString(),
       }).catch(() => {})
 
-      triggerToast(`Solicitud #${req.id.slice(-6)} cancelada amablemente.`)
+      showAlert({
+        type: 'info',
+        title: 'Solicitud rechazada',
+        message: `La solicitud #${req.id.slice(-6)} ha sido cancelada amablemente. La reserva de fondos del cliente fue liberada.`,
+        eyebrow: 'ArtLink / solicitud rechazada',
+      })
       reloadRequests()
       triggerNotificationsUpdate()
     } catch (err) {
-      triggerToast('Error al cancelar la solicitud: ' + (err.message || 'Error del servidor'))
+      showAlert({
+        type: 'error',
+        title: 'Error al cancelar solicitud',
+        message: 'Error al cancelar la solicitud: ' + (err.message || 'Error del servidor'),
+        eyebrow: 'ArtLink / error',
+      })
     }
   }
 
@@ -228,11 +250,21 @@ export default function PrivateRequestsPage() {
         createdAt: new Date().toISOString(),
       }).catch(() => {})
 
-      triggerToast(`Entrega de encargo #${req.id.slice(-6)} aprobada. Fondos liberados.`)
+      showAlert({
+        type: 'success',
+        title: 'Cambio de estado: ¡Entrega aprobada!',
+        message: `Entrega de encargo #${req.id.slice(-6)} aprobada satisfactoriamente. Los fondos bajo custodia Escrow han sido liberados al artista.`,
+        eyebrow: 'ArtLink / estado de comisión',
+      })
       reloadRequests()
       triggerNotificationsUpdate()
     } catch (err) {
-      triggerToast('Error al aprobar entrega: ' + (err.message || 'Error del servidor'))
+      showAlert({
+        type: 'error',
+        title: 'Error al aprobar entrega',
+        message: 'Error al aprobar entrega: ' + (err.message || 'Error del servidor'),
+        eyebrow: 'ArtLink / error',
+      })
     }
   }
 
@@ -254,11 +286,21 @@ export default function PrivateRequestsPage() {
 
       setShowRevisionModal(false)
       setRevisionNotes('')
-      triggerToast(`Observaciones enviadas para el encargo #${selectedRequest.id.slice(-6)}`)
+      showAlert({
+        type: 'info',
+        title: 'Cambio de estado: Observaciones enviadas',
+        message: `Observaciones enviadas para el encargo #${selectedRequest.id.slice(-6)}. El estado continúa en progreso con ajustes solicitados.`,
+        eyebrow: 'ArtLink / estado de comisión',
+      })
       reloadRequests()
       triggerNotificationsUpdate()
     } catch (err) {
-      triggerToast('Error al solicitar ajustes: ' + (err.message || 'Error del servidor'))
+      showAlert({
+        type: 'error',
+        title: 'Error al solicitar ajustes',
+        message: 'Error al solicitar ajustes: ' + (err.message || 'Error del servidor'),
+        eyebrow: 'ArtLink / error',
+      })
     }
   }
 

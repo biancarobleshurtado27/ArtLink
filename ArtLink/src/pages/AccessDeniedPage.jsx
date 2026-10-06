@@ -5,7 +5,7 @@ import FloatingStars from '../components/FloatingStars'
 export default function AccessDeniedPage() {
   return (
     <div className="access-denied-page-wrapper">
-      <FloatingStars variant="page" />
+      <FloatingStars variant="status" />
       <section className="auth-panel" aria-labelledby="denied-title">
         <p className="eyebrow">ArtLink / permisos</p>
         <h1 id="denied-title">Acceso denegado</h1>

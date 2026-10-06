@@ -233,7 +233,7 @@ export default function ExplorePage() {
 
   return (
     <div className="explore-v3-container">
-      <FloatingStars variant="page" />
+      <FloatingStars variant="explore" />
       {/* 1. HERO SECTION */}
       <header className="explore-v3-hero" aria-labelledby="explore-hero-title">
         <div className="explore-v3-eyebrow">

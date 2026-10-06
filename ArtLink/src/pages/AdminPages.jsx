@@ -491,7 +491,7 @@ export function AdminDashboardPage() {
 
   return (
     <div className="admin-console-view" aria-labelledby="admin-title">
-      <FloatingStars variant="page" />
+      <FloatingStars variant="admin" />
       {/* 1. Encabezado Superior del Dashboard */}
       <div className="admin-dashboard-hero">
         <div className="admin-hero-text">
@@ -1292,7 +1292,7 @@ export function AdminResourcePage({ resource }) {
 
   return (
     <section className="admin-page" aria-labelledby="resource-title">
-      <FloatingStars variant="page" />
+      <FloatingStars variant="admin" />
       {/* Breadcrumb de navegación */}
       <nav aria-label="Ruta de navegación" className="admin-resource-breadcrumb">
         <Link to="/admin">Panel administrativo</Link>

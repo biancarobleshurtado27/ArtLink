@@ -7,6 +7,19 @@ import FloatingStars, {
   PAGE_SPARKLES_DATA,
   SUBTLE_SPARKLES_DATA,
   REQUESTS_SPARKLES_DATA,
+  EXPLORE_SPARKLES_DATA,
+  AUTH_SPARKLES_DATA,
+  NEW_REQUEST_SPARKLES_DATA,
+  ARTIST_PROFILE_SPARKLES_DATA,
+  ARTIST_PANEL_SPARKLES_DATA,
+  PROFILE_SPARKLES_DATA,
+  SETTINGS_SPARKLES_DATA,
+  MESSAGES_SPARKLES_DATA,
+  COMO_FUNCIONA_SPARKLES_DATA,
+  PARA_ARTISTAS_SPARKLES_DATA,
+  ADMIN_SPARKLES_DATA,
+  STATUS_SPARKLES_DATA,
+  LEGAL_SPARKLES_DATA,
   DecorativeStars,
   AnimatedStars,
   BackgroundDecoration,
@@ -75,5 +88,30 @@ describe('FloatingStars Component', () => {
     const { container } = render(<FloatingStars stars={customStars} />)
     const stars = container.querySelectorAll('.hero-floating-star')
     expect(stars.length).toBe(2)
+  })
+
+  it('renders all dedicated page variants with tailored presets and bleed container', () => {
+    const pageVariants = [
+      { variant: 'explore', expectedCount: EXPLORE_SPARKLES_DATA.length },
+      { variant: 'auth', expectedCount: AUTH_SPARKLES_DATA.length },
+      { variant: 'new-request', expectedCount: NEW_REQUEST_SPARKLES_DATA.length },
+      { variant: 'artist-profile', expectedCount: ARTIST_PROFILE_SPARKLES_DATA.length },
+      { variant: 'artist-panel', expectedCount: ARTIST_PANEL_SPARKLES_DATA.length },
+      { variant: 'profile', expectedCount: PROFILE_SPARKLES_DATA.length },
+      { variant: 'settings', expectedCount: SETTINGS_SPARKLES_DATA.length },
+      { variant: 'messages', expectedCount: MESSAGES_SPARKLES_DATA.length },
+      { variant: 'como-funciona', expectedCount: COMO_FUNCIONA_SPARKLES_DATA.length },
+      { variant: 'para-artistas', expectedCount: PARA_ARTISTAS_SPARKLES_DATA.length },
+      { variant: 'admin', expectedCount: ADMIN_SPARKLES_DATA.length },
+      { variant: 'status', expectedCount: STATUS_SPARKLES_DATA.length },
+      { variant: 'legal', expectedCount: LEGAL_SPARKLES_DATA.length },
+    ]
+
+    for (const { variant, expectedCount } of pageVariants) {
+      const { container } = render(<FloatingStars variant={variant} />)
+      const stars = container.querySelectorAll('.hero-floating-star')
+      expect(stars.length).toBe(expectedCount)
+      expect(container.querySelector('.floating-stars-container--bleed')).toBeTruthy()
+    }
   })
 })

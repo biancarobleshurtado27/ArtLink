@@ -15,13 +15,14 @@ import {
   UploadCloud,
   X,
 } from 'lucide-react'
-import { Link, useLocation, useParams, useSearchParams } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import Avatar from '../components/Avatar'
 import FloatingStars, { DecorativeStar } from '../components/FloatingStars'
 import ErrorState from '../components/ErrorState'
 import LoadingState from '../components/LoadingState'
 import useArtistProfile from '../hooks/useArtistProfile'
 import useAuth from '../hooks/useAuth'
+import useAlert from '../hooks/useAlert'
 import { createRequest } from '../services/requestService'
 import { createNotification } from '../services/notificationService'
 import { triggerNotificationsUpdate } from '../hooks/useNotificationBadges'
@@ -34,8 +35,10 @@ import {
 export default function NewRequestPage() {
   const params = useParams()
   const location = useLocation()
+  const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { user } = useAuth()
+  const { showAlert } = useAlert()
 
   const segments = (location?.pathname || '').split('/').filter(Boolean)
   const lastSegment = segments[segments.length - 1]
@@ -201,11 +204,29 @@ export default function NewRequestPage() {
     e.preventDefault()
     if (isClosed) return
     if (!user) {
-      setSubmitError('Debes iniciar sesión con tu cuenta para enviar una propuesta de comisión.')
+      const msg = 'Debes iniciar sesión con tu cuenta para enviar una propuesta de comisión.'
+      setSubmitError(msg)
+      showAlert({
+        type: 'info',
+        title: 'Inicio de sesión requerido',
+        message: msg,
+        eyebrow: 'ArtLink / autenticación',
+        action: {
+          label: 'Iniciar sesión',
+          onClick: () => navigate(`/login?redirect=/solicitar-comision/${profile.id}`),
+        },
+      })
       return
     }
     if (isSelfRequest) {
-      setSubmitError('No puedes solicitarte una comisión a ti mismo.')
+      const msg = 'No puedes solicitarte una comisión a ti mismo.'
+      setSubmitError(msg)
+      showAlert({
+        type: 'error',
+        title: 'Error al enviar la propuesta',
+        message: msg,
+        eyebrow: 'ArtLink / error',
+      })
       return
     }
     setSubmitError('')
@@ -213,7 +234,14 @@ export default function NewRequestPage() {
     const errors = validate()
     if (Object.keys(errors).length > 0) {
       setFieldErrors(errors)
-      setSubmitError(errors.description || errors.termsAccepted || 'Por favor completa todos los campos requeridos.')
+      const errText = errors.description || errors.termsAccepted || 'Por favor completa todos los campos requeridos.'
+      setSubmitError(errText)
+      showAlert({
+        type: 'error',
+        title: 'Error al enviar la propuesta',
+        message: errText,
+        eyebrow: 'ArtLink / validación',
+      })
       return
     }
 
@@ -291,8 +319,26 @@ export default function NewRequestPage() {
       removeCommissionDraft(user.id, profile.id, selectedFormat.id)
       setCreatedRequest(request)
       setSubmitSuccess(true)
+      showAlert({
+        type: 'success',
+        title: '¡Propuesta de comisión enviada correctamente!',
+        message: `Tu propuesta para "${selectedFormat.title}" ($${totalPrice} USD) fue enviada con éxito a ${profile.displayName}. Se ha notificado al artista y los fondos se encuentran en custodia Escrow.`,
+        eyebrow: 'ArtLink / encargo protegido',
+        action: {
+          label: 'Ver mis solicitudes',
+          onClick: () => navigate('/solicitudes'),
+        },
+        closeLabel: 'Entendido',
+      })
     } catch (err) {
-      setSubmitError(err.message || 'Ocurrió un error al procesar la propuesta de comisión.')
+      const errMsg = err.message || 'Ocurrió un error al procesar la propuesta de comisión.'
+      setSubmitError(errMsg)
+      showAlert({
+        type: 'error',
+        title: 'Error al enviar la propuesta',
+        message: errMsg,
+        eyebrow: 'ArtLink / error',
+      })
     } finally {
       setSubmitting(false)
     }
@@ -325,7 +371,7 @@ export default function NewRequestPage() {
 
   return (
     <div className="request-page-wrapper" aria-labelledby="checkout-title">
-      <FloatingStars variant="page" />
+      <FloatingStars variant="new-request" />
       {/* ── TARJETA SUPERPUESTA DE CONFIRMACIÓN DE PROPUESTA (OVERLAY MODAL) ── */}
       {createdRequest && (
         <div className="confirmation-overlay">

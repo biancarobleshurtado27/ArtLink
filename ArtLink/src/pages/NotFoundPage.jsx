@@ -5,7 +5,7 @@ import FloatingStars from '../components/FloatingStars'
 export default function NotFoundPage() {
   return (
     <div className="not-found-page-wrapper">
-      <FloatingStars variant="page" />
+      <FloatingStars variant="status" />
       <section className="auth-panel" aria-labelledby="not-found-title">
         <p className="eyebrow">ArtLink / error 404</p>
         <h1 id="not-found-title">Esta página no está en el lienzo</h1>

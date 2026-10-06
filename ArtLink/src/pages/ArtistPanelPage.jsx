@@ -43,12 +43,14 @@ import LoadingState from '../components/LoadingState'
 import PortfolioForm from '../components/PortfolioForm'
 import FloatingStars, { DecorativeStar } from '../components/FloatingStars'
 import useArtistWorkspace from '../hooks/useArtistWorkspace'
+import useAlert from '../hooks/useAlert'
 import { handleImageError } from '../utils/imageFallback'
 import '../styles/artistDashboard.css'
 
 export default function ArtistPanelPage() {
   const location = useLocation()
   const navigate = useNavigate()
+  const { showAlert } = useAlert()
   const workspace = useArtistWorkspace()
   const { profile, portfolio, commissions, requests, loading, busy, error, actions } = workspace
 
@@ -266,7 +268,13 @@ export default function ArtistPanelPage() {
       )
     )
     setSelectedBriefOrder(null)
-    showToast(`🚀 ¡Comenzaste el encargo de ${order.clientHandle}! Movido a "En Boceto / WIP".`)
+    showToast(`¡Comenzaste el encargo de ${order.clientHandle}! Movido a "En Boceto / WIP".`)
+    showAlert({
+      type: 'success',
+      title: 'Cambio de estado: En Boceto / WIP',
+      message: `¡Comenzaste el encargo de ${order.clientHandle}! Se ha trasladado a la etapa de desarrollo y bocetos preliminares.`,
+      eyebrow: 'ArtLink / estado de comisión',
+    })
   }
 
   // Open WIP upload modal
@@ -309,7 +317,13 @@ export default function ArtistPanelPage() {
     ])
 
     setShowUploadWipModal(false)
-    showToast(`☁ ¡Entregable ${version} subido exitosamente y notificado al cliente!`)
+    showToast(`Entregable ${version} subido exitosamente y notificado al cliente`)
+    showAlert({
+      type: 'success',
+      title: 'Cambio de estado: Entregable WIP subido',
+      message: `¡Entregable ${version} subido exitosamente y notificado al cliente!`,
+      eyebrow: 'ArtLink / estado de comisión',
+    })
   }
 
   // Submit Final Render
@@ -342,7 +356,13 @@ export default function ArtistPanelPage() {
     ])
 
     setShowFinalRenderModal(false)
-    showToast(`🎉 ¡Render final entregado! Se liberaron $${order.price}.00 USD a tu balance disponible.`)
+    showToast(`¡Render final entregado! Se liberaron $${order.price}.00 USD a tu balance disponible.`)
+    showAlert({
+      type: 'success',
+      title: 'Cambio de estado: ¡Entrega final completada!',
+      message: `¡Render final entregado con éxito! Se liberaron $${order.price}.00 USD a tu balance disponible.`,
+      eyebrow: 'ArtLink / estado de comisión',
+    })
   }
 
   // Withdrawal Submit
@@ -420,7 +440,7 @@ export default function ArtistPanelPage() {
 
   return (
     <div className="art-dash-container" aria-label="Panel de Creador ArtLink">
-      <FloatingStars variant="page" />
+      <FloatingStars variant="artist-panel" />
       {/* Toast Notification */}
       {toastMessage && (
         <div className="art-dash-toast" role="status">

@@ -2546,12 +2546,229 @@ img, svg, video {
   position: fixed;
   inset: 0;
   background-color: rgba(30, 25, 43, 0.65);
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 10000;
   padding: 1rem;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   ALERTA FLOTANTE CON DESENFOQUE (FLOATING ACTION ALERT)
+   Diseño scrapbook pastel centrado por encima de la página
+   con fondo difuminado y página visible detrás.
+   ══════════════════════════════════════════════════════════════════ */
+.floating-alert-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background-color: rgba(30, 25, 43, 0.62);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  animation: floatingAlertBackdropFade 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes floatingAlertBackdropFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.floating-alert-card {
+  position: relative;
+  background: #FFFDF8;
+  color: #1E192B;
+  border: 2.5px solid #1E192B;
+  border-radius: 20px;
+  box-shadow: 6px 6px 0px #1E192B;
+  max-width: 480px;
+  width: 100%;
+  padding: 2.2rem 2rem 1.8rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  animation: floatingAlertCardPop 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes floatingAlertCardPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.88) translateY(16px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.floating-alert-decor {
+  position: absolute;
+  pointer-events: none;
+  animation: floatingStarTwinkle 3s ease-in-out infinite;
+}
+
+.decor-top-left {
+  top: 0.85rem;
+  left: 0.95rem;
+}
+
+.decor-top-right {
+  top: 0.85rem;
+  right: 2.75rem;
+}
+
+@keyframes floatingStarTwinkle {
+  0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.85; }
+  50% { transform: scale(1.15) rotate(10deg); opacity: 1; }
+}
+
+.floating-alert-close-x {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: 1.5px solid transparent;
+  border-radius: 50%;
+  color: #6B7280;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.floating-alert-close-x:hover {
+  background: rgba(30, 25, 43, 0.08);
+  color: #1E192B;
+  border-color: #1E192B;
+  transform: rotate(90deg);
+}
+
+.floating-alert-badge-wrap {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.4rem;
+  border: 2px solid #1E192B;
+  box-shadow: 2px 2px 0px #1E192B;
+}
+
+.badge-type-success {
+  background: #ECFDF5;
+  color: #059669;
+  border-color: #059669;
+  box-shadow: 2px 2px 0px #047857;
+}
+
+.badge-type-error {
+  background: #FEF2F2;
+  color: #DC2626;
+  border-color: #DC2626;
+  box-shadow: 2px 2px 0px #B91C1C;
+}
+
+.badge-type-info,
+.badge-type-status {
+  background: #F5F3FF;
+  color: #7C3AED;
+  border-color: #7C3AED;
+  box-shadow: 2px 2px 0px #6D28D9;
+}
+
+.floating-alert-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--badge, inherit);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #7C3AED;
+  margin: 0 0 0.25rem 0;
+}
+
+.floating-alert-title {
+  font-family: var(--heading, inherit);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #1E192B;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.25;
+}
+
+.floating-alert-message {
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: #4B5563;
+  margin: 0 0 1.25rem 0;
+  max-width: 400px;
+}
+
+.floating-alert-body {
+  width: 100%;
+  margin-bottom: 1.25rem;
+}
+
+.floating-alert-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.floating-alert-action-btn,
+.floating-alert-close-btn {
+  padding: 0.75rem 1.4rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+  border-radius: 12px;
+  cursor: pointer;
+  min-width: 130px;
+}
+
+/* Modo oscuro para alertas flotantes */
+:root[data-theme='dark'] .floating-alert-backdrop {
+  background-color: rgba(10, 8, 18, 0.78);
+}
+
+:root[data-theme='dark'] .floating-alert-card {
+  background: #1C1728;
+  color: #F8F5FF;
+  border-color: #3F3758;
+  box-shadow: 6px 6px 0px #0D0A14;
+}
+
+:root[data-theme='dark'] .floating-alert-title {
+  color: #F8F5FF;
+}
+
+:root[data-theme='dark'] .floating-alert-message {
+  color: #D1D5DB;
+}
+
+:root[data-theme='dark'] .floating-alert-close-x {
+  color: #9CA3AF;
+}
+
+:root[data-theme='dark'] .floating-alert-close-x:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+  border-color: #8B5CF6;
 }
 
 /* Responsive Mobile & Tablet Layout (<= 1024px / 64rem) */

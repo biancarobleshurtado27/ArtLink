@@ -29,7 +29,7 @@ export default function ProfilePage() {
   if (!user) {
     return (
       <div className="profile-page" aria-labelledby="profile-guest-title">
-        <FloatingStars variant="page" />
+        <FloatingStars variant="profile" />
         <section className="auth-panel">
           <p className="eyebrow">ArtLink / mi perfil</p>
           <h1 id="profile-guest-title">Esta sección es para tu cuenta</h1>
@@ -49,7 +49,7 @@ export default function ProfilePage() {
 
   return (
     <div className="profile-page" aria-labelledby="profile-title">
-      <FloatingStars variant="page" />
+      <FloatingStars variant="profile" />
       <section className="profile-card">
         <div className="profile-card-avatar">
           {user.avatar
