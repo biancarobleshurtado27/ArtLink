@@ -19,7 +19,7 @@ import ErrorState from '../components/ErrorState'
 import Modal from '../components/Modal'
 import Badge from '../components/Badge'
 import ShareMenu from '../components/ShareMenu'
-import FloatingStars from '../components/FloatingStars'
+import FloatingStars, { SparkleStar } from '../components/FloatingStars'
 import useArtistProfile from '../hooks/useArtistProfile'
 import useAuth from '../hooks/useAuth'
 import { handleImageError } from '../utils/imageFallback'
@@ -944,21 +944,29 @@ export default function ArtistProfilePage() {
           {/* Listado de reseñas verificadas */}
           <div className="artist-v2-reviews-list">
             {localReviews.length === 0 ? (
-              <div style={{
-                background: 'var(--paper)',
-                border: '2px dashed var(--line)',
-                borderRadius: '16px',
-                padding: '2.5rem 1.5rem',
-                textAlign: 'center',
-                margin: '0.5rem 0'
-              }}>
-                <MessageSquare size={36} color="var(--violet)" style={{ margin: '0 auto 0.8rem', opacity: 0.8 }} />
-                <h3 style={{ fontFamily: 'var(--heading)', fontSize: '1.1rem', margin: '0 0 0.4rem', color: 'var(--ink)' }}>
+              <div className="artist-v2-reviews-empty">
+                {/* Estrellitas de esquina decorativas scrapbook */}
+                <span className="artist-v2-empty-sparkle top-left" aria-hidden="true">
+                  <SparkleStar size={18} color="#F472B6" />
+                </span>
+                <span className="artist-v2-empty-sparkle top-right" aria-hidden="true">
+                  <SparkleStar size={16} color="#38BDF8" />
+                </span>
+
+                <div className="artist-v2-empty-icon-badge">
+                  <MessageSquare size={26} color="#7C3AED" aria-hidden="true" />
+                  <span className="artist-v2-empty-icon-mini-star" aria-hidden="true">
+                    <Star size={12} fill="#FDE047" color="#1E192B" strokeWidth={1.5} />
+                  </span>
+                </div>
+
+                <h3 className="artist-v2-empty-title">
                   Aún no hay reseñas registradas
                 </h3>
-                <p style={{ fontSize: '0.85rem', color: 'var(--muted)', margin: '0 0 1.2rem' }}>
+                <p className="artist-v2-empty-desc">
                   Sin suficientes reseñas registradas aún para este perfil. ¡Sé el primero en calificar a este artista!
                 </p>
+
                 {!isSelf && (
                   <button
                     type="button"
@@ -970,9 +978,8 @@ export default function ArtistProfilePage() {
                       }
                       setReviewModalOpen(true)
                     }}
-                    style={{ margin: '0 auto', gap: '0.4rem' }}
                   >
-                    <Star size={15} fill="currentColor" color="currentColor" aria-hidden="true" />
+                    <Star size={16} fill="#FDE047" color="#1E192B" strokeWidth={1.5} aria-hidden="true" />
                     <span>Escribir primera reseña</span>
                   </button>
                 )}

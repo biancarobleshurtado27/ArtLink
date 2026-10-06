@@ -2032,6 +2032,22 @@
       "createdAt": "2026-10-06T14:04:24.949Z",
       "updatedAt": "2026-10-06T14:04:24.949Z",
       "page": "/"
+    },
+    {
+      "id": "nkmaoGDs5ao",
+      "userId": "user-test-1791296581803-slfl",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-06T14:23:01.955Z",
+      "updatedAt": "2026-10-06T14:23:01.955Z",
+      "page": "/explorar"
+    },
+    {
+      "id": "XjdHyxYk8l8",
+      "userId": "user-client-A-1791296581988-dxc4",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-06T14:23:02.183Z",
+      "updatedAt": "2026-10-06T14:23:02.183Z",
+      "page": "/"
     }
   ],
   "favorites": [
@@ -3401,6 +3417,50 @@
       "role": "user",
       "content": "Mensaje de usuario B",
       "createdAt": "2026-10-06T14:04:24.953Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "vAfZoXU6o0k",
+      "conversationId": "convo-1791296581955-jxw7a",
+      "userId": "user-test-1791296581803-slfl",
+      "role": "user",
+      "content": "Hola asistente de ArtLink",
+      "createdAt": "2026-10-06T14:23:01.965Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "kb_2K3crHOM",
+      "conversationId": "convo-1791296581955-jxw7a",
+      "userId": "user-test-1791296581803-slfl",
+      "role": "assistant",
+      "content": "Hola, te ayudo a buscar ilustradores digitales.",
+      "createdAt": "2026-10-06T14:23:01.971Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "3zW-iEJxB_s",
+      "conversationId": "convo-1791296581955-jxw7a",
+      "userId": "user-test-1791296581803-slfl",
+      "role": "assistant",
+      "content": "Puedo recomendarte artistas de estilo anime.",
+      "createdAt": "2026-10-06T14:23:01.979Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "IZnj5nj4lUg",
+      "conversationId": "convo-1791296582183-71kji",
+      "userId": "user-client-A-1791296581988-dxc4",
+      "role": "user",
+      "content": "Mensaje de usuario A",
+      "createdAt": "2026-10-06T14:23:02.190Z",
       "provider": "gemini",
       "status": "sent",
       "intent": null

@@ -1479,6 +1479,38 @@
   box-shadow: 4px 4px 0 var(--ink);
 }
 
+.artist-v2-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  background: var(--violet, #8B5CF6);
+  color: #FFFFFF !important;
+  border: 2px solid var(--ink, #1E192B);
+  border-radius: 999px;
+  padding: 0.75rem 1.6rem;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  box-shadow: 3px 3px 0px var(--ink, #1E192B);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.16s ease;
+  user-select: none;
+}
+
+.artist-v2-btn-secondary:hover {
+  background: #7C3AED;
+  transform: translateY(-2px);
+  box-shadow: 5px 5px 0px var(--ink, #1E192B);
+}
+
+.artist-v2-btn-secondary:active {
+  transform: translateY(1px);
+  box-shadow: 2px 2px 0px var(--ink, #1E192B);
+}
+
 .artist-v2-btn-outline {
   display: inline-flex;
   align-items: center;
@@ -2098,6 +2130,126 @@
   display: grid;
   gap: 1.2rem;
   align-content: start;
+}
+
+/* ── TARJETA DE ESTADO VACÍO DE RESEÑAS (ESTILO SCRAPBOOK PASTEL) ── */
+.artist-v2-reviews-empty {
+  position: relative;
+  background: var(--paper, #FFFDF8);
+  border: 2.5px dashed var(--ink, #1E192B);
+  border-radius: 20px;
+  box-shadow: 4px 4px 0px var(--ink, #1E192B);
+  padding: 3.2rem 2rem;
+  text-align: center;
+  margin: 0.5rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.artist-v2-reviews-empty:hover {
+  box-shadow: 6px 6px 0px var(--ink, #1E192B);
+}
+
+.artist-v2-empty-sparkle {
+  position: absolute;
+  pointer-events: none;
+}
+
+.artist-v2-empty-sparkle.top-left {
+  top: 1.25rem;
+  left: 1.4rem;
+}
+
+.artist-v2-empty-sparkle.top-right {
+  top: 1.25rem;
+  right: 1.4rem;
+}
+
+.artist-v2-empty-icon-badge {
+  position: relative;
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 50%;
+  background: #EDE9FE;
+  border: 2px solid var(--ink, #1E192B);
+  box-shadow: 2.5px 2.5px 0px var(--ink, #1E192B);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.2rem;
+}
+
+.artist-v2-empty-icon-mini-star {
+  position: absolute;
+  bottom: -3px;
+  right: -3px;
+  background: #FFFDF8;
+  border: 1.5px solid var(--ink, #1E192B);
+  border-radius: 50%;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 1px 1px 0px var(--ink, #1E192B);
+}
+
+.artist-v2-empty-title {
+  font-family: var(--heading);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--ink, #1E192B);
+  margin: 0 0 0.45rem;
+  line-height: 1.3;
+}
+
+.artist-v2-empty-desc {
+  font-size: 0.92rem;
+  color: var(--muted, #6B7280);
+  max-width: 28rem;
+  margin: 0 0 1.6rem;
+  line-height: 1.55;
+}
+
+:root[data-theme='dark'] .artist-v2-reviews-empty {
+  background: #1F192C;
+  border-color: #4C3F68;
+  box-shadow: 4px 4px 0px #0D0A14;
+}
+
+:root[data-theme='dark'] .artist-v2-empty-icon-badge {
+  background: #2D2340;
+  border-color: #EDE9FE;
+  box-shadow: 2px 2px 0px #0D0A14;
+}
+
+:root[data-theme='dark'] .artist-v2-empty-icon-mini-star {
+  background: #1F192C;
+  border-color: #EDE9FE;
+}
+
+:root[data-theme='dark'] .artist-v2-empty-title {
+  color: #FAF5FF;
+}
+
+:root[data-theme='dark'] .artist-v2-empty-desc {
+  color: #C4B5FD;
+}
+
+:root[data-theme='dark'] .artist-v2-btn-secondary {
+  background: #8B5CF6;
+  color: #FFFFFF !important;
+  border-color: #EDE9FE;
+  box-shadow: 3px 3px 0px #EDE9FE;
+}
+
+:root[data-theme='dark'] .artist-v2-btn-secondary:hover {
+  background: #9061F9;
+  box-shadow: 5px 5px 0px #EDE9FE;
 }
 
 .artist-v2-review-card {
