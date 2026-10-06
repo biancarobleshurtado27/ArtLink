@@ -156,24 +156,38 @@
   --shadow-firm: 3px 4px 0 rgba(30, 25, 43, 0.12);
 }
 
-/* Modos de daltonismo */
+/* Modos de daltonismo - Aplicación visual completa a toda la plataforma */
 :root[data-color-mode='protanopia'] {
+  filter: url('#protanopia-filter');
+  -webkit-filter: url('#protanopia-filter');
   --violet: #2563EB;
   --violet-dark: #1D4ED8;
   --rose: #D97706;
   --mint: #059669;
 }
 :root[data-color-mode='deuteranopia'] {
+  filter: url('#deuteranopia-filter');
+  -webkit-filter: url('#deuteranopia-filter');
   --violet: #3B82F6;
   --violet-dark: #1E40AF;
   --rose: #EA580C;
   --mint: #0D9488;
 }
 :root[data-color-mode='tritanopia'] {
+  filter: url('#tritanopia-filter');
+  -webkit-filter: url('#tritanopia-filter');
   --violet: #7C3AED;
   --violet-dark: #5B21B6;
   --rose: #DC2626;
   --mint: #2563EB;
+}
+:root[data-color-mode='achromatopsia'] {
+  filter: grayscale(100%);
+  -webkit-filter: grayscale(100%);
+  --violet: #4B5563;
+  --violet-dark: #1F2937;
+  --rose: #6B7280;
+  --mint: #9CA3AF;
 }
 
 /* Reducir movimiento */

@@ -3226,6 +3226,30 @@
       "createdAt": "2026-10-06T16:18:47.635Z",
       "updatedAt": "2026-10-06T16:18:47.635Z",
       "page": "/"
+    },
+    {
+      "id": "A04q0tJU6DA",
+      "userId": "user-test-1791304789076-yac1",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-06T16:39:49.273Z",
+      "updatedAt": "2026-10-06T16:39:49.273Z",
+      "page": "/explorar"
+    },
+    {
+      "id": "RFLacfx-Mzc",
+      "userId": "user-client-A-1791304789305-8pqr",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-06T16:39:49.406Z",
+      "updatedAt": "2026-10-06T16:39:49.406Z",
+      "page": "/"
+    },
+    {
+      "id": "q8aVf_6T_0c",
+      "userId": "user-artist-B-1791304789305-h6z0",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-06T16:39:49.522Z",
+      "updatedAt": "2026-10-06T16:39:49.522Z",
+      "page": "/"
     }
   ],
   "favorites": [
@@ -4804,6 +4828,127 @@
       "role": "user",
       "content": "Mensaje de usuario B",
       "createdAt": "2026-10-06T16:18:47.638Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "0vxff46yBA4",
+      "conversationId": "convo-1791259496462-k2qrk",
+      "userId": "user-artist-001",
+      "role": "user",
+      "content": "Hola, quiero comisionar una ilustración conceptual de un personaje cyberpunk con iluminación de neón. ¿Qué artistas de la plataforma me recomiendas y cómo me protege el sistema de pago Escrow si el artista no entrega a tiempo?",
+      "createdAt": "2026-10-06T16:25:29.198Z",
+      "provider": "gemini",
+      "status": "sending",
+      "intent": null
+    },
+    {
+      "id": "v4-BL7grpqY",
+      "conversationId": "convo-1791259496462-k2qrk",
+      "userId": "user-artist-001",
+      "role": "user",
+      "content": "Hola, quiero comisionar una ilustración conceptual de un personaje cyberpunk con iluminación de neón. ¿Qué artistas de la plataforma me recomiendas y cómo me protege el sistema de pago Escrow si el artista no entrega a tiempo?",
+      "createdAt": "2026-10-06T16:25:29.198Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "p1MW_znVVDg",
+      "conversationId": "convo-1791259496462-k2qrk",
+      "userId": "user-artist-001",
+      "role": "user",
+      "content": "Hola, quiero comisionar una ilustración conceptual de un personaje cyberpunk con iluminación de neón. ¿Qué artistas de la plataforma me recomiendas y cómo me protege el sistema de pago Escrow si el artista no entrega a tiempo?",
+      "createdAt": "2026-10-06T16:25:29.198Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "1qHn1Q-rMJw",
+      "conversationId": "convo-1791259496462-k2qrk",
+      "userId": "user-artist-001",
+      "role": "user",
+      "content": "Hola, quiero comisionar una ilustración conceptual de un personaje cyberpunk con iluminación de neón. ¿Qué artistas de la plataforma me recomiendas y cómo me protege el sistema de pago Escrow si el artista no entrega a tiempo?",
+      "createdAt": "2026-10-06T16:25:29.198Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "l8G0P13YxPo",
+      "conversationId": "convo-1791259496462-k2qrk",
+      "userId": "user-artist-001",
+      "role": "assistant",
+      "content": "Hola, Mateo. Es un gusto saludarte. Como asistente de ArtLink, estaré encantado de ayudarte con tu solicitud.\n\nSobre tu búsqueda de artistas especializados en **Concept Art** con estética **Cyberpunk**, te informo que no tengo acceso directo a una lista de artistas en tiempo real para recomendarte perfiles específicos en este momento. Sin embargo, puedes utilizar nuestro buscador avanzado filtrando por la disciplina \"Concept art\" y utilizando las etiquetas \"Cyberpunk\" o \"Neon\" para encontrar a los artistas que mejor se ajusten a tu visión.\n\nRespecto a tu duda sobre el sistema de pago **Escrow**, te explico cómo funciona en ArtLink para protegerte:\n\n1. **Retención de fondos:** Cuando realizas una solicitud de comisión y el artista la acepta, el pago se deposita en una cuenta de custodia (Escrow). El dinero no se libera al artista en ese momento.\n2. **Protección ante incumplimiento:** Si el artista no entrega el trabajo dentro del plazo acordado o incumple los términos establecidos, el sistema permite abrir una disputa. Tras una revisión, si se confirma la falta de entrega, el sistema procede a la devolución de los fondos a tu cuenta.\n3. **Liberación segura:** El pago solo se libera al artista una vez que tú confirmas que has recibido el archivo final conforme a lo solicitado.\n\nPara iniciar tu búsqueda o comenzar con el proceso de solicitud, puedes explorar los portafolios de nuestros artistas disponibles.",
+      "createdAt": "2026-10-06T16:25:39.126Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": "explain_how_to_request"
+    },
+    {
+      "id": "jWal_fE0gns",
+      "conversationId": "convo-1791259496462-k2qrk",
+      "userId": "user-artist-001",
+      "role": "assistant",
+      "content": "Hola, Mateo. Es un gusto saludarte. Como asistente de ArtLink, estaré encantado de ayudarte con tu solicitud.\n\nSobre tu búsqueda de artistas especializados en **Concept Art** con estética **Cyberpunk**, te informo que no tengo acceso directo a una lista de artistas en tiempo real para recomendarte perfiles específicos en este momento. Sin embargo, puedes utilizar nuestro buscador avanzado filtrando por la disciplina \"Concept art\" y utilizando las etiquetas \"Cyberpunk\" o \"Neon\" para encontrar a los artistas que mejor se ajusten a tu visión.\n\nRespecto a tu duda sobre el sistema de pago **Escrow**, te explico cómo funciona en ArtLink para protegerte:\n\n1. **Retención de fondos:** Cuando realizas una solicitud de comisión y el artista la acepta, el pago se deposita en una cuenta de custodia (Escrow). El dinero no se libera al artista en ese momento.\n2. **Protección ante incumplimiento:** Si el artista no entrega el trabajo dentro del plazo acordado o incumple los términos establecidos, el sistema permite abrir una disputa. Tras una revisión, si se confirma la falta de entrega, el sistema procede a la devolución de los fondos a tu cuenta.\n3. **Liberación segura:** El pago solo se libera al artista una vez que tú confirmas que has recibido el archivo final conforme a lo solicitado.\n\nPara iniciar tu búsqueda o comenzar con el proceso de solicitud, puedes explorar los portafolios de nuestros artistas disponibles.",
+      "createdAt": "2026-10-06T16:25:39.126Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": "explain_how_to_request"
+    },
+    {
+      "id": "C49sqqZ_45Q",
+      "conversationId": "convo-1791304789273-2ktym",
+      "userId": "user-test-1791304789076-yac1",
+      "role": "user",
+      "content": "Hola asistente de ArtLink",
+      "createdAt": "2026-10-06T16:39:49.285Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "DD00O85drC8",
+      "conversationId": "convo-1791304789273-2ktym",
+      "userId": "user-test-1791304789076-yac1",
+      "role": "assistant",
+      "content": "Hola, te ayudo a buscar ilustradores digitales.",
+      "createdAt": "2026-10-06T16:39:49.290Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "-JOZy6k0juk",
+      "conversationId": "convo-1791304789273-2ktym",
+      "userId": "user-test-1791304789076-yac1",
+      "role": "assistant",
+      "content": "Puedo recomendarte artistas de estilo anime.",
+      "createdAt": "2026-10-06T16:39:49.296Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "IJ0gyYWH7gk",
+      "conversationId": "convo-1791304789406-uwo3x",
+      "userId": "user-client-A-1791304789305-8pqr",
+      "role": "user",
+      "content": "Mensaje de usuario A",
+      "createdAt": "2026-10-06T16:39:49.428Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "dvfh97rkMTE",
+      "conversationId": "convo-1791304789522-qhtcq",
+      "userId": "user-artist-B-1791304789305-h6z0",
+      "role": "user",
+      "content": "Mensaje de usuario B",
+      "createdAt": "2026-10-06T16:39:49.526Z",
       "provider": "gemini",
       "status": "sent",
       "intent": null

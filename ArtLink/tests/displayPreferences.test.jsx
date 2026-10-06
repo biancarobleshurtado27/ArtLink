@@ -16,4 +16,23 @@ describe('display preferences', () => {
     expect(document.documentElement.dataset.theme).toBe('dark')
     expect(document.documentElement.dataset.textSize).toBe('x-large')
   })
+
+  it('applies and updates daltonismo color modes on document.documentElement', () => {
+    const { result } = renderHook(() => useDisplayPreferences(), { wrapper })
+    
+    act(() => { result.current.updateSetting('colorMode', 'protanopia') })
+    expect(document.documentElement.dataset.colorMode).toBe('protanopia')
+
+    act(() => { result.current.updateSetting('colorMode', 'deuteranopia') })
+    expect(document.documentElement.dataset.colorMode).toBe('deuteranopia')
+
+    act(() => { result.current.updateSetting('colorMode', 'tritanopia') })
+    expect(document.documentElement.dataset.colorMode).toBe('tritanopia')
+
+    act(() => { result.current.updateSetting('colorMode', 'achromatopsia') })
+    expect(document.documentElement.dataset.colorMode).toBe('achromatopsia')
+
+    act(() => { result.current.updateSetting('colorMode', 'normal') })
+    expect(document.documentElement.dataset.colorMode).toBe('normal')
+  })
 })

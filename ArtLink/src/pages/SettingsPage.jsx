@@ -1926,15 +1926,133 @@ export default function SettingsPage({ initialTab }) {
                 <select
                   id="color-mode-select"
                   className="studio-input"
-                  value={settings.colorMode}
+                  value={settings.colorMode || 'normal'}
                   onChange={(e) => updateSetting('colorMode', e.target.value)}
                 >
                   <option value="normal">Sin filtro (Normal)</option>
                   <option value="protanopia">Protanopia (Deficiencia de rojo)</option>
                   <option value="deuteranopia">Deuteranopia (Deficiencia de verde)</option>
                   <option value="tritanopia">Tritanopia (Deficiencia de azul)</option>
+                  <option value="achromatopsia">Acromatopsia (Monocromía / Escala de grises)</option>
                 </select>
               </label>
+
+              {/* Botones rápidos de selección */}
+              <div
+                style={{
+                  display: 'flex',
+                  gap: '0.45rem',
+                  flexWrap: 'wrap',
+                  marginTop: '0.6rem',
+                  marginBottom: '0.75rem',
+                }}
+              >
+                {[
+                  { id: 'normal', label: 'Normal' },
+                  { id: 'protanopia', label: 'Protanopia' },
+                  { id: 'deuteranopia', label: 'Deuteranopia' },
+                  { id: 'tritanopia', label: 'Tritanopia' },
+                  { id: 'achromatopsia', label: 'Acromatopsia' },
+                ].map((mode) => {
+                  const isActive = (settings.colorMode || 'normal') === mode.id
+                  return (
+                    <button
+                      key={mode.id}
+                      type="button"
+                      onClick={() => updateSetting('colorMode', mode.id)}
+                      style={{
+                        padding: '0.35rem 0.75rem',
+                        fontSize: '0.78rem',
+                        fontWeight: 700,
+                        borderRadius: '9999px',
+                        border: '2px solid #1E192B',
+                        background: isActive ? '#8B5CF6' : '#FFFFFF',
+                        color: isActive ? '#FFFFFF' : '#1E192B',
+                        boxShadow: isActive ? '2px 2px 0px #1E192B' : 'none',
+                        cursor: 'pointer',
+                        transition: 'all 0.15s ease',
+                      }}
+                    >
+                      {mode.label}
+                    </button>
+                  )
+                })}
+              </div>
+
+              {/* Barra de comprobación cromática en vivo */}
+              <div
+                style={{
+                  background: 'var(--paper, #FFFFFF)',
+                  border: '2px solid #1E192B',
+                  borderRadius: '10px',
+                  padding: '0.75rem',
+                  boxShadow: '3px 3px 0px #1E192B',
+                  marginTop: '0.5rem',
+                }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginBottom: '0.5rem',
+                  }}
+                >
+                  <span style={{ fontSize: '0.74rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--muted, #6B7280)' }}>
+                    Comprobación visual de colores en vivo
+                  </span>
+                  <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#8B5CF6' }}>
+                    {settings.colorMode === 'protanopia'
+                      ? 'Simulando Protanopia (Rojo atenuado)'
+                      : settings.colorMode === 'deuteranopia'
+                      ? 'Simulando Deuteranopia (Verde atenuado)'
+                      : settings.colorMode === 'tritanopia'
+                      ? 'Simulando Tritanopia (Azul atenuado)'
+                      : settings.colorMode === 'achromatopsia'
+                      ? 'Simulando Acromatopsia (Monocromía)'
+                      : 'Visión de color estándar'}
+                  </span>
+                </div>
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(6, 1fr)',
+                    gap: '0.4rem',
+                    textAlign: 'center',
+                  }}
+                >
+                  {[
+                    { label: 'Rojo', bg: '#EF4444' },
+                    { label: 'Verde', bg: '#10B981' },
+                    { label: 'Azul', bg: '#3B82F6' },
+                    { label: 'Amarillo', bg: '#F59E0B' },
+                    { label: 'Violeta', bg: '#8B5CF6' },
+                    { label: 'Rosa', bg: '#EC4899' },
+                  ].map((color) => (
+                    <div
+                      key={color.label}
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: '0.25rem',
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: '100%',
+                          height: '28px',
+                          borderRadius: '6px',
+                          backgroundColor: color.bg,
+                          border: '1.5px solid #1E192B',
+                          boxShadow: '1px 1px 0px #1E192B',
+                        }}
+                      />
+                      <span style={{ fontSize: '0.68rem', fontWeight: 700 }}>{color.label}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
 
             {/* Muestra de lectura */}
