@@ -2100,3 +2100,370 @@ input:checked + .art-dash-toggle-slider:before {
   color: var(--ink);
 }
 
+/* ══════════════════════════════════════════════════════════════════════════
+   FORMULARIOS DE PORTAFOLIO Y COMISIONES (SCRAPBOOK STUDIO)
+   ══════════════════════════════════════════════════════════════════════════ */
+.art-dash-form-card {
+  background: #FFFDF8;
+  border: 2.5px solid var(--ink, #1E192B);
+  border-radius: 20px;
+  box-shadow: 5px 5px 0px var(--ink, #1E192B);
+  padding: 2.2rem;
+  margin-bottom: 2.2rem;
+  position: relative;
+  transition: box-shadow 0.2s ease;
+}
+
+.art-dash-form-card:hover {
+  box-shadow: 6px 6px 0px var(--ink, #1E192B);
+}
+
+.art-dash-form-header {
+  margin-bottom: 1.6rem;
+  border-bottom: 2px solid #E5E1EC;
+  padding-bottom: 1.1rem;
+}
+
+.art-dash-form-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: #EDE9FE;
+  color: #6D28D9;
+  border: 1.5px solid var(--ink, #1E192B);
+  border-radius: 999px;
+  padding: 0.3rem 0.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.art-dash-form-title {
+  font-family: var(--heading, 'Space Grotesk', sans-serif);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--ink, #1E192B);
+  margin: 0 0 0.3rem;
+}
+
+.art-dash-form-desc {
+  font-size: 0.86rem;
+  color: #6D657B;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.art-dash-form-grid {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.art-dash-form-two-col {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+@media (max-width: 48rem) {
+  .art-dash-form-two-col {
+    grid-template-columns: 1fr;
+  }
+}
+
+.art-dash-form-three-col {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+@media (max-width: 48rem) {
+  .art-dash-form-three-col {
+    grid-template-columns: 1fr;
+  }
+}
+
+.art-dash-field-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: var(--ink, #1E192B);
+}
+
+.art-dash-input-ctrl,
+.art-dash-select-ctrl,
+.art-dash-textarea-ctrl {
+  background: #FAF9F6;
+  border: 2px solid var(--ink, #1E192B);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  color: var(--ink, #1E192B);
+  font-family: inherit;
+  box-shadow: 2px 2px 0px rgba(30, 25, 43, 0.08);
+  outline: none;
+  transition: all 0.16s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.art-dash-input-ctrl:focus,
+.art-dash-select-ctrl:focus,
+.art-dash-textarea-ctrl:focus {
+  background: #FFFFFF;
+  border-color: #8B5CF6;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.22), 2px 2px 0px var(--ink, #1E192B);
+}
+
+.art-dash-textarea-ctrl {
+  min-height: 5.5rem;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+/* Sugerencias Rápidas de Categoría (Chips) */
+.art-dash-quick-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 0.5rem;
+}
+
+.art-dash-chips-hint {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #6D657B;
+}
+
+.art-dash-chip-pill {
+  background: #F3EEFF;
+  border: 1.5px solid var(--ink, #1E192B);
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #6D28D9;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.art-dash-chip-pill:hover {
+  background: #EDE9FE;
+  transform: translateY(-1px);
+  box-shadow: 1px 1px 0px var(--ink, #1E192B);
+}
+
+.art-dash-chip-pill.is-active {
+  background: #8B5CF6;
+  color: #FFFFFF;
+  box-shadow: 1.5px 1.5px 0px var(--ink, #1E192B);
+}
+
+/* Previsualización de imagen */
+.art-dash-img-preview-box {
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #F5EEFF;
+  border: 1.5px dashed var(--ink, #1E192B);
+  border-radius: 12px;
+  padding: 0.6rem 0.8rem;
+}
+
+.art-dash-img-preview-thumb {
+  width: 90px;
+  height: 60px;
+  border-radius: 8px;
+  border: 1.5px solid var(--ink, #1E192B);
+  object-fit: cover;
+  background: #FAF9F6;
+}
+
+.art-dash-img-preview-info {
+  font-size: 0.78rem;
+  color: #4B5563;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+/* Checkbox destacado estilo toggle scrapbook */
+.art-dash-toggle-card {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.85rem 1.1rem;
+  background: #F7F5FC;
+  border: 2px solid var(--ink, #1E192B);
+  border-radius: 12px;
+  box-shadow: 2px 2px 0px var(--ink, #1E192B);
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.15s ease;
+}
+
+.art-dash-toggle-card:hover {
+  background: #F0EBFA;
+}
+
+.art-dash-toggle-card input[type="checkbox"] {
+  width: 1.25rem;
+  height: 1.25rem;
+  accent-color: #8B5CF6;
+  cursor: pointer;
+}
+
+.art-dash-toggle-text {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.86rem;
+  color: var(--ink, #1E192B);
+}
+
+.art-dash-toggle-text small {
+  display: block;
+  font-size: 0.76rem;
+  color: #6D657B;
+  font-weight: 500;
+}
+
+/* Acciones del formulario */
+.art-dash-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.2rem;
+  padding-top: 1.1rem;
+  border-top: 1.5px dashed #E5E1EC;
+}
+
+/* Tarjetas de Tarifas de Comisiones en el catálogo */
+.art-dash-comm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 1.4rem;
+  margin-top: 1.8rem;
+}
+
+.art-dash-comm-card {
+  background: #FFFDF8;
+  border: 2px solid var(--ink, #1E192B);
+  border-radius: 16px;
+  box-shadow: 3.5px 3.5px 0px var(--ink, #1E192B);
+  padding: 1.4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.18s ease;
+}
+
+.art-dash-comm-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 5px 5px 0px var(--ink, #1E192B);
+}
+
+.art-dash-comm-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.art-dash-comm-price-tag {
+  font-family: var(--heading, 'Space Grotesk', sans-serif);
+  font-size: 1.45rem;
+  font-weight: 900;
+  color: var(--ink, #1E192B);
+}
+
+.art-dash-comm-status-badge {
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--ink, #1E192B);
+}
+
+.art-dash-comm-status-badge.active {
+  background: #D1FAE5;
+  color: #065F46;
+}
+
+.art-dash-comm-status-badge.paused {
+  background: #FEF3C7;
+  color: #92400E;
+}
+
+.art-dash-comm-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.85rem 0;
+}
+
+.art-dash-comm-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.6rem;
+  background: #F3EEFF;
+  border: 1.5px solid var(--ink, #1E192B);
+  border-radius: 8px;
+  color: #6D28D9;
+}
+
+/* Modo oscuro */
+:root[data-theme='dark'] .art-dash-form-card,
+:root[data-theme='dark'] .art-dash-comm-card {
+  background: #1C1728;
+  border-color: #3F3758;
+  box-shadow: 4px 4px 0px #0D0A14;
+}
+
+:root[data-theme='dark'] .art-dash-form-title,
+:root[data-theme='dark'] .art-dash-field-label,
+:root[data-theme='dark'] .art-dash-comm-price-tag {
+  color: #F8F5FF;
+}
+
+:root[data-theme='dark'] .art-dash-form-header,
+:root[data-theme='dark'] .art-dash-form-actions {
+  border-color: #3F3758;
+}
+
+:root[data-theme='dark'] .art-dash-input-ctrl,
+:root[data-theme='dark'] .art-dash-select-ctrl,
+:root[data-theme='dark'] .art-dash-textarea-ctrl {
+  background: #241E33;
+  border-color: #3F3758;
+  color: #F8F5FF;
+}
+
+:root[data-theme='dark'] .art-dash-toggle-card {
+  background: #241E33;
+  border-color: #3F3758;
+  box-shadow: 2px 2px 0px #0D0A14;
+}
+
+:root[data-theme='dark'] .art-dash-toggle-text {
+  color: #F8F5FF;
+}
+
+:root[data-theme='dark'] .art-dash-chip-pill,
+:root[data-theme='dark'] .art-dash-comm-pill {
+  background: #2D2442;
+  border-color: #4C3C70;
+  color: #C4B5FD;
+}
+

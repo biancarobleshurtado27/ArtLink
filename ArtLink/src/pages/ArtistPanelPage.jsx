@@ -10,6 +10,7 @@ import {
   Clock,
   DollarSign,
   Download,
+  Edit3,
   Eye,
   FileText,
   Filter,
@@ -29,6 +30,7 @@ import {
   Sliders,
   Sparkles,
   Star,
+  Trash2,
   UploadCloud,
   Wallet,
   X,
@@ -569,25 +571,102 @@ export default function ArtistPanelPage() {
             busy={busy}
           />
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(230px, 1fr))', gap: '1.2rem', marginTop: '1.5rem' }}>
-            {portfolio.map((item) => (
-              <article className="art-dash-order-card" key={item.id} style={{ padding: '0.9rem' }}>
-                <img
-                  src={item.image}
-                  onError={handleImageError}
-                  alt={item.title}
-                  style={{ width: '100%', height: '150px', objectFit: 'cover', borderRadius: '0.75rem', border: '1.5px solid #1E192B' }}
-                />
-                <div style={{ marginTop: '0.5rem' }}>
-                  <h4 style={{ margin: '0 0 0.2rem', fontSize: '0.95rem', fontWeight: 800 }}>{item.title}</h4>
-                  <p style={{ margin: 0, color: '#6D657B', fontSize: '0.78rem' }}>{item.category}</p>
-                  <div style={{ display: 'flex', gap: '0.4rem', marginTop: '0.6rem' }}>
-                    <Button variant="outline" type="button" onClick={() => setEditingPortfolio(item)}>Editar</Button>
-                    <Button variant="secondary" type="button" onClick={() => actions.deletePortfolio(item)}>Eliminar</Button>
-                  </div>
-                </div>
-              </article>
-            ))}
+          <div style={{ marginTop: '2.5rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem' }}>
+              <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800, color: 'var(--ink, #1E192B)' }}>
+                Galería Publicada ({portfolio.length})
+              </h3>
+            </div>
+
+            {portfolio.length === 0 ? (
+              <EmptyState
+                title="Aún no tienes piezas publicadas"
+                description="Usa el formulario de arriba para añadir tu primera ilustración o diseño a tu portafolio público."
+              />
+            ) : (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '1.4rem' }}>
+                {portfolio.map((item) => (
+                  <article className="art-dash-order-card" key={item.id} style={{ padding: '1rem', display: 'flex', flexDirection: 'column' }}>
+                    <div style={{ position: 'relative', width: '100%', height: '170px', borderRadius: '0.85rem', overflow: 'hidden', border: '1.5px solid var(--ink, #1E192B)' }}>
+                      <img
+                        src={item.image}
+                        onError={handleImageError}
+                        alt={item.title}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
+                      {item.featured && (
+                        <span style={{
+                          position: 'absolute',
+                          top: '8px',
+                          left: '8px',
+                          background: '#FDE047',
+                          color: '#1E192B',
+                          border: '1.5px solid #1E192B',
+                          boxShadow: '1.5px 1.5px 0 #1E192B',
+                          borderRadius: '999px',
+                          padding: '0.2rem 0.55rem',
+                          fontSize: '0.7rem',
+                          fontWeight: 800,
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '0.3rem'
+                        }}>
+                          <Star size={11} fill="#1E192B" color="#1E192B" /> Destacada
+                        </span>
+                      )}
+                      {item.category && (
+                        <span style={{
+                          position: 'absolute',
+                          bottom: '8px',
+                          right: '8px',
+                          background: 'rgba(30, 25, 43, 0.85)',
+                          backdropFilter: 'blur(4px)',
+                          color: '#FFF',
+                          borderRadius: '6px',
+                          padding: '0.15rem 0.5rem',
+                          fontSize: '0.7rem',
+                          fontWeight: 700
+                        }}>
+                          {item.category}
+                        </span>
+                      )}
+                    </div>
+                    <div style={{ marginTop: '0.85rem', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                      <div>
+                        <h4 style={{ margin: '0 0 0.3rem', fontSize: '1.05rem', fontWeight: 800, color: 'var(--ink, #1E192B)' }}>{item.title}</h4>
+                        {item.description && (
+                          <p style={{ margin: 0, color: '#6D657B', fontSize: '0.82rem', lineHeight: 1.4, display: '-webkit-box', WebKitLineClamp: 2, WebKitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                            {item.description}
+                          </p>
+                        )}
+                      </div>
+                      <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
+                        <button
+                          type="button"
+                          className="art-dash-btn-ghost"
+                          style={{ flex: 1, padding: '0.45rem', fontSize: '0.8rem', justifyContent: 'center' }}
+                          onClick={() => {
+                            setEditingPortfolio(item)
+                            window.scrollTo({ top: 120, behavior: 'smooth' })
+                          }}
+                        >
+                          <Edit3 size={13} /> Editar
+                        </button>
+                        <button
+                          type="button"
+                          className="art-dash-btn-ghost"
+                          style={{ color: '#DC2626', borderColor: '#FCA5A5', padding: '0.45rem 0.75rem', fontSize: '0.8rem' }}
+                          onClick={() => actions.deletePortfolio(item)}
+                          title="Eliminar pieza"
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            )}
           </div>
         </section>
       )}
@@ -601,7 +680,7 @@ export default function ArtistPanelPage() {
                 TARIFAS Y FORMATOS
               </span>
               <h2 className="art-dash-activity-title" style={{ fontSize: '1.45rem' }}>
-                Catálogo de Comisiones ({commissions.length})
+                Catálogo de Tarifas ({commissions.length})
               </h2>
             </div>
             <Link to="/artista/panel" className="art-dash-btn-primary" style={{ padding: '0.5rem 1rem', fontSize: '0.82rem' }}>
@@ -615,6 +694,85 @@ export default function ArtistPanelPage() {
             onCancel={() => setEditingCommission(null)}
             busy={busy}
           />
+
+          <div style={{ marginTop: '2.5rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem' }}>
+              <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800, color: 'var(--ink, #1E192B)' }}>
+                Tarifas Configuradas ({commissions.length})
+              </h3>
+            </div>
+
+            {commissions.length === 0 ? (
+              <EmptyState
+                title="Aún no has configurado tarifas"
+                description="Usa el formulario superior para añadir tu primer paquete de comisión y comenzar a recibir pedidos."
+              />
+            ) : (
+              <div className="art-dash-comm-grid">
+                {commissions.map((comm) => (
+                  <article key={comm.id} className="art-dash-comm-card">
+                    <div>
+                      <div className="art-dash-comm-card-top">
+                        <span className="art-dash-comm-price-tag">${comm.price} USD</span>
+                        <span className={`art-dash-comm-status-badge ${comm.status === 'paused' ? 'paused' : 'active'}`}>
+                          {comm.status === 'paused' ? 'Pausada' : 'Disponible'}
+                        </span>
+                      </div>
+                      <h4 style={{ margin: '0 0 0.4rem', fontSize: '1.1rem', fontWeight: 800, color: 'var(--ink, #1E192B)' }}>
+                        {comm.title}
+                      </h4>
+                      {comm.description && (
+                        <p style={{ margin: 0, color: '#6D657B', fontSize: '0.85rem', lineHeight: 1.45 }}>
+                          {comm.description}
+                        </p>
+                      )}
+
+                      <div className="art-dash-comm-details">
+                        {comm.category && (
+                          <span className="art-dash-comm-pill">
+                            <Sparkles size={12} /> {comm.category}
+                          </span>
+                        )}
+                        {comm.deliveryDays && (
+                          <span className="art-dash-comm-pill">
+                            <Clock size={12} /> {comm.deliveryDays} días entrega
+                          </span>
+                        )}
+                        {comm.revisions !== undefined && (
+                          <span className="art-dash-comm-pill">
+                            <RefreshCw size={12} /> {comm.revisions} revisiones
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1.2rem', paddingTop: '0.85rem', borderTop: '1px solid rgba(30, 25, 43, 0.08)' }}>
+                      <button
+                        type="button"
+                        className="art-dash-btn-ghost"
+                        style={{ flex: 1, padding: '0.45rem', fontSize: '0.82rem', justifyContent: 'center' }}
+                        onClick={() => {
+                          setEditingCommission(comm)
+                          window.scrollTo({ top: 120, behavior: 'smooth' })
+                        }}
+                      >
+                        <Edit3 size={13} /> Editar Tarifa
+                      </button>
+                      <button
+                        type="button"
+                        className="art-dash-btn-ghost"
+                        style={{ color: '#DC2626', borderColor: '#FCA5A5', padding: '0.45rem 0.75rem', fontSize: '0.82rem' }}
+                        onClick={() => actions.deleteCommission(comm)}
+                        title="Eliminar tarifa"
+                      >
+                        <Trash2 size={13} />
+                      </button>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            )}
+          </div>
         </section>
       )}
 
