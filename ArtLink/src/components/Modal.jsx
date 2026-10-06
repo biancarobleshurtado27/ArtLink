@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
 import { SparkleStar } from './FloatingStars'
 
@@ -38,7 +39,7 @@ export default function Modal({ open, title, onClose, children }) {
   }, [open])
 
   if (!open) return null
-  return (
+  const modalElement = (
     <div className="modal-backdrop" role="presentation" onMouseDown={() => onCloseRef.current?.()}>
       <section className="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" onMouseDown={(event) => event.stopPropagation()}>
         {/* Estrellitas de esquina decorativas estilo scrapbook pastel */}
@@ -65,4 +66,9 @@ export default function Modal({ open, title, onClose, children }) {
       </section>
     </div>
   )
+
+  if (typeof document !== 'undefined' && document.body) {
+    return createPortal(modalElement, document.body)
+  }
+  return modalElement
 }

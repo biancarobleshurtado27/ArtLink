@@ -2561,16 +2561,23 @@ img, svg, video {
    con fondo difuminado y página visible detrás.
    ══════════════════════════════════════════════════════════════════ */
 .floating-alert-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 99999;
-  background-color: rgba(30, 25, 43, 0.62);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.25rem;
+  position: fixed !important;
+  inset: 0 !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 99999 !important;
+  background-color: rgba(30, 25, 43, 0.32) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 1.25rem !important;
+  box-sizing: border-box !important;
   animation: floatingAlertBackdropFade 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
@@ -2743,7 +2750,7 @@ img, svg, video {
 
 /* Modo oscuro para alertas flotantes */
 :root[data-theme='dark'] .floating-alert-backdrop {
-  background-color: rgba(10, 8, 18, 0.78);
+  background-color: rgba(10, 8, 18, 0.48) !important;
 }
 
 :root[data-theme='dark'] .floating-alert-card {
@@ -4116,7 +4123,7 @@ p.admin-subtitle {
 
 /* ── MODALES Y DIÁLOGOS ── */
 :root[data-theme='dark'] .modal-backdrop {
-  background: rgba(10, 8, 15, 0.75);
+  background: rgba(10, 8, 15, 0.48) !important;
 }
 
 :root[data-theme='dark'] .modal,
