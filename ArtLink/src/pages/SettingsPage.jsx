@@ -21,6 +21,7 @@ import {
   Key,
   Layers,
   Lock,
+  LogIn,
   LogOut,
   Mail,
   MapPin,
@@ -41,6 +42,7 @@ import {
   Type,
   User,
   UserCheck,
+  UserPlus,
   Volume2,
   X,
   Zap,
@@ -84,20 +86,28 @@ export default function SettingsPage({ initialTab }) {
     statusMessage,
   } = useSettings()
 
-  // ── DETECCIÓN EXACTA DE ROL ──
-  const isArtist = user?.role === ROLES.ARTIST || user?.role === 'artist' || user?.role === 'artista'
-  const isAdmin = user?.role === ROLES.ADMIN || user?.role === 'admin' || user?.role === 'administrador'
-  const isClient = user?.role === ROLES.CLIENT || user?.role === 'client' || user?.role === 'cliente' || (!isArtist && !isAdmin)
+  // ── DETECCIÓN EXACTA DE ROL & AUTENTICACIÓN ──
+  const isAuthenticated = Boolean(user && user.id)
+  const isArtist = isAuthenticated && (user?.role === ROLES.ARTIST || user?.role === 'artist' || user?.role === 'artista')
+  const isAdmin = isAuthenticated && (user?.role === ROLES.ADMIN || user?.role === 'admin' || user?.role === 'administrador')
+  const isClient = isAuthenticated && !isArtist && !isAdmin
 
   const isProfileRoute =
-    initialTab === 'perfil' ||
-    location.pathname === '/settings/profile' ||
-    location.pathname === '/ajustes/perfil' ||
-    location.pathname.endsWith('/profile') ||
-    location.pathname.endsWith('/perfil')
+    isAuthenticated &&
+    (initialTab === 'perfil' ||
+      location.pathname === '/settings/profile' ||
+      location.pathname === '/ajustes/perfil' ||
+      location.pathname.endsWith('/profile') ||
+      location.pathname.endsWith('/perfil'))
 
   // Tab activo para el índice lateral
   const [activeTab, setActiveTab] = useState(() => {
+    if (!isAuthenticated) {
+      const params = new URLSearchParams(location.search)
+      const tabParam = params.get('tab')
+      if (tabParam && ['apariencia', 'daltonismo', 'accesibilidad'].includes(tabParam)) return tabParam
+      return 'apariencia'
+    }
     if (isProfileRoute) return 'perfil'
     if (initialTab) return initialTab
     const params = new URLSearchParams(location.search)
@@ -223,9 +233,11 @@ export default function SettingsPage({ initialTab }) {
       location.pathname.endsWith('/profile') ||
       location.pathname.endsWith('/perfil')
     ) {
-      setActiveTab('perfil')
+      if (isAuthenticated) {
+        setActiveTab('perfil')
+      }
     }
-  }, [location.pathname])
+  }, [location.pathname, isAuthenticated])
 
   // Desplazamiento y activación de pestañas
   function handleTabClick(tabKey, targetElementId) {
@@ -433,14 +445,18 @@ export default function SettingsPage({ initialTab }) {
           <div className="studio-status-pills">
             <span className="studio-sync-pill">
               <span className="studio-live-dot" aria-hidden="true" />
-              {isArtist
+              {!isAuthenticated
+                ? 'MODO VISITANTE • CONFIGURACIÓN LOCAL'
+                : isArtist
                 ? 'ENLACE ACTIVO & SINCRONIZADO'
                 : isAdmin
                 ? 'CONEXIÓN SEGURA & VERIFICADA'
                 : 'CUENTA ACTIVA & SINCRONIZADA'}
             </span>
             <span className="studio-version-pill">
-              {isArtist
+              {!isAuthenticated
+                ? 'ACCESO PÚBLICO'
+                : isArtist
                 ? 'V2.4 PRO STUDIO'
                 : isAdmin
                 ? 'PANEL ADMINISTRATIVO'
@@ -449,7 +465,9 @@ export default function SettingsPage({ initialTab }) {
           </div>
 
           <h1 id="settings-main-heading" className="studio-page-title">
-            {isArtist
+            {!isAuthenticated
+              ? 'Entorno Visual & Accesibilidad'
+              : isArtist
               ? 'Ajustes de Cuenta y Taller'
               : isAdmin
               ? 'Ajustes de Administración y Plataforma'
@@ -457,7 +475,9 @@ export default function SettingsPage({ initialTab }) {
           </h1>
 
           <p className="studio-page-subtitle">
-            {isArtist
+            {!isAuthenticated
+              ? 'Personaliza el tema, contraste, filtros de daltonismo y tamaño tipográfico para navegar en este dispositivo.'
+              : isArtist
               ? 'Personaliza tu identidad de creador, políticas de comisiones, pagos en Escrow Shield y preferencias de privacidad.'
               : isAdmin
               ? 'Configuración global de tu cuenta administrativa, preferencias del sistema, auditoría y entorno visual.'
@@ -466,12 +486,29 @@ export default function SettingsPage({ initialTab }) {
         </div>
 
         <div className="studio-header-actions">
-          <button type="button" className="studio-btn-discard" onClick={handleDiscard}>
-            <RotateCcw size={14} aria-hidden="true" /> DESCARTAR
-          </button>
-          <button type="button" className="studio-btn-save" onClick={handleGlobalSave}>
-            <Save size={16} aria-hidden="true" /> Guardar Cambios
-          </button>
+          {!isAuthenticated ? (
+            <>
+              <button type="button" className="studio-btn-discard" onClick={handleDiscard}>
+                <RotateCcw size={14} aria-hidden="true" /> Restablecer
+              </button>
+              <Link
+                to="/login"
+                className="studio-btn-save"
+                style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}
+              >
+                <LogIn size={16} aria-hidden="true" /> Iniciar Sesión
+              </Link>
+            </>
+          ) : (
+            <>
+              <button type="button" className="studio-btn-discard" onClick={handleDiscard}>
+                <RotateCcw size={14} aria-hidden="true" /> DESCARTAR
+              </button>
+              <button type="button" className="studio-btn-save" onClick={handleGlobalSave}>
+                <Save size={16} aria-hidden="true" /> Guardar Cambios
+              </button>
+            </>
+          )}
         </div>
       </header>
 
@@ -506,213 +543,320 @@ export default function SettingsPage({ initialTab }) {
             <span className="studio-sidebar-tag">NAVEGACIÓN</span>
             <div className="studio-sidebar-header">
               <h2 className="studio-sidebar-title">
-                {isArtist ? 'Índice del Taller' : isAdmin ? 'Menú de Sistema' : 'Menú de Ajustes'}
+                {!isAuthenticated
+                  ? 'Ajustes Visuales'
+                  : isArtist
+                  ? 'Índice del Taller'
+                  : isAdmin
+                  ? 'Menú de Sistema'
+                  : 'Menú de Ajustes'}
               </h2>
-              <span className="studio-sidebar-count-badge">6 Secciones</span>
+              <span className="studio-sidebar-count-badge">
+                {!isAuthenticated ? '3 Ajustes' : '6 Secciones'}
+              </span>
             </div>
 
             <nav className="studio-nav-list" role="tablist" aria-label="Secciones de ajustes">
-              {/* Item 1: Perfil */}
-              <button
-                type="button"
-                role="tab"
-                aria-selected={activeTab === 'perfil'}
-                aria-label={
-                  isArtist
-                    ? 'Perfil & Vitrina (Mi perfil)'
-                    : isAdmin
-                    ? 'Perfil Administrativo (Mi perfil)'
-                    : 'Perfil & Datos (Mi perfil)'
-                }
-                className={`studio-nav-item ${activeTab === 'perfil' ? 'is-active' : ''}`}
-                onClick={() => handleTabClick('perfil', 'section-perfil')}
-              >
-                <div className="studio-nav-item-left">
-                  <span className="studio-nav-item-icon">
-                    <User size={16} aria-hidden="true" />
-                  </span>
-                  <span>{isArtist ? 'Perfil & Vitrina' : isAdmin ? 'Perfil Administrativo' : 'Mi perfil'}</span>
-                </div>
-                <ChevronRight size={14} className="studio-nav-arrow" aria-hidden="true" />
-              </button>
+              {!isAuthenticated ? (
+                <>
+                  {/* Item 1: Tema & Entorno Visual */}
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={activeTab === 'apariencia'}
+                    aria-label="Tema & Entorno Visual"
+                    className={`studio-nav-item ${activeTab === 'apariencia' ? 'is-active' : ''}`}
+                    onClick={() => handleTabClick('apariencia', 'section-apariencia')}
+                  >
+                    <div className="studio-nav-item-left">
+                      <span className="studio-nav-item-icon">
+                        <Sun size={16} aria-hidden="true" />
+                      </span>
+                      <span>Tema & Entorno</span>
+                    </div>
+                    <span className="studio-nav-pill-badge studio-pill-pink">VISUAL</span>
+                  </button>
 
-              {/* Item 2: Exclusivo de Artista vs Preferencias de Cliente vs Panel Admin */}
-              {isArtist ? (
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={activeTab === 'comisiones'}
-                  aria-label="Comisiones & Cupos"
-                  className={`studio-nav-item ${activeTab === 'comisiones' ? 'is-active' : ''}`}
-                  onClick={() => handleTabClick('comisiones', 'section-comisiones')}
-                >
-                  <div className="studio-nav-item-left">
-                    <span className="studio-nav-item-icon">
-                      <FileText size={16} aria-hidden="true" />
-                    </span>
-                    <span>Comisiones & Cupos</span>
-                  </div>
-                  <span className="studio-nav-pill-badge studio-pill-cyan">EN VIVO</span>
-                </button>
-              ) : isClient ? (
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={activeTab === 'preferencias'}
-                  aria-label="Preferencias de Compra"
-                  className={`studio-nav-item ${activeTab === 'preferencias' ? 'is-active' : ''}`}
-                  onClick={() => handleTabClick('preferencias', 'section-preferencias')}
-                >
-                  <div className="studio-nav-item-left">
-                    <span className="studio-nav-item-icon">
-                      <Sliders size={16} aria-hidden="true" />
-                    </span>
-                    <span>Preferencias de Compra</span>
-                  </div>
-                  <span className="studio-nav-pill-badge studio-pill-cyan">EXPLORAR</span>
-                </button>
+                  {/* Item 2: Filtros de Daltonismo */}
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={activeTab === 'daltonismo'}
+                    aria-label="Filtros de Daltonismo"
+                    className={`studio-nav-item ${activeTab === 'daltonismo' ? 'is-active' : ''}`}
+                    onClick={() => handleTabClick('daltonismo', 'sub-section-daltonismo')}
+                  >
+                    <div className="studio-nav-item-left">
+                      <span className="studio-nav-item-icon">
+                        <Palette size={16} aria-hidden="true" />
+                      </span>
+                      <span>Filtros Daltonismo</span>
+                    </div>
+                    <span className="studio-nav-pill-badge studio-pill-purple">COLOR</span>
+                  </button>
+
+                  {/* Item 3: Lectura & Accesibilidad */}
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={activeTab === 'accesibilidad'}
+                    aria-label="Lectura & Accesibilidad"
+                    className={`studio-nav-item ${activeTab === 'accesibilidad' ? 'is-active' : ''}`}
+                    onClick={() => handleTabClick('accesibilidad', 'sub-section-accesibilidad')}
+                  >
+                    <div className="studio-nav-item-left">
+                      <span className="studio-nav-item-icon">
+                        <Eye size={16} aria-hidden="true" />
+                      </span>
+                      <span>Lectura & Accesibilidad</span>
+                    </div>
+                    <span className="studio-nav-pill-badge studio-pill-teal">A11Y</span>
+                  </button>
+                </>
               ) : (
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={activeTab === 'admin-panel'}
-                  aria-label="Consola de Administración"
-                  className={`studio-nav-item ${activeTab === 'admin-panel' ? 'is-active' : ''}`}
-                  onClick={() => handleTabClick('admin-panel', 'section-admin-panel')}
-                >
-                  <div className="studio-nav-item-left">
-                    <span className="studio-nav-item-icon">
-                      <Shield size={16} aria-hidden="true" />
-                    </span>
-                    <span>Consola de Admin</span>
-                  </div>
-                  <span className="studio-nav-pill-badge studio-pill-cyan">SISTEMA</span>
-                </button>
-              )}
+                <>
+                  {/* Item 1: Perfil */}
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={activeTab === 'perfil'}
+                    aria-label={
+                      isArtist
+                        ? 'Perfil & Vitrina (Mi perfil)'
+                        : isAdmin
+                        ? 'Perfil Administrativo (Mi perfil)'
+                        : 'Perfil & Datos (Mi perfil)'
+                    }
+                    className={`studio-nav-item ${activeTab === 'perfil' ? 'is-active' : ''}`}
+                    onClick={() => handleTabClick('perfil', 'section-perfil')}
+                  >
+                    <div className="studio-nav-item-left">
+                      <span className="studio-nav-item-icon">
+                        <User size={16} aria-hidden="true" />
+                      </span>
+                      <span>{isArtist ? 'Perfil & Vitrina' : isAdmin ? 'Perfil Administrativo' : 'Mi perfil'}</span>
+                    </div>
+                    <ChevronRight size={14} className="studio-nav-arrow" aria-hidden="true" />
+                  </button>
 
-              {/* Item 3: Facturación / Pagos */}
-              {!isAdmin && (
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={activeTab === 'facturacion'}
-                  aria-label={isArtist ? 'Facturación & Escrow' : 'Pagos & Protección Escrow'}
-                  className={`studio-nav-item ${activeTab === 'facturacion' ? 'is-active' : ''}`}
-                  onClick={() => handleTabClick('facturacion', 'section-facturacion')}
-                >
-                  <div className="studio-nav-item-left">
-                    <span className="studio-nav-item-icon">
-                      <CreditCard size={16} aria-hidden="true" />
-                    </span>
-                    <span>{isArtist ? 'Facturación & Escrow' : 'Pagos & Escrow'}</span>
-                  </div>
+                  {/* Item 2: Exclusivo de Artista vs Preferencias de Cliente vs Panel Admin */}
                   {isArtist ? (
-                    <span className="studio-pill-dot" aria-label="Alerta de facturación" />
+                    <button
+                      type="button"
+                      role="tab"
+                      aria-selected={activeTab === 'comisiones'}
+                      aria-label="Comisiones & Cupos"
+                      className={`studio-nav-item ${activeTab === 'comisiones' ? 'is-active' : ''}`}
+                      onClick={() => handleTabClick('comisiones', 'section-comisiones')}
+                    >
+                      <div className="studio-nav-item-left">
+                        <span className="studio-nav-item-icon">
+                          <FileText size={16} aria-hidden="true" />
+                        </span>
+                        <span>Comisiones & Cupos</span>
+                      </div>
+                      <span className="studio-nav-pill-badge studio-pill-cyan">EN VIVO</span>
+                    </button>
+                  ) : isClient ? (
+                    <button
+                      type="button"
+                      role="tab"
+                      aria-selected={activeTab === 'preferencias'}
+                      aria-label="Preferencias de Compra"
+                      className={`studio-nav-item ${activeTab === 'preferencias' ? 'is-active' : ''}`}
+                      onClick={() => handleTabClick('preferencias', 'section-preferencias')}
+                    >
+                      <div className="studio-nav-item-left">
+                        <span className="studio-nav-item-icon">
+                          <Sliders size={16} aria-hidden="true" />
+                        </span>
+                        <span>Preferencias de Compra</span>
+                      </div>
+                      <span className="studio-nav-pill-badge studio-pill-cyan">EXPLORAR</span>
+                    </button>
                   ) : (
-                    <span className="studio-nav-pill-badge studio-pill-mint">SEGURO</span>
+                    <button
+                      type="button"
+                      role="tab"
+                      aria-selected={activeTab === 'admin-panel'}
+                      aria-label="Consola de Administración"
+                      className={`studio-nav-item ${activeTab === 'admin-panel' ? 'is-active' : ''}`}
+                      onClick={() => handleTabClick('admin-panel', 'section-admin-panel')}
+                    >
+                      <div className="studio-nav-item-left">
+                        <span className="studio-nav-item-icon">
+                          <Shield size={16} aria-hidden="true" />
+                        </span>
+                        <span>Consola de Admin</span>
+                      </div>
+                      <span className="studio-nav-pill-badge studio-pill-cyan">SISTEMA</span>
+                    </button>
                   )}
-                </button>
+
+                  {/* Item 3: Facturación / Pagos */}
+                  {!isAdmin && (
+                    <button
+                      type="button"
+                      role="tab"
+                      aria-selected={activeTab === 'facturacion'}
+                      aria-label={isArtist ? 'Facturación & Escrow' : 'Pagos & Protección Escrow'}
+                      className={`studio-nav-item ${activeTab === 'facturacion' ? 'is-active' : ''}`}
+                      onClick={() => handleTabClick('facturacion', 'section-facturacion')}
+                    >
+                      <div className="studio-nav-item-left">
+                        <span className="studio-nav-item-icon">
+                          <CreditCard size={16} aria-hidden="true" />
+                        </span>
+                        <span>{isArtist ? 'Facturación & Escrow' : 'Pagos & Escrow'}</span>
+                      </div>
+                      {isArtist ? (
+                        <span className="studio-pill-dot" aria-label="Alerta de facturación" />
+                      ) : (
+                        <span className="studio-nav-pill-badge studio-pill-mint">SEGURO</span>
+                      )}
+                    </button>
+                  )}
+
+                  {/* Item 4: Notificaciones */}
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={activeTab === 'notificaciones'}
+                    aria-label={isArtist ? 'Notificaciones & Avisos' : isAdmin ? 'Alertas del Sistema' : 'Notificaciones de Pedidos'}
+                    className={`studio-nav-item ${activeTab === 'notificaciones' ? 'is-active' : ''}`}
+                    onClick={() => handleTabClick('notificaciones', 'section-notificaciones')}
+                  >
+                    <div className="studio-nav-item-left">
+                      <span className="studio-nav-item-icon">
+                        <Bell size={16} aria-hidden="true" />
+                      </span>
+                      <span>{isAdmin ? 'Alertas de Sistema' : 'Notificaciones'}</span>
+                    </div>
+                    <span className="studio-nav-pill-badge studio-pill-mint">+</span>
+                  </button>
+
+                  {/* Item 5: Seguridad & Acceso */}
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={activeTab === 'seguridad'}
+                    aria-label="Seguridad & Acceso"
+                    className={`studio-nav-item ${activeTab === 'seguridad' ? 'is-active' : ''}`}
+                    onClick={() => handleTabClick('seguridad', 'section-seguridad')}
+                  >
+                    <div className="studio-nav-item-left">
+                      <span className="studio-nav-item-icon">
+                        <ShieldCheck size={16} aria-hidden="true" />
+                      </span>
+                      <span>{isClient ? 'Seguridad & Privacidad' : 'Seguridad & Acceso'}</span>
+                    </div>
+                  </button>
+
+                  {/* Item 6: Apariencia & Accesibilidad */}
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={activeTab === 'apariencia'}
+                    aria-label={
+                      isArtist
+                        ? 'Integraciones de Arte (Apariencia y accesibilidad)'
+                        : 'Apariencia y visualización'
+                    }
+                    className={`studio-nav-item ${activeTab === 'apariencia' ? 'is-active' : ''}`}
+                    onClick={() => handleTabClick('apariencia', 'section-apariencia')}
+                  >
+                    <div className="studio-nav-item-left">
+                      <span className="studio-nav-item-icon">
+                        <Palette size={16} aria-hidden="true" />
+                      </span>
+                      <span>{isArtist ? 'Integraciones de Arte' : 'Apariencia & Visual'}</span>
+                    </div>
+                    <span className="studio-nav-pill-badge studio-pill-pink">
+                      {isArtist ? 'APPS' : 'VISUAL'}
+                    </span>
+                  </button>
+                </>
               )}
-
-              {/* Item 4: Notificaciones */}
-              <button
-                type="button"
-                role="tab"
-                aria-selected={activeTab === 'notificaciones'}
-                aria-label={isArtist ? 'Notificaciones & Avisos' : isAdmin ? 'Alertas del Sistema' : 'Notificaciones de Pedidos'}
-                className={`studio-nav-item ${activeTab === 'notificaciones' ? 'is-active' : ''}`}
-                onClick={() => handleTabClick('notificaciones', 'section-notificaciones')}
-              >
-                <div className="studio-nav-item-left">
-                  <span className="studio-nav-item-icon">
-                    <Bell size={16} aria-hidden="true" />
-                  </span>
-                  <span>{isAdmin ? 'Alertas de Sistema' : 'Notificaciones'}</span>
-                </div>
-                <span className="studio-nav-pill-badge studio-pill-mint">+</span>
-              </button>
-
-              {/* Item 5: Seguridad & Acceso */}
-              <button
-                type="button"
-                role="tab"
-                aria-selected={activeTab === 'seguridad'}
-                aria-label="Seguridad & Acceso"
-                className={`studio-nav-item ${activeTab === 'seguridad' ? 'is-active' : ''}`}
-                onClick={() => handleTabClick('seguridad', 'section-seguridad')}
-              >
-                <div className="studio-nav-item-left">
-                  <span className="studio-nav-item-icon">
-                    <ShieldCheck size={16} aria-hidden="true" />
-                  </span>
-                  <span>{isClient ? 'Seguridad & Privacidad' : 'Seguridad & Acceso'}</span>
-                </div>
-              </button>
-
-              {/* Item 6: Apariencia & Accesibilidad */}
-              <button
-                type="button"
-                role="tab"
-                aria-selected={activeTab === 'apariencia'}
-                aria-label={
-                  isArtist
-                    ? 'Integraciones de Arte (Apariencia y accesibilidad)'
-                    : 'Apariencia y visualización'
-                }
-                className={`studio-nav-item ${activeTab === 'apariencia' ? 'is-active' : ''}`}
-                onClick={() => handleTabClick('apariencia', 'section-apariencia')}
-              >
-                <div className="studio-nav-item-left">
-                  <span className="studio-nav-item-icon">
-                    <Palette size={16} aria-hidden="true" />
-                  </span>
-                  <span>{isArtist ? 'Integraciones de Arte' : 'Apariencia & Visual'}</span>
-                </div>
-                <span className="studio-nav-pill-badge studio-pill-pink">
-                  {isArtist ? 'APPS' : 'VISUAL'}
-                </span>
-              </button>
             </nav>
 
             {/* Herramientas rápidas en la base del sidebar */}
             <div className="studio-sidebar-quick-bar">
-              <button
-                type="button"
-                className="studio-quick-tool-btn"
-                title="Editar Perfil"
-                onClick={() => handleTabClick('perfil', 'section-perfil')}
-              >
-                <UserCheck size={16} aria-hidden="true" />
-              </button>
-              <button
-                type="button"
-                className="studio-quick-tool-btn"
-                title={isArtist ? 'Ajustar Cupos de Taller' : 'Preferencias de Compra'}
-                onClick={() =>
-                  handleTabClick(
-                    isArtist ? 'comisiones' : isClient ? 'preferencias' : 'admin-panel',
-                    isArtist ? 'section-comisiones' : isClient ? 'section-preferencias' : 'section-admin-panel'
-                  )
-                }
-              >
-                <Sliders size={16} aria-hidden="true" />
-              </button>
-              <button
-                type="button"
-                className="studio-quick-tool-btn"
-                title="Preferencias de Notificaciones"
-                onClick={() => handleTabClick('notificaciones', 'section-notificaciones')}
-              >
-                <MessageSquare size={16} aria-hidden="true" />
-              </button>
-              <button
-                type="button"
-                className="studio-quick-tool-btn"
-                title="Tema y Accesibilidad"
-                onClick={() => handleTabClick('apariencia', 'section-apariencia')}
-              >
-                <Sun size={16} aria-hidden="true" />
-              </button>
+              {!isAuthenticated ? (
+                <>
+                  <Link
+                    to="/login"
+                    className="studio-quick-tool-btn"
+                    title="Iniciar Sesión"
+                    style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                  >
+                    <LogIn size={16} aria-hidden="true" />
+                  </Link>
+                  <Link
+                    to="/registro"
+                    className="studio-quick-tool-btn"
+                    title="Crear Cuenta"
+                    style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                  >
+                    <UserPlus size={16} aria-hidden="true" />
+                  </Link>
+                  <button
+                    type="button"
+                    className="studio-quick-tool-btn"
+                    title="Restablecer Preferencias"
+                    onClick={handleDiscard}
+                  >
+                    <RotateCcw size={16} aria-hidden="true" />
+                  </button>
+                  <button
+                    type="button"
+                    className="studio-quick-tool-btn"
+                    title="Tema y Accesibilidad"
+                    onClick={() => handleTabClick('apariencia', 'section-apariencia')}
+                  >
+                    <Sun size={16} aria-hidden="true" />
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    className="studio-quick-tool-btn"
+                    title="Editar Perfil"
+                    onClick={() => handleTabClick('perfil', 'section-perfil')}
+                  >
+                    <UserCheck size={16} aria-hidden="true" />
+                  </button>
+                  <button
+                    type="button"
+                    className="studio-quick-tool-btn"
+                    title={isArtist ? 'Ajustar Cupos de Taller' : 'Preferencias de Compra'}
+                    onClick={() =>
+                      handleTabClick(
+                        isArtist ? 'comisiones' : isClient ? 'preferencias' : 'admin-panel',
+                        isArtist ? 'section-comisiones' : isClient ? 'section-preferencias' : 'section-admin-panel'
+                      )
+                    }
+                  >
+                    <Sliders size={16} aria-hidden="true" />
+                  </button>
+                  <button
+                    type="button"
+                    className="studio-quick-tool-btn"
+                    title="Preferencias de Notificaciones"
+                    onClick={() => handleTabClick('notificaciones', 'section-notificaciones')}
+                  >
+                    <MessageSquare size={16} aria-hidden="true" />
+                  </button>
+                  <button
+                    type="button"
+                    className="studio-quick-tool-btn"
+                    title="Tema y Accesibilidad"
+                    onClick={() => handleTabClick('apariencia', 'section-apariencia')}
+                  >
+                    <Sun size={16} aria-hidden="true" />
+                  </button>
+                </>
+              )}
             </div>
           </div>
 
@@ -720,11 +864,19 @@ export default function SettingsPage({ initialTab }) {
           {showTip && (
             <div className="studio-tip-card">
               <span className="studio-tip-top-badge">
-                {isArtist ? 'SUGERENCIA PRO' : isAdmin ? 'PROTOCOLO ADMIN' : 'CONSEJO DE COMPRA'}
+                {!isAuthenticated
+                  ? 'MODO VISITANTE'
+                  : isArtist
+                  ? 'SUGERENCIA PRO'
+                  : isAdmin
+                  ? 'PROTOCOLO ADMIN'
+                  : 'CONSEJO DE COMPRA'}
               </span>
               <div className="studio-tip-header-row">
                 <div className="studio-tip-avatar-box">
-                  {isArtist ? (
+                  {!isAuthenticated ? (
+                    <Sun size={22} color="var(--ink)" aria-hidden="true" />
+                  ) : isArtist ? (
                     <Palette size={22} color="var(--ink)" aria-hidden="true" />
                   ) : isAdmin ? (
                     <Shield size={22} color="var(--ink)" aria-hidden="true" />
@@ -734,13 +886,26 @@ export default function SettingsPage({ initialTab }) {
                 </div>
                 <div>
                   <h3 className="studio-tip-title">
-                    {isArtist ? 'Tip de Arte' : isAdmin ? 'Supervisión Escrow' : 'Tip de Encargo'}
-                    <span className="studio-pro-badge">{isArtist ? 'PRO' : isAdmin ? 'ADMIN' : 'GUÍA'}</span>
+                    {!isAuthenticated
+                      ? 'Accesibilidad Inclusiva'
+                      : isArtist
+                      ? 'Tip de Arte'
+                      : isAdmin
+                      ? 'Supervisión Escrow'
+                      : 'Tip de Encargo'}
+                    <span className="studio-pro-badge">
+                      {!isAuthenticated ? 'LIBRE' : isArtist ? 'PRO' : isAdmin ? 'ADMIN' : 'GUÍA'}
+                    </span>
                   </h3>
                 </div>
               </div>
               <p className="studio-tip-body">
-                {isArtist ? (
+                {!isAuthenticated ? (
+                  <>
+                    Configura libremente el tema, los filtros cromáticos y la síntesis de voz. Para crear tu portafolio o encargar obras a medida,{' '}
+                    <strong>crea tu cuenta gratuita</strong> o inicia sesión.
+                  </>
+                ) : isArtist ? (
                   <>
                     Mantén actualizados tus términos de entrega y cupos disponibles. Los perfiles con{' '}
                     <strong>100% de transparencia</strong> reciben 2.4x más solicitudes en la galería de exploración.
@@ -766,10 +931,16 @@ export default function SettingsPage({ initialTab }) {
                   Descartar este tip
                 </button>
                 <Link
-                  to={isArtist ? '/como-funciona' : isAdmin ? '/admin' : '/explorar'}
+                  to={!isAuthenticated ? '/login' : isArtist ? '/como-funciona' : isAdmin ? '/admin' : '/explorar'}
                   className="studio-tip-action-link"
                 >
-                  {isArtist ? 'Consultar el kit de éxito >' : isAdmin ? 'Ir al panel administrativo >' : 'Explorar creadores >'}
+                  {!isAuthenticated
+                    ? 'Iniciar sesión o registrarse >'
+                    : isArtist
+                    ? 'Consultar el kit de éxito >'
+                    : isAdmin
+                    ? 'Ir al panel administrativo >'
+                    : 'Explorar creadores >'}
                 </Link>
               </div>
             </div>
@@ -778,10 +949,110 @@ export default function SettingsPage({ initialTab }) {
 
         {/* ── COLUMNA PRINCIPAL DE CONTENIDO ── */}
         <main className="studio-sections-column">
-          {/* ══════════════════════════════════════════════════════════════
-             SECCIÓN 1: PERFIL (ADAPTADO A ARTISTA / CLIENTE / ADMIN)
-             ══════════════════════════════════════════════════════════════ */}
-          <section id="section-perfil" className="studio-card" aria-labelledby="heading-perfil">
+          {/* Banner informativo de Modo Visitante */}
+          {!isAuthenticated && (
+            <div
+              className="studio-card studio-guest-banner"
+              style={{
+                border: '2px solid var(--ink, #1E192B)',
+                background: 'var(--paper, #FFFFFF)',
+                borderRadius: '14px',
+                padding: '1.25rem',
+                marginBottom: '1.5rem',
+                boxShadow: '4px 4px 0px var(--ink, #1E192B)',
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  justifyContent: 'space-between',
+                  flexWrap: 'wrap',
+                  gap: '1rem',
+                }}
+              >
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.4rem' }}>
+                    <span
+                      style={{
+                        background: '#8B5CF6',
+                        color: '#FFFFFF',
+                        fontSize: '0.72rem',
+                        fontWeight: 800,
+                        padding: '0.2rem 0.6rem',
+                        borderRadius: '999px',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.04em',
+                      }}
+                    >
+                      Modo Visitante
+                    </span>
+                    <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--muted, #6B7280)' }}>
+                      Configuración para este dispositivo
+                    </span>
+                  </div>
+                  <h2 style={{ fontSize: '1.18rem', fontWeight: 800, margin: '0 0 0.35rem 0', color: 'var(--ink, #1E192B)' }}>
+                    Preferencias de Pantalla, Daltonismo y Accesibilidad
+                  </h2>
+                  <p
+                    style={{
+                      margin: 0,
+                      fontSize: '0.86rem',
+                      color: 'var(--muted, #6B7280)',
+                      maxWidth: '640px',
+                      lineHeight: 1.5,
+                    }}
+                  >
+                    Estás navegando sin iniciar sesión. Las funciones de edición de perfil, catálogo de artista, compras y seguridad requieren una cuenta activa. En esta sección puedes configurar el tema visual, escala tipográfica, filtros para daltonismo y adaptaciones de lectura de forma local.
+                  </p>
+                </div>
+                <div style={{ display: 'flex', gap: '0.55rem', flexWrap: 'wrap', alignItems: 'center' }}>
+                  <Link
+                    to="/login"
+                    className="studio-chip-btn"
+                    style={{
+                      textDecoration: 'none',
+                      background: 'var(--ink, #1E192B)',
+                      color: '#FFFFFF',
+                      fontWeight: 700,
+                      padding: '0.55rem 0.95rem',
+                      borderRadius: '10px',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.35rem',
+                    }}
+                  >
+                    <LogIn size={15} aria-hidden="true" /> Iniciar sesión
+                  </Link>
+                  <Link
+                    to="/registro"
+                    className="studio-chip-btn"
+                    style={{
+                      textDecoration: 'none',
+                      background: 'var(--paper, #FFFFFF)',
+                      border: '2px solid var(--ink, #1E192B)',
+                      color: 'var(--ink, #1E192B)',
+                      fontWeight: 700,
+                      padding: '0.5rem 0.95rem',
+                      borderRadius: '10px',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.35rem',
+                    }}
+                  >
+                    <UserPlus size={15} aria-hidden="true" /> Crear cuenta
+                  </Link>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {isAuthenticated && (
+            <>
+              {/* ══════════════════════════════════════════════════════════════
+                 SECCIÓN 1: PERFIL (ADAPTADO A ARTISTA / CLIENTE / ADMIN)
+                 ══════════════════════════════════════════════════════════════ */}
+              <section id="section-perfil" className="studio-card" aria-labelledby="heading-perfil">
             <span className="studio-card-tag">
               {isArtist ? '● PERFIL PÚBLICO' : isAdmin ? '● CUENTA ADMINISTRATIVA' : '● PERFIL DE CLIENTE'}
             </span>
@@ -1820,6 +2091,8 @@ export default function SettingsPage({ initialTab }) {
               )}
             </div>
           </div>
+          </>
+        )}
 
           {/* ══════════════════════════════════════════════════════════════
              SECCIÓN 7: APARIENCIA, VISUALIZACIÓN & ACCESIBILIDAD
@@ -1918,7 +2191,7 @@ export default function SettingsPage({ initialTab }) {
             </div>
 
             {/* Adaptación para daltonismo */}
-            <div style={{ marginBottom: '1.25rem' }}>
+            <div id="sub-section-daltonismo" style={{ marginBottom: '1.25rem' }}>
               <label htmlFor="color-mode-select" className="studio-field-label">
                 <span>
                   <Palette size={16} style={{ verticalAlign: 'middle', marginRight: '0.3rem' }} /> Filtro de Daltonismo
@@ -2064,7 +2337,7 @@ export default function SettingsPage({ initialTab }) {
             </div>
 
             {/* Opciones adicionales de accesibilidad */}
-            <div style={{ marginBottom: '1.4rem' }}>
+            <div id="sub-section-accesibilidad" style={{ marginBottom: '1.4rem' }}>
               <label className={`studio-checkbox-card ${settings.reduceMotion ? 'is-checked' : ''}`}>
                 <input
                   type="checkbox"

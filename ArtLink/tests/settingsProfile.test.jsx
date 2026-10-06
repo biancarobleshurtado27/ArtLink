@@ -377,4 +377,69 @@ describe('Integración de ruta /settings/profile en SettingsPage', () => {
     // No debe contener taller en vivo
     expect(screen.queryByText(/TALLER EN VIVO/i)).not.toBeInTheDocument()
   })
+
+  it('restringe la página a funciones de apariencia y accesibilidad cuando no hay sesión iniciada', async () => {
+    render(
+      <SettingsProvider>
+        <AuthContext.Provider value={{ user: null, updateUser: vi.fn(), logout: vi.fn() }}>
+          <MemoryRouter initialEntries={['/ajustes']}>
+            <SettingsPage />
+          </MemoryRouter>
+        </AuthContext.Provider>
+      </SettingsProvider>
+    )
+
+    // Verifica encabezado de invitado
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /Entorno Visual & Accesibilidad/i })).toBeInTheDocument()
+    })
+
+    // Debe mostrar la insignia de Modo Visitante
+    expect(screen.getByText(/MODO VISITANTE • CONFIGURACIÓN LOCAL/i)).toBeInTheDocument()
+    expect(screen.getByText(/ACCESO PÚBLICO/i)).toBeInTheDocument()
+
+    // Debe mostrar el banner informativo con enlaces a inicio de sesión y registro
+    expect(screen.getByText(/Preferencias de Pantalla, Daltonismo y Accesibilidad/i)).toBeInTheDocument()
+    expect(screen.getAllByRole('link', { name: /Iniciar sesión/i }).length).toBeGreaterThan(0)
+    expect(screen.getAllByRole('link', { name: /Crear cuenta/i }).length).toBeGreaterThan(0)
+
+    // NO debe renderizar secciones de edición de perfil ni taller ni administración
+    expect(screen.queryByRole('heading', { name: /Modificar perfil/i })).not.toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: /Identidad y Vitrina Pública/i })).not.toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: /Perfil y Datos de Cuenta/i })).not.toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: /Consola de Control del Sistema/i })).not.toBeInTheDocument()
+    expect(screen.queryByText(/TALLER EN VIVO/i)).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /Guardar cambios de perfil/i })).not.toBeInTheDocument()
+    expect(screen.queryByLabelText(/Foto de perfil: seleccionar archivo de imagen/i)).not.toBeInTheDocument()
+
+    // SÍ debe mostrar las herramientas de accesibilidad y visualización
+    expect(screen.getByRole('heading', { name: /Apariencia y visualización/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Tema Claro/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Tema Oscuro/i })).toBeInTheDocument()
+    expect(screen.getByLabelText(/Tamaño de texto/i)).toBeInTheDocument()
+    expect(screen.getByLabelText(/Nivel de contraste/i)).toBeInTheDocument()
+    expect(screen.getByLabelText(/Filtro de Daltonismo/i)).toBeInTheDocument()
+
+    // La navegación lateral solo contiene las pestañas de entorno y accesibilidad
+    expect(screen.getByRole('tab', { name: /Tema & Entorno Visual/i })).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: /Filtros de Daltonismo/i })).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: /Lectura & Accesibilidad/i })).toBeInTheDocument()
+    expect(screen.queryByRole('tab', { name: /Mi perfil/i })).not.toBeInTheDocument()
+    expect(screen.queryByRole('tab', { name: /Seguridad & Acceso/i })).not.toBeInTheDocument()
+  })
+
+  it('activa la pestaña de apariencia por defecto para visitantes sin cuenta', async () => {
+    render(
+      <SettingsProvider>
+        <AuthContext.Provider value={{ user: null, updateUser: vi.fn(), logout: vi.fn() }}>
+          <MemoryRouter initialEntries={['/ajustes']}>
+            <SettingsPage />
+          </MemoryRouter>
+        </AuthContext.Provider>
+      </SettingsProvider>
+    )
+
+    const temaTab = screen.getByRole('tab', { name: /Tema & Entorno Visual/i })
+    expect(temaTab).toHaveClass('is-active')
+  })
 })
