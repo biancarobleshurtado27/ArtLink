@@ -2028,54 +2028,650 @@
   "likes": [],
   "messages": [
     {
-      "id": "Haa9FqKGLxM",
-      "conversationId": "WRyzUT4yayc",
+      "id": "msg-lc-01",
+      "conversationId": "convo-lucas-client1-02",
       "senderId": "client-1",
-      "receiverId": "artist-demo-101",
-      "content": "holaaaa",
-      "createdAt": "2026-10-02T20:56:40.904Z",
-      "readAt": null,
-      "isDemoData": false,
-      "text": "holaaaa",
-      "read": false
+      "receiverId": "R4LaTb0C73c",
+      "content": "Hola Lucas, envié una solicitud formal para el diseño de personaje turnaround. ¿Crees que podamos incluir 3 expresiones faciales adicionales?",
+      "text": "Hola Lucas, envié una solicitud formal para el diseño de personaje turnaround. ¿Crees que podamos incluir 3 expresiones faciales adicionales?",
+      "createdAt": "2026-10-04T14:10:00.000Z",
+      "readAt": "2026-10-04T14:15:00.000Z",
+      "read": true,
+      "isDemoData": false
     },
     {
-      "id": "HpCrXjSnkRI",
-      "conversationId": "5TOZHbMkdCo",
+      "id": "msg-lc-02",
+      "conversationId": "convo-lucas-client1-02",
+      "senderId": "R4LaTb0C73c",
+      "receiverId": "client-1",
+      "content": "¡Hola! Por supuesto, el paquete de Model Sheet incluye hasta 4 expresiones (alegre, seria, combate y sorpresa). ¿Tienes alguna preferencia de peinado o vestimenta?",
+      "text": "¡Hola! Por supuesto, el paquete de Model Sheet incluye hasta 4 expresiones (alegre, seria, combate y sorpresa). ¿Tienes alguna preferencia de peinado o vestimenta?",
+      "createdAt": "2026-10-04T14:25:00.000Z",
+      "readAt": "2026-10-04T14:30:00.000Z",
+      "read": true,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-lc-03",
+      "conversationId": "convo-lucas-client1-02",
+      "senderId": "client-1",
+      "receiverId": "R4LaTb0C73c",
+      "content": "¡Genial! Me gustaría que tuviera una capa ligera y runas brillantes en los antebrazos. Ya confirmé el pago en custodia Escrow por  USD.",
+      "text": "¡Genial! Me gustaría que tuviera una capa ligera y runas brillantes en los antebrazos. Ya confirmé el pago en custodia Escrow por  USD.",
+      "createdAt": "2026-10-04T14:40:00.000Z",
+      "readAt": "2026-10-04T14:45:00.000Z",
+      "read": true,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-lc-04",
+      "conversationId": "convo-lucas-client1-02",
+      "senderId": "R4LaTb0C73c",
+      "receiverId": "client-1",
+      "content": "Anotado. Los fondos ya se visualizan protegidos en Escrow. Hoy mismo comienzo con las siluetas preliminares y la exploración de paletas.",
+      "text": "Anotado. Los fondos ya se visualizan protegidos en Escrow. Hoy mismo comienzo con las siluetas preliminares y la exploración de paletas.",
+      "createdAt": "2026-10-05T10:00:00.000Z",
+      "readAt": "2026-10-05T10:05:00.000Z",
+      "read": true,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-lc-05",
+      "conversationId": "convo-lucas-client1-02",
+      "senderId": "R4LaTb0C73c",
+      "receiverId": "client-1",
+      "content": "¡Buenas noticias! Te acabo de subir las 3 opciones de siluetas al panel de la solicitud. Échales un vistazo y cuéntame cuál se adapta mejor a lo que imaginabas.",
+      "text": "¡Buenas noticias! Te acabo de subir las 3 opciones de siluetas al panel de la solicitud. Échales un vistazo y cuéntame cuál se adapta mejor a lo que imaginabas.",
+      "createdAt": "2026-10-05T16:45:00.000Z",
+      "readAt": "2026-10-05T17:00:00.000Z",
+      "read": true,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-lc-06",
+      "conversationId": "convo-lucas-client1-02",
+      "senderId": "client-1",
+      "receiverId": "R4LaTb0C73c",
+      "content": "¡Me encanta la opción B! La postura con la capa fluida es exactamente lo que buscaba. Quedo atento a la etapa de color base.",
+      "text": "¡Me encanta la opción B! La postura con la capa fluida es exactamente lo que buscaba. Quedo atento a la etapa de color base.",
+      "createdAt": "2026-10-06T09:40:00.000Z",
+      "readAt": null,
+      "read": false,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-sc-01",
+      "conversationId": "convo-sora-client1-03",
+      "senderId": "client-1",
+      "receiverId": "artist-demo-101",
+      "content": "Hola Sora, me fascina tu técnica de iluminación celestial. ¿Tienes disponibilidad para un busto anime este mes?",
+      "text": "Hola Sora, me fascina tu técnica de iluminación celestial. ¿Tienes disponibilidad para un busto anime este mes?",
+      "createdAt": "2026-10-03T11:00:00.000Z",
+      "readAt": "2026-10-03T11:05:00.000Z",
+      "read": true,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-sc-02",
+      "conversationId": "convo-sora-client1-03",
+      "senderId": "artist-demo-101",
+      "receiverId": "client-1",
+      "content": "¡Hola! Sí, actualmente tengo 2 cupos abiertos. Para bustos anime el plazo habitual es de 4 a 5 días con 2 rondas de revisión.",
+      "text": "¡Hola! Sí, actualmente tengo 2 cupos abiertos. Para bustos anime el plazo habitual es de 4 a 5 días con 2 rondas de revisión.",
+      "createdAt": "2026-10-03T11:20:00.000Z",
+      "readAt": "2026-10-03T11:25:00.000Z",
+      "read": true,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-sc-03",
+      "conversationId": "convo-sora-client1-03",
+      "senderId": "client-1",
+      "receiverId": "artist-demo-101",
+      "content": "¡Perfecto! Acabo de enviar la propuesta formal con las especificaciones desde tu perfil. El presupuesto asignado es de  USD.",
+      "text": "¡Perfecto! Acabo de enviar la propuesta formal con las especificaciones desde tu perfil. El presupuesto asignado es de  USD.",
+      "createdAt": "2026-10-03T11:35:00.000Z",
+      "readAt": "2026-10-03T11:40:00.000Z",
+      "read": true,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-sc-04",
+      "conversationId": "convo-sora-client1-03",
+      "senderId": "artist-demo-101",
+      "receiverId": "client-1",
+      "content": "¡Propuesta aceptada! Ya inicié con el lineart limpio y paleta preliminar. Te mantendré al tanto por aquí con cada avance.",
+      "text": "¡Propuesta aceptada! Ya inicié con el lineart limpio y paleta preliminar. Te mantendré al tanto por aquí con cada avance.",
+      "createdAt": "2026-10-04T12:00:00.000Z",
+      "readAt": "2026-10-04T12:10:00.000Z",
+      "read": true,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-sc-05",
+      "conversationId": "convo-sora-client1-03",
+      "senderId": "artist-demo-101",
+      "receiverId": "client-1",
+      "content": "Te comparto que el lineart está listo y la iluminación clave quedó hermosa. Hoy en la tarde subo la prueba de color final para tu aprobación.",
+      "text": "Te comparto que el lineart está listo y la iluminación clave quedó hermosa. Hoy en la tarde subo la prueba de color final para tu aprobación.",
+      "createdAt": "2026-10-05T17:15:00.000Z",
+      "readAt": null,
+      "read": false,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-ac-01",
+      "conversationId": "convo-aether-client1-04",
       "senderId": "client-1",
       "receiverId": "artist-demo-103",
-      "content": "holaaa como estas",
-      "createdAt": "2026-10-02T20:57:06.118Z",
+      "content": "Hola Aether, vi tus paisajes de ciudades flotantes en el catálogo. Necesito un concept art para un proyecto audiovisual en resolución 4K.",
+      "text": "Hola Aether, vi tus paisajes de ciudades flotantes en el catálogo. Necesito un concept art para un proyecto audiovisual en resolución 4K.",
+      "createdAt": "2026-10-04T08:30:00.000Z",
+      "readAt": "2026-10-04T08:35:00.000Z",
+      "read": true,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-ac-02",
+      "conversationId": "convo-aether-client1-04",
+      "senderId": "artist-demo-103",
+      "receiverId": "client-1",
+      "content": "¡Hola! Con gusto. Trabajo en Photoshop en 4K (3840x2160) a 300 DPI y entrego las capas de atmósfera, iluminación y arquitectura separadas.",
+      "text": "¡Hola! Con gusto. Trabajo en Photoshop en 4K (3840x2160) a 300 DPI y entrego las capas de atmósfera, iluminación y arquitectura separadas.",
+      "createdAt": "2026-10-04T08:50:00.000Z",
+      "readAt": "2026-10-04T09:00:00.000Z",
+      "read": true,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-ac-03",
+      "conversationId": "convo-aether-client1-04",
+      "senderId": "client-1",
+      "receiverId": "artist-demo-103",
+      "content": "Excelente, justo necesitamos las capas separadas para hacer un efecto parallax de animación. Acabo de autorizar el depósito de  USD en custodia Escrow.",
+      "text": "Excelente, justo necesitamos las capas separadas para hacer un efecto parallax de animación. Acabo de autorizar el depósito de  USD en custodia Escrow.",
+      "createdAt": "2026-10-04T09:15:00.000Z",
+      "readAt": "2026-10-04T09:20:00.000Z",
+      "read": true,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-ac-04",
+      "conversationId": "convo-aether-client1-04",
+      "senderId": "artist-demo-103",
+      "receiverId": "client-1",
+      "content": "Perfecto, pago confirmado en custodia. Ya estoy trabajando en los primeros thumbnails de composición y punto de fuga para la ciudadela flotante.",
+      "text": "Perfecto, pago confirmado en custodia. Ya estoy trabajando en los primeros thumbnails de composición y punto de fuga para la ciudadela flotante.",
+      "createdAt": "2026-10-05T14:20:00.000Z",
       "readAt": null,
-      "isDemoData": false,
-      "text": "holaaa como estas",
-      "read": false
+      "read": false,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-kc-01",
+      "conversationId": "convo-kaelen-client1-05",
+      "senderId": "client-1",
+      "receiverId": "artist-demo-102",
+      "content": "Hola Kaelen, necesito el modelo 3D optimizado para Unity con menos de 15,000 polígonos y mapas de texturas PBR (Albedo, Normal, Roughness).",
+      "text": "Hola Kaelen, necesito el modelo 3D optimizado para Unity con menos de 15,000 polígonos y mapas de texturas PBR (Albedo, Normal, Roughness).",
+      "createdAt": "2026-10-03T16:00:00.000Z",
+      "readAt": "2026-10-03T16:05:00.000Z",
+      "read": true,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-kc-02",
+      "conversationId": "convo-kaelen-client1-05",
+      "senderId": "artist-demo-102",
+      "receiverId": "client-1",
+      "content": "¡Hola! Totalmente factible. Suelo entregar en formato FBX con la escala métrica de Unity y texturas empacadas en 2048x2048.",
+      "text": "¡Hola! Totalmente factible. Suelo entregar en formato FBX con la escala métrica de Unity y texturas empacadas en 2048x2048.",
+      "createdAt": "2026-10-03T16:30:00.000Z",
+      "readAt": "2026-10-03T16:35:00.000Z",
+      "read": true,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-kc-03",
+      "conversationId": "convo-kaelen-client1-05",
+      "senderId": "client-1",
+      "receiverId": "artist-demo-102",
+      "content": "¡Genial! Los  USD ya están retenidos en la orden aceptada. ¿Cuándo tendrías la topología lista?",
+      "text": "¡Genial! Los  USD ya están retenidos en la orden aceptada. ¿Cuándo tendrías la topología lista?",
+      "createdAt": "2026-10-03T17:00:00.000Z",
+      "readAt": "2026-10-03T17:10:00.000Z",
+      "read": true,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-kc-04",
+      "conversationId": "convo-kaelen-client1-05",
+      "senderId": "artist-demo-102",
+      "receiverId": "client-1",
+      "content": "Estará lista en 3 días hábiles. Te subiré una captura del wireframe antes de pasar al bakeo de normales en Substance Painter.",
+      "text": "Estará lista en 3 días hábiles. Te subiré una captura del wireframe antes de pasar al bakeo de normales en Substance Painter.",
+      "createdAt": "2026-10-05T11:50:00.000Z",
+      "readAt": null,
+      "read": false,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-mc-01",
+      "conversationId": "convo-mateo-client1-06",
+      "senderId": "client-1",
+      "receiverId": "user-artist-001",
+      "content": "Hola Mateo, revisé tu portafolio de arte editorial. Queremos encargarte una portada con atmósfera melancólica en acuarela digital.",
+      "text": "Hola Mateo, revisé tu portafolio de arte editorial. Queremos encargarte una portada con atmósfera melancólica en acuarela digital.",
+      "createdAt": "2026-10-02T13:00:00.000Z",
+      "readAt": "2026-10-02T13:10:00.000Z",
+      "read": true,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-mc-02",
+      "conversationId": "convo-mateo-client1-06",
+      "senderId": "user-artist-001",
+      "receiverId": "client-1",
+      "content": "¡Hola! Me encantaría participar. Trabajo con pinceles texturizados que simulan papel de algodón de 300g. ¿Tienes la tipografía definida?",
+      "text": "¡Hola! Me encantaría participar. Trabajo con pinceles texturizados que simulan papel de algodón de 300g. ¿Tienes la tipografía definida?",
+      "createdAt": "2026-10-02T13:30:00.000Z",
+      "readAt": "2026-10-02T13:40:00.000Z",
+      "read": true,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-mc-03",
+      "conversationId": "convo-mateo-client1-06",
+      "senderId": "client-1",
+      "receiverId": "user-artist-001",
+      "content": "Sí, te dejaré espacio negativo superior para el título. Ya envié el pedido por  USD con los bocetos de referencia adjuntos.",
+      "text": "Sí, te dejaré espacio negativo superior para el título. Ya envié el pedido por  USD con los bocetos de referencia adjuntos.",
+      "createdAt": "2026-10-02T14:00:00.000Z",
+      "readAt": "2026-10-02T14:15:00.000Z",
+      "read": true,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-mc-04",
+      "conversationId": "convo-mateo-client1-06",
+      "senderId": "user-artist-001",
+      "receiverId": "client-1",
+      "content": "Recibido y confirmado. Mañana al mediodía te envío dos propuestas tonales para que elijamos la mejor dirección de color.",
+      "text": "Recibido y confirmado. Mañana al mediodía te envío dos propuestas tonales para que elijamos la mejor dirección de color.",
+      "createdAt": "2026-10-04T16:45:00.000Z",
+      "readAt": "2026-10-04T17:00:00.000Z",
+      "read": true,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-lb-01",
+      "conversationId": "convo-lucas-bianca-01",
+      "senderId": "NlFFPtqd1uk",
+      "receiverId": "R4LaTb0C73c",
+      "content": "¡Hola Lucas! Me encantó tu obra en el Santuario de las Aves Celestes. Estoy buscando una ilustración de portada para un proyecto de novela de fantasía.",
+      "text": "¡Hola Lucas! Me encantó tu obra en el Santuario de las Aves Celestes. Estoy buscando una ilustración de portada para un proyecto de novela de fantasía.",
+      "createdAt": "2026-10-04T10:05:00.000Z",
+      "readAt": "2026-10-04T10:10:00.000Z",
+      "read": true,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-lb-02",
+      "conversationId": "convo-lucas-bianca-01",
+      "senderId": "R4LaTb0C73c",
+      "receiverId": "NlFFPtqd1uk",
+      "content": "¡Hola Bianca! Muchísimas gracias por escribirme. Me encanta trabajar en portadas de novelas. Cuéntame un poco más sobre la atmósfera que tienes en mente y los personajes.",
+      "text": "¡Hola Bianca! Muchísimas gracias por escribirme. Me encanta trabajar en portadas de novelas. Cuéntame un poco más sobre la atmósfera que tienes en mente y los personajes.",
+      "createdAt": "2026-10-04T10:15:00.000Z",
+      "readAt": "2026-10-04T10:20:00.000Z",
+      "read": true,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-lb-03",
+      "conversationId": "convo-lucas-bianca-01",
+      "senderId": "NlFFPtqd1uk",
+      "receiverId": "R4LaTb0C73c",
+      "content": "Es una hechicera estelar sobre ruinas al atardecer. Adjunté algunas referencias de paleta violeta y dorada en la solicitud formal bajo custodia Escrow.",
+      "text": "Es una hechicera estelar sobre ruinas al atardecer. Adjunté algunas referencias de paleta violeta y dorada en la solicitud formal bajo custodia Escrow.",
+      "createdAt": "2026-10-04T10:25:00.000Z",
+      "readAt": "2026-10-04T10:30:00.000Z",
+      "read": true,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-lb-04",
+      "conversationId": "convo-lucas-bianca-01",
+      "senderId": "R4LaTb0C73c",
+      "receiverId": "NlFFPtqd1uk",
+      "content": "¡Excelente! Ya revisé las referencias en el panel de taller. La combinación de tonos crepusculares va a quedar espectacular. En 48 horas te estaré subiendo el primer boceto de composición (WIP v1) para que lo revisemos juntos.",
+      "text": "¡Excelente! Ya revisé las referencias en el panel de taller. La combinación de tonos crepusculares va a quedar espectacular. En 48 horas te estaré subiendo el primer boceto de composición (WIP v1) para que lo revisemos juntos.",
+      "createdAt": "2026-10-04T10:40:00.000Z",
+      "readAt": "2026-10-04T10:45:00.000Z",
+      "read": true,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-lb-05",
+      "conversationId": "convo-lucas-bianca-01",
+      "senderId": "NlFFPtqd1uk",
+      "receiverId": "R4LaTb0C73c",
+      "content": "¡Perfecto! Quedo a la espera del boceto. ¡Muchas gracias por la rápida respuesta!",
+      "text": "¡Perfecto! Quedo a la espera del boceto. ¡Muchas gracias por la rápida respuesta!",
+      "createdAt": "2026-10-04T10:50:00.000Z",
+      "readAt": "2026-10-04T10:55:00.000Z",
+      "read": true,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-lb-06",
+      "conversationId": "convo-lucas-bianca-01",
+      "senderId": "R4LaTb0C73c",
+      "receiverId": "NlFFPtqd1uk",
+      "content": "¡Listo! Acabo de subir el boceto con los valores de luz principales. Cuando puedas, échale un vistazo en tu bandeja de solicitudes y me avisas tus impresiones.",
+      "text": "¡Listo! Acabo de subir el boceto con los valores de luz principales. Cuando puedas, échale un vistazo en tu bandeja de solicitudes y me avisas tus impresiones.",
+      "createdAt": "2026-10-05T18:30:00.000Z",
+      "readAt": null,
+      "read": false,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-sb-01",
+      "conversationId": "convo-sora-bianca-02",
+      "senderId": "NlFFPtqd1uk",
+      "receiverId": "artist-demo-101",
+      "content": "Hola Sora, quiero comisionarte una ilustración para un regalo especial con temática celestial y acabado semi-realista.",
+      "text": "Hola Sora, quiero comisionarte una ilustración para un regalo especial con temática celestial y acabado semi-realista.",
+      "createdAt": "2026-10-03T09:15:00.000Z",
+      "readAt": "2026-10-03T09:20:00.000Z",
+      "read": true,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-sb-02",
+      "conversationId": "convo-sora-bianca-02",
+      "senderId": "artist-demo-101",
+      "receiverId": "NlFFPtqd1uk",
+      "content": "¡Hola Bianca! Será un honor. Me encanta el toque cósmico. ¿Tienes fotos o referencias de pose y vestuario?",
+      "text": "¡Hola Bianca! Será un honor. Me encanta el toque cósmico. ¿Tienes fotos o referencias de pose y vestuario?",
+      "createdAt": "2026-10-03T09:40:00.000Z",
+      "readAt": "2026-10-03T09:45:00.000Z",
+      "read": true,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-sb-03",
+      "conversationId": "convo-sora-bianca-02",
+      "senderId": "NlFFPtqd1uk",
+      "receiverId": "artist-demo-101",
+      "content": "Sí, las adjunté en el formulario de la solicitud por  USD. Los tonos predominantes me gustaría que fueran lavanda y menta.",
+      "text": "Sí, las adjunté en el formulario de la solicitud por  USD. Los tonos predominantes me gustaría que fueran lavanda y menta.",
+      "createdAt": "2026-10-03T10:05:00.000Z",
+      "readAt": "2026-10-03T10:10:00.000Z",
+      "read": true,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-sb-04",
+      "conversationId": "convo-sora-bianca-02",
+      "senderId": "artist-demo-101",
+      "receiverId": "NlFFPtqd1uk",
+      "content": "¡Hermosa combinación cromática! Ya comencé con el blocking de sombras y luces clave. En un par de días te paso el primer render.",
+      "text": "¡Hermosa combinación cromática! Ya comencé con el blocking de sombras y luces clave. En un par de días te paso el primer render.",
+      "createdAt": "2026-10-05T15:10:00.000Z",
+      "readAt": null,
+      "read": false,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-pb-01",
+      "conversationId": "convo-pixel-bianca-03",
+      "senderId": "NlFFPtqd1uk",
+      "receiverId": "artist-demo-107",
+      "content": "Hola Pixel Foundry, estoy prototipando un juego RPG 2D y necesito un set de animaciones idle y walk en 32x32 píxeles.",
+      "text": "Hola Pixel Foundry, estoy prototipando un juego RPG 2D y necesito un set de animaciones idle y walk en 32x32 píxeles.",
+      "createdAt": "2026-10-02T15:20:00.000Z",
+      "readAt": "2026-10-02T15:30:00.000Z",
+      "read": true,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-pb-02",
+      "conversationId": "convo-pixel-bianca-03",
+      "senderId": "artist-demo-107",
+      "receiverId": "NlFFPtqd1uk",
+      "content": "¡Hola Bianca! Genial, trabajo en Aseprite a 8 frames de caminata y 4 de respiración idle. Entrego sprite sheet en PNG transparente y el archivo .aseprite editable.",
+      "text": "¡Hola Bianca! Genial, trabajo en Aseprite a 8 frames de caminata y 4 de respiración idle. Entrego sprite sheet en PNG transparente y el archivo .aseprite editable.",
+      "createdAt": "2026-10-02T15:45:00.000Z",
+      "readAt": "2026-10-02T15:50:00.000Z",
+      "read": true,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-pb-03",
+      "conversationId": "convo-pixel-bianca-03",
+      "senderId": "NlFFPtqd1uk",
+      "receiverId": "artist-demo-107",
+      "content": "¡Justo lo que requiero! La orden por  USD ya está confirmada en la plataforma.",
+      "text": "¡Justo lo que requiero! La orden por  USD ya está confirmada en la plataforma.",
+      "createdAt": "2026-10-02T16:10:00.000Z",
+      "readAt": "2026-10-02T16:15:00.000Z",
+      "read": true,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-pb-04",
+      "conversationId": "convo-pixel-bianca-03",
+      "senderId": "artist-demo-107",
+      "receiverId": "NlFFPtqd1uk",
+      "content": "¡Excelente! Ya exporté el ciclo preliminar de caminata. Se ve súper fluido a 12 FPS, te va a encantar.",
+      "text": "¡Excelente! Ya exporté el ciclo preliminar de caminata. Se ve súper fluido a 12 FPS, te va a encantar.",
+      "createdAt": "2026-10-04T18:00:00.000Z",
+      "readAt": null,
+      "read": false,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-admc-01",
+      "conversationId": "convo-admin-client1-01",
+      "senderId": "client-1",
+      "receiverId": "admin-1",
+      "content": "Hola soporte de ArtLink, tenía una duda sobre la liberación de fondos de Escrow al dar por finalizada la orden.",
+      "text": "Hola soporte de ArtLink, tenía una duda sobre la liberación de fondos de Escrow al dar por finalizada la orden.",
+      "createdAt": "2026-10-05T10:00:00.000Z",
+      "readAt": "2026-10-05T10:05:00.000Z",
+      "read": true,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-admc-02",
+      "conversationId": "convo-admin-client1-01",
+      "senderId": "admin-1",
+      "receiverId": "client-1",
+      "content": "¡Hola! En ArtLink, los fondos retenidos en Escrow se liberan automáticamente al artista una vez que tú como cliente marcas la solicitud como completada y apruebas el entregable final. De este modo tu dinero siempre está 100% protegido hasta tu conformidad total.",
+      "text": "¡Hola! En ArtLink, los fondos retenidos en Escrow se liberan automáticamente al artista una vez que tú como cliente marcas la solicitud como completada y apruebas el entregable final. De este modo tu dinero siempre está 100% protegido hasta tu conformidad total.",
+      "createdAt": "2026-10-05T10:15:00.000Z",
+      "readAt": "2026-10-05T10:20:00.000Z",
+      "read": true,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-admc-03",
+      "conversationId": "convo-admin-client1-01",
+      "senderId": "client-1",
+      "receiverId": "admin-1",
+      "content": "Comprendido perfectamente, me parece un sistema muy transparente y seguro. ¡Muchas gracias por la rápida atención!",
+      "text": "Comprendido perfectamente, me parece un sistema muy transparente y seguro. ¡Muchas gracias por la rápida atención!",
+      "createdAt": "2026-10-05T10:25:00.000Z",
+      "readAt": null,
+      "read": false,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-adms-01",
+      "conversationId": "convo-admin-sora-02",
+      "senderId": "admin-1",
+      "receiverId": "artist-demo-101",
+      "content": "Hola Sora Moon Studio. Desde la administración de ArtLink revisamos tu impecable historial de entregas a tiempo y calificaciones de 5 estrellas. Queremos seleccionarte como Artista Destacada en la portada de la plataforma para la próxima semana.",
+      "text": "Hola Sora Moon Studio. Desde la administración de ArtLink revisamos tu impecable historial de entregas a tiempo y calificaciones de 5 estrellas. Queremos seleccionarte como Artista Destacada en la portada de la plataforma para la próxima semana.",
+      "createdAt": "2026-10-04T12:00:00.000Z",
+      "readAt": "2026-10-04T12:05:00.000Z",
+      "read": true,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-adms-02",
+      "conversationId": "convo-admin-sora-02",
+      "senderId": "artist-demo-101",
+      "receiverId": "admin-1",
+      "content": "¡Muchísimas gracias equipo de ArtLink! Es un verdadero honor y una motivación para seguir aportando a la comunidad artística.",
+      "text": "¡Muchísimas gracias equipo de ArtLink! Es un verdadero honor y una motivación para seguir aportando a la comunidad artística.",
+      "createdAt": "2026-10-04T12:20:00.000Z",
+      "readAt": "2026-10-04T12:25:00.000Z",
+      "read": true,
+      "isDemoData": false
+    },
+    {
+      "id": "msg-adms-03",
+      "conversationId": "convo-admin-sora-02",
+      "senderId": "admin-1",
+      "receiverId": "artist-demo-101",
+      "content": "¡Felicidades muy merecidas! Ya activamos tu insignia de artista verificada con relieve dorado en el catálogo principal.",
+      "text": "¡Felicidades muy merecidas! Ya activamos tu insignia de artista verificada con relieve dorado en el catálogo principal.",
+      "createdAt": "2026-10-04T12:35:00.000Z",
+      "readAt": null,
+      "read": false,
+      "isDemoData": false
     }
   ],
   "conversations": [
     {
-      "id": "WRyzUT4yayc",
+      "id": "convo-lucas-client1-02",
+      "participantIds": [
+        "client-1",
+        "R4LaTb0C73c"
+      ],
+      "createdAt": "2026-10-04T14:10:00.000Z",
+      "updatedAt": "2026-10-06T09:40:00.000Z",
+      "lastMessageId": "msg-lc-06",
+      "relatedArtistProfileId": "artist-bianca",
+      "relatedRequestId": "req-bianca-02",
+      "isDemoData": false
+    },
+    {
+      "id": "convo-sora-client1-03",
       "participantIds": [
         "client-1",
         "artist-demo-101"
       ],
-      "createdAt": "2026-10-02T20:56:40.871Z",
-      "updatedAt": "2026-10-02T20:56:40.904Z",
-      "lastMessageId": "Haa9FqKGLxM",
+      "createdAt": "2026-10-03T11:00:00.000Z",
+      "updatedAt": "2026-10-05T17:15:00.000Z",
+      "lastMessageId": "msg-sc-05",
       "relatedArtistProfileId": "artist-demo-101",
-      "relatedRequestId": null,
+      "relatedRequestId": "req-101",
       "isDemoData": false
     },
     {
-      "id": "5TOZHbMkdCo",
+      "id": "convo-aether-client1-04",
       "participantIds": [
         "client-1",
         "artist-demo-103"
       ],
-      "createdAt": "2026-10-02T20:57:05.960Z",
-      "updatedAt": "2026-10-02T20:57:06.118Z",
-      "lastMessageId": "HpCrXjSnkRI",
+      "createdAt": "2026-10-04T08:30:00.000Z",
+      "updatedAt": "2026-10-05T14:20:00.000Z",
+      "lastMessageId": "msg-ac-04",
       "relatedArtistProfileId": "artist-demo-103",
+      "relatedRequestId": "req-103",
+      "isDemoData": false
+    },
+    {
+      "id": "convo-kaelen-client1-05",
+      "participantIds": [
+        "client-1",
+        "artist-demo-102"
+      ],
+      "createdAt": "2026-10-03T16:00:00.000Z",
+      "updatedAt": "2026-10-05T11:50:00.000Z",
+      "lastMessageId": "msg-kc-04",
+      "relatedArtistProfileId": "artist-demo-102",
+      "relatedRequestId": "req-102",
+      "isDemoData": false
+    },
+    {
+      "id": "convo-mateo-client1-06",
+      "participantIds": [
+        "client-1",
+        "user-artist-001"
+      ],
+      "createdAt": "2026-10-02T13:00:00.000Z",
+      "updatedAt": "2026-10-04T16:45:00.000Z",
+      "lastMessageId": "msg-mc-04",
+      "relatedArtistProfileId": "artist-001",
+      "relatedRequestId": "req-mateo-01",
+      "isDemoData": false
+    },
+    {
+      "id": "convo-lucas-bianca-01",
+      "participantIds": [
+        "NlFFPtqd1uk",
+        "R4LaTb0C73c"
+      ],
+      "createdAt": "2026-10-04T10:05:00.000Z",
+      "updatedAt": "2026-10-05T18:30:00.000Z",
+      "lastMessageId": "msg-lb-06",
+      "relatedArtistProfileId": "artist-bianca",
+      "relatedRequestId": "req-bianca-03",
+      "isDemoData": false
+    },
+    {
+      "id": "convo-sora-bianca-02",
+      "participantIds": [
+        "NlFFPtqd1uk",
+        "artist-demo-101"
+      ],
+      "createdAt": "2026-10-03T09:15:00.000Z",
+      "updatedAt": "2026-10-05T15:10:00.000Z",
+      "lastMessageId": "msg-sb-04",
+      "relatedArtistProfileId": "artist-demo-101",
+      "relatedRequestId": "req-cl-bianca-01",
+      "isDemoData": false
+    },
+    {
+      "id": "convo-pixel-bianca-03",
+      "participantIds": [
+        "NlFFPtqd1uk",
+        "artist-demo-107"
+      ],
+      "createdAt": "2026-10-02T15:20:00.000Z",
+      "updatedAt": "2026-10-04T18:00:00.000Z",
+      "lastMessageId": "msg-pb-04",
+      "relatedArtistProfileId": "artist-demo-107",
+      "relatedRequestId": "req-cl-bianca-02",
+      "isDemoData": false
+    },
+    {
+      "id": "convo-admin-client1-01",
+      "participantIds": [
+        "admin-1",
+        "client-1"
+      ],
+      "createdAt": "2026-10-05T10:00:00.000Z",
+      "updatedAt": "2026-10-05T10:25:00.000Z",
+      "lastMessageId": "msg-admc-03",
+      "relatedArtistProfileId": null,
+      "relatedRequestId": null,
+      "isDemoData": false
+    },
+    {
+      "id": "convo-admin-sora-02",
+      "participantIds": [
+        "admin-1",
+        "artist-demo-101"
+      ],
+      "createdAt": "2026-10-04T12:00:00.000Z",
+      "updatedAt": "2026-10-04T12:35:00.000Z",
+      "lastMessageId": "msg-adms-03",
+      "relatedArtistProfileId": "artist-demo-101",
       "relatedRequestId": null,
       "isDemoData": false
     },
@@ -2605,6 +3201,30 @@
       "title": "Conversación con ArtLink AI",
       "createdAt": "2026-10-06T15:34:23.852Z",
       "updatedAt": "2026-10-06T15:34:23.852Z",
+      "page": "/"
+    },
+    {
+      "id": "aQvsiF1dA68",
+      "userId": "user-test-1791303527161-u7x0",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-06T16:18:47.284Z",
+      "updatedAt": "2026-10-06T16:18:47.284Z",
+      "page": "/explorar"
+    },
+    {
+      "id": "XMi1o2h1EtU",
+      "userId": "user-client-A-1791303527316-1z6y",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-06T16:18:47.434Z",
+      "updatedAt": "2026-10-06T16:18:47.434Z",
+      "page": "/"
+    },
+    {
+      "id": "NJ4AuHn_cYo",
+      "userId": "user-artist-B-1791303527316-20i5",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-06T16:18:47.635Z",
+      "updatedAt": "2026-10-06T16:18:47.635Z",
       "page": "/"
     }
   ],
@@ -4129,6 +4749,61 @@
       "role": "user",
       "content": "Mensaje de usuario B",
       "createdAt": "2026-10-06T15:34:23.855Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "p8QokMBPwtg",
+      "conversationId": "convo-1791303527284-jdhd6",
+      "userId": "user-test-1791303527161-u7x0",
+      "role": "user",
+      "content": "Hola asistente de ArtLink",
+      "createdAt": "2026-10-06T16:18:47.293Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "oxL5R1WBkys",
+      "conversationId": "convo-1791303527284-jdhd6",
+      "userId": "user-test-1791303527161-u7x0",
+      "role": "assistant",
+      "content": "Hola, te ayudo a buscar ilustradores digitales.",
+      "createdAt": "2026-10-06T16:18:47.297Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "YHFMPI92anA",
+      "conversationId": "convo-1791303527284-jdhd6",
+      "userId": "user-test-1791303527161-u7x0",
+      "role": "assistant",
+      "content": "Puedo recomendarte artistas de estilo anime.",
+      "createdAt": "2026-10-06T16:18:47.308Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "bEWuGGmJdOA",
+      "conversationId": "convo-1791303527434-0w096",
+      "userId": "user-client-A-1791303527316-1z6y",
+      "role": "user",
+      "content": "Mensaje de usuario A",
+      "createdAt": "2026-10-06T16:18:47.440Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "pMENRIip1dc",
+      "conversationId": "convo-1791303527635-cbgsp",
+      "userId": "user-artist-B-1791303527316-20i5",
+      "role": "user",
+      "content": "Mensaje de usuario B",
+      "createdAt": "2026-10-06T16:18:47.638Z",
       "provider": "gemini",
       "status": "sent",
       "intent": null

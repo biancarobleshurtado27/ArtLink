@@ -124,6 +124,7 @@ export default function MessagesPage() {
 
   // UI States
   const [unreadByConvoMap, setUnreadByConvoMap] = useState({})
+  const [lastMessagePreviewMap, setLastMessagePreviewMap] = useState({})
   const [sidebarSearch, setSidebarSearch] = useState('')
   const [messageInput, setMessageInput] = useState('')
   const [sendLoading, setSendLoading] = useState(false)
@@ -245,12 +246,22 @@ export default function MessagesPage() {
 
       setConversations(validConvos)
 
-      // Contar mensajes sin leer por conversación para el usuario actual
+      // Contar mensajes sin leer y mapear último mensaje por conversación
       try {
         const { data: allMsgs } = await apiClient.get('/messages')
         if (Array.isArray(allMsgs)) {
           const map = {}
+          const previewMap = {}
+          const lastDateMap = {}
           allMsgs.forEach((m) => {
+            if (!m.isDemoData && m.conversationId) {
+              const cId = String(m.conversationId)
+              const mDate = new Date(m.createdAt || 0).getTime()
+              if (!lastDateMap[cId] || mDate >= lastDateMap[cId]) {
+                lastDateMap[cId] = mDate
+                previewMap[cId] = m.content || m.text || ''
+              }
+            }
             if (
               !m.isDemoData &&
               String(m.receiverId) === safeCurrentUserId &&
@@ -262,6 +273,7 @@ export default function MessagesPage() {
             }
           })
           setUnreadByConvoMap(map)
+          setLastMessagePreviewMap(previewMap)
         }
       } catch {}
     } catch (err) {
@@ -538,6 +550,10 @@ export default function MessagesPage() {
         navigate(`/mensajes/${targetConvoId}`)
       } else {
         setActiveMessages((prev) => [...prev, createdMsg])
+        setLastMessagePreviewMap((prev) => ({
+          ...prev,
+          [String(targetConvoId)]: createdMsg.content || createdMsg.text || '',
+        }))
         // Actualizar preview en la lista local de conversaciones
         setConversations((prev) =>
           prev.map((c) =>
@@ -567,8 +583,10 @@ export default function MessagesPage() {
       (pUser?.name && pUser.name.toLowerCase().includes(q)) ||
       (pArtist?.displayName && pArtist.displayName.toLowerCase().includes(q))
     const matchUser = pUser?.username && pUser.username.toLowerCase().includes(q)
+    const lastPreview = lastMessagePreviewMap[String(c.id)] || ''
+    const matchMsg = lastPreview.toLowerCase().includes(q)
 
-    return matchName || matchUser
+    return matchName || matchUser || matchMsg
   })
 
   // ── ESTADO 1: CARGANDO ──
@@ -935,9 +953,11 @@ export default function MessagesPage() {
                       </div>
 
                       <p className="chat-convo-preview-msg">
-                        {item.lastMessageId
-                          ? 'Mensaje registrado'
-                          : 'Conversación activa'}
+                        {lastMessagePreviewMap[String(item.id)] ||
+                          item.lastMessageText ||
+                          (item.lastMessageId
+                            ? 'Mensaje registrado'
+                            : 'Conversación activa')}
                       </p>
 
                       <div
