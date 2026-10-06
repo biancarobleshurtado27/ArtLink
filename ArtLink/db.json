@@ -8,7 +8,8 @@
       "role": "admin",
       "avatar": "https://ui-avatars.com/api/?name=Admin&background=random",
       "active": true,
-      "passwordDemo": "admin"
+      "passwordDemo": "admin",
+      "createdAt": "2026-08-01T10:00:00Z"
     },
     {
       "id": "client-1",
@@ -18,7 +19,8 @@
       "role": "client",
       "avatar": "https://ui-avatars.com/api/?name=Cliente&background=random",
       "active": true,
-      "passwordDemo": "123"
+      "passwordDemo": "123",
+      "createdAt": "2026-08-15T12:00:00Z"
     },
     {
       "id": "user-artist-001",
@@ -29,7 +31,8 @@
       "avatar": "/images/hero/thumbs/sora-2.jpg",
       "active": true,
       "passwordDemo": "artista123",
-      "avatarUrl": "/images/hero/thumbs/sora-2.jpg"
+      "avatarUrl": "/images/hero/thumbs/sora-2.jpg",
+      "createdAt": "2026-08-20T14:00:00Z"
     },
     {
       "id": "artist-demo-101",
@@ -40,7 +43,8 @@
       "avatar": "/images/hero/thumbs/sora-1.jpg",
       "active": true,
       "passwordDemo": "123",
-      "avatarUrl": "/images/hero/thumbs/sora-1.jpg"
+      "avatarUrl": "/images/hero/thumbs/sora-1.jpg",
+      "createdAt": "2026-09-01T09:00:00Z"
     },
     {
       "id": "artist-demo-102",
@@ -51,7 +55,8 @@
       "avatar": "/images/hero/thumbs/shop-1.jpg",
       "active": true,
       "passwordDemo": "123",
-      "avatarUrl": "/images/hero/thumbs/shop-1.jpg"
+      "avatarUrl": "/images/hero/thumbs/shop-1.jpg",
+      "createdAt": "2026-09-10T11:00:00Z"
     },
     {
       "id": "artist-demo-103",
@@ -62,7 +67,8 @@
       "avatar": "/images/hero/thumbs/azure-1.jpg",
       "active": true,
       "passwordDemo": "123",
-      "avatarUrl": "/images/hero/thumbs/azure-1.jpg"
+      "avatarUrl": "/images/hero/thumbs/azure-1.jpg",
+      "createdAt": "2026-09-18T16:00:00Z"
     },
     {
       "id": "artist-demo-104",
@@ -73,7 +79,8 @@
       "avatar": "/images/hero/thumbs/shop-2.jpg",
       "active": true,
       "passwordDemo": "123",
-      "avatarUrl": "/images/hero/thumbs/shop-2.jpg"
+      "avatarUrl": "/images/hero/thumbs/shop-2.jpg",
+      "createdAt": "2026-09-25T13:00:00Z"
     },
     {
       "id": "artist-demo-105",
@@ -84,7 +91,8 @@
       "avatar": "/images/hero/thumbs/sora-2.jpg",
       "active": true,
       "passwordDemo": "123",
-      "avatarUrl": "/images/hero/thumbs/sora-2.jpg"
+      "avatarUrl": "/images/hero/thumbs/sora-2.jpg",
+      "createdAt": "2026-09-30T10:00:00Z"
     },
     {
       "id": "artist-demo-106",
@@ -95,7 +103,8 @@
       "avatar": "/images/hero/thumbs/shop-3.jpg",
       "active": true,
       "passwordDemo": "123",
-      "avatarUrl": "/images/hero/thumbs/shop-3.jpg"
+      "avatarUrl": "/images/hero/thumbs/shop-3.jpg",
+      "createdAt": "2026-10-02T15:00:00Z"
     },
     {
       "id": "artist-demo-107",
@@ -106,7 +115,8 @@
       "avatar": "/images/hero/thumbs/shop-4.jpg",
       "active": true,
       "passwordDemo": "123",
-      "avatarUrl": "/images/hero/thumbs/shop-4.jpg"
+      "avatarUrl": "/images/hero/thumbs/shop-4.jpg",
+      "createdAt": "2026-10-03T11:00:00Z"
     },
     {
       "id": "artist-demo-108",
@@ -117,7 +127,8 @@
       "avatar": "/images/hero/thumbs/azure-2.jpg",
       "active": true,
       "passwordDemo": "123",
-      "avatarUrl": "/images/hero/thumbs/azure-2.jpg"
+      "avatarUrl": "/images/hero/thumbs/azure-2.jpg",
+      "createdAt": "2026-10-04T17:00:00Z"
     },
     {
       "id": "artist-demo-109",
@@ -128,7 +139,8 @@
       "avatar": "/images/hero/thumbs/sora-4.jpg",
       "active": true,
       "passwordDemo": "123",
-      "avatarUrl": "/images/hero/thumbs/sora-4.jpg"
+      "avatarUrl": "/images/hero/thumbs/sora-4.jpg",
+      "createdAt": "2026-10-05T09:30:00Z"
     },
     {
       "id": "artist-demo-110",
@@ -139,7 +151,8 @@
       "avatar": "/images/hero/thumbs/shop-1.jpg",
       "active": true,
       "passwordDemo": "123",
-      "avatarUrl": "/images/hero/thumbs/shop-1.jpg"
+      "avatarUrl": "/images/hero/thumbs/shop-1.jpg",
+      "createdAt": "2026-08-01T10:00:00Z"
     },
     {
       "name": "Bianca Robles Hurtado",
@@ -178,7 +191,8 @@
       "avatar": "/images/hero/thumbs/sora-1.jpg",
       "avatarUrl": "/images/hero/thumbs/sora-1.jpg",
       "active": true,
-      "passwordDemo": "123"
+      "passwordDemo": "123",
+      "createdAt": "2026-09-01T09:00:00Z"
     },
     {
       "id": "artist-demo-112",
@@ -189,7 +203,8 @@
       "avatar": "/images/hero/thumbs/azure-1.jpg",
       "avatarUrl": "/images/hero/thumbs/azure-1.jpg",
       "active": true,
-      "passwordDemo": "123"
+      "passwordDemo": "123",
+      "createdAt": "2026-09-10T11:00:00Z"
     }
   ],
   "artistProfiles": [
@@ -1384,7 +1399,120 @@
       ]
     }
   ],
-  "requests": [],
+  "requests": [
+    {
+      "id": "req-101",
+      "clientId": "client-1",
+      "clientName": "Cliente Prueba",
+      "clientEmail": "cliente@artlink.com",
+      "artistId": "artist-demo-101",
+      "artistUserId": "artist-demo-101",
+      "artistName": "Sora Moon Studio",
+      "title": "Retrato Anime Celestial de Personaje Original",
+      "description": "Ilustración digital de busto con paleta pastel y efectos de luz mágica.",
+      "budget": 120,
+      "status": "pending",
+      "escrowStatus": "held_in_escrow",
+      "desiredDate": "2026-10-20",
+      "createdAt": "2026-10-05T14:20:00Z"
+    },
+    {
+      "id": "req-102",
+      "clientId": "client-1",
+      "clientName": "Cliente Prueba",
+      "clientEmail": "cliente@artlink.com",
+      "artistId": "artist-demo-102",
+      "artistUserId": "artist-demo-102",
+      "artistName": "Kaelen Character Lab",
+      "title": "Modelado 3D de Personaje Low-Poly",
+      "description": "Modelo para videojuego independiente con texturizado estilizado.",
+      "budget": 250,
+      "status": "accepted",
+      "escrowStatus": "held_in_escrow",
+      "desiredDate": "2026-10-28",
+      "createdAt": "2026-10-03T18:00:00Z"
+    },
+    {
+      "id": "req-103",
+      "clientId": "client-1",
+      "clientName": "Cliente Prueba",
+      "clientEmail": "cliente@artlink.com",
+      "artistId": "artist-demo-103",
+      "artistUserId": "artist-demo-103",
+      "artistName": "Aether Worldbuilding",
+      "title": "Concept Art de Ciudad Fantástica",
+      "description": "Pintura digital de paisaje con arquitectura flotante a 300 DPI.",
+      "budget": 320,
+      "status": "in_progress",
+      "escrowStatus": "held_in_escrow",
+      "desiredDate": "2026-10-25",
+      "createdAt": "2026-09-28T11:30:00Z"
+    },
+    {
+      "id": "req-104",
+      "clientId": "client-1",
+      "clientName": "Cliente Prueba",
+      "clientEmail": "cliente@artlink.com",
+      "artistId": "artist-demo-101",
+      "artistUserId": "artist-demo-101",
+      "artistName": "Sora Moon Studio",
+      "title": "Diseño de Emotes para Canal de Streaming",
+      "description": "Pack de 5 emotes de personaje chibi con expresiones variadas.",
+      "budget": 95,
+      "status": "completed",
+      "escrowStatus": "released_to_artist",
+      "desiredDate": "2026-09-15",
+      "createdAt": "2026-09-10T16:00:00Z"
+    },
+    {
+      "id": "req-105",
+      "clientId": "client-1",
+      "clientName": "Cliente Prueba",
+      "clientEmail": "cliente@artlink.com",
+      "artistId": "user-artist-001",
+      "artistUserId": "user-artist-001",
+      "artistName": "Mateo Ríos",
+      "title": "Ilustración de Portada de Álbum Musical",
+      "description": "Composición en acuarela digital de temática nocturna.",
+      "budget": 180,
+      "status": "completed",
+      "escrowStatus": "released_to_artist",
+      "desiredDate": "2026-08-30",
+      "createdAt": "2026-08-20T10:00:00Z"
+    },
+    {
+      "id": "req-106",
+      "clientId": "client-1",
+      "clientName": "Cliente Prueba",
+      "clientEmail": "cliente@artlink.com",
+      "artistId": "artist-demo-104",
+      "artistUserId": "artist-demo-104",
+      "artistName": "Renzo 3D Forge",
+      "title": "Armadura de Caballero Cyberpunk en 3D",
+      "description": "Props y accesorios optimizados para Unreal Engine.",
+      "budget": 210,
+      "status": "rejected",
+      "escrowStatus": "refunded",
+      "desiredDate": "2026-08-10",
+      "createdAt": "2026-08-01T14:00:00Z"
+    },
+    {
+      "id": "req-107",
+      "clientId": "client-1",
+      "clientName": "Cliente Prueba",
+      "clientEmail": "cliente@artlink.com",
+      "artistId": "artist-demo-105",
+      "artistUserId": "artist-demo-105",
+      "artistName": "Stardust Virtual Lab",
+      "title": "Diseño de Avatar VTuber 2D",
+      "description": "Boceto y corte de capas para rigging en Live2D.",
+      "budget": 450,
+      "status": "pending",
+      "escrowStatus": "held_in_escrow",
+      "desiredDate": "2026-11-05",
+      "createdAt": "2026-10-04T12:00:00Z"
+    }
+  ],
   "reviews": [],
   "follows": [],
   "likes": [],
@@ -1751,6 +1879,86 @@
       "title": "Conversación con ArtLink AI",
       "createdAt": "2026-10-05T17:51:05.547Z",
       "updatedAt": "2026-10-05T17:51:05.547Z",
+      "page": "/"
+    },
+    {
+      "id": "LYX_PFgQ6Z8",
+      "userId": "user-test-1791248430464-h839",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-06T01:00:30.691Z",
+      "updatedAt": "2026-10-06T01:00:30.691Z",
+      "page": "/explorar"
+    },
+    {
+      "id": "LhCQm3IYs-w",
+      "userId": "user-client-A-1791248430751-n3zq",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-06T01:00:30.836Z",
+      "updatedAt": "2026-10-06T01:00:30.836Z",
+      "page": "/"
+    },
+    {
+      "id": "RRFj7vpv_is",
+      "userId": "user-artist-B-1791248430751-ld3n",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-06T01:00:31.027Z",
+      "updatedAt": "2026-10-06T01:00:31.027Z",
+      "page": "/"
+    },
+    {
+      "id": "P18EhKxIwHc",
+      "userId": "user-test-1791249632548-psph",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-06T01:20:32.703Z",
+      "updatedAt": "2026-10-06T01:20:32.703Z",
+      "page": "/explorar"
+    },
+    {
+      "id": "_CSBjrzZ3t0",
+      "userId": "user-artist-B-1791249632739-2ieu",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-06T01:20:32.950Z",
+      "updatedAt": "2026-10-06T01:20:32.950Z",
+      "page": "/"
+    },
+    {
+      "id": "OpTCfvu3jqs",
+      "userId": "user-test-1791249818784-rgox",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-06T01:23:38.881Z",
+      "updatedAt": "2026-10-06T01:23:38.881Z",
+      "page": "/explorar"
+    },
+    {
+      "id": "zdLnsj6cfqQ",
+      "userId": "user-client-A-1791249818907-p0ia",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-06T01:23:38.969Z",
+      "updatedAt": "2026-10-06T01:23:38.969Z",
+      "page": "/"
+    },
+    {
+      "id": "_mtxx6LV_V0",
+      "userId": "user-artist-B-1791249818907-fpqi",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-06T01:23:39.024Z",
+      "updatedAt": "2026-10-06T01:23:39.024Z",
+      "page": "/"
+    },
+    {
+      "id": "xe80OM0X42U",
+      "userId": "user-test-1791250018487-aquy",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-06T01:26:58.622Z",
+      "updatedAt": "2026-10-06T01:26:58.622Z",
+      "page": "/explorar"
+    },
+    {
+      "id": "SWAxMLT3qUw",
+      "userId": "user-client-A-1791250018647-wgo9",
+      "title": "Conversación con ArtLink AI",
+      "createdAt": "2026-10-06T01:26:58.740Z",
+      "updatedAt": "2026-10-06T01:26:58.740Z",
       "page": "/"
     }
   ],
@@ -2783,6 +2991,226 @@
       "provider": "gemini",
       "status": "sent",
       "intent": null
+    },
+    {
+      "id": "CVe5wC1w94o",
+      "conversationId": "convo-1791248430691-86szo",
+      "userId": "user-test-1791248430464-h839",
+      "role": "user",
+      "content": "Hola asistente de ArtLink",
+      "createdAt": "2026-10-06T01:00:30.726Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "n0sSv4eFVHs",
+      "conversationId": "convo-1791248430691-86szo",
+      "userId": "user-test-1791248430464-h839",
+      "role": "assistant",
+      "content": "Hola, te ayudo a buscar ilustradores digitales.",
+      "createdAt": "2026-10-06T01:00:30.735Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "2U_XoJG0_CU",
+      "conversationId": "convo-1791248430691-86szo",
+      "userId": "user-test-1791248430464-h839",
+      "role": "assistant",
+      "content": "Puedo recomendarte artistas de estilo anime.",
+      "createdAt": "2026-10-06T01:00:30.741Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "aogCMvgA_7E",
+      "conversationId": "convo-1791248430836-v8f3z",
+      "userId": "user-client-A-1791248430751-n3zq",
+      "role": "user",
+      "content": "Mensaje de usuario A",
+      "createdAt": "2026-10-06T01:00:30.841Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "G467m23o_RE",
+      "conversationId": "convo-1791248431027-xvzyy",
+      "userId": "user-artist-B-1791248430751-ld3n",
+      "role": "user",
+      "content": "Mensaje de usuario B",
+      "createdAt": "2026-10-06T01:00:31.044Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "Ipe99jC7ZQI",
+      "conversationId": "convo-1791249632855-73ufz",
+      "userId": "user-client-A-1791249632739-6wqt",
+      "role": "user",
+      "content": "Mensaje de usuario A",
+      "createdAt": "2026-10-06T01:20:32.863Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "1G9r4ee2QT4",
+      "conversationId": "convo-1791249632950-0ub9u",
+      "userId": "user-artist-B-1791249632739-2ieu",
+      "role": "user",
+      "content": "Mensaje de usuario B",
+      "createdAt": "2026-10-06T01:20:32.954Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "C6BSsZOS45I",
+      "conversationId": "convo-1791249818881-6w4di",
+      "userId": "user-test-1791249818784-rgox",
+      "role": "assistant",
+      "content": "Hola, te ayudo a buscar ilustradores digitales.",
+      "createdAt": "2026-10-06T01:23:38.896Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "Hi9VFJOgfdg",
+      "conversationId": "convo-1791249818881-6w4di",
+      "userId": "user-test-1791249818784-rgox",
+      "role": "assistant",
+      "content": "Puedo recomendarte artistas de estilo anime.",
+      "createdAt": "2026-10-06T01:23:38.901Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "zYNkyWYgj_o",
+      "conversationId": "convo-1791249818881-6w4di",
+      "userId": "user-test-1791249818784-rgox",
+      "role": "user",
+      "content": "Hola asistente de ArtLink",
+      "createdAt": "2026-10-06T01:23:38.890Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "OtzspbEvspk",
+      "conversationId": "convo-1791249818969-fhxav",
+      "userId": "user-client-A-1791249818907-p0ia",
+      "role": "user",
+      "content": "Mensaje de usuario A",
+      "createdAt": "2026-10-06T01:23:38.974Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "5tQkLJghwZw",
+      "conversationId": "convo-1791249819024-ptu9w",
+      "userId": "user-artist-B-1791249818907-fpqi",
+      "role": "user",
+      "content": "Mensaje de usuario B",
+      "createdAt": "2026-10-06T01:23:39.028Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "fAKv7THvkmk",
+      "conversationId": "convo-1791250018622-hh489",
+      "userId": "user-test-1791250018487-aquy",
+      "role": "assistant",
+      "content": "Puedo recomendarte artistas de estilo anime.",
+      "createdAt": "2026-10-06T01:26:58.640Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "QrDJTVyjOBo",
+      "conversationId": "convo-1791250018622-hh489",
+      "userId": "user-test-1791250018487-aquy",
+      "role": "user",
+      "content": "Hola asistente de ArtLink",
+      "createdAt": "2026-10-06T01:26:58.629Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "dnh85FuQp5A",
+      "conversationId": "convo-1791250018622-hh489",
+      "userId": "user-test-1791250018487-aquy",
+      "role": "assistant",
+      "content": "Hola, te ayudo a buscar ilustradores digitales.",
+      "createdAt": "2026-10-06T01:26:58.635Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    },
+    {
+      "id": "pBD1lPauEg8",
+      "conversationId": "convo-1791250018740-z1des",
+      "userId": "user-client-A-1791250018647-wgo9",
+      "role": "user",
+      "content": "Mensaje de usuario A",
+      "createdAt": "2026-10-06T01:26:58.744Z",
+      "provider": "gemini",
+      "status": "sent",
+      "intent": null
+    }
+  ],
+  "reports": [
+    {
+      "id": "rep-101",
+      "title": "Consulta sobre derechos de uso comercial en ilustración",
+      "type": "licensing",
+      "reporterName": "Cliente Prueba",
+      "reporterId": "client-1",
+      "reportedEntityId": "comm-101",
+      "reportedEntityType": "commission",
+      "reason": "El cliente solicita aclaración sobre la cláusula de uso para reproducción física.",
+      "priority": "medium",
+      "status": "pending",
+      "createdAt": "2026-10-04T15:30:00Z",
+      "updatedAt": "2026-10-04T15:30:00Z"
+    },
+    {
+      "id": "rep-102",
+      "title": "Retraso en entrega de avance preliminar",
+      "type": "delay",
+      "reporterName": "Cliente Prueba",
+      "reporterId": "client-1",
+      "reportedEntityId": "req-102",
+      "reportedEntityType": "request",
+      "reason": "Superó la fecha estimada del primer avance pactado.",
+      "priority": "high",
+      "status": "pending",
+      "createdAt": "2026-10-05T09:15:00Z",
+      "updatedAt": "2026-10-05T09:15:00Z"
+    },
+    {
+      "id": "rep-103",
+      "title": "Verificación preventiva de portafolio",
+      "type": "copyright",
+      "reporterName": "Sora Moon Studio",
+      "reporterId": "artist-demo-101",
+      "reportedEntityId": "art-101",
+      "reportedEntityType": "artwork",
+      "reason": "Revisión preventiva de metadatos de autoría.",
+      "priority": "low",
+      "status": "resolved",
+      "createdAt": "2026-09-22T11:00:00Z",
+      "updatedAt": "2026-09-24T18:00:00Z"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

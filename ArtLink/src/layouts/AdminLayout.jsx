@@ -15,7 +15,8 @@ import {
   ShieldCheck,
   CheckCircle2,
   ChevronRight,
-  Bot
+  Bot,
+  AlertTriangle
 } from 'lucide-react'
 import logoArtLink from '../assets/logo-artlink.png'
 import useAuth from '../hooks/useAuth'
@@ -56,6 +57,7 @@ export default function AdminLayout() {
     if (path.includes('/admin/artistas')) return 'Artistas'
     if (path.includes('/admin/categorias')) return 'Categorías'
     if (path.includes('/admin/solicitudes')) return 'Solicitudes'
+    if (path.includes('/admin/reportes') || path.includes('/admin/reports')) return 'Reportes e Incidencias'
     return 'Panel de Control'
   }
 
@@ -133,6 +135,15 @@ export default function AdminLayout() {
               >
                 <FileText size={18} className="admin-nav-icon" aria-hidden="true" />
                 <span>Solicitudes</span>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="/admin/reportes"
+                className={({ isActive }) => `admin-nav-item ${isActive ? 'is-active' : ''}`}
+              >
+                <AlertTriangle size={18} className="admin-nav-icon" aria-hidden="true" />
+                <span>Reportes e Incidencias</span>
               </NavLink>
             </li>
           </ul>

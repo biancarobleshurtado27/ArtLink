@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState } from 'react'
 import {
   Users, UserCheck, Palette, FileText, CheckCircle2, AlertTriangle, Plus, Search,
   Trash2, Edit3, Filter, ShieldCheck, Clock, Server, ArrowRight, RefreshCw,
-  Calendar, Layers, RotateCcw, Eye, ChevronRight
+  Calendar, Layers, RotateCcw, Eye, ChevronRight, Image, MessageSquare, Award,
+  Sparkles, TrendingUp, Check
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import Button from '../components/Button'
@@ -14,12 +15,37 @@ import FloatingStars from '../components/FloatingStars'
 import RequestsStatusChart from '../components/admin/RequestsStatusChart'
 import ArtistsDisciplineChart from '../components/admin/ArtistsDisciplineChart'
 import RequestsActivityChart from '../components/admin/RequestsActivityChart'
-import { filterRequests, normalizeDisciplineName } from '../utils/adminChartUtils'
+import { filterRequests, normalizeDisciplineName, isWithinPeriod } from '../utils/adminChartUtils'
 import { getArtistOptions } from '../utils/artistFilters'
 import { getUsers, createUser, updateUser, deleteUser } from '../services/userService'
 import { getArtists, createArtist, updateArtist, deleteArtist } from '../services/artistService'
 import { getCategories, createCategory, updateCategory, deleteCategory } from '../services/categoryService'
 import { getRequests, createRequest, updateRequest, deleteRequest } from '../services/requestService'
+import { getPortfolioItems } from '../services/portfolioService'
+import { getReports, createReport, updateReport, deleteReport } from '../services/reportService'
+import { getMessages } from '../services/messageService'
+import { getCommissions } from '../services/commissionService'
+
+const SENSITIVE_KEYS = new Set([
+  'password', 'passwordDemo', 'token', 'apiKey', 'api_key', 'secret', 'hash', 'authToken'
+])
+
+export function sanitizeAdminItem(item) {
+  if (!item || typeof item !== 'object') return item
+  const clean = { ...item }
+  SENSITIVE_KEYS.forEach((key) => {
+    delete clean[key]
+  })
+  return clean
+}
+
+export const ADMIN_PERIOD_OPTIONS = [
+  { value: 'today', label: 'Hoy' },
+  { value: '7d', label: 'Últimos 7 días' },
+  { value: '30d', label: 'Últimos 30 días' },
+  { value: '90d', label: 'Últimos 90 días' },
+  { value: 'all', label: 'Todo el periodo' }
+]
 
 const resourceConfigs = {
   usuarios: {
@@ -98,6 +124,43 @@ const resourceConfigs = {
     ],
     filterKey: 'status',
     service: [getRequests, createRequest, updateRequest, deleteRequest]
+  },
+  reportes: {
+    title: 'Reportes e Incidencias',
+    singularTitle: 'Reporte',
+    description: 'Supervisión y resolución de reportes de usuarios, derechos y encargos.',
+    fields: [
+      { name: 'title', label: 'Título del reporte', type: 'text', required: true },
+      { name: 'type', label: 'Tipo de incidencia', type: 'select', options: [
+        { value: 'licensing', label: 'Derechos y Licencias' },
+        { value: 'delay', label: 'Demora en Entrega' },
+        { value: 'copyright', label: 'Propiedad Intelectual' },
+        { value: 'conduct', label: 'Conducta o Comunicación' },
+        { value: 'other', label: 'Otro' }
+      ], required: true },
+      { name: 'priority', label: 'Prioridad', type: 'select', options: [
+        { value: 'high', label: 'Alta' },
+        { value: 'medium', label: 'Media' },
+        { value: 'low', label: 'Baja' }
+      ], required: true },
+      { name: 'status', label: 'Estado', type: 'select', options: [
+        { value: 'pending', label: 'Pendiente' },
+        { value: 'in_review', label: 'En revisión' },
+        { value: 'resolved', label: 'Resuelto' },
+        { value: 'dismissed', label: 'Desestimado' }
+      ], required: true },
+      { name: 'reporterName', label: 'Denunciante', type: 'text', required: true },
+      { name: 'reason', label: 'Motivo y observaciones', type: 'textarea' }
+    ],
+    filterOptions: [
+      { value: 'all', label: 'Todos los estados' },
+      { value: 'pending', label: 'Pendientes' },
+      { value: 'in_review', label: 'En revisión' },
+      { value: 'resolved', label: 'Resueltos' },
+      { value: 'dismissed', label: 'Desestimados' }
+    ],
+    filterKey: 'status',
+    service: [getReports, createReport, updateReport, deleteReport]
   }
 }
 
@@ -166,6 +229,46 @@ function renderStatusBadge(status) {
       </span>
     )
   }
+  if (status === 'high') {
+    return (
+      <span className="admin-status-pill status-pill-ink">
+        <AlertTriangle size={12} aria-hidden="true" />
+        <span>Alta</span>
+      </span>
+    )
+  }
+  if (status === 'medium') {
+    return (
+      <span className="admin-status-pill status-pill-yellow">
+        <Clock size={12} aria-hidden="true" />
+        <span>Media</span>
+      </span>
+    )
+  }
+  if (status === 'low') {
+    return (
+      <span className="admin-status-pill status-pill-neutral">
+        <CheckCircle2 size={12} aria-hidden="true" />
+        <span>Baja</span>
+      </span>
+    )
+  }
+  if (status === 'resolved') {
+    return (
+      <span className="admin-status-pill status-pill-mint">
+        <CheckCircle2 size={12} aria-hidden="true" />
+        <span>Resuelto</span>
+      </span>
+    )
+  }
+  if (status === 'dismissed') {
+    return (
+      <span className="admin-status-pill status-pill-neutral">
+        <CheckCircle2 size={12} aria-hidden="true" />
+        <span>Desestimado</span>
+      </span>
+    )
+  }
   if (status === 'cliente') {
     return (
       <span className="admin-status-pill status-pill-violet">
@@ -202,11 +305,32 @@ export function AdminDashboardPage() {
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(true)
 
+  // Filtros interactivos del panel y las gráficas
+  const [filterPeriod, setFilterPeriod] = useState('all')
+  const [filterStatus, setFilterStatus] = useState('all')
+  const [filterDiscipline, setFilterDiscipline] = useState('all')
+
   const loadDashboard = () => {
     setLoading(true)
-    Promise.all([getUsers(), getArtists(), getRequests(), getCategories()])
-      .then(([users, artists, requests, categories]) => {
-        setData({ users, artists, requests, categories })
+    Promise.all([
+      getUsers(),
+      getArtists(),
+      getRequests(),
+      getCategories(),
+      getPortfolioItems().catch(() => []),
+      getReports().catch(() => []),
+      getMessages().catch(() => [])
+    ])
+      .then(([users, artists, requests, categories, portfolioItems, reports, messages]) => {
+        setData({
+          users: Array.isArray(users) ? users.map(sanitizeAdminItem) : [],
+          artists: Array.isArray(artists) ? artists.map(sanitizeAdminItem) : [],
+          requests: Array.isArray(requests) ? requests.map(sanitizeAdminItem) : [],
+          categories: Array.isArray(categories) ? categories.map(sanitizeAdminItem) : [],
+          portfolioItems: Array.isArray(portfolioItems) ? portfolioItems.map(sanitizeAdminItem) : [],
+          reports: Array.isArray(reports) ? reports.map(sanitizeAdminItem) : [],
+          messages: Array.isArray(messages) ? messages.map(sanitizeAdminItem) : []
+        })
         setError(null)
       })
       .catch(setError)
@@ -215,10 +339,26 @@ export function AdminDashboardPage() {
 
   useEffect(() => {
     let mounted = true
-    Promise.all([getUsers(), getArtists(), getRequests(), getCategories()])
-      .then(([users, artists, requests, categories]) => {
+    Promise.all([
+      getUsers(),
+      getArtists(),
+      getRequests(),
+      getCategories(),
+      getPortfolioItems().catch(() => []),
+      getReports().catch(() => []),
+      getMessages().catch(() => [])
+    ])
+      .then(([users, artists, requests, categories, portfolioItems, reports, messages]) => {
         if (!mounted) return
-        setData({ users, artists, requests, categories })
+        setData({
+          users: Array.isArray(users) ? users.map(sanitizeAdminItem) : [],
+          artists: Array.isArray(artists) ? artists.map(sanitizeAdminItem) : [],
+          requests: Array.isArray(requests) ? requests.map(sanitizeAdminItem) : [],
+          categories: Array.isArray(categories) ? categories.map(sanitizeAdminItem) : [],
+          portfolioItems: Array.isArray(portfolioItems) ? portfolioItems.map(sanitizeAdminItem) : [],
+          reports: Array.isArray(reports) ? reports.map(sanitizeAdminItem) : [],
+          messages: Array.isArray(messages) ? messages.map(sanitizeAdminItem) : []
+        })
         setError(null)
       })
       .catch((err) => {
@@ -230,18 +370,35 @@ export function AdminDashboardPage() {
     return () => { mounted = false }
   }, [])
 
-  // Filtros interactivos para las gráficas
-  const [filterPeriod, setFilterPeriod] = useState('all')
-  const [filterStatus, setFilterStatus] = useState('all')
-  const [filterDiscipline, setFilterDiscipline] = useState('all')
-
   const resetFilters = () => {
     setFilterPeriod('all')
     setFilterStatus('all')
     setFilterDiscipline('all')
   }
 
-  // Solicitudes filtradas dinámicamente según periodo, estado y disciplina
+  // Fecha de referencia basada en la mayor marca temporal de los datos o la fecha actual
+  const referenceDate = useMemo(() => {
+    let maxTime = Date.now()
+    if (data?.requests) {
+      data.requests.forEach((r) => {
+        if (r.createdAt) {
+          const t = new Date(r.createdAt).getTime()
+          if (!isNaN(t) && t > maxTime) maxTime = t
+        }
+      })
+    }
+    if (data?.users) {
+      data.users.forEach((u) => {
+        if (u.createdAt) {
+          const t = new Date(u.createdAt).getTime()
+          if (!isNaN(t) && t > maxTime) maxTime = t
+        }
+      })
+    }
+    return new Date(maxTime)
+  }, [data])
+
+  // Solicitudes filtradas dinámicamente según periodo, estado y disciplina para las gráficas
   const filteredRequests = useMemo(() => {
     if (!data) return []
     return filterRequests(data.requests, {
@@ -268,27 +425,6 @@ export function AdminDashboardPage() {
     return getArtistOptions(data.artists, 'disciplines').map(normalizeDisciplineName)
   }, [data])
 
-  // Cálculo de la Categoría más utilizada
-  const topCategoryData = useMemo(() => {
-    if (!data || !data.artists) return { name: null, count: 0 }
-    const counts = {}
-    data.artists.forEach((a) => {
-      (a.disciplines || []).forEach((d) => {
-        const norm = normalizeDisciplineName(d)
-        counts[norm] = (counts[norm] || 0) + 1
-      })
-    })
-    let bestName = null
-    let bestCount = 0
-    Object.entries(counts).forEach(([name, count]) => {
-      if (count > bestCount) {
-        bestName = name
-        bestCount = count
-      }
-    })
-    return { name: bestName, count: bestCount }
-  }, [data])
-
   // Fecha actual formateada para la cabecera
   const formattedDate = useMemo(() => {
     const d = new Intl.DateTimeFormat('es-ES', {
@@ -304,34 +440,52 @@ export function AdminDashboardPage() {
   if (error) return <ErrorState message={error.message} onRetry={loadDashboard} />
   if (!data) return null
 
+  // 1. Métricas de Cuentas y Comunidad
   const totalUsers = data.users.length
-  const clientsCount = data.users.filter((u) => u.role === 'cliente').length
-  const artistsCount = data.users.filter((u) => u.role === 'artista').length
-  const totalArtists = data.artists.length
+  const clientsCount = data.users.filter((u) => u.role === 'cliente' || u.role === 'client').length
+  const artistsCount = data.artists.length
   const openArtistsCount = data.artists.filter((a) => a.availability === 'open').length
-  const totalRequests = data.requests.length
-  const completedRequestsCount = data.requests.filter((r) => r.status === 'completed').length
-  const pendingRequestsCount = data.requests.filter((r) => r.status === 'pending').length
+  const newUsersInPeriod = data.users.filter((u) => isWithinPeriod(u.createdAt, filterPeriod, referenceDate)).length
+
+  // 2. Métricas de Solicitudes en el Periodo Seleccionado
+  const requestsInPeriod = data.requests.filter((r) => isWithinPeriod(r.createdAt, filterPeriod, referenceDate))
+  const requestsCreatedCount = requestsInPeriod.length
+  const pendingRequestsCount = requestsInPeriod.filter((r) => r.status === 'pending').length
+  const acceptedRequestsCount = requestsInPeriod.filter((r) => r.status === 'accepted').length
+  const completedRequestsCount = requestsInPeriod.filter((r) => r.status === 'completed').length
+
+  // 3. Métricas de Calidad, Catálogo e Incidencias
+  const reportsList = data.reports || []
+  const pendingReportsCount = reportsList.filter((r) => r.status === 'pending').length
+  const publishedArtworksCount = (data.portfolioItems || []).length
+  const verifiedArtistsCount = data.artists.filter((a) => Boolean(a.verified)).length
+  const openReportsCount = reportsList.filter((r) => r.status === 'pending' || r.status === 'in_review').length
+  const unreadMessagesCount = (data.messages || []).filter((m) => !m.read).length
+  const openIncidentsCount = openReportsCount + unreadMessagesCount
+
   const recentRequests = [...data.requests].slice(-5).reverse()
-  const recentUsers = [...data.users].slice(-3).reverse()
+  const recentReports = [...reportsList].slice(-4).reverse()
+
+  const currentPeriodLabel = ADMIN_PERIOD_OPTIONS.find((opt) => opt.value === filterPeriod)?.label || 'Todo el periodo'
+
   const alerts = [
+    pendingReportsCount > 0 && {
+      tone: 'alert-warning',
+      Icon: AlertTriangle,
+      title: 'Reportes e incidencias pendientes',
+      detail: `Hay ${pendingReportsCount} reporte(s) sin resolver esperando revisión de moderación.`,
+    },
     pendingRequestsCount > 0 && {
       tone: 'alert-warning',
       Icon: Clock,
-      title: 'Solicitudes pendientes de respuesta',
+      title: 'Solicitudes pendientes en el periodo',
       detail: `Hay ${pendingRequestsCount} solicitudes esperando confirmación de los artistas.`,
     },
-    recentUsers.length > 0 && {
+    newUsersInPeriod > 0 && {
       tone: 'alert-info',
       Icon: UserCheck,
-      title: 'Cuentas registradas recientemente',
-      detail: `${recentUsers.length} cuentas aparecen en los últimos registros.`,
-    },
-    data.categories.length > 0 && {
-      tone: 'alert-success',
-      Icon: CheckCircle2,
-      title: 'Catálogo de categorías',
-      detail: `${data.categories.length} categorías disponibles para la búsqueda pública.`,
+      title: 'Nuevos registros en el periodo',
+      detail: `${newUsersInPeriod} cuentas nuevas se registraron en el intervalo seleccionado.`,
     },
   ].filter(Boolean)
 
@@ -346,7 +500,7 @@ export function AdminDashboardPage() {
             <span>Consola Administrativa ArtLink</span>
           </div>
           <h1 id="admin-title">Panel administrativo</h1>
-          <p className="admin-subtitle">Supervisa la actividad y la salud de ArtLink</p>
+          <p className="admin-subtitle">Supervisión integral de usuarios, solicitudes, obras y reportes</p>
         </div>
 
         <div className="admin-hero-actions">
@@ -367,119 +521,351 @@ export function AdminDashboardPage() {
         </div>
       </div>
 
-      {/* 2. Cuadrícula de 5 Métricas Destacadas */}
-      <div className="admin-metrics-5grid" aria-label="Métricas destacadas del sistema">
-        {/* Métrica 1: Usuarios registrados */}
-        <article className="admin-metric-card">
-          <div className="admin-metric-top">
-            <span className="admin-metric-lbl">Usuarios registrados</span>
-            <span className="admin-metric-status status-positive">
-              <CheckCircle2 size={12} aria-hidden="true" />
-              <span>Activos</span>
-            </span>
+      {/* 2. Barra de Filtro de Periodo de Actividad */}
+      <section className="admin-period-control-panel" aria-labelledby="period-filter-heading">
+        <div className="period-control-header">
+          <div className="period-control-title-wrap">
+            <Calendar size={16} aria-hidden="true" />
+            <h2 id="period-filter-heading">Periodo de actividad:</h2>
           </div>
-          <div className="admin-metric-middle">
-            <div className="admin-metric-icon metric-icon-violet">
-              <Users size={22} aria-hidden="true" />
-            </div>
-            <strong className="admin-metric-val">{totalUsers}</strong>
+          <div className="period-filter-pills" role="radiogroup" aria-label="Seleccionar periodo temporal">
+            {ADMIN_PERIOD_OPTIONS.map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                role="radio"
+                aria-checked={filterPeriod === opt.value}
+                className={`period-filter-pill ${filterPeriod === opt.value ? 'is-active' : ''}`}
+                onClick={() => setFilterPeriod(opt.value)}
+              >
+                {opt.label}
+              </button>
+            ))}
           </div>
-          <p className="admin-metric-ctx">
-            {clientsCount} clientes · {artistsCount} artistas
-          </p>
-        </article>
+          <div className="period-active-indicator">
+            Mostrando datos: <strong>{currentPeriodLabel}</strong>
+          </div>
+        </div>
+      </section>
 
-        {/* Métrica 2: Artistas activos */}
-        <article className="admin-metric-card">
-          <div className="admin-metric-top">
-            <span className="admin-metric-lbl">Artistas activos</span>
-            <span className="admin-metric-status status-positive">
-              <UserCheck size={12} aria-hidden="true" />
-              <span>En catálogo</span>
-            </span>
-          </div>
-          <div className="admin-metric-middle">
-            <div className="admin-metric-icon metric-icon-mint">
-              <UserCheck size={22} aria-hidden="true" />
-            </div>
-            <strong className="admin-metric-val">{totalArtists}</strong>
-          </div>
-          <p className="admin-metric-ctx">
-            {openArtistsCount} abiertos a encargos
-          </p>
-        </article>
+      {/* 3. Bloque 1 de Métricas: Comunidad y Cuentas (5 Métricas) */}
+      <section className="admin-metrics-section" aria-labelledby="metrics-community-heading">
+        <div className="section-title-wrap">
+          <h3 id="metrics-community-heading" className="admin-section-subtitle">
+            <Users size={16} aria-hidden="true" /> Comunidad y Cuentas de ArtLink
+          </h3>
+          <span className="section-context-badge">Datos en tiempo real</span>
+        </div>
 
-        {/* Métrica 3: Solicitudes enviadas */}
-        <article className="admin-metric-card">
-          <div className="admin-metric-top">
-            <span className="admin-metric-lbl">Solicitudes enviadas</span>
-            <span className="admin-metric-status status-neutral">
-              <FileText size={12} aria-hidden="true" />
-              <span>Total global</span>
-            </span>
-          </div>
-          <div className="admin-metric-middle">
-            <div className="admin-metric-icon metric-icon-yellow">
-              <FileText size={22} aria-hidden="true" />
-            </div>
-            <strong className="admin-metric-val">{totalRequests}</strong>
-          </div>
-          <p className="admin-metric-ctx">
-            {completedRequestsCount} encargos finalizados
-          </p>
-        </article>
-
-        {/* Métrica 4: Solicitudes pendientes */}
-        <article className="admin-metric-card">
-          <div className="admin-metric-top">
-            <span className="admin-metric-lbl">Solicitudes pendientes</span>
-            {pendingRequestsCount > 0 ? (
-              <span className="admin-metric-status status-warning">
-                <Clock size={12} aria-hidden="true" />
-                <span>Requiere atención</span>
-              </span>
-            ) : (
+        <div className="admin-metrics-5grid" aria-label="Métricas de comunidad y cuentas">
+          {/* Métrica 1: Usuarios registrados */}
+          <article className="admin-metric-card">
+            <div className="admin-metric-top">
+              <span className="admin-metric-lbl">Usuarios registrados</span>
               <span className="admin-metric-status status-positive">
                 <CheckCircle2 size={12} aria-hidden="true" />
-                <span>Al día</span>
+                <span>Total</span>
               </span>
-            )}
-          </div>
-          <div className="admin-metric-middle">
-            <div className="admin-metric-icon metric-icon-rose">
-              <Clock size={22} aria-hidden="true" />
             </div>
-            <strong className="admin-metric-val">{pendingRequestsCount}</strong>
-          </div>
-          <p className="admin-metric-ctx">
-            Esperando respuesta del artista
-          </p>
-        </article>
-
-        {/* Métrica 5: Categoría más utilizada */}
-        <article className="admin-metric-card">
-          <div className="admin-metric-top">
-            <span className="admin-metric-lbl">Categoría más utilizada</span>
-            <span className="admin-metric-status status-accent">
-              <Palette size={12} aria-hidden="true" />
-              <span>Mayor demanda</span>
-            </span>
-          </div>
-          <div className="admin-metric-middle">
-            <div className="admin-metric-icon metric-icon-violet">
-              <Palette size={22} aria-hidden="true" />
+            <div className="admin-metric-middle">
+              <div className="admin-metric-icon metric-icon-violet">
+                <Users size={22} aria-hidden="true" />
+              </div>
+              <strong className="admin-metric-val">{totalUsers}</strong>
             </div>
-            <strong className="admin-metric-val font-compact">{topCategoryData.name || 'Sin datos'}</strong>
-          </div>
-          <p className="admin-metric-ctx">
-            {topCategoryData.count > 0
-              ? `${topCategoryData.count} artistas especializados`
-              : 'Aún no hay suficientes datos para generar este ranking.'}
-          </p>
-        </article>
-      </div>
+            <p className="admin-metric-ctx">
+              {clientsCount} clientes · {artistsCount} artistas
+            </p>
+          </article>
 
-      {/* 3. Sección Analítica de Gráficas y Filtros */}
+          {/* Métrica 2: Clientes activos */}
+          <article className="admin-metric-card">
+            <div className="admin-metric-top">
+              <span className="admin-metric-lbl">Clientes activos</span>
+              <span className="admin-metric-status status-neutral">
+                <Users size={12} aria-hidden="true" />
+                <span>Demandantes</span>
+              </span>
+            </div>
+            <div className="admin-metric-middle">
+              <div className="admin-metric-icon metric-icon-violet">
+                <Users size={22} aria-hidden="true" />
+              </div>
+              <strong className="admin-metric-val">{clientsCount}</strong>
+            </div>
+            <p className="admin-metric-ctx">
+              Cuentas habilitadas para encargar obras
+            </p>
+          </article>
+
+          {/* Métrica 3: Artistas activos */}
+          <article className="admin-metric-card">
+            <div className="admin-metric-top">
+              <span className="admin-metric-lbl">Artistas activos</span>
+              <span className="admin-metric-status status-positive">
+                <UserCheck size={12} aria-hidden="true" />
+                <span>En catálogo</span>
+              </span>
+            </div>
+            <div className="admin-metric-middle">
+              <div className="admin-metric-icon metric-icon-mint">
+                <UserCheck size={22} aria-hidden="true" />
+              </div>
+              <strong className="admin-metric-val">{artistsCount}</strong>
+            </div>
+            <p className="admin-metric-ctx">
+              Creadores con perfil público disponible
+            </p>
+          </article>
+
+          {/* Métrica 4: Artistas con comisiones abiertas */}
+          <article className="admin-metric-card">
+            <div className="admin-metric-top">
+              <span className="admin-metric-lbl">Artistas con comisiones abiertas</span>
+              <span className="admin-metric-status status-positive">
+                <Sparkles size={12} aria-hidden="true" />
+                <span>Disponibles</span>
+              </span>
+            </div>
+            <div className="admin-metric-middle">
+              <div className="admin-metric-icon metric-icon-mint">
+                <Sparkles size={22} aria-hidden="true" />
+              </div>
+              <strong className="admin-metric-val">{openArtistsCount}</strong>
+            </div>
+            <p className="admin-metric-ctx">
+              Con cupos y estado abierto a encargos
+            </p>
+          </article>
+
+          {/* Métrica 5: Nuevos registros del periodo seleccionado */}
+          <article className="admin-metric-card">
+            <div className="admin-metric-top">
+              <span className="admin-metric-lbl">Nuevos registros del periodo</span>
+              <span className="admin-metric-status status-accent">
+                <TrendingUp size={12} aria-hidden="true" />
+                <span>{currentPeriodLabel}</span>
+              </span>
+            </div>
+            <div className="admin-metric-middle">
+              <div className="admin-metric-icon metric-icon-yellow">
+                <TrendingUp size={22} aria-hidden="true" />
+              </div>
+              <strong className="admin-metric-val">{newUsersInPeriod}</strong>
+            </div>
+            <p className="admin-metric-ctx">
+              Nuevas altas en el intervalo activo
+            </p>
+          </article>
+        </div>
+      </section>
+
+      {/* 4. Bloque 2 de Métricas: Flujo de Solicitudes en el Periodo (4 Métricas) */}
+      <section className="admin-metrics-section" aria-labelledby="metrics-requests-heading">
+        <div className="section-title-wrap">
+          <h3 id="metrics-requests-heading" className="admin-section-subtitle">
+            <FileText size={16} aria-hidden="true" /> Flujo Operativo de Solicitudes ({currentPeriodLabel})
+          </h3>
+          <span className="section-context-badge">Filtrado por periodo</span>
+        </div>
+
+        <div className="admin-metrics-4grid" aria-label="Métricas de solicitudes y encargos">
+          {/* Métrica 6: Solicitudes creadas */}
+          <article className="admin-metric-card">
+            <div className="admin-metric-top">
+              <span className="admin-metric-lbl">Solicitudes creadas</span>
+              <span className="admin-metric-status status-neutral">
+                <FileText size={12} aria-hidden="true" />
+                <span>Emitidas</span>
+              </span>
+            </div>
+            <div className="admin-metric-middle">
+              <div className="admin-metric-icon metric-icon-yellow">
+                <FileText size={22} aria-hidden="true" />
+              </div>
+              <strong className="admin-metric-val">{requestsCreatedCount}</strong>
+            </div>
+            <p className="admin-metric-ctx">
+              Propuestas enviadas en el periodo
+            </p>
+          </article>
+
+          {/* Métrica 7: Solicitudes pendientes */}
+          <article className="admin-metric-card">
+            <div className="admin-metric-top">
+              <span className="admin-metric-lbl">Solicitudes pendientes</span>
+              {pendingRequestsCount > 0 ? (
+                <span className="admin-metric-status status-warning">
+                  <Clock size={12} aria-hidden="true" />
+                  <span>Requiere atención</span>
+                </span>
+              ) : (
+                <span className="admin-metric-status status-positive">
+                  <CheckCircle2 size={12} aria-hidden="true" />
+                  <span>Al día</span>
+                </span>
+              )}
+            </div>
+            <div className="admin-metric-middle">
+              <div className="admin-metric-icon metric-icon-rose">
+                <Clock size={22} aria-hidden="true" />
+              </div>
+              <strong className="admin-metric-val">{pendingRequestsCount}</strong>
+            </div>
+            <p className="admin-metric-ctx">
+              Esperando respuesta del artista
+            </p>
+          </article>
+
+          {/* Métrica 8: Solicitudes aceptadas */}
+          <article className="admin-metric-card">
+            <div className="admin-metric-top">
+              <span className="admin-metric-lbl">Solicitudes aceptadas</span>
+              <span className="admin-metric-status status-positive">
+                <CheckCircle2 size={12} aria-hidden="true" />
+                <span>En marcha</span>
+              </span>
+            </div>
+            <div className="admin-metric-middle">
+              <div className="admin-metric-icon metric-icon-mint">
+                <CheckCircle2 size={22} aria-hidden="true" />
+              </div>
+              <strong className="admin-metric-val">{acceptedRequestsCount}</strong>
+            </div>
+            <p className="admin-metric-ctx">
+              Acordadas entre cliente y creador
+            </p>
+          </article>
+
+          {/* Métrica 9: Solicitudes completadas */}
+          <article className="admin-metric-card">
+            <div className="admin-metric-top">
+              <span className="admin-metric-lbl">Solicitudes completadas</span>
+              <span className="admin-metric-status status-positive">
+                <CheckCircle2 size={12} aria-hidden="true" />
+                <span>Finalizadas</span>
+              </span>
+            </div>
+            <div className="admin-metric-middle">
+              <div className="admin-metric-icon metric-icon-cyan">
+                <CheckCircle2 size={22} aria-hidden="true" />
+              </div>
+              <strong className="admin-metric-val">{completedRequestsCount}</strong>
+            </div>
+            <p className="admin-metric-ctx">
+              Obras entregadas con éxito
+            </p>
+          </article>
+        </div>
+      </section>
+
+      {/* 5. Bloque 3 de Métricas: Calidad, Catálogo y Moderación (4 Métricas) */}
+      <section className="admin-metrics-section" aria-labelledby="metrics-quality-heading">
+        <div className="section-title-wrap">
+          <h3 id="metrics-quality-heading" className="admin-section-subtitle">
+            <AlertTriangle size={16} aria-hidden="true" /> Moderación, Catálogo e Incidencias
+          </h3>
+          <span className="section-context-badge">Supervisión administrativa</span>
+        </div>
+
+        <div className="admin-metrics-4grid" aria-label="Métricas de calidad y supervisión">
+          {/* Métrica 10: Reportes pendientes */}
+          <article className="admin-metric-card">
+            <div className="admin-metric-top">
+              <span className="admin-metric-lbl">Reportes pendientes</span>
+              {pendingReportsCount > 0 ? (
+                <span className="admin-metric-status status-warning">
+                  <AlertTriangle size={12} aria-hidden="true" />
+                  <span>Por revisar</span>
+                </span>
+              ) : (
+                <span className="admin-metric-status status-positive">
+                  <CheckCircle2 size={12} aria-hidden="true" />
+                  <span>Sin reportes</span>
+                </span>
+              )}
+            </div>
+            <div className="admin-metric-middle">
+              <div className="admin-metric-icon metric-icon-rose">
+                <AlertTriangle size={22} aria-hidden="true" />
+              </div>
+              <strong className="admin-metric-val">{pendingReportsCount}</strong>
+            </div>
+            <p className="admin-metric-ctx">
+              Incidencias en espera de resolución
+            </p>
+          </article>
+
+          {/* Métrica 11: Obras publicadas */}
+          <article className="admin-metric-card">
+            <div className="admin-metric-top">
+              <span className="admin-metric-lbl">Obras publicadas</span>
+              <span className="admin-metric-status status-positive">
+                <Image size={12} aria-hidden="true" />
+                <span>Portafolio</span>
+              </span>
+            </div>
+            <div className="admin-metric-middle">
+              <div className="admin-metric-icon metric-icon-violet">
+                <Image size={22} aria-hidden="true" />
+              </div>
+              <strong className="admin-metric-val">{publishedArtworksCount}</strong>
+            </div>
+            <p className="admin-metric-ctx">
+              Piezas en portafolios públicos
+            </p>
+          </article>
+
+          {/* Métrica 12: Artistas verificados */}
+          <article className="admin-metric-card">
+            <div className="admin-metric-top">
+              <span className="admin-metric-lbl">Artistas verificados</span>
+              <span className="admin-metric-status status-accent">
+                <Award size={12} aria-hidden="true" />
+                <span>Con insignia</span>
+              </span>
+            </div>
+            <div className="admin-metric-middle">
+              <div className="admin-metric-icon metric-icon-mint">
+                <Award size={22} aria-hidden="true" />
+              </div>
+              <strong className="admin-metric-val">{verifiedArtistsCount}</strong>
+            </div>
+            <p className="admin-metric-ctx">
+              Creadores destacados con identidad verificada
+            </p>
+          </article>
+
+          {/* Métrica 13: Mensajes o incidencias abiertas */}
+          <article className="admin-metric-card">
+            <div className="admin-metric-top">
+              <span className="admin-metric-lbl">Mensajes o incidencias abiertas</span>
+              {openIncidentsCount > 0 ? (
+                <span className="admin-metric-status status-neutral">
+                  <MessageSquare size={12} aria-hidden="true" />
+                  <span>En curso</span>
+                </span>
+              ) : (
+                <span className="admin-metric-status status-positive">
+                  <CheckCircle2 size={12} aria-hidden="true" />
+                  <span>Resuelto</span>
+                </span>
+              )}
+            </div>
+            <div className="admin-metric-middle">
+              <div className="admin-metric-icon metric-icon-yellow">
+                <MessageSquare size={22} aria-hidden="true" />
+              </div>
+              <strong className="admin-metric-val">{openIncidentsCount}</strong>
+            </div>
+            <p className="admin-metric-ctx">
+              {openReportsCount} reporte(s) activos · {unreadMessagesCount} mensaje(s) sin leer
+            </p>
+          </article>
+        </div>
+      </section>
+
+      {/* 6. Sección Analítica de Gráficas y Filtros */}
       <section id="reportes-graficas" className="admin-charts-section" aria-labelledby="admin-analytics-title">
         <div className="admin-charts-section-header">
           <div>
@@ -488,12 +874,12 @@ export function AdminDashboardPage() {
           </div>
           <div className="admin-charts-header-badges">
             <span className="demo-data-badge">
-              Base de datos interna + Artistas destacados
+              Base de datos en tiempo real ArtLink
             </span>
           </div>
         </div>
 
-        {/* Barra de Filtros Funcionales */}
+        {/* Barra de Filtros Funcionales para Gráficas */}
         <div className="admin-charts-filters-bar" role="search" aria-label="Filtros para las gráficas analíticas">
           {/* Filtro de Periodo */}
           <div className="chart-filter-item">
@@ -507,10 +893,9 @@ export function AdminDashboardPage() {
               onChange={(e) => setFilterPeriod(e.target.value)}
               aria-label="Seleccionar periodo temporal para las gráficas"
             >
-              <option value="all">Todo el histórico</option>
-              <option value="7d">Últimos 7 días</option>
-              <option value="30d">Últimos 30 días</option>
-              <option value="12m">Últimos 12 meses</option>
+              {ADMIN_PERIOD_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              ))}
             </select>
           </div>
 
@@ -568,23 +953,18 @@ export function AdminDashboardPage() {
           )}
         </div>
 
-        {/* Cuadrícula de Gráficas: Principal de barras, dona de disciplinas y línea de actividad */}
+        {/* Cuadrícula de Gráficas */}
         <div className="admin-charts-grid" aria-label="Cuadrícula de gráficas administrativas">
-          {/* Gráfica 1: Solicitudes por estado */}
           <RequestsStatusChart
             requests={filteredRequests}
             loading={loading}
             error={error}
           />
-
-          {/* Gráfica 2: Artistas por disciplina */}
           <ArtistsDisciplineChart
             artists={filteredArtists}
             loading={loading}
             error={error}
           />
-
-          {/* Gráfica 3: Actividad de solicitudes */}
           <RequestsActivityChart
             requests={filteredRequests}
             period={filterPeriod}
@@ -594,57 +974,114 @@ export function AdminDashboardPage() {
         </div>
       </section>
 
-      {/* 4. Solicitudes Recientes con Estados Visuales en Texto e Iconos */}
-      <section className="admin-panel-card admin-recent-table" aria-labelledby="recent-requests-title">
-        <div className="panel-card-header">
-          <div>
-            <h2 id="recent-requests-title">Solicitudes recientes en la plataforma</h2>
-            <p className="subtext">Supervisión de los últimos encargos y comisiones registrados.</p>
+      {/* 7. Tablas de Solicitudes Recientes y Reportes de Moderación */}
+      <div className="admin-dashboard-split-tables">
+        {/* Tabla: Solicitudes Recientes */}
+        <section className="admin-panel-card admin-recent-table" aria-labelledby="recent-requests-title">
+          <div className="panel-card-header">
+            <div>
+              <h2 id="recent-requests-title">Solicitudes recientes en la plataforma</h2>
+              <p className="subtext">Supervisión de los últimos encargos y propuestas registradas.</p>
+            </div>
+            <Link to="/admin/solicitudes" className="button button-outline button-small">
+              Ver todas <ArrowRight size={14} aria-hidden="true" />
+            </Link>
           </div>
-          <Link to="/admin/solicitudes" className="button button-outline button-small">
-            Ver todas <ArrowRight size={14} aria-hidden="true" />
-          </Link>
-        </div>
 
-        <div className="admin-table-wrap">
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Presupuesto</th>
-                <th>Fecha Estimada</th>
-                <th>Estado</th>
-                <th>Acción</th>
-              </tr>
-            </thead>
-            <tbody>
-              {recentRequests.map((req) => (
-                <tr key={req.id}>
-                  <td><strong>#{req.id.slice(-6)}</strong></td>
-                  <td><strong>${req.budget} USD</strong></td>
-                  <td>{req.desiredDate}</td>
-                  <td>
-                    {renderStatusBadge(req.status)}
-                  </td>
-                  <td>
-                    <Link to="/admin/solicitudes" className="button button-secondary button-small">
-                      Gestionar
-                    </Link>
-                  </td>
+          <div className="admin-table-wrap">
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Presupuesto</th>
+                  <th>Fecha Estimada</th>
+                  <th>Estado</th>
+                  <th>Acción</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
+              </thead>
+              <tbody>
+                {recentRequests.map((req) => (
+                  <tr key={req.id}>
+                    <td><strong>#{req.id.slice(-6)}</strong></td>
+                    <td><strong>${req.budget} USD</strong></td>
+                    <td>{req.desiredDate || req.createdAt?.slice(0, 10) || '-'}</td>
+                    <td>{renderStatusBadge(req.status)}</td>
+                    <td>
+                      <Link to="/admin/solicitudes" className="button button-secondary button-small">
+                        Gestionar
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
 
-      {/* 5. Alertas del Sistema y Estado de Infraestructura */}
+        {/* Tabla: Reportes e Incidencias Recientes */}
+        <section className="admin-panel-card admin-recent-table" aria-labelledby="recent-reports-title">
+          <div className="panel-card-header">
+            <div>
+              <h2 id="recent-reports-title">Reportes e incidencias activas</h2>
+              <p className="subtext">Casos remitidos para supervisión y moderación.</p>
+            </div>
+            <Link to="/admin/reportes" className="button button-outline button-small">
+              Ver reportes <ArrowRight size={14} aria-hidden="true" />
+            </Link>
+          </div>
+
+          <div className="admin-table-wrap">
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Tipo</th>
+                  <th>Denunciante</th>
+                  <th>Prioridad</th>
+                  <th>Estado</th>
+                  <th>Acción</th>
+                </tr>
+              </thead>
+              <tbody>
+                {recentReports.length > 0 ? (
+                  recentReports.map((rep) => (
+                    <tr key={rep.id}>
+                      <td><strong>#{rep.id.slice(-6)}</strong></td>
+                      <td>{rep.type || 'Incidencia'}</td>
+                      <td>{rep.reporterName || 'Anónimo'}</td>
+                      <td>{renderStatusBadge(rep.priority || 'medium')}</td>
+                      <td>{renderStatusBadge(rep.status)}</td>
+                      <td>
+                        <Link to="/admin/reportes" className="button button-secondary button-small">
+                          Revisar
+                        </Link>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="6" style={{ textAlign: 'center', padding: '1.5rem', color: '#6B7280' }}>
+                      No hay incidencias reportadas en este momento.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      {/* 8. Alertas del Sistema y Estado de Infraestructura */}
       <div className="admin-status-row">
         {/* Panel de Alertas */}
         <section className="admin-panel-card" aria-labelledby="alerts-title">
           <div className="panel-card-header">
-            <h2 id="alerts-title"><AlertTriangle size={18} className="icon-warn" aria-hidden="true" /> Alertas del sistema</h2>
-            <span className="badge badge-yellow">{alerts.length} {alerts.length === 1 ? 'activa' : 'activas'}</span>
+            <h2 id="alerts-title">
+              <AlertTriangle size={18} className="icon-warn" aria-hidden="true" /> Alertas del sistema
+            </h2>
+            <span className="badge badge-yellow">
+              {alerts.length} {alerts.length === 1 ? 'activa' : 'activas'}
+            </span>
           </div>
           <div className="alert-list">
             {alerts.length > 0 ? (
@@ -662,7 +1099,7 @@ export function AdminDashboardPage() {
                 <CheckCircle2 size={16} aria-hidden="true" />
                 <div>
                   <strong>Sin alertas activas</strong>
-                  <p>No hay solicitudes pendientes ni incidencias registradas en los datos.</p>
+                  <p>No hay solicitudes pendientes ni incidencias sin resolver registradas.</p>
                 </div>
               </div>
             )}
@@ -672,7 +1109,9 @@ export function AdminDashboardPage() {
         {/* Estado de los datos de la plataforma */}
         <section className="admin-panel-card" aria-labelledby="server-status-title">
           <div className="panel-card-header">
-            <h2 id="server-status-title"><Server size={18} aria-hidden="true" /> Estado de los datos</h2>
+            <h2 id="server-status-title">
+              <Server size={18} aria-hidden="true" /> Estado de los datos
+            </h2>
             <span className={`badge ${totalUsers > 0 ? 'badge-mint' : 'badge-yellow'}`}>
               {totalUsers > 0 ? 'Con registros' : 'Sin registros'}
             </span>
@@ -684,21 +1123,25 @@ export function AdminDashboardPage() {
             </div>
             <div className="health-row">
               <span>Perfiles de artista:</span>
-              <strong className={totalArtists > 0 ? 'status-online' : ''}>{totalArtists}</strong>
+              <strong className={artistsCount > 0 ? 'status-online' : ''}>{artistsCount}</strong>
             </div>
             <div className="health-row">
-              <span>Solicitudes gestionadas:</span>
-              <strong className={totalRequests > 0 ? 'status-online' : ''}>{totalRequests}</strong>
+              <span>Obras en portafolio:</span>
+              <strong className={publishedArtworksCount > 0 ? 'status-online' : ''}>{publishedArtworksCount}</strong>
             </div>
             <div className="health-row">
-              <span>Categorías publicadas:</span>
-              <strong className={data.categories.length > 0 ? 'status-online' : ''}>{data.categories.length}</strong>
+              <span>Solicitudes totales:</span>
+              <strong className={data.requests.length > 0 ? 'status-online' : ''}>{data.requests.length}</strong>
+            </div>
+            <div className="health-row">
+              <span>Reportes registrados:</span>
+              <strong className={reportsList.length > 0 ? 'status-online' : ''}>{reportsList.length}</strong>
             </div>
           </div>
         </section>
       </div>
 
-      {/* 6. Accesos Rápidos a Recursos */}
+      {/* 9. Accesos Rápidos a Recursos */}
       <nav className="admin-links" aria-label="Navegación de recursos administrativos">
         <Link to="/admin/usuarios" className="admin-nav-link">
           <Users size={18} aria-hidden="true" /> Gestionar Usuarios ({data.users.length})
@@ -711,6 +1154,9 @@ export function AdminDashboardPage() {
         </Link>
         <Link to="/admin/solicitudes" className="admin-nav-link">
           <FileText size={18} aria-hidden="true" /> Gestionar Solicitudes ({data.requests.length})
+        </Link>
+        <Link to="/admin/reportes" className="admin-nav-link">
+          <AlertTriangle size={18} aria-hidden="true" /> Gestionar Reportes ({reportsList.length})
         </Link>
       </nav>
     </div>
@@ -740,7 +1186,8 @@ export function AdminResourcePage({ resource }) {
     setLoading(true)
     getAll()
       .then((data) => {
-        setItems(data)
+        const sanitized = Array.isArray(data) ? data.map(sanitizeAdminItem) : []
+        setItems(sanitized)
         setError(null)
       })
       .catch(setError)
@@ -752,7 +1199,8 @@ export function AdminResourcePage({ resource }) {
     getAll()
       .then((data) => {
         if (!mounted) return
-        setItems(data)
+        const sanitized = Array.isArray(data) ? data.map(sanitizeAdminItem) : []
+        setItems(sanitized)
         setError(null)
       })
       .catch((err) => {
@@ -797,7 +1245,7 @@ export function AdminResourcePage({ resource }) {
   function openEditForm(item) {
     setIsNew(false)
     setEditing(item)
-    setForm({ ...item })
+    setForm(sanitizeAdminItem({ ...item }))
   }
 
   async function handleFormSubmit(event) {

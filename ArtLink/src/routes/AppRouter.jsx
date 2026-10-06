@@ -38,7 +38,8 @@ export default function AppRouter() {
             <Route path="/admin/categorias" element={<AdminResourcePage resource="categorias" />} />
             <Route path="/admin/solicitudes" element={<AdminResourcePage resource="solicitudes" />} />
             <Route path="/admin/requests" element={<AdminResourcePage resource="solicitudes" />} />
-            <Route path="/admin/reports" element={<AdminResourcePage resource="solicitudes" />} />
+            <Route path="/admin/reportes" element={<AdminResourcePage resource="reportes" />} />
+            <Route path="/admin/reports" element={<AdminResourcePage resource="reportes" />} />
             <Route path="/admin/settings" element={<AdminDashboardPage />} />
           </Route>
         </Route>

@@ -72,6 +72,44 @@ export function normalizeDisciplineName(name = '') {
 }
 
 /**
+ * Evalúa si una fecha se encuentra dentro del periodo seleccionado.
+ * @param {string|Date} dateString Fecha a evaluar.
+ * @param {string} period 'today' | '7d' | '30d' | '90d' | '12m' | 'all'
+ * @param {Date} [referenceDate] Fecha de referencia.
+ * @returns {boolean}
+ */
+export function isWithinPeriod(dateString, period = 'all', referenceDate = new Date()) {
+  if (period === 'all') return true
+  if (!dateString) return false
+
+  const targetDate = new Date(dateString)
+  if (isNaN(targetDate.getTime())) return false
+
+  const ref = referenceDate instanceof Date && !isNaN(referenceDate.getTime())
+    ? referenceDate
+    : new Date()
+
+  const diffMs = ref.getTime() - targetDate.getTime()
+  if (diffMs < 0) {
+    const isSameDay = targetDate.toDateString() === ref.toDateString()
+    if (period === 'today') return isSameDay
+    return true
+  }
+
+  const diffHours = diffMs / (1000 * 60 * 60)
+  const diffDays = diffMs / (1000 * 60 * 60 * 24)
+
+  if (period === 'today') {
+    return targetDate.toDateString() === ref.toDateString() || diffHours <= 24
+  }
+  if (period === '7d') return diffDays <= 7
+  if (period === '30d') return diffDays <= 30
+  if (period === '90d') return diffDays <= 90
+  if (period === '12m') return diffDays <= 365
+  return true
+}
+
+/**
  * Filtra la lista de solicitudes por periodo, estado y disciplina.
  */
 export function filterRequests(requests = [], { period = 'all', status = 'all', discipline = 'all', artists = [] } = {}) {
@@ -101,13 +139,8 @@ export function filterRequests(requests = [], { period = 'all', status = 'all', 
 
     // 2. Filtro por Periodo
     if (period !== 'all' && req.createdAt) {
-      const reqDate = new Date(req.createdAt)
-      if (!isNaN(reqDate.getTime())) {
-        const diffMs = referenceDate.getTime() - reqDate.getTime()
-        const diffDays = diffMs / (1000 * 60 * 60 * 24)
-        if (period === '7d' && diffDays > 7) return false
-        if (period === '30d' && diffDays > 30) return false
-        if (period === '12m' && diffDays > 365) return false
+      if (!isWithinPeriod(req.createdAt, period, referenceDate)) {
+        return false
       }
     }
 
@@ -292,8 +325,8 @@ export function computeRequestsActivity(requests = [], period = 'all') {
     return { data: [], total: 0, peakLabel: 'Sin datos' }
   }
 
-  // Agrupamiento por mes si el periodo es 'all' o '12m', o por fecha si es '7d' o '30d'
-  const isDaily = period === '7d' || period === '30d'
+  // Agrupamiento por mes si el periodo es 'all' o '12m', o por fecha si es 'today', '7d', '30d' o '90d'
+  const isDaily = period === 'today' || period === '7d' || period === '30d' || period === '90d'
 
   const map = new Map()
 
